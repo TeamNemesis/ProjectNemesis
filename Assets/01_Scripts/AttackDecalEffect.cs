@@ -29,7 +29,7 @@ public class AttackDecalEffect : MonoBehaviour
 
         // 최종 스케일을 반지름 기준으로 설정 (x,y,z 동일)
         targetScale = Vector3.one * radius * 2f;
-
+        gameObject.transform.localScale = targetScale; // BaseCircle도 맞춰줌
         // 기존 코루틴 중지
         if (growRoutine != null)
         {
@@ -53,12 +53,12 @@ public class AttackDecalEffect : MonoBehaviour
             elapsed += Time.deltaTime;
             float t = elapsed / duration;
 
-            countCircle.transform.localScale = Vector3.Lerp(Vector3.zero, targetScale, t);
+            countCircle.transform.localScale = Vector3.Lerp(Vector3.zero, Vector3.one, t);
 
             yield return null;
         }
 
-        countCircle.transform.localScale = targetScale;
+        countCircle.transform.localScale = Vector3.one;
 
         // BaseCircle 프리팹 파괴
         Destroy(gameObject);

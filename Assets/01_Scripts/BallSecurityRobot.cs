@@ -74,7 +74,6 @@ public class BallSecurityRobot : MonsterBase
 
         agent.SetDestination(player.position);
 
-        this.attackRange = 1.5f; // 자폭 로봇이므로 공격 범위를 좀 더 가까이 설정
         if (distance <= attackRange && !isFusing)
         {
             currentState = State.Attack;
@@ -83,7 +82,6 @@ public class BallSecurityRobot : MonsterBase
 
     private IEnumerator SelfDestructionAttack()
     {
-        this.attackDelay = 0.5f; // 자폭 로봇이므로 공격 딜레이를 짧게 설정
         if (player != null && !isFusing)
         {
             isFusing = true;
