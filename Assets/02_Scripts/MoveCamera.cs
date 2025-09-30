@@ -4,6 +4,7 @@ public class MoveCamera : MonoBehaviour
 {
     public Transform target;
     public Vector3 offset;
+    public float cameraSpeed;
 
     [Header("카메라 제한 영역")]
     public float minX;
@@ -26,6 +27,7 @@ public class MoveCamera : MonoBehaviour
         float clampX = Mathf.Clamp(desiredPos.x, minX, maxX);
         float clampZ = Mathf.Clamp(desiredPos.z, minZ, maxZ);
 
-        transform.position = new Vector3(clampX, desiredPos.y, clampZ);
+        //transform.position = new Vector3(clampX, desiredPos.y, clampZ);
+        transform.position = Vector3.Lerp(transform.position, new Vector3(clampX, desiredPos.y, clampZ), cameraSpeed * Time.deltaTime);//Lerp사용
     }
 }
