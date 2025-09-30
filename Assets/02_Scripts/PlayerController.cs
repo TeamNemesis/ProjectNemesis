@@ -8,20 +8,15 @@ public class PlayerController : MonoBehaviour
 
     public float clickMoveDistance = 2f; //
 
-    public Vector3 mp;
-    public Camera mainCamera;
-
     Vector3 moveVec;
     void Start()
     {
 
 
-
-
     }
     void Update()
     {
-        hAxis = Input.GetAxisRaw("Horizontal"); //GetAxis사용시 변화값으로 인해 미끄러지는느낌
+        hAxis = Input.GetAxisRaw("Horizontal"); //
         vAxis = Input.GetAxisRaw("Vertical");
 
         moveVec = new Vector3(hAxis, 0, vAxis).normalized;
@@ -44,9 +39,5 @@ public class PlayerController : MonoBehaviour
                 transform.position += transform.forward * clickMoveDistance; // 바라본 방향으로 앞으로 조금 이동
             }
         }
-
-
-
-
     }
 }
