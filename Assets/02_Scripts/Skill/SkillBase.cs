@@ -6,14 +6,22 @@ public class SkillBase : MonoBehaviour
     /// <summary>
     /// 플레이어가 가지고 있는 스킬 종류
     /// </summary>
-    public List<SkillData> currentSkillData = new List<SkillData>();
+    private List<SkillData> _currentSkillData = new List<SkillData>();
+    public List<SkillData> currentSkillData { get { return _currentSkillData; } }
+
 
     /// <summary>
     /// 회사 스킬 레벨
     /// </summary>
-    public List<SkillData> skillList = new List<SkillData>(10);
+    private List<SkillData> _skillList = new List<SkillData>(10);
+    public List<SkillData> skillList { get { return _skillList; } }
 
-    public string skillDataPath;
+
+    /// <summary>
+    /// 스킬 데이터 경로
+    /// </summary>
+    [SerializeField]
+    private string _skillDataPath;
 
     /// <summary>
     /// 회사 스킬 레벨 초기화
@@ -23,15 +31,15 @@ public class SkillBase : MonoBehaviour
 
         for (int i = 0; i < 10; i++)
         {
-            skillList.Add(new SkillData(i, skillDataPath));
+            _skillList.Add(new SkillData(i, _skillDataPath));
         }
     }
 
     public void ChooseSkill(SkillData skillData)
     {
-        if (skillList.Remove(skillData))
+        if (_skillList.Remove(skillData))
         {
-            currentSkillData.Add(skillData);
+            _currentSkillData.Add(skillData);
         }
         else
         {
@@ -44,15 +52,32 @@ public class SkillBase : MonoBehaviour
 
 public class SkillData
 {
-    private List<Dictionary<string, object>> skillCSVInfo;
+    private List<Dictionary<string, object>> _skillCSVInfo;
 
-    public int skillIdx;
+    /// <summary>
+    /// 스킬 인덱스
+    /// </summary>
+    private int _skillIdx;
+    public int skillIdx { get { return _skillIdx; } }
 
-    public string skillScript;
+    /// <summary>
+    /// 스킬 설명
+    /// </summary>
+    private string _skillScript;
+    public string skillScript {  get { return _skillScript; } } 
 
-    public string skillImagePath;
+    /// <summary>
+    /// 스킬 이미지 경로
+    /// </summary>
+    private string _skillImagePath;
+    public string skillImagePath { get { return _skillImagePath; } }
 
-    public int skillLevel;
+
+    /// <summary>
+    /// 스킬 레벨
+    /// </summary>
+    private int _skillLevel;
+    public int skillLevel { get { return _skillLevel; } }
 
     /// <summary>
     /// 초기화 용
@@ -60,20 +85,20 @@ public class SkillData
     /// <param name="skillDataPath"></param>
     public SkillData(int i, string skillDataPath)
     {
-        skillCSVInfo = CSVReader.Read(skillDataPath);
-        skillIdx = int.Parse(skillCSVInfo[i]["IDX"].ToString());
+        _skillCSVInfo = CSVReader.Read(skillDataPath);
+        _skillIdx = int.Parse(_skillCSVInfo[i]["IDX"].ToString());
 
-        skillScript = skillCSVInfo[i]["SCRIPT"].ToString();
-        skillImagePath = skillCSVInfo[i]["IMAGE"].ToString();
+        _skillScript = _skillCSVInfo[i]["SCRIPT"].ToString();
+        _skillImagePath = _skillCSVInfo[i]["IMAGE"].ToString();
 
-        skillLevel = 0;
+        _skillLevel = 0;
         Debug.Log("초기화");
     }
 
     public void LevelUp()
     {
-        skillLevel++;
-        Debug.Log("레벨업" + skillLevel);
+        _skillLevel++;
+        Debug.Log("레벨업" + _skillLevel);
 
     }
 

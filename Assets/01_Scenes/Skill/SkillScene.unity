@@ -871,18 +871,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e276cf56c5db974ab47d7acb451cde0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  skillOne: {fileID: 626073238}
-  skillTwo: {fileID: 626073237}
-  skillThree: {fileID: 626073236}
-  skillFour: {fileID: 626073235}
-  skillFive: {fileID: 626073234}
-  skillCompany: {fileID: 0}
-  skillBtnPanel: {fileID: 1237578513}
-  skillBtns:
+  skillComapny: {fileID: 0}
+  _skillBtnPanel: {fileID: 1237578513}
+  _skillBtns:
   - {fileID: 194008630}
   - {fileID: 166559175}
   - {fileID: 1240059320}
-  skillPer: 90
 --- !u!1 &433014589
 GameObject:
   m_ObjectHideFlags: 0

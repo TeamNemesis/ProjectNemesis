@@ -17,8 +17,8 @@ public class SkillBtn : MonoBehaviour
         skillData = choosedSkill;
         this.skillCompany = skillCompany;
 				skillLevel.text = choosedSkill.skillLevel.ToString();
-				skillScirpt.text = skillCompany.GetType().Name + choosedSkill.skillScript + isPre;
-				skillImage.text = choosedSkill.skillImagePath;
-			  skillIdx = choosedSkill.skillIdx;
+				skillScirpt.text = skillCompany.GetType().Name + choosedSkill._skillScript + isPre;
+				skillImage.text = choosedSkill._skillImagePath;
+			  skillIdx = choosedSkill._skillIdx;
 		}
 }
