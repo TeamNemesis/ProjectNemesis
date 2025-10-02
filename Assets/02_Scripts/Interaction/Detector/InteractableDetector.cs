@@ -55,6 +55,7 @@ public class InteractableDetector : MonoBehaviour
             {
                 // 감지 이벤트 발행
                 OnDetected?.Invoke(_detectedInteractable);
+                Debug.Log(hit.collider.gameObject.name + " 감지됨");
                 return;
             }
         }
@@ -63,6 +64,7 @@ public class InteractableDetector : MonoBehaviour
         // 감지 자체가 실패한 경우
         _detectedInteractable = null;
         OnMissed?.Invoke();
+        Debug.Log("감지 실패");
     }
 
     /// <summary>
