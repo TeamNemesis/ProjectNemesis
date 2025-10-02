@@ -84,7 +84,7 @@ public class SkillChoose : MonoBehaviour
     {
         if (!_skillIDX.Contains(_skillCompany.skillList[skillNum].skillIdx))
         {
-            btn.SetSkillInfo(_skillCompany.skillList[skillNum], _skillCompany, isPre);
+            btn.SetSkillInfo(_skillCompany.skillList[skillNum], isPre);
             _skillIDX.Add(_skillCompany.skillList[skillNum].skillIdx);
             return false;
         }
@@ -98,7 +98,7 @@ public class SkillChoose : MonoBehaviour
     public void OnClick_SkillBtnClick(SkillBtn skillBtn)
     {
         skillBtn.skillData.LevelUp();
-        skillBtn.skillCompany.ChooseSkill(skillBtn.skillData);
+        skillComapny.ChooseSkill(skillBtn.skillData);
         _skillBtnPanel.SetActive(false);
     }
 
