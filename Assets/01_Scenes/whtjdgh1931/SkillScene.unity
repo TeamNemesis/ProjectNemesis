@@ -876,14 +876,13 @@ MonoBehaviour:
   skillThree: {fileID: 626073236}
   skillFour: {fileID: 626073235}
   skillFive: {fileID: 626073234}
-  choosedCompanyList: []
   skillCompany: {fileID: 0}
   skillBtnPanel: {fileID: 1237578513}
   skillBtns:
   - {fileID: 194008630}
   - {fileID: 166559175}
   - {fileID: 1240059320}
-  skillPer: 33
+  skillPer: 90
 --- !u!1 &433014589
 GameObject:
   m_ObjectHideFlags: 0
@@ -1208,7 +1207,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b901ccfbca879794a9d45684de6507f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentSkillCnt: 0
   skillDataPath: whtjdgh1931/Skill_Temp - Skill_Five
 --- !u!114 &626073235
 MonoBehaviour:
@@ -1222,7 +1220,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7be077a31790a6a43bf31075f92f3c79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentSkillCnt: 0
   skillDataPath: whtjdgh1931/Skill_Temp - Skill_Four
 --- !u!114 &626073236
 MonoBehaviour:
@@ -1236,7 +1233,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e02a0eb887f256049a70fd78bc29c36b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentSkillCnt: 0
   skillDataPath: whtjdgh1931/Skill_Temp - Skill_Three
 --- !u!114 &626073237
 MonoBehaviour:
@@ -1250,7 +1246,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa80da09536f64e4db4c5c0e4132419f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentSkillCnt: 0
   skillDataPath: whtjdgh1931/Skill_Temp - Skill_Two
 --- !u!114 &626073238
 MonoBehaviour:
@@ -1264,7 +1259,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 085bfcbf8acda074a8f9336ce3cad4ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentSkillCnt: 0
   skillDataPath: whtjdgh1931/Skill_Temp - Skill_One
 --- !u!1 &713519509
 GameObject:
