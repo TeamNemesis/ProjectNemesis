@@ -13,7 +13,11 @@ public class SkillChoose : MonoBehaviour
     /// 뽑을 스킬 회사
     /// </summary>
     private SkillBase _skillCompany;
-    public SkillBase skillComapny;
+    public SkillBase skillCompany { get { return _skillCompany; } } 
+    public void SetSkillComapany(SkillBase skill)
+    {
+				_skillCompany = skill;
+    }
 
 
     [SerializeField]
@@ -86,6 +90,7 @@ public class SkillChoose : MonoBehaviour
         {
             btn.SetSkillInfo(_skillCompany.skillList[skillNum], isPre);
             _skillIDX.Add(_skillCompany.skillList[skillNum].skillIdx);
+            Debug.Log("Setting");
             return false;
         }
         else return true;
@@ -98,9 +103,39 @@ public class SkillChoose : MonoBehaviour
     public void OnClick_SkillBtnClick(SkillBtn skillBtn)
     {
         skillBtn.skillData.LevelUp();
-        skillComapny.ChooseSkill(skillBtn.skillData);
+				skillCompany.ChooseSkill(skillBtn.skillData);
         _skillBtnPanel.SetActive(false);
     }
 
 
+		#region testBtn
+    public void OnClick_skillCompanyOne(Skill_One skillCompany)
+    {
+       SetSkillComapany(skillCompany);
+    }
+
+		public void OnClick_skillCompanyTwo(Skill_Two skillCompany)
+		{
+				SetSkillComapany(skillCompany);
+		}
+
+		public void OnClick_skillCompanyThree(Skill_Three skillCompany)
+		{
+				SetSkillComapany(skillCompany);
+		}
+
+		public void OnClick_skillCompanyFour(Skill_Four skillCompany)
+		{
+				SetSkillComapany(skillCompany);
+		}
+
+		public void OnClick_skillCompanyFive(Skill_Five skillCompany)
+		{
+				SetSkillComapany(skillCompany);
+		}
+
+	
+
+
+		#endregion
 }

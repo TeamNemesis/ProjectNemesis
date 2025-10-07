@@ -14,9 +14,13 @@ public class SkillBtn : MonoBehaviour
         _skillData = setSkillData;
     }
 
+    [SerializeField]
     private Text _skillImage;
+    [SerializeField]
     private Text _skillScirpt;
+    [SerializeField]
     private Text _skillLevel;
+
 
     public void SetSkillInfo(SkillData choosedSkill, bool isPre)
     {
