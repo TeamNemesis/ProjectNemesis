@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class MoveCamera : MonoBehaviour
@@ -11,6 +12,13 @@ public class MoveCamera : MonoBehaviour
     public float maxX;
     public float minZ;
     public float maxZ;
+
+    //
+    public float transparentAlpha = 0.3f;
+    public LayerMask obstacleMask; // 투명화 대상 레이어 설정
+
+    private MeshRenderer lastRenderer;
+    //
 
     void Start()
     {
@@ -29,5 +37,36 @@ public class MoveCamera : MonoBehaviour
 
         //transform.position = new Vector3(clampX, desiredPos.y, clampZ);
         transform.position = Vector3.Lerp(transform.position, new Vector3(clampX, desiredPos.y, clampZ), cameraSpeed * Time.deltaTime);//Lerp사용
+
+        //복원
+        if (lastRenderer != null)
+        {
+            SetAlpha(lastRenderer, 1f);
+            lastRenderer = null;
+        }
+
+        // 카메라에서 플레이어 방향으로 레이 쏘기
+        Vector3 dir = target.position - transform.position;
+        float dist = Vector3.Distance(target.position, transform.position);
+        Ray ray = new Ray(transform.position, dir);
+        RaycastHit hit;
+        
+        // 장애물 레이어만 체크
+        if (Physics.Raycast(ray, out hit, dist))//obstacle추가
+        {
+            MeshRenderer rend = hit.collider.GetComponent<MeshRenderer>();
+            if (rend != null)
+            {
+                SetAlpha(rend, transparentAlpha);
+                lastRenderer = rend; // 이번 프레임의 투명화 대상 저장
+            }
+        }
     }
+    void SetAlpha(MeshRenderer rend, float alpha)
+    {
+        Color c = rend.material.color;
+        c.a = alpha;
+        rend.material.color = c;
+    }
+
 }

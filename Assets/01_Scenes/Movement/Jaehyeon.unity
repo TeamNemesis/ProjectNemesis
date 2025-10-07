@@ -471,7 +471,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_MovementRange: 50
   m_DynamicOriginRange: 100
-  m_ControlPath: <Gamepad>/leftStick
+  m_ControlPath: <Gamepad>/rightStick
   m_Behaviour: 0
   m_UseIsolatedInputActions: 0
   m_PointerDownAction:
@@ -505,7 +505,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.6084906, g: 1, b: 0.8925574, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -682,11 +682,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 1179280655}
   offset: {x: 0, y: 15, z: -15}
-  cameraSpeed: 2
+  cameraSpeed: 5
   minX: -10
   maxX: 10
   minZ: -30
-  maxZ: 0
+  maxZ: 10
+  transparentAlpha: 0.3
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!1 &459239035
 GameObject:
   m_ObjectHideFlags: 0
@@ -1836,6 +1840,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27d4657666da5e9498f746b16de4d812, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  attackCooldown: 0.5
 --- !u!54 &1179280651
 Rigidbody:
   m_ObjectHideFlags: 0
