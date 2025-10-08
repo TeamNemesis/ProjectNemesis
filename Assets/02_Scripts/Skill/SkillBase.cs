@@ -17,6 +17,7 @@ public class SkillBase : MonoBehaviour
 		private List<SkillData> _skillList = new List<SkillData>();
 		public List<SkillData> skillList { get { return _skillList; } }
 
+
 		/// <summary>
 		/// 플레이어가 가지고 있는 스킬 종류
 		/// </summary>
@@ -24,6 +25,14 @@ public class SkillBase : MonoBehaviour
 		public List<SkillData> currentSkillData { get { return _currentSkillData; } }
 
 
+		/// <summary>
+		/// 고른 스킬의 개수 반환
+		/// </summary>
+		/// <returns></returns>
+		public int GetNumberSkillList()
+		{
+				return currentSkillData.Count;
+		}		
 
 
 		/// <summary>

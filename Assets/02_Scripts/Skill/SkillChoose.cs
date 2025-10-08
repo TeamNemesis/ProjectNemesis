@@ -68,7 +68,7 @@ public class SkillChoose : MonoBehaviour
 
                     }
                     //중복이라면 반복
-                    while (SetSkillBtn(tempNum, _skillBtns[i], true));
+                    while (SetSkillBtn(tempNum, _skillBtns[i]));
 
                     // 스킬 뽑았으므로 i++
                     continue;
@@ -84,11 +84,11 @@ public class SkillChoose : MonoBehaviour
     /// <summary>
     /// 버튼에 스킬 정보 세팅
     /// </summary>
-    public bool SetSkillBtn(int skillNum, SkillBtn btn, bool isPre)
+    public bool SetSkillBtn(int skillNum, SkillBtn btn)
     {
         if (!_skillIDX.Contains(_skillCompany.skillList[skillNum].skillIdx))
         {
-            btn.SetSkillInfo(_skillCompany.skillList[skillNum], isPre);
+            btn.SetSkillInfo(_skillCompany.skillList[skillNum]);
             _skillIDX.Add(_skillCompany.skillList[skillNum].skillIdx);
             Debug.Log("Setting");
             return false;
@@ -109,6 +109,11 @@ public class SkillChoose : MonoBehaviour
 
 
 		#region testBtn
+    public void OnClick_DrawSkillCompany()
+    {
+        SetSkillComapany(SkillManager.Instance().DrawSkillCompany());
+    }
+
     public void OnClick_skillCompanyOne(Skill_One skillCompany)
     {
        SetSkillComapany(skillCompany);
