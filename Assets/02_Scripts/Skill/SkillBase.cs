@@ -130,10 +130,18 @@ public class SkillData
 				_skillLevel = 0;
 		}
 
-		public void LevelUp()
+		public bool LevelUp()
 		{
 				_skillLevel++;
-				Debug.Log("레벨업" + _skillLevel);
+						Debug.Log("레벨업" + _skillLevel);
+				if(_skillLevel == 1)
+				{
+						return true;
+				}
+				else
+				{
+						return false;
+				}
 
 		}
 
