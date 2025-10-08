@@ -30,6 +30,9 @@ public class SkillChoose : MonoBehaviour
 		[SerializeField]
 		private int _skillCnt = 3;
 
+		/// <summary>
+		/// 초기 스킬 선택 버튼 생성
+		/// </summary>
 		public void SetBtn()
 		{
 				_skillBtnPanel.SetActive(true);
@@ -58,6 +61,38 @@ public class SkillChoose : MonoBehaviour
 				_tempSkillList.Clear();
 		}
 
+		/// <summary>
+		/// 스킬 업그레이드 버튼 생성
+		/// </summary>
+		public void SetUpgradeBtn()
+		{
+				_skillBtnPanel.SetActive(true);
+				Debug.Log("Click");
+
+				if (_skillCompany == null || _skillCompany.currentSkillData.Count == 0)
+				{
+						Debug.Log("Error");
+						_skillBtnPanel.SetActive(false);
+						return;
+				}
+
+				for (int i = 0; i < Mathf.Min(_skillCnt, _skillCompany.currentSkillData.Count); i++)
+				{
+						int tempNum = 0;
+						// 임시 인트
+						do
+						{
+								tempNum = Random.Range(0, _skillCompany.currentSkillData.Count);
+
+						}
+						while (SetUpgradeSkillBtn(tempNum));
+
+				}
+
+				_tempSkillList.Clear();
+
+		}
+
 
 		/// <summary>
 		/// 버튼에 스킬 정보 세팅
@@ -74,7 +109,20 @@ public class SkillChoose : MonoBehaviour
 						return false;
 				}
 				else return true;
+		}
 
+		public bool SetUpgradeSkillBtn(int skillNum)
+		{
+				if (!_tempSkillList.Contains(_skillCompany.skillList[skillNum].skillIdx))
+				{
+						SkillBtn skillBtn = Instantiate(_skillBtnPrefab, _parentPanel.transform);
+						skillBtn.SetSkillInfo(_skillCompany.currentSkillData[skillNum]);
+						skillBtn.GetComponent<Button>().onClick.AddListener(() => OnClick_SkillBtnClick(skillBtn));
+						_tempSkillList.Add(skillNum);
+						Debug.Log("Setting");
+						return false;
+				}
+				else return true;
 		}
 
 		/// <summary>
@@ -82,7 +130,7 @@ public class SkillChoose : MonoBehaviour
 		/// </summary>
 		public void OnClick_SkillBtnClick(SkillBtn skillBtn)
 		{
-				if (skillBtn.skillData.LevelUp()) ;
+				if (skillBtn.skillData.LevelUp())
 				{
 						skillCompany.ChooseSkill(skillBtn.skillData);
 
