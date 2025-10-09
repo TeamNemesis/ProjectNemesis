@@ -113,7 +113,7 @@ public class SkillChoose : MonoBehaviour
 
 		public bool SetUpgradeSkillBtn(int skillNum)
 		{
-				if (!_tempSkillList.Contains(_skillCompany.skillList[skillNum].skillIdx))
+				if (!_tempSkillList.Contains(skillNum))
 				{
 						SkillBtn skillBtn = Instantiate(_skillBtnPrefab, _parentPanel.transform);
 						skillBtn.SetSkillInfo(_skillCompany.currentSkillData[skillNum]);
@@ -135,6 +135,7 @@ public class SkillChoose : MonoBehaviour
 						skillCompany.ChooseSkill(skillBtn.skillData);
 
 				}
+						skillCompany.ActivateSkill(skillBtn.skillData);
 
 				foreach (Transform child in _parentPanel.transform)
 				{
@@ -146,7 +147,9 @@ public class SkillChoose : MonoBehaviour
 		}
 
 
-
+		/// <summary>
+		/// 후에 삭제, 테스트용 함수들
+		/// </summary>
 		#region testBtn
 		public void OnClick_DrawSkillCompany()
 		{

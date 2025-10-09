@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-public class SkillBase : MonoBehaviour
+public abstract class SkillBase : MonoBehaviour
 {
 		/// <summary>
 		/// Json파일로 부터 데이터를 저장할 리스트
@@ -86,6 +86,13 @@ public class SkillBase : MonoBehaviour
 				}
 
 		}
+
+		/// <summary>
+		/// 스킬 선택시 발동
+		/// </summary>
+		/// <param name="choosedSkill"></param>
+		public abstract void ActivateSkill(SkillData choosedSkill);
+	
 
 }
 
