@@ -10,13 +10,14 @@ using UnityEngine;
 public class InteractableDetector : MonoBehaviour
 {
     [Header("----- 컴포넌트 참조 -----")]
-    [SerializeField] Transform _detectPoint;            // RayCast 시작점
+    [SerializeField] Transform _detectPoint;            // OverlapSphere 감지 지점
 
     [Header("----- 설정 데이터 -----")]
-    [SerializeField] float _distance;                   // RayCast 거리
+    [SerializeField] float _radius;                     // OverlapSphere 반지름
     [SerializeField] LayerMask _targetLayerMask;        // 감지할 레이어마스크
 
     IInteractable _detectedInteractable;                // 현재 감지한 Interactable 객체
+    Collider[] _hits = new Collider[10];                // 감지된 콜라이더 배열
 
     /// <summary>
     /// 감지 이벤트
@@ -34,37 +35,35 @@ public class InteractableDetector : MonoBehaviour
     }
 
     /// <summary>
-    /// 감지하는 함수
+    /// 목표로 하는 IInteractable을 감지하고 감지에 성공했을 때 OnDetected 이벤트를 호출한다.
     /// </summary>
     public void Detect()
     {
-        // Raycast에 감지된 콜라이더가 있으면 
-        if (Physics.Raycast(
-            _detectPoint.position,
-            _detectPoint.forward,
-            out RaycastHit hit,
-            _distance,
-            _targetLayerMask) == true)
-        {
-            // 감지된 콜라이더 게임오브젝트의 부모 게임오브젝트에서
-            // IInteractable 컴포넌트를 찾아온다.
-            _detectedInteractable = hit.collider.GetComponentInParent<IInteractable>();
+        // DetectPoint 위치에서 반지름 _radius, 레이어마스크 _targetLayerMask로
+        // OverlapSphere를 수행하여 감지된 콜라이더 중 가장 가까운 콜라이더를 찾는다.
+        int hitCount = Physics.OverlapSphereNonAlloc(_detectPoint.position, _radius, _hits, _targetLayerMask);
 
-            // IInteractable이 있었으면
-            if (_detectedInteractable != null)
+        // 감지된게 없으면 _detectedInteractable을 null로 만들고 OnMissed 이벤트 호출
+        if (hitCount == 0)
+        {
+            // 감지된게 없음
+            if(_detectedInteractable != null)
             {
-                // 감지 이벤트 발행
-                OnDetected?.Invoke(_detectedInteractable);
-                Debug.Log(hit.collider.gameObject.name + " 감지됨");
-                return;
+                _detectedInteractable = null;
+                OnMissed?.Invoke();
+                Debug.Log("상호작용 가능한 대상이 없습니다.");
             }
+            return;
         }
 
-        // 감지된 콜라이더에 IInteractable이 없었거나
-        // 감지 자체가 실패한 경우
-        _detectedInteractable = null;
-        OnMissed?.Invoke();
-        Debug.Log("감지 실패");
+        // 감지된 물체가 있을 경우 IInteractable 인터페이스를 갖고 있는지 확인
+        IInteractable nearestInteractable = null;
+        float minDistance = float.MaxValue;
+
+        
+
+        // 감지된 가장 가까운 IInteractable 객체를 이벤트로 발행
+
     }
 
     /// <summary>
