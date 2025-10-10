@@ -27,7 +27,7 @@ public class SkillManager : MonoBehaviour
     public Skill_Five skill_Five { get { return _skill_Five; } }
 
     private Skill_Collab _skill_Collab;
-    public Skill_Collab skill_Collab { get { return _skill_Collab; }}
+    public Skill_Collab skill_Collab { get { return _skill_Collab; } }
 
     [SerializeField]
     private SkillBtn _skillBtnPrefab;
@@ -108,7 +108,7 @@ public class SkillManager : MonoBehaviour
             }
         }
 
-        if(_skill_Collab.GetNumberSkillList() != 0)
+        if (_skill_Collab.GetNumberSkillList() != 0)
         {
             foreach (SkillData skillData in _skill_Collab.currentSkillData)
             {
@@ -200,14 +200,15 @@ public class SkillManager : MonoBehaviour
     /// 해당 회사의 콜라보 스킬 해금 조건이 만족되었는지 판단
     /// </summary>
     /// <param name="skillCompany"></param>
-    public bool CheckCollabo(SkillBase skillCompany, out int index)
+    public bool CheckCollabo(SkillBase skillCompany, out List<int> indexList)
     {
-        
+        indexList = new List<int>();
+        bool bCheck = false;
         // 매개 변수의 회사가 만족하는지 판단
         if (skillCompany.currentSkillData.Count < Constants.COLLABCNT)
         {
-            index = -1;
-            return false;
+            indexList = null;
+            return bCheck;
         }
 
         if (skillCompany == _skill_One)
@@ -215,17 +216,24 @@ public class SkillManager : MonoBehaviour
             // 관련 회사 조건 검사
             if (_skill_Two.currentSkillData.Count >= Constants.COLLABCNT)
             {
-                index = (_skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 201));
-                //만약 이미 골랐으면 false
-                
-                return true;
+                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 201);
+                if (index != Constants.NOCONTAININDEX)
+                {
+                    indexList.Add(index);
+                }
+
+                bCheck = true;
             }
 
             if (_skill_Five.currentSkillData.Count >= Constants.COLLABCNT)
             {
-                index = (_skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 105));
-                return true;
+                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 105);
+                if (index != Constants.NOCONTAININDEX)
+                {
+                    indexList.Add(index);
+                }
 
+                bCheck = true;
             }
         }
         else if (skillCompany == _skill_Two)
@@ -233,16 +241,24 @@ public class SkillManager : MonoBehaviour
             // 관련 회사 조건 검사
             if (_skill_Three.currentSkillData.Count >= Constants.COLLABCNT)
             {
-                index = (_skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 302));
-                return true;
+                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 302);
+                if (index != Constants.NOCONTAININDEX)
+                {
+                    indexList.Add(index);
+                }
 
+                bCheck = true;
             }
 
             if (_skill_One.currentSkillData.Count >= Constants.COLLABCNT)
             {
-                index = (_skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 201));
-                return true;
+                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 201);
+                if (index != Constants.NOCONTAININDEX)
+                {
+                    indexList.Add(index);
+                }
 
+                bCheck = true;
             }
         }
         else if (skillCompany == _skill_Three)
@@ -250,16 +266,24 @@ public class SkillManager : MonoBehaviour
             // 관련 회사 조건 검사
             if (_skill_Four.currentSkillData.Count >= Constants.COLLABCNT)
             {
-                index = (_skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 403));
-                return true;
+                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 403);
+                if (index != Constants.NOCONTAININDEX)
+                {
+                    indexList.Add(index);
+                }
 
+                bCheck = true;
             }
 
             if (_skill_Two.currentSkillData.Count >= Constants.COLLABCNT)
             {
-                 index = (_skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 302));
-                return true;
+                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 302);
+                if (index != Constants.NOCONTAININDEX)
+                {
+                    indexList.Add(index);
+                }
 
+                bCheck = true;
             }
         }
         else if (skillCompany == _skill_Four)
@@ -267,16 +291,24 @@ public class SkillManager : MonoBehaviour
             // 관련 회사 조건 검사
             if (_skill_Five.currentSkillData.Count >= Constants.COLLABCNT)
             {
-                index = (_skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 504));
-                return true;
+                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 504);
+                if (index != Constants.NOCONTAININDEX)
+                {
+                    indexList.Add(index);
+                }
 
+                bCheck = true;
             }
 
             if (_skill_Three.currentSkillData.Count >= Constants.COLLABCNT)
             {
-                index = (_skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 403));
-                return true;
+                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 403);
+                if (index != Constants.NOCONTAININDEX)
+                {
+                    indexList.Add(index);
+                }
 
+                bCheck = true;
             }
         }
         else if (skillCompany == _skill_Five)
@@ -284,22 +316,27 @@ public class SkillManager : MonoBehaviour
             // 관련 회사 조건 검사
             if (_skill_Four.currentSkillData.Count >= Constants.COLLABCNT)
             {
-                index = (_skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 504));
-                return true;
+                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 504);
+                if (index != Constants.NOCONTAININDEX)
+                {
+                    indexList.Add(index);
+                }
 
+                bCheck = true;
             }
 
             if (_skill_One.currentSkillData.Count >= Constants.COLLABCNT)
             {
-                index = (_skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 105));
-                return true;
+                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 105);
+                if (index != Constants.NOCONTAININDEX)
+                {
+                    indexList.Add(index);
+                }
 
+                bCheck = true;
             }
         }
-
-        index = -1;
-        return false;
+            return bCheck;
     }
-
 
 }

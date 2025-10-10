@@ -145,7 +145,6 @@ public class SkillData
     public bool LevelUp()
     {
         _skillLevel++;
-        Debug.Log("·¹º§¾÷" + _skillLevel);
         if (_skillLevel == 1)
         {
             return true;

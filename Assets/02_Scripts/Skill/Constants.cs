@@ -19,5 +19,15 @@ public static class Constants
     /// <summary>
     /// 콜라보 스킬 출현 확률
     /// </summary>
-    public static int COLLABPER = 75;
+    public static int COLLABPER = 90;
+
+    /// <summary>
+    /// 리스트에 포함되지 않은 인덱스
+    /// </summary>
+    public static int NOCONTAININDEX = -1;
+
+    /// <summary>
+    /// 무한루프 방지 횟수
+    /// </summary>
+    public static int LOOPCNT = 100;
 }

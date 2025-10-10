@@ -40,13 +40,14 @@ public class SkillChoose : MonoBehaviour
     {
         _skillCompany = skillComapany;
         int skillNum = _skillCompany.skillList.Count;
-        if (SkillManager.Instance().CheckCollabo(_skillCompany, out int index) && index != -1)
+        List<int> indexList;
+        bool bCheckCollab = SkillManager.Instance().CheckCollabo(_skillCompany, out indexList);
+        if (bCheckCollab && indexList.Count>0)
         {
-            skillNum++;
+            skillNum += indexList.Count;
         }
 
         _skillBtnPanel.SetActive(true);
-        Debug.Log("Click");
 
         if (_skillCompany == null || skillNum == 0)
         {
@@ -55,6 +56,7 @@ public class SkillChoose : MonoBehaviour
             return;
         }
 
+        Debug.Log(skillNum);
         for (int i = 0; i < Mathf.Min(Constants.SKILLCNT, skillNum); i++)
         {
             int tempNum = 0;
@@ -64,23 +66,19 @@ public class SkillChoose : MonoBehaviour
                 _skillCompany = skillComapany;
                 tempNum = Random.Range(0, 100);
                 loopCnt++;
-                if (index != -1 && 
-                    !_tempSkillList.Contains(SkillManager.Instance().skill_Collab.skillList[index].skillIdx) && 
-                    tempNum < Constants.COLLABPER)
+                if (bCheckCollab && indexList.Count>0 && tempNum < Constants.COLLABPER)
                 {
-                    Debug.Log("Collab으로 들어옴");
                     _skillCompany = SkillManager.Instance().skill_Collab;
-                    tempNum = index;
+                    tempNum = Random.Range(0,indexList.Count);
+                    tempNum = indexList[tempNum];
                 }
                 else
                 {
                     tempNum = Random.Range(0, _skillCompany.skillList.Count);
 
                 }
-                Debug.Log("TempNum = " + tempNum);
             }
-            while (SetSkillBtn(tempNum) && loopCnt < 10);
-            Debug.Log("Loop : " + loopCnt + "TempNum = " +tempNum);
+            while (SetSkillBtn(tempNum) && loopCnt < Constants.LOOPCNT);
             loopCnt = 0;
         }
 
@@ -122,7 +120,7 @@ public class SkillChoose : MonoBehaviour
 
                 loopCnt++;
             }
-            while (SetUpgradeSkillBtn(tempNum) && loopCnt < 10);
+            while (SetUpgradeSkillBtn(tempNum) && loopCnt < Constants.LOOPCNT);
             Debug.Log("Loop : " + loopCnt);
             loopCnt = 0;
         }
@@ -137,6 +135,11 @@ public class SkillChoose : MonoBehaviour
     /// </summary>
     public bool SetSkillBtn(int skillNum)
     {
+        // 예외처리
+        if(skillNum > _skillCompany.skillList.Count)
+        {
+            return true;
+        }
         if (!_tempSkillList.Contains(_skillCompany.skillList[skillNum].skillIdx))
         {
             SkillBtn skillBtn = Instantiate(_skillBtnPrefab, _parentPanel.transform);
