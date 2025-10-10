@@ -97,10 +97,21 @@ public class PlayerController : MonoBehaviour
         {
             Vector3 targetPos = hit.point;
             targetPos.y = transform.position.y; // 캐릭터 높이 유지
-            transform.LookAt(targetPos);    //회전
+            transform.LookAt(targetPos);
 
             transform.position += transform.forward * attackDistance; // 바라본 방향으로 앞으로 조금 이동
         }
+        //Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+
+        //Plane groundPlane = new Plane(Vector3.up, new Vector3(0, transform.position.y, 0)); //카메라가 기울어져있어서
+        //float distance;
+
+        //if (groundPlane.Raycast(ray, out distance))
+        //{
+        //    Vector3 targetPos = ray.GetPoint(distance); // 평면과의 교차점
+        //    transform.LookAt(targetPos); // 방향 회전
+        //    transform.position += transform.forward * attackDistance;
+        //}
 
     }
     void OnDash(InputValue value)   //Dash
