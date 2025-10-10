@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Skill_One : SkillBase
 {
-    protected override string skillBaseString { get => "skill_One"; set => throw new System.NotImplementedException(); }
+    
 
     public override void ActivateSkill(SkillData choosedSkill)
     {

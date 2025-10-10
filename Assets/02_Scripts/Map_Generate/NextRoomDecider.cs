@@ -140,6 +140,7 @@ public class NextRoomDecider : MonoBehaviour
         for (int i = 0; i < nextRooms.Length; i++)
         {
             Debug.Log(nextRooms[i].RoomName);
+            Instantiate(nextRooms[i]);
         }
         return nextRooms;
     }
