@@ -43,19 +43,6 @@ public class InteractableDetector : MonoBehaviour
         // OverlapSphere를 수행하여 감지된 콜라이더 중 가장 가까운 콜라이더를 찾는다.
         int hitCount = Physics.OverlapSphereNonAlloc(_detectPoint.position, _radius, _hits, _targetLayerMask);
 
-        // 감지된게 없으면 _detectedInteractable을 null로 만들고 OnMissed 이벤트 호출
-        if (hitCount == 0)
-        {
-            // 감지된게 없음
-            if(_detectedInteractable != null)
-            {
-                _detectedInteractable = null;
-                OnMissed?.Invoke();
-                Debug.Log("상호작용 가능한 대상이 없습니다.");
-            }
-            return;
-        }
-
         // 감지된 물체가 있을 경우 IInteractable 인터페이스를 갖고 있는지 확인
         IInteractable nearestInteractable = null;
         float minDistance = float.MaxValue;
@@ -82,6 +69,14 @@ public class InteractableDetector : MonoBehaviour
             OnDetected?.Invoke(_detectedInteractable);
             Debug.Log("상호작용 가능한 대상 감지됨: " + _detectedInteractable.InteractableType);
         }
+
+        // 감지된 IInteractable이 없어진 경우
+        if (nearestInteractable == null && _detectedInteractable != null)
+        {
+            _detectedInteractable = null;
+            OnMissed?.Invoke();
+            Debug.Log("상호작용 가능한 대상에서 멀어짐");
+        }
     }
 
     /// <summary>
@@ -92,6 +87,5 @@ public class InteractableDetector : MonoBehaviour
         if (_detectedInteractable == null) return;
 
         _detectedInteractable.Interact(transform);
-        Debug.Log("상호작용 가능한 대상의 Interact 함수 호출");
     }
 }

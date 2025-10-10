@@ -30,6 +30,8 @@ public class PlayerController : MonoBehaviour
         OnInteractInput += Interact;
         _interactableDetector.OnDetected += InteractableDetected;
         _interactableDetector.OnMissed += InteractableMissed;
+
+        _interactableGuideView.Initialize();
     }
 
     void Update()
@@ -127,6 +129,7 @@ public class PlayerController : MonoBehaviour
     {
         if (!_isInteractable) return;
         _interactableDetector.ExecuteInteraction();
+        InteractableMissed(); //상호작용 한번 하면 UI 사라지게
     }
 
     void InteractableDetected(IInteractable interactable)
