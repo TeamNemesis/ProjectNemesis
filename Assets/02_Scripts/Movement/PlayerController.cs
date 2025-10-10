@@ -7,6 +7,10 @@ using UnityEngine.iOS;
 
 public class PlayerController : MonoBehaviour
 {
+    [SerializeField] InteractableDetector _interactableDetector; //상호작용 감지기
+    [SerializeField] InteractionGuideView _interactableGuideView; //상호작용 안내 UI
+    [SerializeField] bool _isInteractable; //상호작용 가능 여부
+
     //public float hAxis;
     //public float vAxis;
     private float moveSpeed = 10;
@@ -23,9 +27,11 @@ public class PlayerController : MonoBehaviour
     public event Action OnInteractInput;
     void Start()
     {
-
-
+        OnInteractInput += Interact;
+        _interactableDetector.OnDetected += InteractableDetected;
+        _interactableDetector.OnMissed += InteractableMissed;
     }
+
     void Update()
     {
 
@@ -115,5 +121,23 @@ public class PlayerController : MonoBehaviour
     {
         OnInteractInput?.Invoke();
         Debug.Log("상호작용!");
+    }
+
+    void Interact()
+    {
+        if (!_isInteractable) return;
+        _interactableDetector.ExecuteInteraction();
+    }
+
+    void InteractableDetected(IInteractable interactable)
+    {
+        _isInteractable = true;
+        _interactableGuideView.ShowUI(interactable);
+    }
+
+    void InteractableMissed()
+    {
+        _isInteractable = false;
+        _interactableGuideView.HideUI();
     }
 }
