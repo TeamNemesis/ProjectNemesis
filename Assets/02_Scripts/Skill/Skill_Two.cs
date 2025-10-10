@@ -4,6 +4,6 @@ public class Skill_Two : SkillBase
 {
 		public override void ActivateSkill(SkillData choosedSkill)
 		{
-				throw new System.NotImplementedException();
+		Debug.Log("2번 회사 스킬 선택");
 		}
 }
