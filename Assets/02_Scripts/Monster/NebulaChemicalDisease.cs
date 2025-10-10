@@ -96,6 +96,7 @@ public class NebulaChemicalDisease : MonsterBase, IDamageAble
         if (player != null && Vector3.Distance(transform.position, player.position) <= attackRange)
         {
             poisonFieldPrefab.gameObject.transform.localScale = new Vector3(_poisinFieldRadius, 1, _poisinFieldRadius);
+            poisonFieldPrefab.GetComponent<PoisinField>().SetDuration(_poisinFieldDuration); // 독성 구름 지속 시간 설정
             Instantiate(poisonFieldPrefab, transform.position, transform.rotation); // 플레이어에게 독성 구름 발사
             // 독성 구름을 발사한 후 일정 시간 대기
             yield return new WaitForSeconds(attackDelay);
