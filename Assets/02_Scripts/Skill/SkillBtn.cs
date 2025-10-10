@@ -3,22 +3,48 @@ using UnityEngine.UI;
 
 public class SkillBtn : MonoBehaviour
 {
-    public SkillBase skillCompany;
-    public SkillData skillData;
+		/// <summary>
+		/// 배치된 스킬 데이터
+		/// </summary>
+		private SkillData _skillData;
+		public SkillData skillData { get { return _skillData; } }
 
-    public int skillIdx;
+		public void SetSkillData(SkillData setSkillData)
+		{
+				_skillData = setSkillData;
+		}
 
-    public Text skillImage;
-    public Text skillScirpt;
-    public Text skillLevel;
+		[SerializeField]
+		private Text _skillImage;
+		[SerializeField]
+		private Text _skillScirpt;
+		[SerializeField]
+		private Text _skillIDX;
+		[SerializeField]
+		private Text _skillLevel;
 
-    public void SetSkillInfo(SkillData choosedSkill, SkillBase skillCompany, bool isPre)
-    {
-        skillData = choosedSkill;
-        this.skillCompany = skillCompany;
-				skillLevel.text = choosedSkill.skillLevel.ToString();
-				skillScirpt.text = skillCompany.GetType().Name + choosedSkill.skillScript + isPre;
-				skillImage.text = choosedSkill.skillImagePath;
-			  skillIdx = choosedSkill.skillIdx;
+
+		public void SetSkillInfo(SkillData choosedSkill)
+		{
+				_skillData = choosedSkill;
+
+
+
+				if (_skillScirpt != null)
+				{
+						_skillScirpt.text = choosedSkill.skillScript;
+				}
+				if (_skillImage != null)
+				{
+						_skillImage.text = choosedSkill.skillImagePath;
+				}
+				if (_skillIDX != null)
+				{
+						_skillIDX.text = choosedSkill.skillIdx.ToString();
+				}
+				if(_skillLevel !=null)
+				{
+						_skillLevel.text = choosedSkill.skillLevel.ToString();
+				}
 		}
 }

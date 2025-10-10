@@ -1,155 +1,188 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class SkillChoose : MonoBehaviour
 {
+		/// <summary>
+		/// 임시 스킬 인덱스 보관 리스트
+		/// </summary>
+		private List<int> _tempSkillList = new List<int>();
 
 
-    /// <summary>
-    /// 회사 Dictionary
-    /// </summary>
-    private List<SkillBase> CompanyList;
-
-    /// <summary>
-    /// 뽑은 스킬 임시 저장 리스트
-    /// </summary>
-    private List<int> skillIDX = new List<int>();
-
-    [SerializeField] private Skill_One skillOne;
-    [SerializeField] private Skill_Two skillTwo;
-    [SerializeField] private Skill_Three skillThree;
-    [SerializeField] private Skill_Four skillFour;
-    [SerializeField] private Skill_Five skillFive;
-
-    public Dictionary<SkillBase, int> choosedCompanyList = new Dictionary<SkillBase, int>();
-    public SkillBase skillCompany;
+		/// <summary>
+		/// 뽑을 스킬 회사
+		/// </summary>
+		private SkillBase _skillCompany;
+		public SkillBase skillCompany { get { return _skillCompany; } }
+		public void SetSkillComapany(SkillBase skill)
+		{
+				_skillCompany = skill;
+		}
 
 
-    public GameObject skillBtnPanel;
-    public SkillBtn[] skillBtns;
+		[SerializeField]
+		private GameObject _skillBtnPanel;
+		[SerializeField]
+		private GameObject _parentPanel;
+		[SerializeField]
+		private SkillBtn _skillBtnPrefab;
+		[SerializeField]
+		private int _skillCnt = 3;
 
-    [Header("스킬 확률")]
-    public float skillPer;
+		/// <summary>
+		/// 초기 스킬 선택 버튼 생성
+		/// </summary>
+		public void SetBtn()
+		{
+				_skillBtnPanel.SetActive(true);
+				Debug.Log("Click");
 
-    void Start()
-    {
-        CompanyList = new List<SkillBase>();
-        CompanyList.Add(skillOne);
-        CompanyList.Add(skillTwo);
-        CompanyList.Add(skillThree);
-        CompanyList.Add(skillFour);
-        CompanyList.Add(skillFive);
+				if (_skillCompany == null || _skillCompany.skillList.Count == 0)
+				{
+						Debug.Log("Error");
+						_skillBtnPanel.SetActive(false);
+						return;
+				}
 
-        // 스킬 베이스 초기화
-        foreach(SkillBase skill in CompanyList)
-        {
-            skill.InitSkillDictionary();
-        }
+				for (int i = 0; i < Mathf.Min(_skillCnt, _skillCompany.skillList.Count); i++)
+				{
+						int tempNum = 0;
+						// 임시 인트
+						do
+						{
+								tempNum = Random.Range(0, _skillCompany.skillList.Count);
 
-        for (int i = 0; i < skillBtns.Length; i++)
-        {
-            int index = i;
-            skillBtns[index].GetComponent<Button>().onClick.AddListener(
-                    () => OnClick_SkillBtnClick(skillBtns[index]));
-        }
+						}
+						while (SetSkillBtn(tempNum));
 
-    }
+				}
 
-    public void OnClickBtn()
-    {
-        skillBtnPanel.SetActive(true);
-        Debug.Log("Click");
+				_tempSkillList.Clear();
+		}
 
-        
+		/// <summary>
+		/// 스킬 업그레이드 버튼 생성
+		/// </summary>
+		public void SetUpgradeBtn()
+		{
+				_skillBtnPanel.SetActive(true);
+				Debug.Log("Click");
 
-        for (int i = 0; i < skillBtns.Length; i++)
-        {
-            // 임시 인트
-            int tempNum = 0;
-            //캐릭터가 직전에 회사를 뽑았다면
-            if (choosedCompanyList.Count > 0)
-            {
-                // 캐릭터가 직전에 뽑았던 회사의 스킬을 뽑을지 (25%)
-                tempNum = Random.Range(0, 100);
-                if (tempNum < skillPer)
-                {
-                    do
-                    {
-                        
-                        // 해당 회사의 스킬을 뽑고 버튼에 세팅
-                        tempNum = Random.Range(0, choosedCompanyList.Count);
-                        skillCompany = choosedCompanyList.ElementAt(tempNum).Key;
+				if (_skillCompany == null || _skillCompany.currentSkillData.Count == 0)
+				{
+						Debug.Log("Error");
+						_skillBtnPanel.SetActive(false);
+						return;
+				}
 
-                        // 뽑은 회사의 남은 스킬이 2개 이하라면 다시 처음으로
-                        if(skillCompany.skillList.Count <3)
-                        {
-                            i--;
-                            //continue;
-                            Debug.Log("다 뽑음");
-                            break;
-                        }
-                        tempNum = Random.Range(0, skillCompany.skillList.Count);
-                        
-                    }
-                    //중복이라면 반복
-                    while (SetSkillBtn(tempNum, skillBtns[i], true));
+				for (int i = 0; i < Mathf.Min(_skillCnt, _skillCompany.currentSkillData.Count); i++)
+				{
+						int tempNum = 0;
+						// 임시 인트
+						do
+						{
+								tempNum = Random.Range(0, _skillCompany.currentSkillData.Count);
 
-                    // 스킬 뽑았으므로 i++
-                    continue;
-                }
-            }
+						}
+						while (SetUpgradeSkillBtn(tempNum));
+
+				}
+
+				_tempSkillList.Clear();
+
+		}
 
 
-            tempNum = Random.Range(0, 5);
-            skillCompany = CompanyList[tempNum];
+		/// <summary>
+		/// 버튼에 스킬 정보 세팅
+		/// </summary>
+		public bool SetSkillBtn(int skillNum)
+		{
+				if (!_tempSkillList.Contains(_skillCompany.skillList[skillNum].skillIdx))
+				{
+						SkillBtn skillBtn = Instantiate(_skillBtnPrefab, _parentPanel.transform);
+						skillBtn.SetSkillInfo(_skillCompany.skillList[skillNum]);
+						skillBtn.GetComponent<Button>().onClick.AddListener(() => OnClick_SkillBtnClick(skillBtn));
+						_tempSkillList.Add(skillNum);
+						Debug.Log("Setting");
+						return false;
+				}
+				else return true;
+		}
 
-            // 해당 회사의 스킬을 뽑고 버튼에 세팅
-            tempNum = Random.Range(0, skillCompany.skillList.Count);
-            SetSkillBtn(tempNum, skillBtns[i], false);
-        }
+		public bool SetUpgradeSkillBtn(int skillNum)
+		{
+				if (!_tempSkillList.Contains(skillNum))
+				{
+						SkillBtn skillBtn = Instantiate(_skillBtnPrefab, _parentPanel.transform);
+						skillBtn.SetSkillInfo(_skillCompany.currentSkillData[skillNum]);
+						skillBtn.GetComponent<Button>().onClick.AddListener(() => OnClick_SkillBtnClick(skillBtn));
+						_tempSkillList.Add(skillNum);
+						Debug.Log("Setting");
+						return false;
+				}
+				else return true;
+		}
 
-        // 뽑은 스킬 리스트 초기화
-        skillIDX.Clear();
+		/// <summary>
+		/// 스킬 버튼 선택
+		/// </summary>
+		public void OnClick_SkillBtnClick(SkillBtn skillBtn)
+		{
+				if (skillBtn.skillData.LevelUp())
+				{
+						skillCompany.ChooseSkill(skillBtn.skillData);
 
-    }
+				}
+						skillCompany.ActivateSkill(skillBtn.skillData);
 
-
-    /// <summary>
-    /// 버튼에 스킬 정보 세팅
-    /// </summary>
-    public bool SetSkillBtn(int skillNum, SkillBtn btn, bool isPre)
-    {
-        if (!skillIDX.Contains(skillCompany.skillList[skillNum].skillIdx))
-        {
-            btn.SetSkillInfo(skillCompany.skillList[skillNum], skillCompany, isPre);
-            skillIDX.Add(skillCompany.skillList[skillNum].skillIdx);
-            return false;
-        }
-        else return true;
-
-    }
-
-    /// <summary>
-    /// 스킬 버튼 선택
-    /// </summary>
-    public void OnClick_SkillBtnClick(SkillBtn skillBtn)
-    {
-
-
-        skillBtn.skillData.LevelUp();
-        skillBtn.skillCompany.ChooseSkill(skillBtn.skillData);
-        if(choosedCompanyList.ContainsKey(skillBtn.skillCompany))
-        {
-            choosedCompanyList[skillBtn.skillCompany]++;
-        }
-        else
-        {
-            choosedCompanyList.Add(skillBtn.skillCompany, 1);
-        }
-            skillBtnPanel.SetActive(false);
-    }
+				foreach (Transform child in _parentPanel.transform)
+				{
+						Destroy(child.gameObject);
+				}
 
 
+				_skillBtnPanel.SetActive(false);
+		}
+
+
+		/// <summary>
+		/// 후에 삭제, 테스트용 함수들
+		/// </summary>
+		#region testBtn
+		public void OnClick_DrawSkillCompany()
+		{
+				SetSkillComapany(SkillManager.Instance().DrawSkillCompany());
+		}
+
+		public void OnClick_skillCompanyOne(Skill_One skillCompany)
+		{
+				SetSkillComapany(skillCompany);
+		}
+
+		public void OnClick_skillCompanyTwo(Skill_Two skillCompany)
+		{
+				SetSkillComapany(skillCompany);
+		}
+
+		public void OnClick_skillCompanyThree(Skill_Three skillCompany)
+		{
+				SetSkillComapany(skillCompany);
+		}
+
+		public void OnClick_skillCompanyFour(Skill_Four skillCompany)
+		{
+				SetSkillComapany(skillCompany);
+		}
+
+		public void OnClick_skillCompanyFive(Skill_Five skillCompany)
+		{
+				SetSkillComapany(skillCompany);
+		}
+
+
+
+
+		#endregion
 }
