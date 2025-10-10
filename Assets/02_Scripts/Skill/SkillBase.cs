@@ -4,6 +4,9 @@ using UnityEngine;
 
 public abstract class SkillBase : MonoBehaviour
 {
+    protected abstract string skillBaseString { get; set; }
+
+
     /// <summary>
     /// Json파일로 부터 데이터를 저장할 리스트
     /// </summary>
