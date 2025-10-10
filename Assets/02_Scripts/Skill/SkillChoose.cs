@@ -9,6 +9,10 @@ public class SkillChoose : MonoBehaviour
     /// </summary>
     private List<int> _tempSkillList = new List<int>();
 
+    /// <summary>
+    /// 무한루프 방지 int
+    /// </summary>
+    private int loopCnt;
 
     /// <summary>
     /// 뽑을 스킬 회사
@@ -27,8 +31,7 @@ public class SkillChoose : MonoBehaviour
     private GameObject _parentPanel;
     [SerializeField]
     private SkillBtn _skillBtnPrefab;
-    [SerializeField]
-    private int _skillCnt = 3;
+
 
     /// <summary>
     /// 초기 스킬 선택 버튼 생성
@@ -36,27 +39,49 @@ public class SkillChoose : MonoBehaviour
     public void SetBtn(SkillBase skillComapany)
     {
         _skillCompany = skillComapany;
+        int skillNum = _skillCompany.skillList.Count;
+        if (SkillManager.Instance().CheckCollabo(_skillCompany, out int index) && index != -1)
+        {
+            skillNum++;
+        }
+
         _skillBtnPanel.SetActive(true);
         Debug.Log("Click");
 
-        if (_skillCompany == null || _skillCompany.skillList.Count == 0)
+        if (_skillCompany == null || skillNum == 0)
         {
             Debug.Log("Error");
             _skillBtnPanel.SetActive(false);
             return;
         }
 
-        for (int i = 0; i < Mathf.Min(_skillCnt, _skillCompany.skillList.Count); i++)
+        for (int i = 0; i < Mathf.Min(Constants.SKILLCNT, skillNum); i++)
         {
             int tempNum = 0;
             // 임시 인트
             do
             {
-                tempNum = Random.Range(0, _skillCompany.skillList.Count);
+                _skillCompany = skillComapany;
+                tempNum = Random.Range(0, 100);
+                loopCnt++;
+                if (index != -1 && 
+                    !_tempSkillList.Contains(SkillManager.Instance().skill_Collab.skillList[index].skillIdx) && 
+                    tempNum < Constants.COLLABPER)
+                {
+                    Debug.Log("Collab으로 들어옴");
+                    _skillCompany = SkillManager.Instance().skill_Collab;
+                    tempNum = index;
+                }
+                else
+                {
+                    tempNum = Random.Range(0, _skillCompany.skillList.Count);
 
+                }
+                Debug.Log("TempNum = " + tempNum);
             }
-            while (SetSkillBtn(tempNum));
-
+            while (SetSkillBtn(tempNum) && loopCnt < 10);
+            Debug.Log("Loop : " + loopCnt + "TempNum = " +tempNum);
+            loopCnt = 0;
         }
 
         _tempSkillList.Clear();
@@ -78,7 +103,7 @@ public class SkillChoose : MonoBehaviour
             return;
         }
 
-        for (int i = 0; i < Mathf.Min(_skillCnt, SkillManager.Instance().GetTotalSkillNumber()); i++)
+        for (int i = 0; i < Mathf.Min(Constants.SKILLCNT, SkillManager.Instance().GetTotalSkillNumber()); i++)
         {
 
             int tempNum = 0;
@@ -87,17 +112,19 @@ public class SkillChoose : MonoBehaviour
             {
                 _skillCompany = SkillManager.Instance().DrawSkillCompany();
 
-                while (_skillCompany.currentSkillData.Count==0)
+                while (_skillCompany.currentSkillData.Count == 0 || loopCnt > 10)
                 {
-                _skillCompany = SkillManager.Instance().DrawSkillCompany();
-                    
+                    _skillCompany = SkillManager.Instance().DrawSkillCompany();
+
                 }
                 Debug.Log(_skillCompany.currentSkillData.Count + _skillCompany.name);
                 tempNum = Random.Range(0, _skillCompany.currentSkillData.Count);
 
+                loopCnt++;
             }
-            while (SetUpgradeSkillBtn(tempNum));
-
+            while (SetUpgradeSkillBtn(tempNum) && loopCnt < 10);
+            Debug.Log("Loop : " + loopCnt);
+            loopCnt = 0;
         }
 
         _tempSkillList.Clear();
@@ -115,8 +142,7 @@ public class SkillChoose : MonoBehaviour
             SkillBtn skillBtn = Instantiate(_skillBtnPrefab, _parentPanel.transform);
             skillBtn.SetSkillInfo(_skillCompany.skillList[skillNum]);
             skillBtn.GetComponent<Button>().onClick.AddListener(() => OnClick_SkillBtnClick(skillBtn));
-            _tempSkillList.Add(skillNum);
-            Debug.Log("Setting");
+            _tempSkillList.Add(skillBtn.skillData.skillIdx);
             return false;
         }
         else return true;
@@ -130,7 +156,6 @@ public class SkillChoose : MonoBehaviour
             skillBtn.SetSkillInfo(_skillCompany.currentSkillData[skillNum]);
             skillBtn.GetComponent<Button>().onClick.AddListener(() => OnClick_SkillBtnClick(skillBtn));
             _tempSkillList.Add(skillBtn.skillData.skillIdx);
-            Debug.Log("Setting");
             return false;
         }
         else return true;
@@ -143,10 +168,10 @@ public class SkillChoose : MonoBehaviour
     {
         if (skillBtn.skillData.LevelUp())
         {
-            skillCompany.ChooseSkill(skillBtn.skillData);
+            skillBtn.skillData.skillCompany.ChooseSkill(skillBtn.skillData);
 
         }
-        skillCompany.ActivateSkill(skillBtn.skillData);
+        skillBtn.skillData.skillCompany.ActivateSkill(skillBtn.skillData);
 
         foreach (Transform child in _parentPanel.transform)
         {
