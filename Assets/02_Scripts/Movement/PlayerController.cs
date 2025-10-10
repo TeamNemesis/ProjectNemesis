@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -8,9 +9,9 @@ public class PlayerController : MonoBehaviour
 {
     //public float hAxis;
     //public float vAxis;
-    private float movdSpeed = 10;
+    private float moveSpeed = 10;
 
-    private float clickMoveDistance = 2f; //
+    private float clickMoveDistance = 10f; //
 
     private Vector3 moveVec;
     private Vector3 lastAttackVec;
@@ -18,6 +19,8 @@ public class PlayerController : MonoBehaviour
     private bool isAttackCooling = false;
     [SerializeField] private float attackCooldown = 0.5f;
     private Vector2 attackInput;
+
+    public event Action OnInteractInput;
     void Start()
     {
 
@@ -54,7 +57,7 @@ public class PlayerController : MonoBehaviour
         if (hasControl) 
         {
             transform.rotation = Quaternion.LookRotation(moveVec);              //이동방향으로 전환
-            transform.Translate(Vector3.forward * movdSpeed * Time.deltaTime);  //이동방향으로 이동
+            transform.Translate(Vector3.forward * moveSpeed * Time.deltaTime);  //이동방향으로 이동
         }
 
         //bool hasControl2 = (attackVec != Vector3.zero);
@@ -86,6 +89,11 @@ public class PlayerController : MonoBehaviour
     {
         attackInput = value.Get<Vector2>();
     }
+    void OnDash(InputValue value)
+    {
+        transform.position += transform.forward * clickMoveDistance; // 바라본 방향으로 앞으로 조금 이동
+        //Debug.Log("Dash");
+    }
     IEnumerator Attack()
     {
         isAttackCooling = true;
@@ -101,5 +109,8 @@ public class PlayerController : MonoBehaviour
         //Debug.Log("쿨타임 종료");
     }
 
-
+    void OnInteract()
+    {
+        OnInteractInput?.Invoke();
+    }
 }
