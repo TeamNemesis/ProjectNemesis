@@ -3,7 +3,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class BallSecurityRobot : MonsterBase
+public class BallSecurityRobot : MonsterBase, IDamageAble
 {
     private enum State
     {
@@ -13,16 +13,15 @@ public class BallSecurityRobot : MonsterBase
         Die     // 파괴됨
     }
 
-    [Header("Stats")]
-    public float detectionRange = 10f;      // 플레이어 감지 범위
-    public float explosionRadius = 3f;      // 실제 폭발 범위
+    [Header("Stats"), SerializeField]
+    private float _explosionRadius = 3f;      // 실제 폭발 범위
 
     // attackDamage, attackRange, attackDelay, isDead 등은 MonsterBase에서 상속됨
 
-    [Header("Effects")]
-    public GameObject circlePrefab;     // AttackDecalEffect 프리팹 (Inspector에서 지정)
+    [Header("Effects"), SerializeField]
+    private GameObject circlePrefab;     // AttackDecalEffect 프리팹 (Inspector에서 지정)
 
-    private bool isFusing = false;
+    [SerializeField] private bool _isFusing = false;
     [SerializeField]
     private State currentState = State.Idle; 
 
@@ -41,7 +40,7 @@ public class BallSecurityRobot : MonsterBase
                 break;
 
             case State.Attack:
-                if (!isFusing)
+                if (!_isFusing)
                     StartCoroutine(SelfDestructionAttack());
                 break;
 
@@ -74,7 +73,7 @@ public class BallSecurityRobot : MonsterBase
 
         agent.SetDestination(player.position);
 
-        if (distance <= attackRange && !isFusing)
+        if (distance <= attackRange && !_isFusing)
         {
             currentState = State.Attack;
         }
@@ -82,9 +81,9 @@ public class BallSecurityRobot : MonsterBase
 
     private IEnumerator SelfDestructionAttack()
     {
-        if (player != null && !isFusing)
+        if (player != null && !_isFusing)
         {
-            isFusing = true;
+            _isFusing = true;
 
             // 자폭 카운트다운 원 생성 (로봇의 자식으로 붙임)
             if (circlePrefab != null)
@@ -93,7 +92,7 @@ public class BallSecurityRobot : MonsterBase
                 AttackDecalEffect effect = circle.GetComponent<AttackDecalEffect>();
                 if (effect != null)
                 {
-                    effect.Play(attackDelay, explosionRadius);
+                    effect.Play(attackDelay, _explosionRadius);
                 }
             }
 
@@ -102,7 +101,7 @@ public class BallSecurityRobot : MonsterBase
 
             // 폭발 판정
             float finalPlayerDistance = Vector3.Distance(transform.position, player.position);
-            if (finalPlayerDistance <= explosionRadius)
+            if (finalPlayerDistance <= _explosionRadius)
             {
                 PlayerHealth playerHealth = player.GetComponent<PlayerHealth>();
                 if (playerHealth != null)
@@ -115,9 +114,21 @@ public class BallSecurityRobot : MonsterBase
         }
     }
 
-    public override void Die()
+    protected override void Die()
     {
         // 필요 시 폭발 이펙트, 사운드 추가 가능
         base.Die();
+    }
+
+    //IDamageAble 인터페이스 구현
+    public void TakeDamage(float damage)
+    {
+        if (isDead) return;
+        // 데미지를 int로 변환하여 적용 나중에 float로 바꿀 수도
+        currentHealth -= (int)damage;
+        if (currentHealth <= 0)
+        {
+            Die();
+        }
     }
 }
