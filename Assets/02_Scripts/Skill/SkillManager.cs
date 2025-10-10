@@ -26,6 +26,9 @@ public class SkillManager : MonoBehaviour
     private Skill_Five _skill_Five;
     public Skill_Five skill_Five { get { return _skill_Five; } }
 
+    private Skill_Collab _skill_Collab;
+    public Skill_Collab skill_Collab { get { return _skill_Collab; } }
+
     [SerializeField]
     private SkillBtn _skillBtnPrefab;
 
@@ -53,6 +56,7 @@ public class SkillManager : MonoBehaviour
         _skill_Three = GetComponent<Skill_Three>();
         _skill_Four = GetComponent<Skill_Four>();
         _skill_Five = GetComponent<Skill_Five>();
+        _skill_Collab = GetComponent<Skill_Collab>();
 
     }
 
@@ -99,6 +103,14 @@ public class SkillManager : MonoBehaviour
         if (_skill_Five.GetNumberSkillList() != 0)
         {
             foreach (SkillData skillData in _skill_Five.currentSkillData)
+            {
+                MakeSkillBtn(skillData, parentContent.transform);
+            }
+        }
+
+        if (_skill_Collab.GetNumberSkillList() != 0)
+        {
+            foreach (SkillData skillData in _skill_Collab.currentSkillData)
             {
                 MakeSkillBtn(skillData, parentContent.transform);
             }
@@ -188,89 +200,143 @@ public class SkillManager : MonoBehaviour
     /// 해당 회사의 콜라보 스킬 해금 조건이 만족되었는지 판단
     /// </summary>
     /// <param name="skillCompany"></param>
-    public bool CheckCollabo(SkillBase skillCompany, out List<SkillData> collaboSkillList)
+    public bool CheckCollabo(SkillBase skillCompany, out List<int> indexList)
     {
-        collaboSkillList = null;
+        indexList = new List<int>();
+        bool bCheck = false;
         // 매개 변수의 회사가 만족하는지 판단
-        if (skillCompany.currentSkillData.Count < 3)
+        if (skillCompany.currentSkillData.Count < Constants.COLLABCNT)
         {
-            return false;
+            indexList = null;
+            return bCheck;
         }
 
         if (skillCompany == _skill_One)
         {
             // 관련 회사 조건 검사
-            if (_skill_Two.currentSkillData.Count >= 3)
+            if (_skill_Two.currentSkillData.Count >= Constants.COLLABCNT)
             {
-                //TODO currentSkillList에 추가
+                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 201);
+                if (index != Constants.NOCONTAININDEX)
+                {
+                    indexList.Add(index);
+                }
+
+                bCheck = true;
             }
 
-            if (_skill_Five.currentSkillData.Count >= 3)
+            if (_skill_Five.currentSkillData.Count >= Constants.COLLABCNT)
             {
+                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 105);
+                if (index != Constants.NOCONTAININDEX)
+                {
+                    indexList.Add(index);
+                }
 
+                bCheck = true;
             }
         }
         else if (skillCompany == _skill_Two)
         {
             // 관련 회사 조건 검사
-            if (_skill_Three.currentSkillData.Count >= 3)
+            if (_skill_Three.currentSkillData.Count >= Constants.COLLABCNT)
             {
+                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 302);
+                if (index != Constants.NOCONTAININDEX)
+                {
+                    indexList.Add(index);
+                }
 
+                bCheck = true;
             }
 
-            if (_skill_One.currentSkillData.Count >= 3)
+            if (_skill_One.currentSkillData.Count >= Constants.COLLABCNT)
             {
+                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 201);
+                if (index != Constants.NOCONTAININDEX)
+                {
+                    indexList.Add(index);
+                }
 
+                bCheck = true;
             }
         }
         else if (skillCompany == _skill_Three)
         {
             // 관련 회사 조건 검사
-            if (_skill_Four.currentSkillData.Count >= 3)
+            if (_skill_Four.currentSkillData.Count >= Constants.COLLABCNT)
             {
+                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 403);
+                if (index != Constants.NOCONTAININDEX)
+                {
+                    indexList.Add(index);
+                }
 
+                bCheck = true;
             }
 
-            if (_skill_Two.currentSkillData.Count >= 3)
+            if (_skill_Two.currentSkillData.Count >= Constants.COLLABCNT)
             {
+                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 302);
+                if (index != Constants.NOCONTAININDEX)
+                {
+                    indexList.Add(index);
+                }
 
+                bCheck = true;
             }
         }
         else if (skillCompany == _skill_Four)
         {
             // 관련 회사 조건 검사
-            if (_skill_Five.currentSkillData.Count >= 3)
+            if (_skill_Five.currentSkillData.Count >= Constants.COLLABCNT)
             {
+                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 504);
+                if (index != Constants.NOCONTAININDEX)
+                {
+                    indexList.Add(index);
+                }
 
+                bCheck = true;
             }
 
-            if (_skill_Three.currentSkillData.Count >= 3)
+            if (_skill_Three.currentSkillData.Count >= Constants.COLLABCNT)
             {
+                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 403);
+                if (index != Constants.NOCONTAININDEX)
+                {
+                    indexList.Add(index);
+                }
 
+                bCheck = true;
             }
         }
         else if (skillCompany == _skill_Five)
         {
             // 관련 회사 조건 검사
-            if (_skill_Four.currentSkillData.Count >= 3)
+            if (_skill_Four.currentSkillData.Count >= Constants.COLLABCNT)
             {
+                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 504);
+                if (index != Constants.NOCONTAININDEX)
+                {
+                    indexList.Add(index);
+                }
 
+                bCheck = true;
             }
 
-            if (_skill_One.currentSkillData.Count >= 3)
+            if (_skill_One.currentSkillData.Count >= Constants.COLLABCNT)
             {
+                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 105);
+                if (index != Constants.NOCONTAININDEX)
+                {
+                    indexList.Add(index);
+                }
 
+                bCheck = true;
             }
         }
-
-        // 해금된 콜라보 스킬 있는지 검사
-        if (collaboSkillList.Count > 0)
-        {
-            return true;
-        }
-        else return false;
-
+            return bCheck;
     }
-
 
 }
