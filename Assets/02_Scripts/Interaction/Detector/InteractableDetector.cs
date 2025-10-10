@@ -60,10 +60,28 @@ public class InteractableDetector : MonoBehaviour
         IInteractable nearestInteractable = null;
         float minDistance = float.MaxValue;
 
-        
+        // 가장 가까운 IInteractable 찾기
+        for (int i = 0; i < hitCount; i++)
+        {
+            IInteractable interactable = _hits[i].GetComponent<IInteractable>();
+            if (interactable != null)
+            {
+                float distance = Vector3.Distance(_detectPoint.position, _hits[i].transform.position);
+                if (distance < minDistance)
+                {
+                    minDistance = distance;
+                    nearestInteractable = interactable;
+                }
+            }
+        }
 
-        // 감지된 가장 가까운 IInteractable 객체를 이벤트로 발행
-
+        // 가장 가까운 IInteractable이 이전에 감지된 것과 다를 때만 이벤트 발행
+        if (nearestInteractable != null && nearestInteractable != _detectedInteractable)
+        {
+            _detectedInteractable = nearestInteractable;
+            OnDetected?.Invoke(_detectedInteractable);
+            Debug.Log("상호작용 가능한 대상 감지됨: " + _detectedInteractable.InteractableType);
+        }
     }
 
     /// <summary>
