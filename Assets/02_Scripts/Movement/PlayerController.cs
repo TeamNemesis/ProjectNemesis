@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
-using UnityEngine.iOS;
+
 
 public class PlayerController : MonoBehaviour
 {
@@ -15,7 +15,11 @@ public class PlayerController : MonoBehaviour
     //public float vAxis;
     private float moveSpeed = 10;
 
-    private float clickMoveDistance = 10f; //
+    private float attackDistance = 2f; 
+
+    private float dashDistance = 10f; //
+
+    Vector2 attackInput;
 
     private Vector3 moveVec;
     private Vector3 lastAttackVec;
@@ -23,7 +27,6 @@ public class PlayerController : MonoBehaviour
     private bool isAttackCooling = false;
     [SerializeField] private float attackCooldown = 0.5f;
     
-
     public event Action OnInteractInput;
     void Start()
     {
@@ -68,13 +71,14 @@ public class PlayerController : MonoBehaviour
             transform.Translate(Vector3.forward * moveSpeed * Time.deltaTime);  //이동방향으로 이동
         }
 
-        //bool hasControl2 = (attackVec != Vector3.zero);
-        //if (hasControl2)
-        //{
-        //    transform.rotation = Quaternion.LookRotation(attackVec);
-        //}
-        
+        Vector3 attackVec = new Vector3(attackInput.x, 0f, attackInput.y);
 
+        // 스틱을 일정 세기 이상 밀고 있고 쿨타임이 아닐 때
+        if (attackVec.magnitude > 0.1f && !isAttackCooling)
+        {
+            lastAttackVec = attackVec.normalized;
+            StartCoroutine(Attack());
+        }
     }
 
     void OnMove(InputValue value)   //Move
@@ -86,30 +90,39 @@ public class PlayerController : MonoBehaviour
             //Debug.Log($"SEND_MESSAGE : {input.magnitude}"); //받아오는값 출력
         }
     }
-    void OnAttack(InputValue value) //Attack
+    void OnAttackM(InputValue value)    
     {
-        Vector2 attackInput;
         attackInput = value.Get<Vector2>();
-        Vector3 attackVec = new Vector3(attackInput.x, 0f, attackInput.y);
+        Debug.Log("AttackM");
+    }
+    void OnAttack(InputValue value)
+    {
+        Debug.Log("Attack");
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
 
-        // 스틱을 일정 세기 이상 밀고 있고 쿨타임이 아닐 때
-        if (attackVec.magnitude > 0.1f && !isAttackCooling)
+        if (Physics.Raycast(ray, out hit, 100f))
         {
-            lastAttackVec = attackVec.normalized;
-            StartCoroutine(Attack());
+            Vector3 targetPos = hit.point;
+            targetPos.y = transform.position.y; // 캐릭터 높이 유지
+            transform.LookAt(targetPos);    //회전
+
+            transform.position += transform.forward * attackDistance; // 바라본 방향으로 앞으로 조금 이동
         }
+
     }
     void OnDash(InputValue value)   //Dash
     {
-        transform.position += transform.forward * clickMoveDistance; // 바라본 방향으로 앞으로 조금 이동
-        //Debug.Log("Dash");
+        transform.position += transform.forward * dashDistance; // 바라본 방향으로 앞으로 조금 이동
+        Debug.Log("Dash");
+
     }
     IEnumerator Attack()
     {
         isAttackCooling = true;
 
         transform.rotation = Quaternion.LookRotation(lastAttackVec);
-        transform.position += transform.forward * clickMoveDistance; // 바라본 방향으로 앞으로 조금 이동
+        transform.position += transform.forward * attackDistance; // 바라본 방향으로 앞으로 조금 이동
 
         //Debug.Log("쿨타임 시작");
 
@@ -122,7 +135,7 @@ public class PlayerController : MonoBehaviour
     void OnInteract(InputValue value)   //Interact
     {
         OnInteractInput?.Invoke();
-        Debug.Log("상호작용!");
+        //Debug.Log("상호작용!");
     }
 
     void Interact()
