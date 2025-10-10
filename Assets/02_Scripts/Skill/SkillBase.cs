@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class SkillBase : MonoBehaviour
 {
-    protected abstract string skillBaseString { get; set; }
+    public string skillBaseString;
 
 
     /// <summary>
