@@ -821,7 +821,7 @@ GameObject:
   - component: {fileID: 314806687}
   - component: {fileID: 314806686}
   m_Layer: 5
-  m_Name: ChooseBtn (1)
+  m_Name: UpgradeBtn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1074,23 +1074,11 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 333872403}
         m_TargetAssemblyTypeName: SkillChoose, Assembly-CSharp
-        m_MethodName: OnClick_skillCompanyFive
+        m_MethodName: SetBtn
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 626073234}
-          m_ObjectArgumentAssemblyTypeName: Skill_Five, Assembly-CSharp
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 333872403}
-        m_TargetAssemblyTypeName: SkillChoose, Assembly-CSharp
-        m_MethodName: SetBtn
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_ObjectArgumentAssemblyTypeName: SkillBase, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -1422,11 +1410,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 626073233}
-  - component: {fileID: 626073238}
-  - component: {fileID: 626073237}
-  - component: {fileID: 626073236}
-  - component: {fileID: 626073235}
   - component: {fileID: 626073234}
+  - component: {fileID: 626073235}
+  - component: {fileID: 626073236}
+  - component: {fileID: 626073237}
+  - component: {fileID: 626073238}
   - component: {fileID: 626073239}
   m_Layer: 0
   m_Name: SkillManager
@@ -1919,23 +1907,11 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 333872403}
         m_TargetAssemblyTypeName: SkillChoose, Assembly-CSharp
-        m_MethodName: OnClick_skillCompanyFour
+        m_MethodName: SetBtn
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 626073235}
-          m_ObjectArgumentAssemblyTypeName: Skill_Four, Assembly-CSharp
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 333872403}
-        m_TargetAssemblyTypeName: SkillChoose, Assembly-CSharp
-        m_MethodName: SetBtn
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_ObjectArgumentAssemblyTypeName: SkillBase, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -2064,23 +2040,11 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 333872403}
         m_TargetAssemblyTypeName: SkillChoose, Assembly-CSharp
-        m_MethodName: OnClick_skillCompanyOne
+        m_MethodName: SetBtn
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 626073238}
-          m_ObjectArgumentAssemblyTypeName: Skill_One, Assembly-CSharp
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 333872403}
-        m_TargetAssemblyTypeName: SkillChoose, Assembly-CSharp
-        m_MethodName: SetBtn
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_ObjectArgumentAssemblyTypeName: SkillBase, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -2749,23 +2713,11 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 333872403}
         m_TargetAssemblyTypeName: SkillChoose, Assembly-CSharp
-        m_MethodName: OnClick_skillCompanyTwo
+        m_MethodName: SetBtn
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 626073237}
-          m_ObjectArgumentAssemblyTypeName: Skill_Two, Assembly-CSharp
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 333872403}
-        m_TargetAssemblyTypeName: SkillChoose, Assembly-CSharp
-        m_MethodName: SetBtn
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_ObjectArgumentAssemblyTypeName: SkillBase, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -3294,23 +3246,11 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 333872403}
         m_TargetAssemblyTypeName: SkillChoose, Assembly-CSharp
-        m_MethodName: OnClick_skillCompanyThree
+        m_MethodName: SetBtn
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 626073236}
-          m_ObjectArgumentAssemblyTypeName: Skill_Three, Assembly-CSharp
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 333872403}
-        m_TargetAssemblyTypeName: SkillChoose, Assembly-CSharp
-        m_MethodName: SetBtn
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_ObjectArgumentAssemblyTypeName: SkillBase, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
