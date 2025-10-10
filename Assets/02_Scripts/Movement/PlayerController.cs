@@ -1,14 +1,23 @@
+using System.Collections;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
+using UnityEngine.iOS;
 
 public class PlayerController : MonoBehaviour
 {
-    public float hAxis;
-    public float vAxis;
-    public float speed;
+    //public float hAxis;
+    //public float vAxis;
+    private float movdSpeed = 10;
 
-    public float clickMoveDistance = 2f; //
+    private float clickMoveDistance = 2f; //
 
-    Vector3 moveVec;
+    private Vector3 moveVec;
+    private Vector3 lastAttackVec;
+
+    private bool isAttackCooling = false;
+    [SerializeField] private float attackCooldown = 0.5f;
+    private Vector2 attackInput;
     void Start()
     {
 
@@ -16,28 +25,81 @@ public class PlayerController : MonoBehaviour
     }
     void Update()
     {
-        hAxis = Input.GetAxisRaw("Horizontal"); //
-        vAxis = Input.GetAxisRaw("Vertical");
 
-        moveVec = new Vector3(hAxis, 0, vAxis).normalized;
+        //hAxis = Input.GetAxisRaw("Horizontal"); //
+        //vAxis = Input.GetAxisRaw("Vertical");
 
-        transform.position += moveVec * speed * Time.deltaTime;
+        //moveVec = new Vector3(hAxis, 0, vAxis).normalized;
 
-        transform.LookAt(transform.position + moveVec);
+        //transform.position += moveVec * speed * Time.deltaTime;
 
-        if (Input.GetMouseButtonDown(0))
+        //transform.LookAt(transform.position + moveVec);
+
+        //if (Input.GetMouseButtonDown(0))
+        //{
+        //    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        //    RaycastHit hit;
+
+        //    if (Physics.Raycast(ray, out hit, 100f))
+        //    {
+        //        Vector3 targetPos = hit.point;
+        //        targetPos.y = transform.position.y; // 캐릭터 높이 유지
+        //        transform.LookAt(targetPos);
+
+        //        transform.position += transform.forward * clickMoveDistance; // 바라본 방향으로 앞으로 조금 이동
+        //    }
+        //}
+
+        bool hasControl = (moveVec != Vector3.zero);
+        if (hasControl) 
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
+            transform.rotation = Quaternion.LookRotation(moveVec);              //이동방향으로 전환
+            transform.Translate(Vector3.forward * movdSpeed * Time.deltaTime);  //이동방향으로 이동
+        }
 
-            if (Physics.Raycast(ray, out hit, 100f))
-            {
-                Vector3 targetPos = hit.point;
-                targetPos.y = transform.position.y; // 캐릭터 높이 유지
-                transform.LookAt(targetPos);
+        //bool hasControl2 = (attackVec != Vector3.zero);
+        //if (hasControl2)
+        //{
+        //    transform.rotation = Quaternion.LookRotation(attackVec);
+        //}
+        Vector3 attackVec = new Vector3(attackInput.x, 0f, attackInput.y);
 
-                transform.position += transform.forward * clickMoveDistance; // 바라본 방향으로 앞으로 조금 이동
-            }
+        // 스틱을 일정 세기 이상 밀고 있고 쿨타임이 아닐 때
+        if (attackVec.magnitude > 0.1f && !isAttackCooling)
+        {
+            lastAttackVec = attackVec.normalized;
+            StartCoroutine(Attack());
+        }
+
+    }
+
+    void OnMove(InputValue value)
+    {
+        Vector2 input = value.Get<Vector2>();
+        if (input != null)
+        {
+            moveVec = new Vector3(input.x, 0f, input.y);    //이동방향
+            //Debug.Log($"SEND_MESSAGE : {input.magnitude}"); //받아오는값 출력
         }
     }
+    void OnAttack(InputValue value)
+    {
+        attackInput = value.Get<Vector2>();
+    }
+    IEnumerator Attack()
+    {
+        isAttackCooling = true;
+
+        transform.rotation = Quaternion.LookRotation(lastAttackVec);
+        transform.position += transform.forward * clickMoveDistance; // 바라본 방향으로 앞으로 조금 이동
+
+        //Debug.Log("쿨타임 시작");
+
+        yield return new WaitForSeconds(attackCooldown);
+
+        isAttackCooling = false;
+        //Debug.Log("쿨타임 종료");
+    }
+
+
 }
