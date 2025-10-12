@@ -40,4 +40,50 @@ public class MonsterBase : MonoBehaviour
         isDead = true;
         Destroy(gameObject);
     }
+
+    /// <summary>
+    /// 몬스터가 플레이어를 볼 수 있는 상황인지 아닌지 확인하는 함수
+    /// </summary>
+    protected bool CanSeePlayer()
+    {
+        if (player == null) return false;
+
+        Vector3 directionToPlayer = (player.position - transform.position).normalized;
+        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+
+        // 레이어 마스크: "Player"는 감지 대상, "Wall"은 벽 등 시야를 막는 오브젝트
+        int layerMask = LayerMask.GetMask("Player", "Wall");
+
+        // 레이캐스트 발사
+        if (Physics.Raycast(transform.position + Vector3.up * 0.3f, directionToPlayer, out RaycastHit hit, distanceToPlayer, layerMask))
+        {
+            // 만약 레이캐스트가 플레이어에 닿았다면 시야 확보
+            if (hit.transform.CompareTag("Player"))
+            {
+                Debug.Log("playerCheck");
+                return true;
+            }
+            else
+            {
+                // 플레이어와의 사이에 다른 오브젝트가 있다면 차단됨
+                return false;
+            }
+        }
+
+        return false;
+    }
+
+
+    /// <summary>
+    /// 플레이어를 바라보게 하는 함수
+    /// </summary>
+    protected void LookAtPlayer()
+    {
+        Vector3 direction = (player.position - transform.position).normalized;
+        if (direction != Vector3.zero)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 5f);
+        }
+    }
 }
