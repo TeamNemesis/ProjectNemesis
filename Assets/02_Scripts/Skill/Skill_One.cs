@@ -64,7 +64,7 @@ public class Skill_One : SkillBase
 		/// <param name="skillLevel"></param>
 		public void ActivateSpawnDrone(int skillLevel)
 		{
-				Transform playerTranform = SkillManager.Instance().playerTransform.GetChild(2);
+				Transform playerTranform = GameManager.Instance().player.transform;
 				droneList.Add(Instantiate(dronePrefab, playerTranform));
 
 				float x = 0 - (float)(skillLevel - 1) / 2;
@@ -78,25 +78,25 @@ public class Skill_One : SkillBase
 						
 						if (skillLevel % 2 == 1)
 						{
-								droneList[i].transform.localPosition = new Vector3((x + i), 0, Mathf.Abs(skillLevel / 2 - i) * Constants.DRONE_Z_POSITION);
+								droneList[i].transform.localPosition = new Vector3((x + i), 1, -1 + Mathf.Abs(skillLevel / 2 - i) * Constants.DRONE_Z_POSITION);
 
 						}
 						else if (skillLevel == 4)
 						{
 								if (i == 0 || i == 3)
 								{
-										droneList[i].transform.localPosition = new Vector3((x + i), 0, Constants.DRONE_Z_POSITION);
+										droneList[i].transform.localPosition = new Vector3((x + i), 1, -1 + Constants.DRONE_Z_POSITION);
 
 								}
 								else
 								{
-										droneList[i].transform.localPosition = new Vector3((x + i), 0, 0);
+										droneList[i].transform.localPosition = new Vector3((x + i), 1, -1);
 
 								}
 						}
 						else
 						{
-								droneList[i].transform.localPosition = new Vector3((x + i), 0, 0);
+								droneList[i].transform.localPosition = new Vector3((x + i), 1, -1);
 						}
 				}
 

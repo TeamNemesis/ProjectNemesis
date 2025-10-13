@@ -43,7 +43,6 @@ public class SkillManager : MonoBehaviour
         _skill_Four = GetComponent<Skill_Four>();
         _skill_Five = GetComponent<Skill_Five>();
         _skill_Collab = GetComponent<Skill_Collab>();
-        _playerTransform = GameObject.FindGameObjectWithTag(Constants.TAG_PLAYER).GetComponent<Transform>();
 
         _skill_One.InitializeSkill();
         _skill_Two.InitializeSkill();
