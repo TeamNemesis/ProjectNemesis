@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// 특정 지점에서 RayCast로 IInteractable 객체를 감지하는 클래스
+/// DetectPoint를 하나 지정하고 그 점 주위에 원을 그려서
+/// IInteractable 객체를 감지하는 클래스
 /// FixedUpdate 주기로 자동 감지한다.
 /// </summary>
 public class InteractableDetector : MonoBehaviour
