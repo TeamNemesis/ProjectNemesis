@@ -26,6 +26,7 @@ public class TurretBullet : MonoBehaviour
             if (damageable != null)
             {
                 damageable.TakeDamage(damage); // 플레이어에게 피해 주기
+                Debug.Log("Player Hit! Damage: " + damage);
             }
             Destroy(gameObject); // 충돌 시 총알 제거
         }

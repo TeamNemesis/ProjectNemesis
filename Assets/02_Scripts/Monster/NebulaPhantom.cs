@@ -12,12 +12,11 @@ public class NebulaPhantom : MonsterBase, IDamageAble
         Die     // 죽음
     }
     [Header("Stats")]
-    [SerializeField] private float _poisinFieldDuration = 5f;
-    [SerializeField] private float _poisinFieldRadius = 3f;   
+    [SerializeField] private float aimingDelay; // 조준 시간(공격 전 대기 시간)
     [SerializeField] private bool _isAttacking = false;
 
-    [Header("PoisonFieldPrefab"), SerializeField]
-    private GameObject poisonFieldPrefab; // 독성 구름 프리팹
+    [Header("Laser")]
+    [SerializeField] private GameObject laser;
 
     [SerializeField]
     private State currentState = State.Idle;
@@ -57,7 +56,7 @@ public class NebulaPhantom : MonsterBase, IDamageAble
         if (direction != Vector3.zero)
         {
             Quaternion targetRotation = Quaternion.LookRotation(direction);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 5f);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 2f);
         }
     }
 
@@ -93,12 +92,16 @@ public class NebulaPhantom : MonsterBase, IDamageAble
     private IEnumerator PerformAttack()
     {
         _isAttacking = true;
+
         if (player != null && Vector3.Distance(transform.position, player.position) <= attackRange)
         {
-            poisonFieldPrefab.gameObject.transform.localScale = new Vector3(_poisinFieldRadius, 1, _poisinFieldRadius);
-            Instantiate(poisonFieldPrefab, transform.position, transform.rotation); // 플레이어에게 독성 구름 발사
-            // 독성 구름을 발사한 후 일정 시간 대기
+            laser.SetActive(true);
             yield return new WaitForSeconds(attackDelay);
+
+            // 범위 내 플레이어가 존재하는지 확인하는 박스. 크기 조정 필요
+            Physics.OverlapBox(transform.position, player.position);
+            laser.SetActive(false);
+            yield return new WaitForSeconds(attackDelay / 2);
         }
         _isAttacking = false;
         currentState = State.Move; // 공격 후 다시 추격 상태로 전환

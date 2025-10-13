@@ -43,27 +43,40 @@ public class InteractableDetector : MonoBehaviour
         // OverlapSphere를 수행하여 감지된 콜라이더 중 가장 가까운 콜라이더를 찾는다.
         int hitCount = Physics.OverlapSphereNonAlloc(_detectPoint.position, _radius, _hits, _targetLayerMask);
 
-        // 감지된게 없으면 _detectedInteractable을 null로 만들고 OnMissed 이벤트 호출
-        if (hitCount == 0)
-        {
-            // 감지된게 없음
-            if(_detectedInteractable != null)
-            {
-                _detectedInteractable = null;
-                OnMissed?.Invoke();
-                Debug.Log("상호작용 가능한 대상이 없습니다.");
-            }
-            return;
-        }
-
         // 감지된 물체가 있을 경우 IInteractable 인터페이스를 갖고 있는지 확인
         IInteractable nearestInteractable = null;
         float minDistance = float.MaxValue;
 
-        
+        // 가장 가까운 IInteractable 찾기
+        for (int i = 0; i < hitCount; i++)
+        {
+            IInteractable interactable = _hits[i].GetComponent<IInteractable>();
+            if (interactable != null)
+            {
+                float distance = Vector3.Distance(_detectPoint.position, _hits[i].transform.position);
+                if (distance < minDistance)
+                {
+                    minDistance = distance;
+                    nearestInteractable = interactable;
+                }
+            }
+        }
 
-        // 감지된 가장 가까운 IInteractable 객체를 이벤트로 발행
+        // 가장 가까운 IInteractable이 이전에 감지된 것과 다를 때만 이벤트 발행
+        if (nearestInteractable != null && nearestInteractable != _detectedInteractable)
+        {
+            _detectedInteractable = nearestInteractable;
+            OnDetected?.Invoke(_detectedInteractable);
+            Debug.Log("상호작용 가능한 대상 감지됨: " + _detectedInteractable.InteractableType);
+        }
 
+        // 감지된 IInteractable이 없어진 경우
+        if (nearestInteractable == null && _detectedInteractable != null)
+        {
+            _detectedInteractable = null;
+            OnMissed?.Invoke();
+            Debug.Log("상호작용 가능한 대상에서 멀어짐");
+        }
     }
 
     /// <summary>
@@ -74,6 +87,5 @@ public class InteractableDetector : MonoBehaviour
         if (_detectedInteractable == null) return;
 
         _detectedInteractable.Interact(transform);
-        Debug.Log("상호작용 가능한 대상의 Interact 함수 호출");
     }
 }

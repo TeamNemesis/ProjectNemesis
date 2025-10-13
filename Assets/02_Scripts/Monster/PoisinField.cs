@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class PoisinField : MonoBehaviour
@@ -7,15 +8,27 @@ public class PoisinField : MonoBehaviour
     // 현재는 Instantiate 기준으로 만듦, 오브젝트 풀링으로 변경 시 수정 필요
 
     [SerializeField] private float tickDuration = 1f; // 피해 주기
-    [SerializeField] private float moveSpeed = 3f; // 이동 속도
+    [SerializeField] private float moveSpeed = 5f; // 이동 속도
     [SerializeField] private Coroutine damageCoroutine; // 피해 코루틴 참조
+    [SerializeField] private float fieldDuration; // 독성 구름 지속 시간
+
+    //[SerializeField] private float slowDistance; // 플레이어와의 거리 (이동 속도 감속 기준)
+    //[SerializeField] Transform playerTransform;
 
 
     private void Start()
     {
+        //playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
         StartCoroutine(MoveFront());
+        Destroy(gameObject, fieldDuration); // 지속 시간 후 오브젝트 제거
     }
 
+    public void SetDuration(float duration)
+    {
+        fieldDuration = duration;
+    }
+
+    // 플레이어가 트리거에 들어왔을 때
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
@@ -29,6 +42,7 @@ public class PoisinField : MonoBehaviour
         }
     }
 
+    // 플레이어가 트리거에서 나갔을 때
     private void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Player"))
@@ -58,7 +72,23 @@ public class PoisinField : MonoBehaviour
     {
         while (true)
         {
-            // 오브젝트의 로컬 앞 방향으로 이동 (Vector3.forward는 로컬 기준)
+            // 속도 점차 감소 로직
+            if (moveSpeed > 0f)
+            {
+                moveSpeed -= Time.deltaTime * 1.3f;
+            }
+            else
+            {
+                moveSpeed = 0f;
+            }
+
+            // 플레이어와의 거리 기준 속도 감소 로직 (현재는 미적용)
+            //if (Vector3.Distance(transform.position, playerTransform.position) <= slowDistance)
+            //{
+            //    moveSpeed = 0.5f;
+            //}
+
+            // 오브젝트의 로컬 앞 방향으로 이동
             transform.Translate(Vector3.forward * moveSpeed * Time.deltaTime);
             // 한 프레임 쉬기
             yield return null;

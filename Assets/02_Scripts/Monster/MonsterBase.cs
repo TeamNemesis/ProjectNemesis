@@ -4,13 +4,13 @@ using UnityEngine.AI;
 public class MonsterBase : MonoBehaviour
 {
     [Header("Stats")]
-    [SerializeField] protected int maxHealth = 100;         // 최대 체력
+    [SerializeField] protected int maxHealth = 100;        // 최대 체력
     [SerializeField] protected int currentHealth;          // 현재 체력
     [SerializeField] protected int attackDamage = 10;      // 공격력 (PlayerHealth.TakeDamage가 int라면 int로 맞춤)
     [SerializeField] protected float attackRange = 2f;     // 공격 범위
+    [SerializeField] protected float detectionRange = 10f; // 플레이어 감지 범위
     [SerializeField] protected float attackDelay = 0.5f;   // 공격 텀(딜레이)
     [SerializeField] protected bool isDead = false;        // 몬스터 사망 여부
-    [SerializeField] protected float detectionRange = 10f;      // 플레이어 감지 범위
 
     [Header("Components")]
     [SerializeField] protected NavMeshAgent agent;      // 네비게이션 에이전트 컴포넌트
