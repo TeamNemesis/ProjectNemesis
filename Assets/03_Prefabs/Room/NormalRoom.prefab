@@ -121,6 +121,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5164abc1c3884324aa89bad6232a8524, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _roomName: normalRoom
-  _roomChance: 0.5
-  _roomType: 1
+  door_Name: normalDoor
+  door_Chance: 0.7
+  door_Type: 1
+  door_CreditChance: 0.1
+  door_HealChance: 0.05
+  door_UpgradeChance: 0.2
+  door_ChromeChance: 0.05
+  door_SkillPackChance: 0.5
