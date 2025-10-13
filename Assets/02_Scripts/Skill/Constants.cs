@@ -1,10 +1,11 @@
 
 public static class Constants
 {
-    /// <summary>
-    /// 스킬 선택, 업그레이드 최대 버튼 개수
-    /// </summary>
-    public static int SKILLCNT = 3;
+		#region skill
+		/// <summary>
+		/// 스킬 선택, 업그레이드 최대 버튼 개수
+		/// </summary>
+		public static int SKILLCNT = 3;
 
     /// <summary>
     /// 최대 스킬 레벨
@@ -30,4 +31,56 @@ public static class Constants
     /// 무한루프 방지 횟수
     /// </summary>
     public static int LOOPCNT = 100;
+
+		#endregion
+
+		#region tag
+		/// <summary>
+		/// 플레이어 태그
+		/// </summary>
+		public static string TAG_PLAYER = "Player";
+
+		public static string TAG_MONSTER = "Monster";
+
+		#endregion
+
+		#region Drone
+		/// <summary>
+		/// 드론 z 위치 보정
+		/// </summary>
+		public static float DRONE_Z_POSITION = 0.3f;
+
+		/// <summary>
+		/// 드론 회전 속도
+		/// </summary>
+		public static float DRONE_ROTATION_SPEED = 5f;
+
+		/// <summary>
+		/// 드론 사정거리
+		/// </summary>
+		public static float DRONE_ATTACKRANGE = 10f;
+
+		/// <summary>
+		/// 드론 공격 주기
+		/// </summary>
+		public static float DRONE_ATTACKDELAY = 1.0f;
+
+		/// <summary>
+		/// 드론 콜라이더 탐색 숫자
+		/// </summary>
+		public static int DRONE_SEARCHNUM = 10;
+
+		#endregion
+		#region Bullet
+		/// <summary>
+		/// 드론 총알 속도
+		/// </summary>
+		public static float DRONE_BULLET_SPEED = 7f;
+
+    /// <summary>
+    /// 드론 총알 존재 시간
+    /// </summary>
+    public static float DRONE_BULLET_TIME = 5f;
+
+		#endregion
 }

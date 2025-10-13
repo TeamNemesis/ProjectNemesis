@@ -43,6 +43,7 @@ public class SkillManager : MonoBehaviour
         _skill_Four = GetComponent<Skill_Four>();
         _skill_Five = GetComponent<Skill_Five>();
         _skill_Collab = GetComponent<Skill_Collab>();
+        _playerTransform = GameObject.FindGameObjectWithTag(Constants.TAG_PLAYER).GetComponent<Transform>();
 
         _skill_One.InitializeSkill();
         _skill_Two.InitializeSkill();
@@ -54,7 +55,7 @@ public class SkillManager : MonoBehaviour
     }
 
     /// <summary>
-    /// °í¸¥ ½ºÅ³ ¸®½ºÆ® ¼øÈ¸ÇØ¼­ ¹öÆ°À¸·Î º¸¿©ÁÜ
+    /// ï¿½ï¿½ï¿½ ï¿½ï¿½Å³ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½È¸ï¿½Ø¼ï¿½ ï¿½ï¿½Æ°ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     /// </summary>
     public void CheckChooseSkillList()
     {
@@ -112,7 +113,7 @@ public class SkillManager : MonoBehaviour
     }
 
     /// <summary>
-    /// ¹öÆ° »ý¼º ÇÔ¼ö
+    /// ï¿½ï¿½Æ° ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½
     /// </summary>
     /// <param name="skillData"></param>
     /// <param name="parentContent"></param>
@@ -125,7 +126,7 @@ public class SkillManager : MonoBehaviour
     }
 
     /// <summary>
-    /// È®·ü¿¡ µû¸¥ ½ºÅ³ È¸»ç »Ì±â
+    /// È®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å³ È¸ï¿½ï¿½ ï¿½Ì±ï¿½
     /// </summary>
     /// <returns></returns>
     public SkillBase DrawSkillCompany()
@@ -139,7 +140,7 @@ public class SkillManager : MonoBehaviour
         int totalNum = skillOneNum + skillTwoNum + skillThreeNum + skillFourNum + skillFiveNum;
 
 
-        // ÀÓ½Ã ¼ýÀÚ¸¦ ÀúÀåÇÒ º¯¼ö
+        // ï¿½Ó½ï¿½ ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         int tempNum = Random.Range(0, totalNum);
 
 
@@ -168,7 +169,7 @@ public class SkillManager : MonoBehaviour
     }
 
     /// <summary>
-    /// ÇöÀç °¡Áö°í ÀÖ´Â ½ºÅ³ ÃÑ °³¼ö
+    /// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½Å³ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     /// </summary>
     /// <returns></returns>
     public int GetTotalSkillNumber()
@@ -190,14 +191,14 @@ public class SkillManager : MonoBehaviour
     }
 
     /// <summary>
-    /// ÇØ´ç È¸»çÀÇ ÄÝ¶óº¸ ½ºÅ³ ÇØ±Ý Á¶°ÇÀÌ ¸¸Á·µÇ¾ú´ÂÁö ÆÇ´Ü
+    /// ï¿½Ø´ï¿½ È¸ï¿½ï¿½ï¿½ï¿½ ï¿½Ý¶ï¿½ ï¿½ï¿½Å³ ï¿½Ø±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ç´ï¿½
     /// </summary>
     /// <param name="skillCompany"></param>
     public bool CheckCollabo(SkillBase skillCompany, out List<int> indexList)
     {
         indexList = new List<int>();
         bool bCheck = false;
-        // ¸Å°³ º¯¼öÀÇ È¸»ç°¡ ¸¸Á·ÇÏ´ÂÁö ÆÇ´Ü
+        // ï¿½Å°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ç°¡ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ï¿½ï¿½ ï¿½Ç´ï¿½
         if (skillCompany.currentSkillData.Count < Constants.COLLABCNT)
         {
             indexList = null;
@@ -206,7 +207,7 @@ public class SkillManager : MonoBehaviour
 
         if (skillCompany == _skill_One)
         {
-            // °ü·Ã È¸»ç Á¶°Ç °Ë»ç
+            // ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ë»ï¿½
             if (_skill_Two.currentSkillData.Count >= Constants.COLLABCNT)
             {
                 int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 201);
@@ -231,7 +232,7 @@ public class SkillManager : MonoBehaviour
         }
         else if (skillCompany == _skill_Two)
         {
-            // °ü·Ã È¸»ç Á¶°Ç °Ë»ç
+            // ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ë»ï¿½
             if (_skill_Three.currentSkillData.Count >= Constants.COLLABCNT)
             {
                 int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 302);
@@ -256,7 +257,7 @@ public class SkillManager : MonoBehaviour
         }
         else if (skillCompany == _skill_Three)
         {
-            // °ü·Ã È¸»ç Á¶°Ç °Ë»ç
+            // ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ë»ï¿½
             if (_skill_Four.currentSkillData.Count >= Constants.COLLABCNT)
             {
                 int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 403);
@@ -281,7 +282,7 @@ public class SkillManager : MonoBehaviour
         }
         else if (skillCompany == _skill_Four)
         {
-            // °ü·Ã È¸»ç Á¶°Ç °Ë»ç
+            // ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ë»ï¿½
             if (_skill_Five.currentSkillData.Count >= Constants.COLLABCNT)
             {
                 int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 504);
@@ -306,7 +307,7 @@ public class SkillManager : MonoBehaviour
         }
         else if (skillCompany == _skill_Five)
         {
-            // °ü·Ã È¸»ç Á¶°Ç °Ë»ç
+            // ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ë»ï¿½
             if (_skill_Four.currentSkillData.Count >= Constants.COLLABCNT)
             {
                 int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 504);
