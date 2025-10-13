@@ -33,7 +33,7 @@ public class SkillManager : MonoBehaviour
     [SerializeField]
     private Text _skillLevelText;
 
-    public void Awake()
+    public void InitializeSkillManager()
     {
       
 
@@ -43,6 +43,13 @@ public class SkillManager : MonoBehaviour
         _skill_Four = GetComponent<Skill_Four>();
         _skill_Five = GetComponent<Skill_Five>();
         _skill_Collab = GetComponent<Skill_Collab>();
+
+        _skill_One.InitializeSkill();
+        _skill_Two.InitializeSkill();
+        _skill_Three.InitializeSkill();
+        _skill_Four.InitializeSkill();
+        _skill_Five.InitializeSkill();
+        _skill_Collab.InitializeSkill();
 
     }
 

@@ -6,6 +6,7 @@ public abstract class SkillBase : MonoBehaviour
 {
     public string skillBaseString;
 
+    protected PlayerModel player;
 
     /// <summary>
     /// Json파일로 부터 데이터를 저장할 리스트
@@ -43,9 +44,10 @@ public abstract class SkillBase : MonoBehaviour
     [SerializeField]
     private string _skillDataPath;
 
-    public void Start()
+    public void InitializeSkill()
     {
         ReadJsonFile();
+        player = GameManager.Instance().player;
     }
 
     public void ReadJsonFile()
@@ -157,6 +159,13 @@ public class SkillData
             return false;
         }
 
+    }
+
+    public void RemoveList()
+    {
+        _skillLevel = 0;
+        _skillCompany.currentSkillData.Remove(this);
+        _skillCompany.skillList.Add(this);
     }
 
 

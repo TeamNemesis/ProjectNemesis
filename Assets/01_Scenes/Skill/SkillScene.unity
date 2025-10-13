@@ -555,6 +555,52 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 87519804}
   m_CullTransparentMesh: 1
+--- !u!1 &139381610
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 139381611}
+  - component: {fileID: 139381612}
+  m_Layer: 0
+  m_Name: GameObject (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &139381611
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 139381610}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 8.404914, y: 1.2847422, z: -0.15011057}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &139381612
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 139381610}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5a04212837625a4da0b4c783ac0c318, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _skillManger: {fileID: 626073239}
+  _player: {fileID: 1035394787}
 --- !u!1 &166770970
 GameObject:
   m_ObjectHideFlags: 0
@@ -1584,6 +1630,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b901ccfbca879794a9d45684de6507f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  skillBaseString: 
   _skillDataPath: whtjdgh1931/Skill_Temp - Skill_Five
 --- !u!114 &626073235
 MonoBehaviour:
@@ -1597,6 +1644,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7be077a31790a6a43bf31075f92f3c79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  skillBaseString: 
   _skillDataPath: whtjdgh1931/Skill_Temp - Skill_Four
 --- !u!114 &626073236
 MonoBehaviour:
@@ -1610,6 +1658,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e02a0eb887f256049a70fd78bc29c36b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  skillBaseString: 
   _skillDataPath: whtjdgh1931/Skill_Temp - Skill_Three
 --- !u!114 &626073237
 MonoBehaviour:
@@ -1623,6 +1672,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa80da09536f64e4db4c5c0e4132419f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  skillBaseString: 
   _skillDataPath: whtjdgh1931/Skill_Temp - Skill_Two
 --- !u!114 &626073238
 MonoBehaviour:
@@ -1636,6 +1686,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 085bfcbf8acda074a8f9336ce3cad4ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  skillBaseString: 
   _skillDataPath: whtjdgh1931/Skill_Temp - Skill_One
 --- !u!114 &626073239
 MonoBehaviour:
@@ -1665,6 +1716,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f8463d3b25f81f458ec64eff3d6106d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  skillBaseString: 
   _skillDataPath: whtjdgh1931/Skill_Temp - Skill_Collab
 --- !u!1 &633759401
 GameObject:
@@ -2466,6 +2518,54 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1006335733}
   m_CullTransparentMesh: 1
+--- !u!1 &1035394785
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1035394786}
+  - component: {fileID: 1035394787}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1035394786
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1035394785}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 8.404914, y: 1.2847422, z: -0.15011057}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1035394787
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1035394785}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4dd914b0022246a47a8ce199a9933656, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _maxHp: 100
+  _currentHp: 0
+  _moveSpeed: 5
+  attackSkill: {fileID: 0}
 --- !u!1 &1080070976
 GameObject:
   m_ObjectHideFlags: 0
@@ -3788,3 +3888,5 @@ SceneRoots:
   - {fileID: 267117568}
   - {fileID: 1567649387}
   - {fileID: 626073233}
+  - {fileID: 1035394786}
+  - {fileID: 139381611}
