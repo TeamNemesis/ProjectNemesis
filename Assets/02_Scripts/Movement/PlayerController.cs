@@ -156,6 +156,7 @@ public class PlayerController : MonoBehaviour
     void OnGrenade_M(InputValue value)
     {
         Debug.Log("유탄_M");
+    }
     void Interact()
     {
         if (!_isInteractable) return;
