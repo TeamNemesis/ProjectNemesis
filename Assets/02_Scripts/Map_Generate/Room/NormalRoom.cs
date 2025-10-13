@@ -11,7 +11,7 @@ public class NormalRoom : Room
 
     public void SetSkillCompany()
     {
-        skillCompany= SkillManager.Instance().DrawSkillCompany();
+        skillCompany= GameManager.Instance().skillManager.DrawSkillCompany();
         Debug.Log(skillCompany.skillBaseString);
     }
 }
