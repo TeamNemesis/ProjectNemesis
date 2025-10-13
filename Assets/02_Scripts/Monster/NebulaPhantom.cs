@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class NebulaPhantom : MonsterBase, IDamageAble
+public class NebulaPhantom : MonsterBase
 {
     [SerializeField]
     private enum State
@@ -21,11 +21,17 @@ public class NebulaPhantom : MonsterBase, IDamageAble
     [SerializeField]
     private State currentState = State.Idle;
 
+    //private void Start()
+    //{
+    //    StartCoroutine(HidingFunction());
+    //}
+
     private void Update()
     {
         if (isDead || player == null) return;
 
         LookAtPlayer();
+        StartCoroutine(HidingFunction());
 
         switch (currentState)
         {
@@ -98,7 +104,7 @@ public class NebulaPhantom : MonsterBase, IDamageAble
             // 벽에 막히는 Raycast
             if (Physics.Raycast(startPos, transform.forward, out RaycastHit hit, laserLength, ~0, QueryTriggerInteraction.Collide))
             {
-                if (hit.collider.CompareTag("Player"))
+                if (hit.collider.CompareTag(targetTag))
                 {
                     var damageable = hit.collider.GetComponent<IDamageAble>();
                     if (damageable != null)
@@ -109,7 +115,7 @@ public class NebulaPhantom : MonsterBase, IDamageAble
                 }
                 else
                 {
-                    Debug.Log($"레이저가 {hit.collider.name} 에 막힘");
+                    Debug.Log($"총이 {hit.collider.name} 에 막힘");
                 }
             }
 
@@ -121,13 +127,16 @@ public class NebulaPhantom : MonsterBase, IDamageAble
         currentState = State.Move; // 공격 후 다시 추격 상태로 전환
     }
 
-    public void TakeDamage(float damage)
+    private IEnumerator HidingFunction()
     {
-        if (isDead) return;
-        currentHealth -= (int)damage;
-        if (currentHealth <= 0)
+        Renderer renderer = gameObject.GetComponent<Renderer>();
+        float hidingTimer = 0f;
+        hidingTimer += Time.deltaTime;
+        if (hidingTimer >= 10f)
         {
-            Die();
+            renderer.enabled = false;
+            yield return new WaitForSeconds(1f);
+            renderer.enabled = true;
         }
     }
 }

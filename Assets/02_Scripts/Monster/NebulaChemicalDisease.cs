@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class NebulaChemicalDisease : MonsterBase, IDamageAble
+public class NebulaChemicalDisease : MonsterBase
 {
     [SerializeField]
     private enum State
@@ -95,15 +95,5 @@ public class NebulaChemicalDisease : MonsterBase, IDamageAble
         }
         _isAttacking = false;
         currentState = State.Move; // 공격 후 다시 추격 상태로 전환
-    }
-
-    public void TakeDamage(float damage)
-    {
-        if (isDead) return;
-        currentHealth -= (int)damage;
-        if (currentHealth <= 0)
-        {
-            Die();
-        }
     }
 }

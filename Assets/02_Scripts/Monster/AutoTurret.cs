@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class AutoTurret : MonsterBase, IDamageAble
+public class AutoTurret : MonsterBase
 {
     [SerializeField]
     private enum State
@@ -68,15 +68,5 @@ public class AutoTurret : MonsterBase, IDamageAble
         }
         _isAttacking = false;
         currentState = State.Idle; // 공격 후 다시 대기 상태로 전환
-    }
-
-    public void TakeDamage(float damage)
-    {
-        if (isDead) return;
-        currentHealth -= (int)damage;
-        if (currentHealth <= 0)
-        {
-            Die();
-        }
     }
 }
