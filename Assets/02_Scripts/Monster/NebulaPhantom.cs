@@ -29,6 +29,7 @@ public class NebulaPhantom : MonsterBase
     private void Update()
     {
         if (isDead || player == null) return;
+        if (isStunned) return;
 
         LookAtPlayer();
         StartCoroutine(HidingFunction());

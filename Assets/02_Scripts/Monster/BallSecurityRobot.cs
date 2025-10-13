@@ -28,6 +28,7 @@ public class BallSecurityRobot : MonsterBase
     private void Update()
     {
         if (isDead || player == null) return;
+        if (isStunned) return;
 
         switch (currentState)
         {

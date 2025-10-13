@@ -15,6 +15,7 @@ public class MonsterBase : MonoBehaviour, IDamageAble
     [SerializeField] protected float attackRange = 2f;     // 공격 범위
     [SerializeField] protected float detectionRange = 10f; // 플레이어 감지 범위
     [SerializeField] protected float attackDelay = 0.5f;   // 공격 텀(딜레이)
+    [SerializeField] protected bool isStunned = false;  // 현재 스턴 상태 여부
     [SerializeField] protected bool isDead = false;        // 몬스터 사망 여부
     [SerializeField] protected string targetTag = "Player";  // 타겟이 될 태그
 
@@ -105,98 +106,204 @@ public class MonsterBase : MonoBehaviour, IDamageAble
     public void TakeDamage(float damage)
     {
         if (isDead) return;
-        // 데미지를 int로 변환하여 적용 나중에 float로 바꿀 수도
+
+        // 과부하 디버프 처리 (스택당 5% 피해 증가)
+        if (activeDebuffs.ContainsKey("과부하"))
+        {
+            ActiveDebuff overload = activeDebuffs["과부하"];
+            float bonusMultiplier = 1f + (0.05f * overload.stackCount);
+            damage *= bonusMultiplier;
+        }
+
+        // 화상 디버프 처리 (다음 피해 1회 2배)
+        if (activeDebuffs.ContainsKey("화상"))
+        {
+            damage *= 2f;
+            activeDebuffs.Remove("화상"); // 한 번만 적용
+        }
+
         currentHealth -= (int)damage;
         if (currentHealth <= 0)
-        {
             Die();
-        }
     }
 
+
+    // ==============================
+    //        디버프 시스템
+    // ==============================
+
+    public class DebuffData
+    {
+        public string debuffName;
+        public float debuffDuration;
+        public float debuffValue;
+        public int maxStack;
+    }
 
     private class ActiveDebuff
     {
         public DebuffData data;
         public float remainingTime;
-        public float value;
-        public bool isDebuffed;
+        public float totalValue;
+        public int stackCount;
         public Coroutine routine;
 
         public ActiveDebuff(DebuffData data, Coroutine routine)
         {
             this.data = data;
             remainingTime = data.debuffDuration;
-            value = data.debuffValue;
-            isDebuffed = data.isDibuffed;
+            totalValue = data.debuffValue;
+            stackCount = 1;
             this.routine = routine;
         }
     }
 
-
     private Dictionary<string, ActiveDebuff> activeDebuffs = new Dictionary<string, ActiveDebuff>();
 
-
+    /// <summary>
+    /// 디버프를 적용시키는 함수.
+    /// </summary>
     public void ApplyDebuff(DebuffData newDebuff)
     {
         if (activeDebuffs.ContainsKey(newDebuff.debuffName))
         {
-            // 이미 같은 이름의 디버프가 존재 할 경우 누적 처리
             ActiveDebuff existing = activeDebuffs[newDebuff.debuffName];
-            existing.remainingTime = newDebuff.debuffDuration; // 지속시간 갱신
-            existing.value += newDebuff.debuffValue; // 피해량 누적
 
-            //// 슬로우 재적용
-            //UpdateMoveSpeed();
-            //return;
+            // 스택형 디버프들
+            if (newDebuff.debuffName == "독" || newDebuff.debuffName == "과부하")
+            {
+                if (existing.stackCount < newDebuff.maxStack)
+                {
+                    existing.stackCount++;
+                    existing.totalValue += newDebuff.debuffValue;
+                }
+
+                existing.remainingTime = newDebuff.debuffDuration;
+            }
+            else
+            {
+                // 비스택형 디버프는 단순 갱신
+                existing.remainingTime = newDebuff.debuffDuration;
+                existing.totalValue = newDebuff.debuffValue;
+            }
+
+            return;
         }
 
-
-        // 새 디버프 생성
         Coroutine routine = StartCoroutine(HandleDebuff(newDebuff));
         activeDebuffs.Add(newDebuff.debuffName, new ActiveDebuff(newDebuff, routine));
-
-        // 슬로우 반영
-        //UpdateMoveSpeed();
     }
 
     private IEnumerator HandleDebuff(DebuffData debuff)
     {
-        while (activeDebuffs.ContainsKey(debuff.debuffName))
+        ActiveDebuff active = activeDebuffs[debuff.debuffName];
+
+        // 디버프 시작 시 1회만 적용되는 효과
+        switch (debuff.debuffName)
         {
-            if (isDead)
-            {
-                yield break;
-            }
-
-            ActiveDebuff active = activeDebuffs[debuff.debuffName];
-
-            // 초당 누적 피해 적용
-            if (active.value > 0)
-                TakeDamage(active.value * Time.deltaTime);
-
-            active.remainingTime -= Time.deltaTime;
-
-            if (active.remainingTime <= 0)
+            case "약화":
+                // 단순 상태값 true
                 break;
 
+            case "둔화":
+                if (agent != null)
+                    agent.speed *= 0.7f;
+                break;
+
+            case "기절":
+                StartCoroutine(StunCoroutine(debuff.debuffDuration));
+                break;
+
+            case "혼란":
+                StartCoroutine(ConfuseCoroutine(debuff.debuffDuration));
+                break;
+        }
+
+        while (active.remainingTime > 0f && !isDead)
+        {
+            switch (debuff.debuffName)
+            {
+                case "독":
+                    TakeDamage(active.totalValue * Time.deltaTime);
+                    break;
+
+                case "과부하":
+                    TakeDamage(active.totalValue * Time.deltaTime);
+                    break;
+            }
+
+            active.remainingTime -= Time.deltaTime;
             yield return null;
         }
 
-        // 디버프 해제 시
+        // 디버프 해제 시 처리
+        switch (debuff.debuffName)
+        {
+            case "둔화":
+                if (agent != null)
+                    agent.speed /= 0.7f;
+                break;
+
+            case "약화":
+                // 상태 초기화
+                break;
+        }
+
         activeDebuffs.Remove(debuff.debuffName);
     }
 
-    //디버프 체커
-    public bool CheckDebuffs(DebuffData data)
+    private IEnumerator StunCoroutine(float duration)
     {
-        foreach (var item in activeDebuffs)
-        {
-            if (data.debuffName == item.Key)
-            {
-                return true;
-            }
-        }
-        return false;
+        isStunned = true;  // 스턴 시작
+
+        if (agent != null)
+            agent.isStopped = true;
+
+        yield return new WaitForSeconds(duration);
+
+        if (agent != null && !isDead)
+            agent.isStopped = false;
+
+        isStunned = false; // 스턴 해제
     }
 
+    /// <summary>
+    /// 혼란 적용코루틴, 일시적으로 타겟 태그를 Monster로 바꿔줌
+    /// </summary>
+    private IEnumerator ConfuseCoroutine(float duration)
+    {
+        string originalTag = targetTag;
+        targetTag = "Monster"; // 적대 대상 전환
+
+        yield return new WaitForSeconds(duration);
+
+        targetTag = originalTag;
+    }
+
+    /// <summary>
+    /// 디버프 데이터를 받고 해당 디버프가 적용중인지 아닌지를 반환하는 함수
+    /// </summary>
+    public bool CheckDebuffs(DebuffData data)
+    {
+        return activeDebuffs.ContainsKey(data.debuffName);
+    }
+
+    /// <summary>
+    /// 현재 적용중인 디버프의 갯수를 반환해주는 함수
+    /// </summary>
+    public int GetActiveDebuffCount()
+    {
+        int count = 0;
+
+        foreach (KeyValuePair<string, ActiveDebuff> pair in activeDebuffs)
+        {
+            ActiveDebuff debuff = pair.Value;
+            if (debuff != null && debuff.remainingTime > 0f)
+            {
+                count++;
+            }
+        }
+
+        return count;
+    }
 }

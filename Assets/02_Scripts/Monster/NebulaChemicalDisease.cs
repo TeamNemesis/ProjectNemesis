@@ -25,6 +25,7 @@ public class NebulaChemicalDisease : MonsterBase
     private void Update()
     {
         if (isDead || player == null) return;
+        if (isStunned) return;
 
         if (CanSeePlayer())
         {

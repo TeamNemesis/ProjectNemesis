@@ -22,6 +22,7 @@ public class AutoTurret : MonsterBase
     private void Update()
     {
         if (isDead || player == null) return;
+        if (isStunned) return;
 
         switch (currentState)
         {
