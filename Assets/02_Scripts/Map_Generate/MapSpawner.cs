@@ -5,5 +5,5 @@
 /// </summary>
 public class MapSpawner : MonoBehaviour
 {
-    [SerializeField] GameObject[] _roomPrefabs; // 생성할 방 프리팹들
+    [SerializeField] GameObject[] _doorPrefabs; // 생성할 방 프리팹들
 }
