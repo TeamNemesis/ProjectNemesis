@@ -1259,19 +1259,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f464700504db04c4caba6a57c9e1f566, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _allRooms:
+  _allDoors:
   - {fileID: 2257349367189847435, guid: 081971121d8225a40bae392e95933051, type: 3}
   - {fileID: 4121073947000900389, guid: 29600f815bf845141a53571d791d48c7, type: 3}
   - {fileID: 5244239888155409657, guid: 089d7ddcf12c0b44ea5fefaa500d90dc, type: 3}
   - {fileID: 6417091970964865369, guid: 91f6eef1f15688b4dbae0acd06fb6a3b, type: 3}
   - {fileID: 734176977009625747, guid: a83862eaac0d0f2409f7e176cbf7bf28, type: 3}
   - {fileID: 6110574410632755445, guid: 8ab2b33ebc6e16644808e5bb3660fe1e, type: 3}
-  _oneRoomChance: 0.1
-  _twoRoomChance: 0.6
-  _threeRoomChance: 0.6
+  _oneDoorChance: 0.1
+  _twoDoorChance: 0.6
+  _threeDoorChance: 0.6
   _doorPositions: []
-  _currentRoomType: 0
-  _currentRoomIndex: 0
+  _currentDoorType: 0
+  _currentDoorIndex: 0
 --- !u!1 &650926910
 GameObject:
   m_ObjectHideFlags: 0
