@@ -19,17 +19,17 @@ public enum TechTriggerType
 public abstract class ActiveTech : MonoBehaviour
 {
     [Header("기술 정보")]
-    [SerializeField] protected string techName; // 기술의 이름
-    [SerializeField] protected string techDescription; // 기술의 설명
-    [SerializeField] protected Sprite techIcon; // 기술의 아이콘 이미지
+    [SerializeField] protected string _techName; // 기술의 이름
+    [SerializeField] protected string _techDescription; // 기술의 설명
+    [SerializeField] protected Sprite _techIcon; // 기술의 아이콘 이미지
 
-    [SerializeField] protected int techLevel; // 기술의 레벨
+    [SerializeField] protected int _techLevel; // 기술의 레벨
 
     public abstract TechTriggerType TriggerType { get; } // 기술이 발동되는 조건을 나타내는 속성
-    public string TechName => techName; // 기술의 이름을 반환하는 속성
-    public string TechDescription => techDescription; // 기술의 설명을 반환하는 속성
-    public Sprite TechIcon => techIcon; // 기술의 아이콘 이미지를 반환하는 속성
-    public int TechLevel => techLevel; // 기술의 레벨을 반환하는 속성
+    public string TechName => _techName; // 기술의 이름을 반환하는 속성
+    public string TechDescription => _techDescription; // 기술의 설명을 반환하는 속성
+    public Sprite TechIcon => _techIcon; // 기술의 아이콘 이미지를 반환하는 속성
+    public int TechLevel => _techLevel; // 기술의 레벨을 반환하는 속성
 
     public virtual event Action<ActiveTech> OnTechAdded; // 기술이 추가될 때 발생하는 이벤트
     public virtual event Action<ActiveTech> OnTechRemoved; // 기술이 제거될 때 발생하는 이벤트
