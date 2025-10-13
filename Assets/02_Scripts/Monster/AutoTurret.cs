@@ -70,7 +70,6 @@ public class AutoTurret : MonsterBase, IDamageAble
 
         if (player != null && Vector3.Distance(transform.position, player.position) <= attackRange)
         {
-            yield return new WaitForSeconds(attackDelay);
 
             GameObject bullet = Instantiate(turretBulletPrefab, transform.position + transform.forward, transform.rotation);
             TurretBullet turretBullet = bullet.GetComponent<TurretBullet>();
@@ -78,6 +77,7 @@ public class AutoTurret : MonsterBase, IDamageAble
             {
                 turretBullet.SetDamage(attackDamage);
             }
+            yield return new WaitForSeconds(attackDelay);
         }
         _isAttacking = false;
         currentState = State.Idle; // 공격 후 다시 대기 상태로 전환

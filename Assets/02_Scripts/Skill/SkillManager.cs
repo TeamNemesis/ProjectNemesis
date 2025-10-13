@@ -11,6 +11,12 @@ public class SkillManager : MonoBehaviour
         return _instance;
     }
 
+    /// <summary>
+    /// 플레이어 Transform
+    /// </summary>
+    private Transform _playerTransform;
+    public Transform playerTransform { get { return _playerTransform; } }
+
     private Skill_One _skill_One;
     public Skill_One skill_One { get { return _skill_One; } }
 
@@ -57,6 +63,7 @@ public class SkillManager : MonoBehaviour
         _skill_Four = GetComponent<Skill_Four>();
         _skill_Five = GetComponent<Skill_Five>();
         _skill_Collab = GetComponent<Skill_Collab>();
+        _playerTransform = GameObject.FindGameObjectWithTag(Constants.TAG_PLAYER).GetComponent<Transform>();
 
     }
 
