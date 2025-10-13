@@ -140,4 +140,13 @@ public class PlayerController : MonoBehaviour
         OnInteractInput?.Invoke();
         //Debug.Log("ªÛ»£¿€øÎ!");
     }
+
+    void OnGrenade(InputValue value)
+    {
+        Debug.Log("¿Ø≈∫");
+    }
+    void OnGrenade_M(InputValue value)
+    {
+        Debug.Log("¿Ø≈∫_M");
+    }
 }

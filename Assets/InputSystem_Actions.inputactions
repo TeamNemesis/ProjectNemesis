@@ -106,6 +106,15 @@
                     "initialStateCheck": true
                 },
                 {
+                    "name": "Grenade_M",
+                    "type": "Value",
+                    "id": "1c62c1f3-35c2-4f67-be08-471639e35748",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
                     "name": "Dash",
                     "type": "Button",
                     "id": "f44bedb9-e626-4cd4-825d-ba6a5a7a19de",
@@ -459,12 +468,23 @@
                 },
                 {
                     "name": "",
-                    "id": "6a123513-fede-45ba-8ec1-2026c215fe22",
+                    "id": "c84503eb-97b8-4016-8b92-ecb89b540c42",
                     "path": "<Mouse>/leftButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "Attack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e992d6c7-c7df-4aa3-b0f6-7daab70227ad",
+                    "path": "<Gamepad>/leftStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Grenade_M",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
