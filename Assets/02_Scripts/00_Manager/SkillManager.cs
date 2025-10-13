@@ -4,13 +4,7 @@ using UnityEngine.UI;
 
 public class SkillManager : MonoBehaviour
 {
-    private static SkillManager _instance;
-
-    public static SkillManager Instance()
-    {
-        return _instance;
-    }
-
+    
     private Skill_One _skill_One;
     public Skill_One skill_One { get { return _skill_One; } }
 
@@ -41,15 +35,7 @@ public class SkillManager : MonoBehaviour
 
     public void Awake()
     {
-        if (_instance != null)
-        {
-            Destroy(gameObject);
-        }
-        else
-        {
-            _instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
+      
 
         _skill_One = GetComponent<Skill_One>();
         _skill_Two = GetComponent<Skill_Two>();
