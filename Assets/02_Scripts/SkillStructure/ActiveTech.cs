@@ -19,40 +19,35 @@ public enum TechTriggerType
 public abstract class ActiveTech : MonoBehaviour
 {
     [Header("기술 정보")]
-    [SerializeField] protected string techName; // 기술의 이름
-    [SerializeField] protected string techDescription; // 기술의 설명
-    [SerializeField] protected Sprite techIcon; // 기술의 아이콘 이미지
-
-    [SerializeField] protected int techLevel; // 기술의 레벨
+    [SerializeField] protected SkillData _skillData; // 기술의 이름
+    
 
     public abstract TechTriggerType TriggerType { get; } // 기술이 발동되는 조건을 나타내는 속성
-    public string TechName => techName; // 기술의 이름을 반환하는 속성
-    public string TechDescription => techDescription; // 기술의 설명을 반환하는 속성
-    public Sprite TechIcon => techIcon; // 기술의 아이콘 이미지를 반환하는 속성
-    public int TechLevel => techLevel; // 기술의 레벨을 반환하는 속성
+    public string TechName => _skillData.skillIdx.ToString(); // 기술의 이름을 반환하는 속성
+    public string TechDescription => _skillData.skillScript; // 기술의 설명을 반환하는 속성
+    // public Sprite TechIcon => skillData.skillImagePath; // 기술의 아이콘 이미지를 반환하는 속성
+    public int TechLevel => _skillData.skillLevel; // 기술의 레벨을 반환하는 속성
 
-    public virtual event Action<ActiveTech> OnTechAdded; // 기술이 추가될 때 발생하는 이벤트
-    public virtual event Action<ActiveTech> OnTechRemoved; // 기술이 제거될 때 발생하는 이벤트
+    
     public abstract event Action OnTechUsed;  // 기술이 사용될 때 발생하는 이벤트
 
     /// <summary>
     /// 기술이 추가될 때 호출되는 메서드
     /// </summary>
-    public virtual void Activate()
-    {
-        OnTechAdded?.Invoke(this);
-    }
+    public abstract void Activate();
 
     /// <summary>
     /// 기술이 제거될 때 호출되는 메서드
     /// </summary>
-    public virtual void Deactivate()
-    {
-        OnTechRemoved?.Invoke(this);
-    }
+    public abstract void Deactivate();
 
     /// <summary>
     /// 기술이 사용될 때 호출되는 메서드
     /// </summary>
     public abstract void Use();
+
+    public ActiveTech(SkillData skillData)
+    {
+        _skillData = skillData;
+    }
 }
