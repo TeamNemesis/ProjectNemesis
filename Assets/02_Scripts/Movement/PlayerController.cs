@@ -207,6 +207,14 @@ public class PlayerController : MonoBehaviour
             isDragging = false;
         }
     }
+
+    public void OnSpecial(InputAction.CallbackContext value)
+    {
+        if(value.started)
+        {
+            Debug.Log("특수공격");
+        }
+    }
     void Interact()
     {
         if (!_isInteractable) return;
