@@ -34,6 +34,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private LayerMask groundMask;
 
     public event Action OnInteractInput;
+    public event Action<Vector2> OnMoveInput;
     void Start()
     {
         OnInteractInput += Interact;
@@ -43,9 +44,10 @@ public class PlayerController : MonoBehaviour
         _interactableGuideView.Initialize();
     }
 
+
     void Update()
     {
-
+        OnMoveInput?.Invoke(new Vector2(moveVec.x, moveVec.z));
         //hAxis = Input.GetAxisRaw("Horizontal"); //
         //vAxis = Input.GetAxisRaw("Vertical");
 
