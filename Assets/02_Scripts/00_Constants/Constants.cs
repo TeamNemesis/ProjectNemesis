@@ -94,4 +94,9 @@ public static class Constants
     #region debuff
 
     #endregion
+
+    #region AnimatorParameters
+    public static string ANIPARAM_MOVESPEED = "MoveSpeed";
+    public static string ANIPARAM_ONATTACK = "OnAttack";
+    #endregion
 }

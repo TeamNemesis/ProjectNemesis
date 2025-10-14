@@ -7,8 +7,12 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
+    [SerializeField] PlayerAttacker _playerAttacker; //플레이어 공격 컴포넌트
+    [SerializeField] PlayerAnimator _playerAnimator; //플레이어 애니메이터 컴포넌트
+
     [SerializeField] InteractableDetector _interactableDetector; //상호작용 감지기
     [SerializeField] InteractionGuideView _interactableGuideView; //상호작용 안내 UI
+
     [SerializeField] bool _isInteractable; //상호작용 가능 여부
 
     //public float hAxis;
@@ -45,62 +49,7 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    void Update()
-    {
-        OnMoveInput?.Invoke(new Vector2(moveVec.x, moveVec.z));
-        //hAxis = Input.GetAxisRaw("Horizontal"); //
-        //vAxis = Input.GetAxisRaw("Vertical");
-
-        //moveVec = new Vector3(hAxis, 0, vAxis).normalized;
-
-        //transform.position += moveVec * speed * Time.deltaTime;
-
-        //transform.LookAt(transform.position + moveVec);
-
-        //if (Input.GetMouseButtonDown(0))
-        //{
-        //    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        //    RaycastHit hit;
-
-        //    if (Physics.Raycast(ray, out hit, 100f))
-        //    {
-        //        Vector3 targetPos = hit.point;
-        //        targetPos.y = transform.position.y; // 캐릭터 높이 유지
-        //        transform.LookAt(targetPos);
-
-        //        transform.position += transform.forward * clickMoveDistance; // 바라본 방향으로 앞으로 조금 이동
-        //    }
-        //}
-
-        bool hasControl = (moveVec != Vector3.zero);
-        if (hasControl) 
-        {
-            transform.rotation = Quaternion.LookRotation(moveVec);              //이동방향으로 전환
-            transform.Translate(Vector3.forward * moveSpeed * Time.deltaTime);  //이동방향으로 이동
-        }
-
-        Vector3 attackVec = new Vector3(attackInput.x, 0f, attackInput.y);
-
-        // 스틱을 일정 세기 이상 밀고 있고 쿨타임이 아닐 때
-        if (attackVec.magnitude > 0.1f && !isAttackCooling)
-        {
-            lastAttackVec = attackVec.normalized;
-            StartCoroutine(Attack());
-        }
-
-        if (isDragging && currentRange != null) //유탄버튼 드래그중일때
-        {
-            if (Physics.Raycast(mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue()),
-                                out RaycastHit hit,
-                                100f,
-                                groundMask))
-            {
-                Vector3 pos = hit.point;
-                pos.y = 0; // 필요 시 고정
-                currentRange.transform.position = pos;
-            }
-        }
-    }
+    
 
     public void OnMove(InputAction.CallbackContext value)   //Move
     {
@@ -108,44 +57,20 @@ public class PlayerController : MonoBehaviour
         if (input != null)
         {
             moveVec = new Vector3(input.x, 0f, input.y);    //이동방향
-            //Debug.Log($"SEND_MESSAGE : {input.magnitude}"); //받아오는값 출력
+            Debug.Log($"SEND_MESSAGE : {input.magnitude}"); //받아오는값 출력
         }
     }
+
     public void OnAttackM(InputAction.CallbackContext value)    
     {
         attackInput = value.ReadValue<Vector2>();
         Debug.Log("AttackM");
     }
+
     public void OnAttack(InputAction.CallbackContext value)
     {
-        if (value.started)
-        {
-            Debug.Log("Attack");
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-
-            if (Physics.Raycast(ray, out hit, 100f))
-            {
-                Vector3 targetPos = hit.point;
-                targetPos.y = transform.position.y; // 캐릭터 높이 유지
-                transform.LookAt(targetPos);
-
-                transform.position += transform.forward * attackDistance; // 바라본 방향으로 앞으로 조금 이동
-            }
-        }
-        
-        //Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-
-        //Plane groundPlane = new Plane(Vector3.up, new Vector3(0, transform.position.y, 0)); //카메라가 기울어져있어서
-        //float distance;
-
-        //if (groundPlane.Raycast(ray, out distance))
-        //{
-        //    Vector3 targetPos = ray.GetPoint(distance); // 평면과의 교차점
-        //    transform.LookAt(targetPos); // 방향 회전
-        //    transform.position += transform.forward * attackDistance;
-        //}
-
+        Debug.Log("Attack 입력");
+        Attack1();
     }
     
     public void OnDash(InputAction.CallbackContext value) //invoke unity event확인용
@@ -156,6 +81,13 @@ public class PlayerController : MonoBehaviour
             Debug.Log("Dash");
         }
     }
+    
+    void Attack1()
+    {
+        _playerAnimator.OnAttack(); //공격 애니메이션 재생
+        _playerAttacker.Attack(); //공격 실행
+    }
+
     IEnumerator Attack()
     {
         isAttackCooling = true;
