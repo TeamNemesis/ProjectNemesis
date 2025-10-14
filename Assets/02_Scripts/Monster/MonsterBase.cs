@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.AI;
+using System.Collections;
 
 public class MonsterBase : MonoBehaviour, IDamageAble
 {
@@ -11,16 +12,19 @@ public class MonsterBase : MonoBehaviour, IDamageAble
     [SerializeField] protected float attackRange = 2f;
     [SerializeField] protected float detectionRange = 10f;
     [SerializeField] protected float attackDelay = 0.5f;
+    [SerializeField] public string targetTag = "Player";
+
+    [Header("상태이상")]
     [SerializeField] public bool isStunned = false;
     [SerializeField] public bool isDead = false;
-    [SerializeField] public string targetTag = "Player";
+    [SerializeField] public bool isPushed = false;
 
     [Header("Components")]
     [SerializeField] protected NavMeshAgent agent;
     [SerializeField] protected Transform player;
     [SerializeField] protected DebuffHandler debuffHandler;
 
-    public Action OnDieEvent;
+    public event Action OnDieEvent;
 
     protected virtual void Start()
     {
@@ -36,8 +40,7 @@ public class MonsterBase : MonoBehaviour, IDamageAble
 
     protected virtual void Die()
     {
-        if (OnDieEvent != null)
-            OnDieEvent();
+        OnDieEvent?.Invoke();
 
         isDead = true;
         Destroy(gameObject);

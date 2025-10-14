@@ -27,11 +27,11 @@ public class DebuffHandler : MonoBehaviour
             remainingTime = data.debuffDuration;
             totalValue = data.debuffValue;
             stackCount = 1;
-            this.routine = routine;
         }
     }
 
     private Dictionary<string, ActiveDebuff> activeDebuffs = new Dictionary<string, ActiveDebuff>();
+    private float bonusDamage = 1f;
     private MonsterBase monster;
     private NavMeshAgent agent;
 
@@ -103,7 +103,7 @@ public class DebuffHandler : MonoBehaviour
             {
                 case "독":
                 case "과부하":
-                    monster.TakeDamage(active.totalValue * Time.deltaTime);
+                    monster.TakeDamage(active.totalValue * bonusDamage); // 모든 피해 대미지 증가 이벤트 구독 필요
                     break;
             }
 
@@ -177,5 +177,10 @@ public class DebuffHandler : MonoBehaviour
         if (activeDebuffs.ContainsKey(debuffName))
             return activeDebuffs[debuffName].stackCount;
         return 0;
+    }
+
+    private void SetBonusDamage(float value)
+    {
+        bonusDamage = value;
     }
 }
