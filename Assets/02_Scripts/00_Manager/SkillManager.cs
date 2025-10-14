@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class SkillManager : MonoBehaviour
 {
-    
+    #region skill
     private Skill_One _skill_One;
     public Skill_One skill_One { get { return _skill_One; } }
 
@@ -22,9 +22,12 @@ public class SkillManager : MonoBehaviour
 
     private Skill_Collab _skill_Collab;
     public Skill_Collab skill_Collab { get { return _skill_Collab; } }
-
+    #endregion
     [SerializeField]
     private SkillBtn _skillBtnPrefab;
+
+    [SerializeField]
+    private GameObject _parentContent;
 
     [SerializeField]
     private Text _skillImageText;
@@ -33,9 +36,54 @@ public class SkillManager : MonoBehaviour
     [SerializeField]
     private Text _skillLevelText;
 
+     
+
+    #region reinforce
+    /// <summary>
+    /// ÀÏ¹Ý°ø°Ý °­È­ ±â¼ú
+    /// </summary>
+    [SerializeField]
+    private ActiveTech _attackTech;
+    public ActiveTech attachTech { get { return _attackTech; } }
+    public void SetAttackTech(ActiveTech attackTech)
+    { 
+        _attackTech = attackTech;
+    }
+
+    /// <summary>
+    /// À¯Åº °­È­ ±â¼ú
+    /// </summary>
+    private ActiveTech _bombTech;
+    public ActiveTech bombTech { get { return _bombTech; } }
+    public void SetBombTech(ActiveTech bombTech)
+    {
+        _bombTech = bombTech; 
+    }
+
+    /// <summary>
+    /// Æ¯¼ö °ø°Ý °­È­ ±â¼ú
+    /// </summary>
+    private ActiveTech _skillTech;
+    public ActiveTech skillTech { get { return _skillTech; } }
+    public void SetSkillTech(ActiveTech skillTech)
+    { 
+        _skillTech = skillTech; 
+    }
+
+    /// <summary>
+    /// ´ë½¬ °­È­ ±â¼ú
+    /// </summary>
+    private ActiveTech _dashTech;
+    public ActiveTech dashTech { get { return _dashTech; } }
+    public void SetDashTech(ActiveTech dashTech)
+    {
+        _dashTech = dashTech;
+    }
+    #endregion
+
     public void InitializeSkillManager()
     {
-      
+
 
         _skill_One = GetComponent<Skill_One>();
         _skill_Two = GetComponent<Skill_Two>();
@@ -44,27 +92,25 @@ public class SkillManager : MonoBehaviour
         _skill_Five = GetComponent<Skill_Five>();
         _skill_Collab = GetComponent<Skill_Collab>();
 
-        _skill_One.InitializeSkill();
-        _skill_Two.InitializeSkill();
-        _skill_Three.InitializeSkill();
-        _skill_Four.InitializeSkill();
-        _skill_Five.InitializeSkill();
-        _skill_Collab.InitializeSkill();
+        _skill_One.InitializeSkill(this);
+        _skill_Two.InitializeSkill(this);
+        _skill_Three.InitializeSkill(this);
+        _skill_Four.InitializeSkill(this);
+        _skill_Five.InitializeSkill(this);
+        _skill_Collab.InitializeSkill(this);
 
     }
 
     /// <summary>
-    /// ï¿½ï¿½ï¿½ ï¿½ï¿½Å³ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½È¸ï¿½Ø¼ï¿½ ï¿½ï¿½Æ°ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    /// »ÌÀº ½ºÅ³ ¸®½ºÆ® ¼øÈ¸ÇÏ¿© ¸®½ºÆ® Á¦ÀÛ
     /// </summary>
     public void CheckChooseSkillList()
     {
-        GameObject parentContent = GameObject.Find("Content");
-
         if (_skill_One.GetNumberSkillList() != 0)
         {
             foreach (SkillData skillData in _skill_One.currentSkillData)
             {
-                MakeSkillBtn(skillData, parentContent.transform);
+                MakeSkillBtn(skillData, _parentContent.transform);
             }
         }
 
@@ -72,7 +118,7 @@ public class SkillManager : MonoBehaviour
         {
             foreach (SkillData skillData in _skill_Two.currentSkillData)
             {
-                MakeSkillBtn(skillData, parentContent.transform);
+                MakeSkillBtn(skillData, _parentContent.transform);
             }
 
         }
@@ -81,7 +127,7 @@ public class SkillManager : MonoBehaviour
         {
             foreach (SkillData skillData in _skill_Three.currentSkillData)
             {
-                MakeSkillBtn(skillData, parentContent.transform);
+                MakeSkillBtn(skillData, _parentContent.transform);
             }
         }
 
@@ -89,7 +135,7 @@ public class SkillManager : MonoBehaviour
         {
             foreach (SkillData skillData in _skill_Four.currentSkillData)
             {
-                MakeSkillBtn(skillData, parentContent.transform);
+                MakeSkillBtn(skillData, _parentContent.transform);
             }
         }
 
@@ -97,7 +143,7 @@ public class SkillManager : MonoBehaviour
         {
             foreach (SkillData skillData in _skill_Five.currentSkillData)
             {
-                MakeSkillBtn(skillData, parentContent.transform);
+                MakeSkillBtn(skillData, _parentContent.transform);
             }
         }
 
@@ -105,14 +151,14 @@ public class SkillManager : MonoBehaviour
         {
             foreach (SkillData skillData in _skill_Collab.currentSkillData)
             {
-                MakeSkillBtn(skillData, parentContent.transform);
+                MakeSkillBtn(skillData, _parentContent.transform);
             }
         }
 
     }
 
     /// <summary>
-    /// ï¿½ï¿½Æ° ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½
+    /// ¸®½ºÆ® ¹öÆ° »ý¼º
     /// </summary>
     /// <param name="skillData"></param>
     /// <param name="parentContent"></param>
@@ -125,7 +171,7 @@ public class SkillManager : MonoBehaviour
     }
 
     /// <summary>
-    /// È®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å³ È¸ï¿½ï¿½ ï¿½Ì±ï¿½
+    /// °¡ÁßÄ¡¿¡ µû¸¥ ½ºÅ³ È¸»ç ¹ÝÈ¯
     /// </summary>
     /// <returns></returns>
     public SkillBase DrawSkillCompany()
@@ -139,11 +185,10 @@ public class SkillManager : MonoBehaviour
         int totalNum = skillOneNum + skillTwoNum + skillThreeNum + skillFourNum + skillFiveNum;
 
 
-        // ï¿½Ó½ï¿½ ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+        // È®·ü ÃÑÇÕ
         int tempNum = Random.Range(0, totalNum);
 
 
-        Debug.Log("TempNum : " + tempNum);
         if (0 <= tempNum && tempNum < skillOneNum)
         {
             return _skill_One;
@@ -168,7 +213,7 @@ public class SkillManager : MonoBehaviour
     }
 
     /// <summary>
-    /// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½Å³ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    /// ÇöÀç °¡Áö°í ÀÖ´Â ÃÑ ½ºÅ³ °³¼ö
     /// </summary>
     /// <returns></returns>
     public int GetTotalSkillNumber()
@@ -190,14 +235,14 @@ public class SkillManager : MonoBehaviour
     }
 
     /// <summary>
-    /// ï¿½Ø´ï¿½ È¸ï¿½ï¿½ï¿½ï¿½ ï¿½Ý¶ï¿½ ï¿½ï¿½Å³ ï¿½Ø±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ç´ï¿½
+    /// ÄÝ¶óº¸ ½ºÅ³ Á¶°Ç °Ë»ç
     /// </summary>
     /// <param name="skillCompany"></param>
     public bool CheckCollabo(SkillBase skillCompany, out List<int> indexList)
     {
         indexList = new List<int>();
         bool bCheck = false;
-        // ï¿½Å°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ç°¡ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ï¿½ï¿½ ï¿½Ç´ï¿½
+        // ÇöÀç °í¸¥ ±â¼úÆÑÀÇ Á¶°Ç °Ë»ç
         if (skillCompany.currentSkillData.Count < Constants.COLLABCNT)
         {
             indexList = null;
@@ -206,7 +251,7 @@ public class SkillManager : MonoBehaviour
 
         if (skillCompany == _skill_One)
         {
-            // ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ë»ï¿½
+            // ¿¬°üµÈ ±â¼ú È¸»ç Á¶°Ç °Ë»ç
             if (_skill_Two.currentSkillData.Count >= Constants.COLLABCNT)
             {
                 int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 201);
@@ -231,7 +276,7 @@ public class SkillManager : MonoBehaviour
         }
         else if (skillCompany == _skill_Two)
         {
-            // ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ë»ï¿½
+            // ¿¬°üµÈ ±â¼ú È¸»ç Á¶°Ç °Ë»ç
             if (_skill_Three.currentSkillData.Count >= Constants.COLLABCNT)
             {
                 int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 302);
@@ -256,7 +301,7 @@ public class SkillManager : MonoBehaviour
         }
         else if (skillCompany == _skill_Three)
         {
-            // ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ë»ï¿½
+            // ¿¬°üµÈ ±â¼ú È¸»ç Á¶°Ç °Ë»ç
             if (_skill_Four.currentSkillData.Count >= Constants.COLLABCNT)
             {
                 int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 403);
@@ -281,7 +326,7 @@ public class SkillManager : MonoBehaviour
         }
         else if (skillCompany == _skill_Four)
         {
-            // ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ë»ï¿½
+            // ¿¬°üµÈ ±â¼ú È¸»ç Á¶°Ç °Ë»ç
             if (_skill_Five.currentSkillData.Count >= Constants.COLLABCNT)
             {
                 int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 504);
@@ -306,7 +351,7 @@ public class SkillManager : MonoBehaviour
         }
         else if (skillCompany == _skill_Five)
         {
-            // ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ë»ï¿½
+            // ¿¬°üµÈ ±â¼ú È¸»ç Á¶°Ç °Ë»ç
             if (_skill_Four.currentSkillData.Count >= Constants.COLLABCNT)
             {
                 int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 504);
@@ -329,7 +374,20 @@ public class SkillManager : MonoBehaviour
                 bCheck = true;
             }
         }
-            return bCheck;
+
+        // ÄÝ¶óº¸ ½ºÅ³ Á¶°Ç ¸¸Á·ÇÏ´ÂÁö ¹ÝÈ¯
+        return bCheck;
+    }
+
+    /// <summary>
+    /// ÇöÀç ¼ÒÁö °³¼ö ¸®½ºÆ®Ã¢ ÀÚ½Ä ¿ÀºêÁ§Æ® ÆÄ±«¿ë
+    /// </summary>
+    public void OnClick_ListExitBtn()
+    {
+        foreach (Transform child in _parentContent.transform)
+        {
+            Destroy(child.gameObject);
+        }
     }
 
 }

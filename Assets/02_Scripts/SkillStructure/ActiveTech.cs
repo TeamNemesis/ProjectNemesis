@@ -33,9 +33,9 @@ public abstract class ActiveTech
     /// <summary>
     /// 기술이 추가될 때 호출되는 메서드
     /// </summary>
-    public virtual void Activate(PlayerModel player)
+    public virtual void Activate(SkillManager skillManager, PlayerModel player)
     {
-        player.attackSkill = this;
+        skillManager.SetAttackTech(this);
         Debug.Log("스킬교체 Active" + _skillData.skillIdx);
     }
 
@@ -50,7 +50,7 @@ public abstract class ActiveTech
 
     /// <summary>
     /// 기술이 사용될 때 호출되는 메서드
-    /// </summary>
+    /// </summary>  
     public abstract void Use(Transform transform);
 
     public  ActiveTech(SkillData skillData)

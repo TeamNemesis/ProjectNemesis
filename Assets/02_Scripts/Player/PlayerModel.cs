@@ -20,7 +20,6 @@ public class PlayerModel : MonoBehaviour, IDamageAble
     public event Action OnDead; // 플레이어가 사망했을 때 발생하는 이벤트
 
     #region Test
-    public ActiveTech attackSkill;
     public event Action<Transform> Attack;
     public Transform currentTarget;
 

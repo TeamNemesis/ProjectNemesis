@@ -10,11 +10,11 @@ public class Skill_Three : SkillBase
         {
             case 30:
                 ActiveTech skillAttack = new Skill_Three_Attck(choosedSkill);
-                if (player.attackSkill != null)
+                if (_skillManager.attachTech != null)
                 {
-                    player.attackSkill.Deactivate(player);
+                    _skillManager.attachTech.Deactivate(player);
                 }
-                skillAttack.Activate(player);
+                skillAttack.Activate(_skillManager,player);
                 break;
         }
 
@@ -26,9 +26,9 @@ public class Skill_Three_Attck : ActiveTech
     public override TechTriggerType TriggerType => throw new NotImplementedException();
 
     public override event Action OnTechUsed;
-    public override void Activate(PlayerModel player)
+    public override void Activate(SkillManager skillManager, PlayerModel player)
     {
-        base.Activate(player);
+        base.Activate(skillManager,player);
         player.Attack += Use;
         Drone[] drones = player.transform.GetComponentsInChildren<Drone>();
         if(drones.Length > 0)
