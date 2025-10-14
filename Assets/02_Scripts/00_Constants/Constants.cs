@@ -112,4 +112,9 @@ public static class Constants
     public const string LAYER_MASK_WALL = "Wall";
 
     #endregion
+
+    #region AnimatorParameters
+    public static string ANIPARAM_MOVESPEED = "MoveSpeed";
+    public static string ANIPARAM_ONATTACK = "OnAttack";
+    #endregion
 }
