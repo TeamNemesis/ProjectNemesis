@@ -19,9 +19,24 @@ public class PlayerModel : MonoBehaviour, IDamageAble
     public event Action<int> OnMoveSpeedChanged; // 이동 속도 변경 시 발생하는 이벤트
     public event Action OnDead; // 플레이어가 사망했을 때 발생하는 이벤트
 
+    #region Test
     public ActiveTech attackSkill;
-    public event Action Attack;
+    public event Action<Transform> Attack;
+    public Transform currentTarget;
 
+    public void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.U))
+        {
+            OnAttack();
+        }
+    }
+
+    public void OnAttack()
+    {
+        Attack?.Invoke(currentTarget);
+    }
+    #endregion
     public void Initialize()
     {
         _currentHp = _maxHp; // 초기화 시 현재 체력을 최대 체력으로 설정
@@ -52,16 +67,5 @@ public class PlayerModel : MonoBehaviour, IDamageAble
         OnMoveSpeedChanged?.Invoke(_moveSpeed); // 이동 속도 변경 이벤트 발행
     }
 
-    public void Update()
-    {
-        if(Input.GetKeyDown(KeyCode.U))
-        {
-            OnAttack();   
-        }
-    }
 
-    public void OnAttack()
-    {
-        Attack?.Invoke();
-    }
 }

@@ -52,7 +52,7 @@ public class Skill_Three_Attck : ActiveTech
             }
         }
     }
-    public override void Use()
+    public override void Use(Transform transform)
     {
         Debug.Log("Use " + _skillData.skillIdx);
 

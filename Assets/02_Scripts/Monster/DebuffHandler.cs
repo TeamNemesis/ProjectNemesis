@@ -13,15 +13,16 @@ public class DebuffHandler : MonoBehaviour
         public int maxStack;           // 최대 스택
     }
 
+    [SerializeField] 
     private class ActiveDebuff
     {
         public DebuffData data;
         public float remainingTime;
         public float totalValue;
         public int stackCount;
-        public Coroutine routine;
+        public IEnumerator routine;
 
-        public ActiveDebuff(DebuffData data, Coroutine routine)
+        public ActiveDebuff(DebuffData data, IEnumerator routine)
         {
             this.data = data;
             remainingTime = data.debuffDuration;
@@ -31,6 +32,7 @@ public class DebuffHandler : MonoBehaviour
         }
     }
 
+    [SerializeField]
     private Dictionary<string, ActiveDebuff> activeDebuffs = new Dictionary<string, ActiveDebuff>();
     private MonsterBase monster;
     private NavMeshAgent agent;
@@ -54,7 +56,7 @@ public class DebuffHandler : MonoBehaviour
             ActiveDebuff existing = activeDebuffs[newDebuff.debuffName];
 
             // 스택형 디버프들
-            if (newDebuff.debuffName == "독" || newDebuff.debuffName == "과부하")
+            if (newDebuff.debuffName == Constants.DEBUFF_POISON || newDebuff.debuffName == Constants.DEBUFF_OVERLOAD)
             {
                 if (existing.stackCount < newDebuff.maxStack)
                 {
@@ -72,27 +74,35 @@ public class DebuffHandler : MonoBehaviour
             return;
         }
 
-        Coroutine routine = StartCoroutine(HandleDebuff(newDebuff));
+        IEnumerator routine = (HandleDebuff(newDebuff));
         activeDebuffs.Add(newDebuff.debuffName, new ActiveDebuff(newDebuff, routine));
+        StartCoroutine(activeDebuffs[newDebuff.debuffName].routine);
     }
 
     private IEnumerator HandleDebuff(DebuffData debuff)
     {
+        Debug.Log(activeDebuffs.Count);
+        foreach(var debuffs in activeDebuffs)
+        {
+            Debug.Log(debuffs.Key);
+        }
+        {
+
         ActiveDebuff active = activeDebuffs[debuff.debuffName];
 
         // 시작 시 1회 효과
         switch (debuff.debuffName)
         {
-            case "둔화":
+            case Constants.DEBUFF_SLOW:
                 if (agent != null)
                     agent.speed *= 0.7f;
                 break;
 
-            case "기절":
+            case Constants.DEBUFF_STUN:
                 StartCoroutine(StunCoroutine(debuff.debuffDuration));
                 break;
 
-            case "혼란":
+            case Constants.DEBUFF_CONFUSION:
                 StartCoroutine(ConfuseCoroutine(debuff.debuffDuration));
                 break;
         }
@@ -101,26 +111,28 @@ public class DebuffHandler : MonoBehaviour
         {
             switch (debuff.debuffName)
             {
-                case "독":
-                case "과부하":
-                    monster.TakeDamage(active.totalValue * Time.deltaTime);
+                case Constants.DEBUFF_POISON:
+                case Constants.DEBUFF_OVERLOAD:
+                        Debug.Log("takeDamage" + active.totalValue);
+                    monster.TakeDamage(active.totalValue);
                     break;
             }
 
-            active.remainingTime -= Time.deltaTime;
-            yield return null;
+            active.remainingTime -= 1f;
+            yield return new WaitForSeconds(1f);
         }
 
         // 해제 시 복원
         switch (debuff.debuffName)
         {
-            case "둔화":
+            case Constants.DEBUFF_SLOW:
                 if (agent != null)
                     agent.speed /= 0.7f;
                 break;
         }
 
         activeDebuffs.Remove(debuff.debuffName);
+        }
     }
 
     private IEnumerator StunCoroutine(float duration)
@@ -141,7 +153,7 @@ public class DebuffHandler : MonoBehaviour
     private IEnumerator ConfuseCoroutine(float duration)
     {
         string originalTag = monster.targetTag;
-        monster.targetTag = "Monster";
+        monster.targetTag = Constants.TAG_MONSTER;
 
         yield return new WaitForSeconds(duration);
 
