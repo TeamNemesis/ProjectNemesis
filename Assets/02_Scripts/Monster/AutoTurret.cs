@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class AutoTurret : MonsterBase, IDamageAble
+public class AutoTurret : MonsterBase
 {
     [SerializeField]
     private enum State
@@ -22,6 +22,7 @@ public class AutoTurret : MonsterBase, IDamageAble
     private void Update()
     {
         if (isDead || player == null) return;
+        if (isStunned) return;
 
         switch (currentState)
         {
@@ -41,24 +42,11 @@ public class AutoTurret : MonsterBase, IDamageAble
         }
     }
 
-    /// <summary>
-    /// 플레이어를 바라보게 하는 함수
-    /// </summary>
-    private void LookAtPlayer()
-    {
-        Vector3 direction = (player.position - transform.position).normalized;
-        if (direction != Vector3.zero)
-        {
-            Quaternion targetRotation = Quaternion.LookRotation(direction);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 5f);
-        }
-    }
-
     private void HandleIdle()
     {
         // 플레이어와 거리
         float distance = Vector3.Distance(transform.position, player.position);
-        if (distance <= attackRange)
+        if (distance <= attackRange && CanSeePlayer())
         {
             currentState = State.Attack;
         }
@@ -81,15 +69,5 @@ public class AutoTurret : MonsterBase, IDamageAble
         }
         _isAttacking = false;
         currentState = State.Idle; // 공격 후 다시 대기 상태로 전환
-    }
-
-    public void TakeDamage(float damage)
-    {
-        if (isDead) return;
-        currentHealth -= (int)damage;
-        if (currentHealth <= 0)
-        {
-            Die();
-        }
     }
 }

@@ -1,43 +1,99 @@
+using System;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class MonsterBase : MonoBehaviour
+public class MonsterBase : MonoBehaviour, IDamageAble
 {
     [Header("Stats")]
-    [SerializeField] protected int maxHealth = 100;        // 최대 체력
-    [SerializeField] protected int currentHealth;          // 현재 체력
-    [SerializeField] protected int attackDamage = 10;      // 공격력 (PlayerHealth.TakeDamage가 int라면 int로 맞춤)
-    [SerializeField] protected float attackRange = 2f;     // 공격 범위
-    [SerializeField] protected float detectionRange = 10f; // 플레이어 감지 범위
-    [SerializeField] protected float attackDelay = 0.5f;   // 공격 텀(딜레이)
-    [SerializeField] protected bool isDead = false;        // 몬스터 사망 여부
+    [SerializeField] protected int maxHealth = 100;
+    [SerializeField] protected int currentHealth;
+    [SerializeField] protected int attackDamage = 10;
+    [SerializeField] protected float attackRange = 2f;
+    [SerializeField] protected float detectionRange = 10f;
+    [SerializeField] protected float attackDelay = 0.5f;
+    [SerializeField] public bool isStunned = false;
+    [SerializeField] public bool isDead = false;
+    [SerializeField] public string targetTag = "Player";
 
     [Header("Components")]
-    [SerializeField] protected NavMeshAgent agent;      // 네비게이션 에이전트 컴포넌트
-    [SerializeField] protected Transform player;        // 플레이어 Transform (추적용)
+    [SerializeField] protected NavMeshAgent agent;
+    [SerializeField] protected Transform player;
+    [SerializeField] protected DebuffHandler debuffHandler;
 
-    // 부모 Start: NavMeshAgent와 Player Transform 자동 초기화, 체력 초기화
+    public Action OnDieEvent;
+
     protected virtual void Start()
     {
         agent = GetComponent<NavMeshAgent>();
-        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
-        if (playerObj != null)
-        {
-            player = playerObj.transform;
-        }
+        debuffHandler = GetComponent<DebuffHandler>();
 
-        // 시작 시 현재 체력을 최대 체력으로 초기화
+        GameObject playerObj = GameObject.FindGameObjectWithTag(targetTag);
+        if (playerObj != null)
+            player = playerObj.transform;
+
         currentHealth = maxHealth;
     }
 
-    /// <summary>
-    /// 몬스터 사망시 호출되는 메서드 (자식 클래스에서 오버라이드 요망)
-    /// 오버라이드 하지 않을 경우 기본 사망 처리 로직이 실행됨
-    /// </summary>
     protected virtual void Die()
     {
-        // 몬스터 기본 사망 처리 로직
+        if (OnDieEvent != null)
+            OnDieEvent();
+
         isDead = true;
         Destroy(gameObject);
+    }
+
+    protected bool CanSeePlayer()
+    {
+        if (player == null) return false;
+
+        Vector3 dir = (player.position - transform.position).normalized;
+        float dist = Vector3.Distance(transform.position, player.position);
+
+        int mask = LayerMask.GetMask(targetTag, "Wall");
+
+        if (Physics.Raycast(transform.position + Vector3.up * 0.3f, dir, out RaycastHit hit, dist, mask))
+        {
+            if (hit.transform.CompareTag(targetTag))
+            {
+                Debug.Log("playerCheck");
+                return true;
+            }
+            return false;
+        }
+        return false;
+    }
+
+    protected void LookAtPlayer()
+    {
+        Vector3 dir = (player.position - transform.position).normalized;
+        if (dir != Vector3.zero)
+        {
+            Quaternion targetRot = Quaternion.LookRotation(dir);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * 5f);
+        }
+    }
+
+    public void TakeDamage(float damage)
+    {
+        if (isDead) return;
+
+        // 과부하 디버프
+        if (debuffHandler != null && debuffHandler.HasDebuff("과부하"))
+        {
+            int stacks = debuffHandler.GetStackCount("과부하");
+            float bonus = 1f + (0.05f * stacks);
+            damage *= bonus;
+        }
+
+        // 화상 디버프
+        if (debuffHandler != null && debuffHandler.HasDebuff("화상"))
+        {
+            damage *= 2f;
+        }
+
+        currentHealth -= (int)damage;
+        if (currentHealth <= 0)
+            Die();
     }
 }

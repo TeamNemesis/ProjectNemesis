@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class NebulaChemicalDisease : MonsterBase, IDamageAble
+public class NebulaChemicalDisease : MonsterBase
 {
     [SerializeField]
     private enum State
@@ -25,8 +25,12 @@ public class NebulaChemicalDisease : MonsterBase, IDamageAble
     private void Update()
     {
         if (isDead || player == null) return;
+        if (isStunned) return;
 
-        LookAtPlayer();
+        if (CanSeePlayer())
+        {
+            LookAtPlayer();
+        }
 
         switch (currentState)
         {
@@ -48,24 +52,13 @@ public class NebulaChemicalDisease : MonsterBase, IDamageAble
         }
     }
 
-    /// <summary>
-    /// 플레이어를 바라보게 하는 함수
-    /// </summary>
-    private void LookAtPlayer()
-    {
-        Vector3 direction = (player.position - transform.position).normalized;
-        if (direction != Vector3.zero)
-        {
-            Quaternion targetRotation = Quaternion.LookRotation(direction);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 5f);
-        }
-    }
+    
 
     private void HandleIdle()
     {
         // 플레이어와 거리
         float distance = Vector3.Distance(transform.position, player.position);
-        if (distance <= detectionRange)
+        if (distance <= detectionRange && CanSeePlayer())
         {
             currentState = State.Move;
         }
@@ -74,7 +67,7 @@ public class NebulaChemicalDisease : MonsterBase, IDamageAble
     {
         if (player == null) return;
         float distance = Vector3.Distance(transform.position, player.position);
-        if (distance > detectionRange)
+        if (distance > detectionRange || !CanSeePlayer())
         {
             agent.ResetPath();
             currentState = State.Idle;
@@ -83,7 +76,7 @@ public class NebulaChemicalDisease : MonsterBase, IDamageAble
 
         agent.SetDestination(player.position);
 
-        if (distance <= attackRange)
+        if (distance <= attackRange && CanSeePlayer())
         {
             agent.ResetPath();
             currentState = State.Attack;
@@ -103,15 +96,5 @@ public class NebulaChemicalDisease : MonsterBase, IDamageAble
         }
         _isAttacking = false;
         currentState = State.Move; // 공격 후 다시 추격 상태로 전환
-    }
-
-    public void TakeDamage(float damage)
-    {
-        if (isDead) return;
-        currentHealth -= (int)damage;
-        if (currentHealth <= 0)
-        {
-            Die();
-        }
     }
 }
