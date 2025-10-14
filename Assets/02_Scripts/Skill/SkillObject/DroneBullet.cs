@@ -31,7 +31,7 @@ public class DroneBullet : MonoBehaviour
 		{
 				if (other.CompareTag(Constants.TAG_MONSTER))
 				{
-						IDamageAble damageable = other.GetComponent<IDamageAble>();
+						IDamageable damageable = other.GetComponent<IDamageable>();
 						if (damageable != null)
 						{
 								damageable.TakeDamage(_bulletDamage);

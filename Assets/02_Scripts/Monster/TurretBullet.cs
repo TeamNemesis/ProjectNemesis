@@ -22,7 +22,7 @@ public class TurretBullet : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            IDamageAble damageable = other.GetComponent<IDamageAble>();
+            IDamageable damageable = other.GetComponent<IDamageable>();
             if (damageable != null)
             {
                 damageable.TakeDamage(damage); // 플레이어에게 피해 주기

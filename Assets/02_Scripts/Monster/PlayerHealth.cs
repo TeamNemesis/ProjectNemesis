@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerHealth : MonoBehaviour, IDamageAble
+public class PlayerHealth : MonoBehaviour, IDamageable
 {
     public int maxHealth;
     public int currentHealth;

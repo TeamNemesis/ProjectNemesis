@@ -5,7 +5,7 @@ using UnityEngine;
 /// 플레이어의 상태, 속성, 데이터(체력, 경험치, 레벨 등)를 관리하는 클래스입니다.
 /// 게임 내에서 플레이어의 다양한 정보와 상태값을 저장하고 제공합니다.
 /// </summary>
-public class PlayerModel : MonoBehaviour, IDamageAble
+public class PlayerModel : MonoBehaviour, IDamageable
 {
     [SerializeField] int _maxHp = 100; // 최대 체력
     [SerializeField] int _currentHp; // 현재 체력
