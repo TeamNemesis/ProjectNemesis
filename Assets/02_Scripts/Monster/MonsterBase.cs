@@ -4,7 +4,7 @@ using UnityEngine.AI;
 using System.Collections;
 using NUnit.Framework;
 
-public class MonsterBase : MonoBehaviour, IDamageAble
+public class MonsterBase : MonoBehaviour, IDamageable
 {
     [Header("Stats")]
     [SerializeField] protected int maxHealth = 100;

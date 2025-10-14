@@ -157,11 +157,13 @@ public class Drone : MonoBehaviour, IReinforce
         // 타겟이 존재하고 사정거리 안이라면
         if (_currentTarget != null && Vector3.Distance(transform.position, currentTarget.position) < _attackRange)
         {
+            // 이부분에서 IDamageable 인터페이스를 삭제하고 동훈이 만든 IDamageAble 인터페이스로 바꿈
             IDamageable target = _currentTarget.GetComponent<IDamageable>();
             if (target != null)
             {
                 Attack?.Invoke(currentTarget);
-                target.TakeHit(Constants.DRONE_ATTACK);
+                // 이부분에서 IDamageAble 인터페이스로 바꾸면서 TakeHit 함수대신 TakeDamage 함수로 바꿈
+                target.TakeDamage(Constants.DRONE_ATTACK);
                 yield return new WaitForSeconds(_attackCoolTime);
             }
         }

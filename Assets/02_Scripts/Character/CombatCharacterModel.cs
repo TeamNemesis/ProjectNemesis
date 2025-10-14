@@ -7,7 +7,7 @@ using UnityEngine;
 /// 전투 캐릭터의 모델 클래스
 /// (체력, 공격력, 방어력 등 런타임 데이터를 관리)
 /// </summary>
-public class CombatCharacterModel : MonoBehaviour, IDamageable, IAttackable
+public class CombatCharacterModel : MonoBehaviour, IDamageable
 {
     [Header("----- 이동 -----")]
     [SerializeField] float _moveSpeed;  // 이동 속력
@@ -40,12 +40,7 @@ public class CombatCharacterModel : MonoBehaviour, IDamageable, IAttackable
         OnHpChanged?.Invoke(_currentHp, _maxHp);
     }
 
-    public void Hit(IDamageable damageable)
-    {
-        damageable.TakeHit(_damage);
-    }
-
-    public void TakeHit(float damage)
+    public void TakeDamage(float damage)
     {
         // 들어온 데미지에 방어력 적용
         damage = Mathf.Max(damage - _armor, 0);
