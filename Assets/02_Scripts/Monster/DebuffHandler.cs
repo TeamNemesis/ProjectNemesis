@@ -100,13 +100,13 @@ public class DebuffHandler : MonoBehaviour
         public Coroutine routine;
         public Coroutine effectRoutine; // 스턴, 혼란 특별 관리용 코루틴 저장 변수
 
-        public ActiveDebuff(DebuffData data, Coroutine routine)
+        public ActiveDebuff(DebuffData data)
         {
             this.data = data;
             remainingTime = data.debuffDuration;
             totalValue = data.debuffValue;
             stackCount = 1;
-            this.routine = routine;
+            this.routine = null;
             this.effectRoutine = null;
         }
     }
@@ -161,7 +161,7 @@ public class DebuffHandler : MonoBehaviour
 
             return;
         }
-        activeDebuffs.Add(newDebuff.debuffName, new ActiveDebuff(newDebuff, null));
+        activeDebuffs.Add(newDebuff.debuffName, new ActiveDebuff(newDebuff));
         activeDebuffs[newDebuff.debuffName].routine = StartCoroutine(HandleDebuff(newDebuff));
     }
 
@@ -309,7 +309,10 @@ public class DebuffHandler : MonoBehaviour
             switch (debuffName)
             {
                 case Constants.DEBUFF_SLOW:
-                    if (agent != null) agent.speed /= 0.7f;
+                    if (agent != null)
+                    {
+                        agent.speed = originalSpeed;
+                    }
                     break;
 
                 case Constants.DEBUFF_STUN:
