@@ -59,7 +59,8 @@ public class Skill_Two_Attck : ActiveTech
     {
         Debug.Log("Use " + _skillData.skillIdx);
 
-        DebuffData poison = new DebuffData();
+
+        DebuffHandler.DebuffData poison = new DebuffHandler.DebuffData();
         poison.debuffName = Constants.DEBUFF_POISON;
         poison.debuffDuration = 6f;
         poison.debuffValue = 5f;
