@@ -1,99 +1,107 @@
-//using System;
-//using UnityEngine;
-//using UnityEngine.InputSystem;
+using System;
+using UnityEngine;
+using UnityEngine.InputSystem;
 
-///// <summary>
-///// 플레이어의 입력을 받아오고 이벤트를 통해
-///// 다른 컴포넌트에 전달하는 역할을 합니다.
-///// </summary>
-//public class PlayerInput : MonoBehaviour
-//{
-//    Vector2 _moveInput; // 이동 입력 벡터
+/// <summary>
+/// NewInput을 통해 플레이어의 여러가지 입력을 받아오고 
+/// 각 입력에 대한 이벤트를 제공하는 클래스
+/// </summary>
+public class PlayerInput : MonoBehaviour
+{
+    public event Action<Vector2> OnMoveInput;        // 이동 입력 이벤트
+    
+    public event Action OnDashInput;                 // 대시 입력 이벤트
+    public event Action OnInteractInput;             // 상호작용 입력 이벤트
 
-//    public event Action<Vector2> OnMoveInput; // 이동 입력 이벤트
-//    public event Action OnAttackInput; // 공격 입력 이벤트
-//    public event Action OnDashInput; // 대시 입력 이벤트
-//    public event Action OnInteractInput; // 상호작용 입력 이벤트
-//    public event Action OnGrenadeInput; // 유탄 입력 이벤트
-//    public event Action OnGrenadeMInput; // 유탄 마우스 입력 이벤트
-//    public event Action 
-//    public event Action OnSpecialInput; // 특수공격 입력 이벤트
+    public event Action OnNomralAttackInput;         // 일반공격 입력 이벤트
+    public event Action OnGrenadeAttackInput;        // 유탄공격 입력 이벤트
+    public event Action OnGrenadeAttackInputEnded;   // 유탄공격 입력 종료 이벤트
+    public event Action OnSpecialAttackInput;        // 특수공격 입력 이벤트
 
-//    public void OnMove(InputAction.CallbackContext value)   //Move
-//    {
-//        Vector2 input = value.ReadValue<Vector2>();
-//        if (input != null)
-//        {
-//            moveVec = new Vector3(input.x, 0f, input.y);    //이동방향
-//            Debug.Log($"SEND_MESSAGE : {input.magnitude}"); //받아오는값 출력
-//        }
-//    }
+    Vector2 _moveDir;  // 이동 입력을 저장할 변수
 
-//    public void OnAttackM(InputAction.CallbackContext value)
-//    {
-//        attackInput = value.ReadValue<Vector2>();
-//        Debug.Log("AttackM");
-//    }
+    private void FixedUpdate()
+    {
+        // 이동 입력은 실시간으로 받아와야 하므로 FixedUpdate에서 이벤트 호출
+        OnMoveInput?.Invoke(_moveDir);
+    }
 
-//    public void OnAttack(InputAction.CallbackContext value)
-//    {
-//        Debug.Log("Attack 입력");
-//        Attack1();
-//    }
+    /// <summary>
+    /// 이동 입력을 받아오는 함수
+    /// </summary>
+    /// <param name="value"></param>
+    public void OnMove(InputAction.CallbackContext value)
+    { 
+        _moveDir = value.ReadValue<Vector2>();
+    }
 
-//    public void OnDash(InputAction.CallbackContext value) //invoke unity event확인용
-//    {
-//        if (value.started)
-//        {
-//            transform.position += transform.forward * dashDistance; // 바라본 방향으로 앞으로 조금 이동
-//            Debug.Log("Dash");
-//        }
-//    }
+    /// <summary>
+    /// 일반 공격 입력을 받아오는 함수
+    /// </summary>
+    /// <param name="value"></param>
+    public void OnNormalAttack(InputAction.CallbackContext value)
+    {
+        if (value.started)
+        {
+            Debug.Log("일반공격 입력받음");
+            OnNomralAttackInput?.Invoke();
+        }
+    }
 
-//    void OnInteract(InputAction.CallbackContext value)   //Interact
-//    {
-//        OnInteractInput?.Invoke();
-//        //Debug.Log("상호작용!");
-//    }
+    /// <summary>
+    /// 대시 입력을 받아오는 함수
+    /// </summary>
+    /// <param name="value"></param>
+    public void OnDash(InputAction.CallbackContext value)
+    {
+        if (value.started)
+        {
+            Debug.Log("대시 입력받음");
+            OnDashInput?.Invoke();
+        }
+    }
 
-//    public void OnGrenade(InputAction.CallbackContext value)
-//    {
-//        if (value.started)
-//        {
-//            Debug.Log("유탄");
-//        }
-//        //방향 회전
-//        //유탄 발사
+    /// <summary>
+    /// 상호 작용 입력을 받아오는 함수
+    /// </summary>
+    /// <param name="value"></param>
+    public void OnInteract(InputAction.CallbackContext value)
+    {
+        if (value.started)
+        {
+            Debug.Log("상호작용 입력받음");
+            OnInteractInput?.Invoke();
+        }
+    }
 
-//    }
+    /// <summary>
+    /// 유탄 공격 입력을 받아오는 함수
+    /// </summary>
+    /// <param name="value"></param>
+    public void OnGrenadeAttack(InputAction.CallbackContext value)
+    {
+        if (value.started)
+        {
+            Debug.Log("유탄공격 입력받음");
+            OnGrenadeAttackInput?.Invoke();
+        }
+        else if (value.canceled)
+        {
+            Debug.Log("유탄공격 입력끝남");
+            OnGrenadeAttackInputEnded?.Invoke();
+        }
+    }
 
-//    public void OnGrenade_M(InputAction.CallbackContext value)
-//    {
-//        if (value.started)  //클릭
-//        {
-//            if (Physics.Raycast(mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue()),
-//                                out RaycastHit hit,
-//                                100f,
-//                                groundMask))
-//            {
-//                currentRange = Instantiate(rangePrefab, hit.point, Quaternion.identity);
-//                isDragging = true;
-//            }
-//        }
-//        else if (value.canceled)    //드랍
-//        {
-//            if (currentRange != null)
-//                Destroy(currentRange);
-
-//            isDragging = false;
-//        }
-//    }
-
-//    public void OnSpecial(InputAction.CallbackContext value)
-//    {
-//        if (value.started)
-//        {
-//            Debug.Log("특수공격");
-//        }
-//    }
-//}
+    /// <summary>
+    /// 특수공격 입력을 받아오는 함수
+    /// </summary>
+    /// <param name="value"></param>
+    public void OnSpecialAttack(InputAction.CallbackContext value)
+    {
+        if (value.started)
+        {
+            Debug.Log("특수공격 입력받음");
+            OnSpecialAttackInput?.Invoke();
+        }
+    }
+}

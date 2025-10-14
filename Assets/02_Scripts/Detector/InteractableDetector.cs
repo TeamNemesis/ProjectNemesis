@@ -21,12 +21,12 @@ public class InteractableDetector : MonoBehaviour
     Collider[] _hits = new Collider[10];                // 감지된 콜라이더 배열
 
     /// <summary>
-    /// 감지 이벤트
+    /// 상호작용 가능한 물체를 감지했을 때 호출되는 이벤트
     /// </summary>
     public event Action<IInteractable> OnDetected;
 
     /// <summary>
-    /// 감지 실패 이벤트
+    /// 상호작용 가능한 물체를 놓쳤을 때 호출되는 이벤트
     /// </summary>
     public event Action OnMissed;
 
@@ -85,6 +85,7 @@ public class InteractableDetector : MonoBehaviour
     /// </summary>
     public void ExecuteInteraction()
     {
+        // 감지된 IInteractable이 없으면 함수 종료
         if (_detectedInteractable == null) return;
 
         _detectedInteractable.Interact(transform);

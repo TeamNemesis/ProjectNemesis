@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
 
-public class UpgradePackInteractor : MonoBehaviour, IInteractable
+
+public class TechUpgradePackInteractor : MonoBehaviour, IInteractable
 {
     [SerializeField] Transform _guidePoint;
 
     public Vector3 GuidePoint => _guidePoint.position;
 
-    public InteractableType InteractableType => InteractableType.UpgradePack;
+    public InteractableType InteractableType => InteractableType.TechUpgradePack;
 
     public void Interact(Transform subject)
     {

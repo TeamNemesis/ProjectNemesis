@@ -115,6 +115,8 @@ public static class Constants
 
     #region AnimatorParameters
     public static string ANIPARAM_MOVESPEED = "MoveSpeed";
-    public static string ANIPARAM_ONATTACK = "OnAttack";
+    public static string ANIPARAM_ONNORMALATTACK = "OnNormalAttack";
+    public static string ANIPARAM_ONSPECIALATTACK = "OnSpecialAttack";
+    public static string ANIPARAM_ONGRENADEATTACK = "OnGrenadeAttack";
     #endregion
 }
