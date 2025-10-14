@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -9,6 +10,8 @@ public class Drone : MonoBehaviour
 				Idle, // 몬스터 감지 못함
 				Attack // 공격
 		}
+
+	public event Action Attack;
 
 		//TODO 플레이어 스탯 필드
 

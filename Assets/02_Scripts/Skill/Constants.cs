@@ -82,5 +82,9 @@ public static class Constants
     /// </summary>
     public static float DRONE_BULLET_TIME = 5f;
 
-		#endregion
+	#endregion
+
+	#region debuff
+	
+    #endregion
 }
