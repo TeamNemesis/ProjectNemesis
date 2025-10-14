@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 
-
 public class TechUpgradePackInteractor : MonoBehaviour, IInteractable
 {
     [SerializeField] Transform _guidePoint;
