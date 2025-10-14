@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
+using NUnit.Framework;
 
 public class MonsterBase : MonoBehaviour, IDamageAble
 {
@@ -12,7 +13,7 @@ public class MonsterBase : MonoBehaviour, IDamageAble
     [SerializeField] protected float attackRange = 2f;
     [SerializeField] protected float detectionRange = 10f;
     [SerializeField] protected float attackDelay = 0.5f;
-    [SerializeField] public string targetTag = "Player";
+    [SerializeField] public string targetTag = Constants.TAG_PLAYER;
 
     [Header("상태이상")]
     [SerializeField] public bool isStunned = false;
@@ -53,7 +54,7 @@ public class MonsterBase : MonoBehaviour, IDamageAble
         Vector3 dir = (player.position - transform.position).normalized;
         float dist = Vector3.Distance(transform.position, player.position);
 
-        int mask = LayerMask.GetMask(targetTag, "Wall");
+        int mask = LayerMask.GetMask(targetTag, Constants.LAYER_MASK_WALL);
 
         if (Physics.Raycast(transform.position + Vector3.up * 0.3f, dir, out RaycastHit hit, dist, mask))
         {
@@ -82,15 +83,15 @@ public class MonsterBase : MonoBehaviour, IDamageAble
         if (isDead) return;
 
         // 과부하 디버프
-        if (debuffHandler != null && debuffHandler.HasDebuff("과부하"))
+        if (debuffHandler != null && debuffHandler.HasDebuff(Constants.DEBUFF_OVERLOAD))
         {
-            int stacks = debuffHandler.GetStackCount("과부하");
+            int stacks = debuffHandler.GetStackCount(Constants.DEBUFF_OVERLOAD);
             float bonus = 1f + (0.05f * stacks);
             damage *= bonus;
         }
 
         // 화상 디버프
-        if (debuffHandler != null && debuffHandler.HasDebuff("화상"))
+        if (debuffHandler != null && debuffHandler.HasDebuff(Constants.DEBUFF_BURN))
         {
             damage *= 2f;
         }

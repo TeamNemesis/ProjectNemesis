@@ -102,5 +102,14 @@ public static class Constants
     public const string DEBUFF_SLOW = "slow";
     public const string DEBUFF_STUN = "stun";
     public const string DEBUFF_CONFUSION = "confusion";
+    public const string DEBUFF_BURN = "burn";
+    #endregion
+
+    #region layer
+
+    public const string LAYER_MASK_INTERACTABLE = "Interactable";
+    public const string LAYER_MASK_PLAYER = "Player";
+    public const string LAYER_MASK_WALL = "Wall";
+
     #endregion
 }

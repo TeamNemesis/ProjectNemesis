@@ -13,7 +13,9 @@ public class NebulaVanguard : MonsterBase
     }
     [Header("Stats")]
     [SerializeField] private bool _isAttacking = false;
-    [SerializeField] private float a;
+    [SerializeField] private float _box_Length = 1;
+    [SerializeField] private float _box_Height = 1;
+    [SerializeField] private float _box_Width = 1;
 
     [SerializeField]
     private State currentState = State.Idle;
@@ -85,6 +87,7 @@ public class NebulaVanguard : MonsterBase
         if (player != null && Vector3.Distance(transform.position, player.position) <= attackRange)
         {
             // 공격 로직
+            Physics.OverlapBox(transform.position, player.position);
             yield return null;
         }
         _isAttacking = false;
