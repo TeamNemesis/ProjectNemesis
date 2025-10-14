@@ -31,6 +31,7 @@ public class PoisinField : MonoBehaviour
     // 플레이어가 트리거에 들어왔을 때
     private void OnTriggerEnter(Collider other)
     {
+        // 혼란 
         if (other.CompareTag("Player"))
         {
             PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
@@ -44,8 +45,7 @@ public class PoisinField : MonoBehaviour
 
     // 플레이어가 트리거에서 나갔을 때
     private void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("Player"))
+    { 
         {
             if (damageCoroutine != null)
             {

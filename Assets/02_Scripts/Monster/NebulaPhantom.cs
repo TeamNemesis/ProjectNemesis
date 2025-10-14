@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class NebulaPhantom : MonsterBase, IDamageAble
+public class NebulaPhantom : MonsterBase
 {
     [SerializeField]
     private enum State
@@ -21,11 +21,18 @@ public class NebulaPhantom : MonsterBase, IDamageAble
     [SerializeField]
     private State currentState = State.Idle;
 
+    //private void Start()
+    //{
+    //    StartCoroutine(HidingFunction());
+    //}
+
     private void Update()
     {
         if (isDead || player == null) return;
+        if (isStunned) return;
 
         LookAtPlayer();
+        StartCoroutine(HidingFunction());
 
         switch (currentState)
         {
@@ -47,24 +54,12 @@ public class NebulaPhantom : MonsterBase, IDamageAble
         }
     }
 
-    /// <summary>
-    /// 플레이어를 바라보게 하는 함수
-    /// </summary>
-    private void LookAtPlayer()
-    {
-        Vector3 direction = (player.position - transform.position).normalized;
-        if (direction != Vector3.zero)
-        {
-            Quaternion targetRotation = Quaternion.LookRotation(direction);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 2f);
-        }
-    }
 
     private void HandleIdle()
     {
         // 플레이어와 거리
         float distance = Vector3.Distance(transform.position, player.position);
-        if (distance <= detectionRange)
+        if (distance <= detectionRange && CanSeePlayer())
         {
             currentState = State.Move;
         }
@@ -73,7 +68,7 @@ public class NebulaPhantom : MonsterBase, IDamageAble
     {
         if (player == null) return;
         float distance = Vector3.Distance(transform.position, player.position);
-        if (distance > detectionRange)
+        if (distance > detectionRange || !CanSeePlayer())
         {
             agent.ResetPath();
             currentState = State.Idle;
@@ -82,7 +77,7 @@ public class NebulaPhantom : MonsterBase, IDamageAble
 
         agent.SetDestination(player.position);
 
-        if (distance <= attackRange)
+        if (distance <= attackRange && CanSeePlayer())
         {
             agent.ResetPath();
             currentState = State.Attack;
@@ -98,22 +93,51 @@ public class NebulaPhantom : MonsterBase, IDamageAble
             laser.SetActive(true);
             yield return new WaitForSeconds(attackDelay);
 
-            // 범위 내 플레이어가 존재하는지 확인하는 박스. 크기 조정 필요
-            Physics.OverlapBox(transform.position, player.position);
+            float laserLength = 40f; // 사거리
+
+            // 레이저 시작 위치를 플레이어 높이에 맞춤
+            Vector3 startPos = transform.position + transform.forward * 0.5f;
+            startPos.y = player.position.y + 0.5f;
+
+            // 디버그용 레이저 표시
+            Debug.DrawRay(startPos, transform.forward * laserLength, Color.green, 0.3f);
+
+            // 벽에 막히는 Raycast
+            if (Physics.Raycast(startPos, transform.forward, out RaycastHit hit, laserLength, ~0, QueryTriggerInteraction.Collide))
+            {
+                if (hit.collider.CompareTag(targetTag))
+                {
+                    var damageable = hit.collider.GetComponent<IDamageAble>();
+                    if (damageable != null)
+                    {
+                        damageable.TakeDamage(10);
+                        Debug.Log("플레이어 피격");
+                    }
+                }
+                else
+                {
+                    Debug.Log($"총이 {hit.collider.name} 에 막힘");
+                }
+            }
+
             laser.SetActive(false);
             yield return new WaitForSeconds(attackDelay / 2);
         }
+
         _isAttacking = false;
         currentState = State.Move; // 공격 후 다시 추격 상태로 전환
     }
 
-    public void TakeDamage(float damage)
+    private IEnumerator HidingFunction()
     {
-        if (isDead) return;
-        currentHealth -= (int)damage;
-        if (currentHealth <= 0)
+        Renderer renderer = gameObject.GetComponent<Renderer>();
+        float hidingTimer = 0f;
+        hidingTimer += Time.deltaTime;
+        if (hidingTimer >= 10f)
         {
-            Die();
+            renderer.enabled = false;
+            yield return new WaitForSeconds(1f);
+            renderer.enabled = true;
         }
     }
 }
