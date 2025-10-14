@@ -80,15 +80,13 @@ public class DragInputManager : MonoBehaviour
     {
         if (isLeftSide)
         {
-            //Debug.Log("왼쪽드래그 중");
-            //leftStick.SetActive(true);
+            Debug.Log("왼쪽드래그 중");
 
-            //드래그움직임이 Stick에 적용되게...
         }
         else
         {
-            //Debug.Log("오른쪽드래그 중");
-            //rightStick.SetActive(true);
+            Debug.Log("오른쪽드래그 중");
+
         }
             
     }

@@ -20,6 +20,9 @@ public class GameManager : MonoBehaviour
             _instance = this;
             DontDestroyOnLoad(gameObject);
         }
+
+
+        _skillManger.InitializeSkillManager();
     }
 
 
@@ -29,4 +32,11 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private SkillManager _skillManger;
     public SkillManager skillManager { get { return _skillManger; } }
+
+    /// <summary>
+    /// 플레이어(Test용)
+    /// </summary>
+    [SerializeField]
+    private PlayerModel _player;
+    public PlayerModel player { get { return _player; } }
 }

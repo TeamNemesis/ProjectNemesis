@@ -26,8 +26,15 @@ public class PlayerController : MonoBehaviour
 
     private bool isAttackCooling = false;
     [SerializeField] private float attackCooldown = 0.5f;
-    
+
+    [SerializeField] private GameObject rangePrefab;
+    [SerializeField] private Camera mainCamera;
+    private GameObject currentRange;
+    private bool isDragging = false;
+    [SerializeField] private LayerMask groundMask;
+
     public event Action OnInteractInput;
+    public event Action<Vector2> OnMoveInput;
     void Start()
     {
         OnInteractInput += Interact;
@@ -37,9 +44,10 @@ public class PlayerController : MonoBehaviour
         _interactableGuideView.Initialize();
     }
 
+
     void Update()
     {
-
+        OnMoveInput?.Invoke(new Vector2(moveVec.x, moveVec.z));
         //hAxis = Input.GetAxisRaw("Horizontal"); //
         //vAxis = Input.GetAxisRaw("Vertical");
 
@@ -79,36 +87,53 @@ public class PlayerController : MonoBehaviour
             lastAttackVec = attackVec.normalized;
             StartCoroutine(Attack());
         }
+
+        if (isDragging && currentRange != null) //유탄버튼 드래그중일때
+        {
+            if (Physics.Raycast(mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue()),
+                                out RaycastHit hit,
+                                100f,
+                                groundMask))
+            {
+                Vector3 pos = hit.point;
+                pos.y = 0; // 필요 시 고정
+                currentRange.transform.position = pos;
+            }
+        }
     }
 
-    void OnMove(InputValue value)   //Move
+    public void OnMove(InputAction.CallbackContext value)   //Move
     {
-        Vector2 input = value.Get<Vector2>();
+        Vector2 input = value.ReadValue<Vector2>();
         if (input != null)
         {
             moveVec = new Vector3(input.x, 0f, input.y);    //이동방향
             //Debug.Log($"SEND_MESSAGE : {input.magnitude}"); //받아오는값 출력
         }
     }
-    void OnAttackM(InputValue value)    
+    public void OnAttackM(InputAction.CallbackContext value)    
     {
-        attackInput = value.Get<Vector2>();
+        attackInput = value.ReadValue<Vector2>();
         Debug.Log("AttackM");
     }
-    void OnAttack(InputValue value)
+    public void OnAttack(InputAction.CallbackContext value)
     {
-        Debug.Log("Attack");
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-
-        if (Physics.Raycast(ray, out hit, 100f))
+        if (value.started)
         {
-            Vector3 targetPos = hit.point;
-            targetPos.y = transform.position.y; // 캐릭터 높이 유지
-            transform.LookAt(targetPos);
+            Debug.Log("Attack");
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
 
-            transform.position += transform.forward * attackDistance; // 바라본 방향으로 앞으로 조금 이동
+            if (Physics.Raycast(ray, out hit, 100f))
+            {
+                Vector3 targetPos = hit.point;
+                targetPos.y = transform.position.y; // 캐릭터 높이 유지
+                transform.LookAt(targetPos);
+
+                transform.position += transform.forward * attackDistance; // 바라본 방향으로 앞으로 조금 이동
+            }
         }
+        
         //Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
 
         //Plane groundPlane = new Plane(Vector3.up, new Vector3(0, transform.position.y, 0)); //카메라가 기울어져있어서
@@ -122,11 +147,14 @@ public class PlayerController : MonoBehaviour
         //}
 
     }
-    void OnDash(InputValue value)   //Dash
+    
+    public void OnDash(InputAction.CallbackContext value) //invoke unity event확인용
     {
-        transform.position += transform.forward * dashDistance; // 바라본 방향으로 앞으로 조금 이동
-        Debug.Log("Dash");
-
+        if (value.started)
+        {
+            transform.position += transform.forward * dashDistance; // 바라본 방향으로 앞으로 조금 이동
+            Debug.Log("Dash");
+        }
     }
     IEnumerator Attack()
     {
@@ -149,13 +177,45 @@ public class PlayerController : MonoBehaviour
         //Debug.Log("상호작용!");
     }
 
-    void OnGrenade(InputValue value)
+    public void OnGrenade(InputAction.CallbackContext value)    
     {
-        Debug.Log("유탄");
+        if (value.started)
+        {
+            Debug.Log("유탄");
+        }
+        //방향 회전
+        //유탄 발사
+        
     }
-    void OnGrenade_M(InputValue value)
+    
+    public void OnGrenade_M(InputAction.CallbackContext value)
     {
-        Debug.Log("유탄_M");
+        if (value.started)  //클릭
+        {
+            if (Physics.Raycast(mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue()),
+                                out RaycastHit hit,
+                                100f,
+                                groundMask))
+            {
+                currentRange = Instantiate(rangePrefab, hit.point, Quaternion.identity);
+                isDragging = true;
+            }
+        }
+        else if (value.canceled)    //드랍
+        {
+            if (currentRange != null)
+                Destroy(currentRange);
+
+            isDragging = false;
+        }
+    }
+
+    public void OnSpecial(InputAction.CallbackContext value)
+    {
+        if(value.started)
+        {
+            Debug.Log("특수공격");
+        }
     }
     void Interact()
     {
