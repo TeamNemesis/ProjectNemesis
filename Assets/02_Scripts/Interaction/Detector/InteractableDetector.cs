@@ -89,4 +89,15 @@ public class InteractableDetector : MonoBehaviour
 
         _detectedInteractable.Interact(transform);
     }
+
+    /// <summary>
+    /// _detectPoint를 중심으로 _radius 반지름의 구를 그려서 감지 범위를 시각화
+    /// </summary>
+    void OnDrawGizmosSelected()
+    {
+        if (_detectPoint == null) return;
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(_detectPoint.position, _radius);
+    }
 }

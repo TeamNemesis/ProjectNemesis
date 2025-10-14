@@ -70,7 +70,10 @@ public class DamageableDetector : MonoBehaviour
         _detectPoint = detectPoint;
     }
 
-    private void OnDrawGizmosSelected()
+    /// <summary>
+    /// _detectPoint를 중심으로 _radius 반지름의 구를 그려 감지 범위를 시각화
+    /// </summary>
+    void OnDrawGizmosSelected()
     {
         if (_detectPoint == null) return;
 
