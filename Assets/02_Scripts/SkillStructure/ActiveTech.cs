@@ -51,7 +51,7 @@ public abstract class ActiveTech
     /// <summary>
     /// 기술이 사용될 때 호출되는 메서드
     /// </summary>
-    public abstract void Use();
+    public abstract void Use(Transform transform);
 
     public  ActiveTech(SkillData skillData)
     {

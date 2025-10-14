@@ -38,9 +38,9 @@ public static class Constants
     /// <summary>
     /// 플레이어 태그
     /// </summary>
-    public static string TAG_PLAYER = "Player";
+    public const string TAG_PLAYER = "Player";
 
-    public static string TAG_MONSTER = "Monster";
+    public const string TAG_MONSTER = "Monster";
 
     #endregion
 
@@ -92,6 +92,15 @@ public static class Constants
     #endregion
 
     #region debuff
+    /// <summary>
+    /// 디버프 갱신 주기
+    /// </summary>
+    public static float DEBUFF_TIME = 1f;
 
+    public const string DEBUFF_POISON = "poison";
+    public const string DEBUFF_OVERLOAD = "overload";
+    public const string DEBUFF_SLOW = "slow";
+    public const string DEBUFF_STUN = "stun";
+    public const string DEBUFF_CONFUSION = "confusion";
     #endregion
 }

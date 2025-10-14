@@ -55,9 +55,20 @@ public class Skill_Two_Attck : ActiveTech
 
     }
 
-    public override void Use()
+    public override void Use(Transform transform)
     {
         Debug.Log("Use " + _skillData.skillIdx);
+
+        DebuffData poison = new DebuffData();
+        poison.debuffName = Constants.DEBUFF_POISON;
+        poison.debuffDuration = 6f;
+        poison.debuffValue = 5f;
+        poison.maxStack = 5;
+
+        
+
+        DebuffHandler debuffHandler = transform.GetComponent<DebuffHandler>();
+        debuffHandler.ApplyDebuff(poison);
     }
 
     public Skill_Two_Attck(SkillData choosedSkill):base(choosedSkill)

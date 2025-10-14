@@ -11,7 +11,7 @@ public class Drone : MonoBehaviour, IReinforce
         Attack // 공격
     }
 
-    public event Action Attack;
+    public event Action<Transform> Attack;
 
     //TODO 플레이어 스탯 필드
 
@@ -79,7 +79,7 @@ public class Drone : MonoBehaviour, IReinforce
 
         if(Input.GetKeyDown(KeyCode.U))
         {
-            Attack?.Invoke();
+            Attack?.Invoke(_currentTarget.transform);
         }
     }
 
@@ -156,7 +156,7 @@ public class Drone : MonoBehaviour, IReinforce
             IDamageable target = _currentTarget.GetComponent<IDamageable>();
             if (target != null)
             {
-                Attack?.Invoke();
+                Attack?.Invoke(currentTarget);
                 target.TakeHit(Constants.DRONE_ATTACK);
                 yield return new WaitForSeconds(_attackCoolTime);
             }
