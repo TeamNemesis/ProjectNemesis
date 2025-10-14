@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
 
-public class MonsterBase : MonoBehaviour, IDamageable
+public class MonsterBase : CharacterBase, IDamageable
 {
     [Header("Stats")]
     [SerializeField] protected int attackDamage = 10;
