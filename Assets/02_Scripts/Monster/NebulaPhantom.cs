@@ -107,7 +107,7 @@ public class NebulaPhantom : MonsterBase
             {
                 if (hit.collider.CompareTag(targetTag))
                 {
-                    var damageable = hit.collider.GetComponent<IDamageAble>();
+                    var damageable = hit.collider.GetComponent<IDamageable>();
                     if (damageable != null)
                     {
                         damageable.TakeDamage(10);
