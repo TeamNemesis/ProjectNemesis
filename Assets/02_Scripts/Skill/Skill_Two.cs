@@ -31,11 +31,27 @@ public class Skill_Two_Attck : ActiveTech
     {
         base.Activate(player);
         player.Attack += Use;
+        Drone[] drones = player.transform.GetComponentsInChildren<Drone>();
+        if (drones.Length > 0)
+        {
+            foreach (Drone drone in drones)
+            {
+                drone.Attack += Use;
+            }
+        }
     }
     public override void Deactivate(PlayerModel player)
     {
         base.Deactivate(player);
         player.Attack -= Use;
+        Drone[] drones = player.transform.GetComponentsInChildren<Drone>();
+        if (drones.Length > 0)
+        {
+            foreach (Drone drone in drones)
+            {
+                drone.Attack -= Use;
+            }
+        }
 
     }
 
