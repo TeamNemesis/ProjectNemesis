@@ -3,9 +3,9 @@ using UnityEngine;
 
 public class MoveCamera : MonoBehaviour
 {
-    public Transform target;
-    public Vector3 offset;
-    public float cameraSpeed;
+    private Transform target;
+    private Vector3 offset = new Vector3(0, 15,-15);
+    private float cameraSpeed = 5f;
 
     [Header("카메라 제한 영역")]
     public float minX;
@@ -14,7 +14,7 @@ public class MoveCamera : MonoBehaviour
     public float maxZ;
 
     //
-    public float transparentAlpha = 0.3f;
+    private float transparentAlpha = 0.3f;
     public LayerMask obstacleMask; // 투명화 대상 레이어 설정
 
     private MeshRenderer lastRenderer;
@@ -22,7 +22,7 @@ public class MoveCamera : MonoBehaviour
 
     void Start()
     {
-
+        target = GameObject.FindGameObjectWithTag("Player").transform;
     }
     void Update()
     {
