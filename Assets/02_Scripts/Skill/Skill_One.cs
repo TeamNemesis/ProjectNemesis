@@ -1,14 +1,13 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// 추후 GridForge 기술로 변경
+/// 추후 비브르 기술로 변경
 /// </summary>
 public class Skill_One : SkillBase
 {
-    [SerializeField]
-    private Drone dronePrefab;
-    private List<Drone> droneList = new List<Drone>();
+    
 
     public override void ActivateSkill(SkillData choosedSkill)
     {
@@ -16,7 +15,12 @@ public class Skill_One : SkillBase
         {
             case 10:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
-                ActivateSpawnDrone(choosedSkill.skillLevel);
+                ActiveTech skillAttack = new Skill_One_Attack(choosedSkill);
+                if (_skillManager.attachTech != null)
+                {
+                    _skillManager.attachTech.Deactivate(player);
+                }
+                skillAttack.Activate(_skillManager, player);
                 break;
             case 11:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
@@ -61,46 +65,8 @@ public class Skill_One : SkillBase
 
     }
 
-    /// <summary>
-    /// 드론 소환
-    /// </summary>
-    /// <param name="skillLevel"></param>
-    public void ActivateSpawnDrone(int skillLevel)
-    {
-        Transform playerTranform = GameManager.Instance().player.transform;
-        Drone drone = Instantiate(dronePrefab, playerTranform);
-        drone.InitializeDrone(GameManager.Instance().player);
-        droneList.Add(drone);
-
-        float x = 0 - (float)(skillLevel - 1) / 2;
-
-        for (int i = 0; i < skillLevel; i++)
-        {
-
-            if (skillLevel % 2 == 1)
-            {
-                droneList[i].transform.localPosition = new Vector3((x + i), 1, -1 + Mathf.Abs(skillLevel / 2 - i) * Constants.DRONE_Z_POSITION);
-
-            }
-            else if (skillLevel == 4)
-            {
-                if (i == 0 || i == 3)
-                {
-                    droneList[i].transform.localPosition = new Vector3((x + i), 1, -1 + Constants.DRONE_Z_POSITION);
-
-                }
-                else
-                {
-                    droneList[i].transform.localPosition = new Vector3((x + i), 1, -1);
-
-                }
-            }
-            else
-            {
-                droneList[i].transform.localPosition = new Vector3((x + i), 1, -1);
-            }
-        }
-
-    }
+    
 
 }
+
+
