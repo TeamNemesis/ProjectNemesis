@@ -11,7 +11,7 @@ public class NebulaChemicalDisease : MonsterBase
         Attack, // 공격
         Die     // 죽음
     }
-    [Header("Stats")]
+    [Header("Local Stats")]
     [SerializeField] private float _poisinFieldDuration = 5f; // 독성 구름 지속 시간
     [SerializeField] private float _poisinFieldRadius = 3f;   // 독성 구름 반경
     [SerializeField] private bool _isAttacking = false;

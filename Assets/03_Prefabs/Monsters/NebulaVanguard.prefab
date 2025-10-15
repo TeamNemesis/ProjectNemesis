@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 1972899938919723020}
   - component: {fileID: 5829316648119766581}
   - component: {fileID: 3184096094195697757}
+  - component: {fileID: -7441764321670143569}
   m_Layer: 0
   m_Name: NebulaVanguard
   m_TagString: Untagged
@@ -124,20 +125,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db81e7c10fa0dd84aa868668da686365, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
-  currentHealth: 0
+  _maxHealth: 100
+  _currentHealth: 0
+  _moveSpeed: 5
+  isStunned: 0
+  isPushed: 0
+  isBindned: 0
+  isDead: 0
+  debuffHandler: {fileID: 0}
   attackDamage: 5
   attackRange: 3.5
   detectionRange: 20
   attackDelay: 2
   targetTag: Player
-  isStunned: 0
-  isPushed: 0
-  isBindned: 0
-  isDead: 0
   agent: {fileID: 0}
   player: {fileID: 0}
-  debuffHandler: {fileID: 0}
   _isAttacking: 0
   _box_Length: 3
   _box_Height: 3
@@ -165,3 +167,15 @@ NavMeshAgent:
   m_BaseOffset: 1
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &-7441764321670143569
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5312197195605876498}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 725c1c87d9a2e3346bd4c5a3c364f518, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

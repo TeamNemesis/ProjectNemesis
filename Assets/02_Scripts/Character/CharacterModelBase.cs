@@ -53,13 +53,12 @@ public abstract class CharacterModelBase : MonoBehaviour, IDamageable
 
     public event Action OnDieEvent;
 
+    [SerializeField] protected DebuffHandler debuffHandler;
+
     public void OnHpChangedEventPlay(int currentHp)
     {
         OnHpChanged?.Invoke(currentHp);
     }
-
-    [SerializeField] protected DebuffHandler debuffHandler;
-
 
     /// <summary>
     /// 캐릭터 생성 시 초기화 함수
@@ -67,7 +66,6 @@ public abstract class CharacterModelBase : MonoBehaviour, IDamageable
     public virtual void Initialize()
     {
         debuffHandler = GetComponent<DebuffHandler>();
-
     }
 
     public void TakeDamage(float damage)
@@ -86,6 +84,7 @@ public abstract class CharacterModelBase : MonoBehaviour, IDamageable
         if (debuffHandler != null && debuffHandler.HasDebuff(Constants.DEBUFF_BURN))
         {
             damage *= 2f;
+            debuffHandler.RemoveDebuff(Constants.DEBUFF_BURN);
         }
 
         _currentHealth -= (int)damage;
