@@ -1,9 +1,7 @@
-using System;
 using UnityEngine;
 using UnityEngine.AI;
-using System.Collections;
 
-public class MonsterBase : CharacterBase, IDamageable
+public class MonsterBase : CharacterModelBase
 {
     [Header("Stats")]
     [SerializeField] protected int attackDamage = 10;
@@ -13,6 +11,7 @@ public class MonsterBase : CharacterBase, IDamageable
     [SerializeField] public string targetTag = Constants.TAG_PLAYER;
 
 
+
     [Header("Components")]
     [SerializeField] protected NavMeshAgent agent;
     [SerializeField] protected Transform player;
@@ -20,7 +19,7 @@ public class MonsterBase : CharacterBase, IDamageable
 
 
 
-		public override void Initialize()
+    public override void Initialize()
     {
         base.Initialize();
         agent = GetComponent<NavMeshAgent>();
@@ -29,12 +28,12 @@ public class MonsterBase : CharacterBase, IDamageable
         if (playerObj != null)
             player = playerObj.transform;
 
-        currentHealth = maxHealth;
+        SetCurrentHp(maxHealth);
 
-        debuffHandler.Initialize(agent);
+        debuffHandler.InitializeMonster(agent);
     }
 
-  
+
 
     protected bool CanSeePlayer()
     {
@@ -66,4 +65,33 @@ public class MonsterBase : CharacterBase, IDamageable
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * 5f);
         }
     }
+
+    #region Test
+    public void Start()
+    {
+        Initialize();
+
+    }
+
+    public void Use(Transform transform)
+    {
+        Debug.Log("monster poison");
+
+
+        DebuffHandler.DebuffData poison = new DebuffHandler.DebuffData(Constants.DEBUFF_POISON, 6f, 5f);
+
+
+
+        DebuffHandler debuffHandler = transform.GetComponent<DebuffHandler>();
+        debuffHandler.ApplyDebuff(poison);
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.U))
+        {
+            Use(player);
+        }
+    }
+    #endregion
 }

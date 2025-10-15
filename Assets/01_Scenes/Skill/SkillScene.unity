@@ -611,6 +611,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5a04212837625a4da0b4c783ac0c318, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _resourceManager: {fileID: 518325913}
   _skillManger: {fileID: 626073239}
   _player: {fileID: 1850715906}
 --- !u!1 &166770970
@@ -1516,6 +1517,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 500379778}
   m_CullTransparentMesh: 1
+--- !u!1 &518325912
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 518325914}
+  - component: {fileID: 518325913}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &518325913
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 518325912}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fe2a580f96aae44684ecf42c49e62db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _playerWeaponSets: []
+--- !u!4 &518325914
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 518325912}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1, z: 19.500002}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &562926443
 GameObject:
   m_ObjectHideFlags: 0
@@ -1796,11 +1842,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b66ab580e048444c9534c1614b92b66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
-  currentHealth: 0
+  _maxHealth: 100
+  _currentHealth: 0
   _moveSpeed: 5
   isStunned: 0
   isPushed: 0
+  isBindned: 0
   isDead: 0
   debuffHandler: {fileID: 0}
   attackDamage: 10
@@ -1876,6 +1923,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skillBaseString: 
   _skillDataPath: whtjdgh1931/Skill_Temp - Skill_Four
+  dronePrefab: {fileID: 0}
 --- !u!114 &626073236
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1918,7 +1966,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skillBaseString: 
   _skillDataPath: whtjdgh1931/Skill_Temp - Skill_One
-  dronePrefab: {fileID: -1284445065136028588, guid: 10fae87dd47724a41bcb6edb7c2269c9, type: 3}
 --- !u!114 &626073239
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4365,11 +4412,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4dd914b0022246a47a8ce199a9933656, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
-  currentHealth: 0
+  _maxHealth: 100
+  _currentHealth: 0
   _moveSpeed: 5
   isStunned: 0
   isPushed: 0
+  isBindned: 0
   isDead: 0
   debuffHandler: {fileID: 0}
   currentTarget: {fileID: 603995156}
@@ -4499,3 +4547,4 @@ SceneRoots:
   - {fileID: 986393965}
   - {fileID: 1850715905}
   - {fileID: 603995156}
+  - {fileID: 518325914}

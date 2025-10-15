@@ -103,6 +103,7 @@ public static class Constants
     public const string DEBUFF_STUN = "stun";
     public const string DEBUFF_CONFUSION = "confusion";
     public const string DEBUFF_BURN = "burn";
+    public const string DEBUFF_BINDING = "bind";
     #endregion
 
     #region layer

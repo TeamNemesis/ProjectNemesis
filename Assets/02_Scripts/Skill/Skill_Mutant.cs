@@ -1,54 +1,51 @@
-using System;
 using UnityEngine;
 
 /// <summary>
-/// 추후 파이로 하트 모션
+/// 돌연변이 스킬
 /// </summary>
-public class Skill_Two : SkillBase
+public class Skill_Mutant : SkillBase
 {
-
     public override void ActivateSkill(SkillData choosedSkill)
     {
-
         switch (choosedSkill.skillIdx)
         {
-            case 20:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
-                
-                break;
-            case 21:
+            case 70:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
 
                 break;
-            case 22:
+            case 71:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
 
                 break;
-            case 23:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
-                break;
-
-            case 24:
+            case 72:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
 
                 break;
-            case 25:
+            case 73:
+                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
+                break;
+
+            case 74:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
 
                 break;
-            case 26:
+            case 75:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
 
                 break;
-            case 27:
+            case 76:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
 
                 break;
-            case 28:
+            case 77:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
 
                 break;
-            case 29:
+            case 78:
+                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
+
+                break;
+            case 79:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
 
                 break;
@@ -58,6 +55,6 @@ public class Skill_Two : SkillBase
 
         }
     }
+
+    
 }
-
-
