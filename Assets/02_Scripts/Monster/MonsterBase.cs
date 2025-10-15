@@ -1,52 +1,39 @@
-using System;
 using UnityEngine;
 using UnityEngine.AI;
-using System.Collections;
-using NUnit.Framework;
 
-public class MonsterBase : MonoBehaviour, IDamageable
+public class MonsterBase : CharacterModelBase
 {
     [Header("Stats")]
-    [SerializeField] protected int maxHealth = 100;
-    [SerializeField] protected int currentHealth;
     [SerializeField] protected int attackDamage = 10;
     [SerializeField] protected float attackRange = 2f;
     [SerializeField] protected float detectionRange = 10f;
     [SerializeField] protected float attackDelay = 0.5f;
     [SerializeField] public string targetTag = Constants.TAG_PLAYER;
 
-    [Header("상태이상")]
-    [SerializeField] public bool isStunned = false;    // 스턴
-    [SerializeField] public bool isPushed = false;     // 밀림
-    [SerializeField] public bool isBindned = false;    // 속박
-    [SerializeField] public bool isDead = false;       // 죽음
+
 
     [Header("Components")]
     [SerializeField] protected NavMeshAgent agent;
     [SerializeField] protected Transform player;
-    [SerializeField] protected DebuffHandler debuffHandler;
 
-    public event Action OnDieEvent;
 
-    protected virtual void Start()
+
+
+    public override void Initialize()
     {
+        base.Initialize();
         agent = GetComponent<NavMeshAgent>();
-        debuffHandler = GetComponent<DebuffHandler>();
 
         GameObject playerObj = GameObject.FindGameObjectWithTag(targetTag);
         if (playerObj != null)
             player = playerObj.transform;
 
-        currentHealth = maxHealth;
+        SetCurrentHp(maxHealth);
+
+        debuffHandler.InitializeMonster(agent);
     }
 
-    protected virtual void Die()
-    {
-        OnDieEvent?.Invoke();
 
-        isDead = true;
-        Destroy(gameObject);
-    }
 
     protected bool CanSeePlayer()
     {
@@ -78,26 +65,32 @@ public class MonsterBase : MonoBehaviour, IDamageable
         }
     }
 
-    public void TakeDamage(float damage)
+    #region Test
+    public void Start()
     {
-        if (isDead) return;
+        Initialize();
 
-        // 과부하 디버프
-        if (debuffHandler != null && debuffHandler.HasDebuff(Constants.DEBUFF_OVERLOAD))
-        {
-            int stacks = debuffHandler.GetStackCount(Constants.DEBUFF_OVERLOAD);
-            float bonus = 1f + (0.05f * stacks);
-            damage *= bonus;
-        }
-
-        // 화상 디버프
-        if (debuffHandler != null && debuffHandler.HasDebuff(Constants.DEBUFF_BURN))
-        {
-            damage *= 2f;
-        }
-
-        currentHealth -= (int)damage;
-        if (currentHealth <= 0)
-            Die();
     }
+
+    public void Use(Transform transform)
+    {
+        Debug.Log("monster poison");
+
+
+        DebuffHandler.DebuffData poison = new DebuffHandler.DebuffData(Constants.DEBUFF_POISON, 6f, 5f);
+
+
+
+        DebuffHandler debuffHandler = transform.GetComponent<DebuffHandler>();
+        debuffHandler.ApplyDebuff(poison);
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.U))
+        {
+            Use(player);
+        }
+    }
+    #endregion
 }

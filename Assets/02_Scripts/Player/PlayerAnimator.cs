@@ -8,11 +8,16 @@ public abstract class PlayerAnimator : MonoBehaviour
 {
     [SerializeField] protected Animator _animator; //플레이어 애니메이터 컴포넌트
 
-    /// <summary>
-    /// 플레이어의 공격입력을 받아 공격 애니메이션을 실행하는 함수
-    /// </summary>
-    public virtual void OnAttack()
+    public virtual void OnMove(float speed)
     {
-        _animator.SetTrigger(Constants.ANIPARAM_ONATTACK);
+        _animator.SetFloat(Constants.ANIPARAM_MOVESPEED, speed);
+    }
+
+    /// <summary>
+    /// 플레이어의 일반공격 입력을 받아 공격 애니메이션을 실행하는 함수
+    /// </summary>
+    public virtual void OnNormalAttack()
+    {
+        _animator.SetTrigger(Constants.ANIPARAM_ONNORMALATTACK);
     }
 }

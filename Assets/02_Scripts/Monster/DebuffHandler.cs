@@ -8,15 +8,25 @@ public class DebuffHandler : MonoBehaviour
 
     [SerializeField]
     private Dictionary<string, ActiveDebuff> activeDebuffs = new Dictionary<string, ActiveDebuff>();
-    private MonsterBase monster;
+    private CharacterModelBase character;
     private NavMeshAgent agent;
     private float originalSpeed;
+    private MonsterBase monster;
 
-    private void Awake()
+
+    public void InitializeMonster(NavMeshAgent agent)
     {
-        monster = GetComponent<MonsterBase>();
-        agent = GetComponent<NavMeshAgent>();
+        character = GetComponent<CharacterModelBase>();
+
+        this.agent = agent;
         originalSpeed = agent.speed;
+        monster = character.GetComponent<MonsterBase>();
+
+    }
+    public void InitializePlayer()
+    {
+        character = GetComponent<CharacterModelBase>();
+        originalSpeed = character.moveSpeed;
     }
 
     public class DebuffData
@@ -127,7 +137,7 @@ public class DebuffHandler : MonoBehaviour
     /// </summary>
     public void ApplyDebuff(DebuffData newDebuff)
     {
-        if (monster == null || monster.isDead)
+        if (character == null || character.isDead)
             return;
 
         if (activeDebuffs.ContainsKey(newDebuff.debuffName))
@@ -221,13 +231,13 @@ public class DebuffHandler : MonoBehaviour
                 break;
         }
 
-        while (active.remainingTime > 0f && !monster.isDead)
+        while (active.remainingTime > 0f && !character.isDead)
         {
             switch (debuff.debuffName)
             {
                 case Constants.DEBUFF_POISON:
                 case Constants.DEBUFF_OVERLOAD:
-                    monster.TakeDamage(active.totalValue);          // 플레이어 모댐증 적용 요망
+                    character.TakeDamage(active.totalValue);          // 플레이어 모댐증 적용 요망
                     break;
             }
 
@@ -256,11 +266,11 @@ public class DebuffHandler : MonoBehaviour
     /// <param name="duration"> 지속시간 </param>
     private IEnumerator StunCoroutine(float duration)
     {
-        monster.isStunned = true;
+        character.isStunned = true;
 
         yield return new WaitForSeconds(duration);
 
-        monster.isStunned = false;
+        character.isStunned = false;
     }
 
     /// <summary>
@@ -269,7 +279,7 @@ public class DebuffHandler : MonoBehaviour
     /// <param name="duration"> 지속시간 </param>
     private IEnumerator BindCoroutine(float duration)
     {
-        monster.isBindned = true;
+        character.isBindned = true;
 
         if (agent != null)
         {
@@ -278,12 +288,12 @@ public class DebuffHandler : MonoBehaviour
 
         yield return new WaitForSeconds(duration);
 
-        if (agent != null && !monster.isDead)
+        if (agent != null && !character.isDead)
         {
             agent.isStopped = false;
         }
 
-        monster.isBindned = false;
+        character.isBindned = false;
     }
 
     /// <summary>
@@ -292,6 +302,11 @@ public class DebuffHandler : MonoBehaviour
     /// <param name="duration"> 지속시간 </param>
     private IEnumerator ConfuseCoroutine(float duration)
     {
+        if (monster == null)
+        {
+            yield break;
+        }
+
         string originalTag = monster.targetTag;
         monster.targetTag = Constants.TAG_MONSTER;
 
@@ -380,18 +395,21 @@ public class DebuffHandler : MonoBehaviour
                     break;
 
                 case Constants.DEBUFF_STUN:
-                    if (!monster.isDead)
+                    if (!character.isDead)
                     {
-                        if (agent != null)
-                        {
-                            agent.isStopped = false;
-                        }
-                        monster.isStunned = false;
+                        character.isStunned = false;
                     }
                     break;
 
                 case Constants.DEBUFF_CONFUSION:
                     monster.targetTag = Constants.TAG_PLAYER;
+                    break;
+                case Constants.DEBUFF_BINDING:
+                    if (agent != null)
+                    {
+                        agent.isStopped = false;
+                    }
+                    character.isBindned = false;
                     break;
             }
 
