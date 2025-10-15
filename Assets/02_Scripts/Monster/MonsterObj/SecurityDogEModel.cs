@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using static UnityEngine.LightAnchor;
 
 public class SecurityDogEModel : MonsterBase
 {
@@ -13,10 +14,14 @@ public class SecurityDogEModel : MonsterBase
     }
     [Header("Local Stats")]
     [SerializeField] private bool _isAttacking = false;
-    [SerializeField] private float _jumpRange = 10f;
-    [SerializeField] private float _box_Length = 1;
-    [SerializeField] private float _box_Height = 1;
-    [SerializeField] private float _box_Width = 1;
+    [SerializeField] private float jumpPrepareTime = 0.5f; // 점프 준비 시간
+    [SerializeField] private float jumpSpeed = 15f; // 점프 속도
+    [SerializeField] private float jumpDuration = 0.8f; // 점프 지속 시간
+    [SerializeField] private float jumpCoolTime = 5;
+    [SerializeField] private float currentCoolTime = 0;
+    [SerializeField] private Vector3 jumpDirection;
+    [SerializeField] private float jumpTimer;
+    
 
     [SerializeField]
     private State currentState = State.Idle;
@@ -25,6 +30,7 @@ public class SecurityDogEModel : MonsterBase
     {
         if (isDead || player == null) return;
         if (isStunned) return;
+        currentCoolTime += Time.deltaTime;
 
         if (CanSeePlayer())
         {
@@ -40,7 +46,7 @@ public class SecurityDogEModel : MonsterBase
                 HandleMove();
                 break;
             case State.Attack:
-                if (!_isAttacking)
+                if (!_isAttacking && currentCoolTime > jumpCoolTime)
                 {
                     StartCoroutine(PerformAttack());
                 }
@@ -75,7 +81,7 @@ public class SecurityDogEModel : MonsterBase
 
         agent.SetDestination(player.position);
 
-        if (distance <= _jumpRange && CanSeePlayer())
+        if (distance <= attackRange && CanSeePlayer())
         {
             agent.ResetPath();
             currentState = State.Attack;
@@ -84,70 +90,49 @@ public class SecurityDogEModel : MonsterBase
 
     private IEnumerator PerformAttack()
     {
-        Debug.Log("코루틴 시작");
         _isAttacking = true;
         float distance = Vector3.Distance(transform.position, player.position);
 
-        // 점프 준비 거리
-        if (distance < _jumpRange)
+        if (distance < attackRange)
         {
-            Debug.Log("점프 시작");
-            // 잠시 멈춤 (돌진 준비 동작)
-            yield return new WaitForSeconds(attackDelay);
+            //점프 준비
+            agent.isStopped = true;
+            yield return new WaitForSeconds(jumpPrepareTime);
 
-            // 돌진 시작
-            agent.speed = originalSpeed * 3;
+            jumpDirection = (player.position - transform.position).normalized;
 
-            // 돌진하면서 플레이어에게 접근
-            float dashTime = 0f;
-            float maxDashTime = 3f; // 최대 돌진 시간
+            jumpTimer = 0f;
 
-            while (dashTime < maxDashTime)
+            agent.enabled = false;
+
+            while (jumpTimer < jumpDuration && _isAttacking)
             {
-                distance = Vector3.Distance(transform.position, player.position);
-
-                // 공격 범위 내에 들어오면 공격 판정
-                if (distance <= attackRange)
-                {
-                    Vector3 center = transform.position + transform.forward * (_box_Length / 2f);
-                    Vector3 halfExtents = new Vector3(_box_Width / 2f, _box_Height / 2f, _box_Length / 2f);
-                    Quaternion orientation = Quaternion.LookRotation(transform.forward);
-                    Collider[] hitTarget = Physics.OverlapBox(center, halfExtents, orientation);
-
-                    foreach (Collider target in hitTarget)
-                    {
-                        if (target.CompareTag(targetTag) && target.TryGetComponent(out IDamageable playerHealth))
-                        {
-                            playerHealth.TakeDamage(attackDamage);
-                        }
-                    }
-
-                    // 공격 후 잠시 대기
-                    yield return new WaitForSeconds(0.5f);
-                    break;
-                }
-
-                dashTime += Time.deltaTime;
-                yield return null; // 다음 프레임까지 대기
+                jumpTimer += Time.deltaTime;
+                transform.position += jumpDirection * jumpSpeed * Time.deltaTime;
+                yield return null;
             }
 
-            // 속도 원래대로
-            agent.speed = originalSpeed;
+            currentCoolTime = 0f;
+            agent.enabled = true;
+            if (agent.enabled && agent.isOnNavMesh)
+            {
+                agent.isStopped = false;
+            }
         }
-
         _isAttacking = false;
         currentState = State.Move;
     }
 
-    void OnDrawGizmosSelected()
+    private void OnTriggerEnter(Collider other)
     {
-        Vector3 center = transform.position + transform.forward * (_box_Length / 2f);
-        Vector3 halfExtents = new Vector3(_box_Width / 2f, _box_Height / 2f, _box_Length / 2f);
-        Quaternion orientation = Quaternion.LookRotation(transform.forward);
-
-        Gizmos.color = Color.red;
-        Gizmos.matrix = Matrix4x4.TRS(center, orientation, Vector3.one);
-        Gizmos.DrawWireCube(Vector3.zero, halfExtents * 2f);
+        if (_isAttacking && other.CompareTag("Player"))
+        {
+            var playerHealth = other.GetComponent<PlayerHealth>();
+            if (playerHealth != null)
+            {
+                playerHealth.TakeDamage(attackDamage);
+            }
+        }
     }
 
 }
