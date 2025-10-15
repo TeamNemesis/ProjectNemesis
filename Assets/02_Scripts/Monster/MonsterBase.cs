@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
 
-public class MonsterBase : CharacterBase, IDamageable
+public class MonsterBase : CharacterModelBase
 {
     [Header("Stats")]
     [SerializeField] protected int attackDamage = 10;
@@ -79,12 +79,8 @@ public class MonsterBase : CharacterBase, IDamageable
 				Debug.Log("monster poison");
 
 
-				DebuffHandler.DebuffData poison = new DebuffHandler.DebuffData();
-				poison.debuffName = Constants.DEBUFF_POISON;
-				poison.debuffDuration = 6f;
-				poison.debuffValue = 5f;
-				poison.maxStack = 5;
-
+				DebuffHandler.DebuffData poison = new DebuffHandler.DebuffData(Constants.DEBUFF_POISON,6f,5f);
+			
 
 
 				DebuffHandler debuffHandler = transform.GetComponent<DebuffHandler>();

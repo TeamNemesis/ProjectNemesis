@@ -8,15 +8,25 @@ public class DebuffHandler : MonoBehaviour
 
     [SerializeField]
     private Dictionary<string, ActiveDebuff> activeDebuffs = new Dictionary<string, ActiveDebuff>();
-    private MonsterBase monster;
+    private CharacterModelBase monster;
     private NavMeshAgent agent;
     private float originalSpeed;
+    private MonsterBase monsterBase;
 
-    private void Awake()
+
+    public void Initialize(NavMeshAgent agent)
     {
-        monster = GetComponent<MonsterBase>();
-        agent = GetComponent<NavMeshAgent>();
+        monster = GetComponent<CharacterModelBase>();
+
+        this.agent = agent;
         originalSpeed = agent.speed;
+
+    }
+    public void Initialize()
+    {
+        monster = GetComponent<CharacterModelBase>();
+        originalSpeed = monster.moveSpeed;
+        monsterBase = monster.GetComponent<MonsterBase>();
     }
 
     public class DebuffData
@@ -243,12 +253,12 @@ public class DebuffHandler : MonoBehaviour
 
     private IEnumerator ConfuseCoroutine(float duration)
     {
-        string originalTag = monster.targetTag;
-        monster.targetTag = Constants.TAG_MONSTER;
+        string originalTag = monsterBase.targetTag;
+        monsterBase.targetTag = Constants.TAG_MONSTER;
 
         yield return new WaitForSeconds(duration);
 
-        monster.targetTag = originalTag;
+        monsterBase.targetTag = originalTag;
     }
 
     public bool CheckDebuff(DebuffData data)
@@ -327,7 +337,7 @@ public class DebuffHandler : MonoBehaviour
                     break;
 
                 case Constants.DEBUFF_CONFUSION:
-                    monster.targetTag = Constants.TAG_PLAYER;
+                    monsterBase.targetTag = Constants.TAG_PLAYER;
                     break;
             }
 

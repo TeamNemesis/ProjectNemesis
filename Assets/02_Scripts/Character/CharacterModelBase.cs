@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// 몬스터와 플레이어 부모 클래스
 /// </summary>
-public abstract class CharacterBase : MonoBehaviour
+public abstract class CharacterModelBase : MonoBehaviour,IDamageable
 {
     [SerializeField] protected int maxHealth = 100;
 		public int MaxHp => maxHealth; // 최대 체력을 반환하는 속성
