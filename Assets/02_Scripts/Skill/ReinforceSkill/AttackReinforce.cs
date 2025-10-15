@@ -218,6 +218,7 @@ public class Skill_Four_Attack : ActiveTech
     {
         if(stack>=10)
         {
+            // 스턴 적용
             transform.GetComponent<DebuffHandler>().ApplyDebuff(DebuffHandler.DebuffData.CreateStun(1f));
         }
     }
@@ -228,6 +229,9 @@ public class Skill_Four_Attack : ActiveTech
     }
 }
 
+/// <summary>
+/// lux 제약 일반공격 강화
+/// </summary>
 public class Skill_Five_Attack : ActiveTech
 {
 
@@ -238,19 +242,42 @@ public class Skill_Five_Attack : ActiveTech
     public override void Activate(SkillManager skillManager, PlayerModel player)
     {
         base.Activate(skillManager, player);
-    }
+				player.AttackHit += Use;
+				Drone[] drones = player.transform.GetComponentsInChildren<Drone>();
+				if (drones.Length > 0)
+				{
+						foreach (Drone drone in drones)
+						{
+								drone.Attack += Use;
+						}
+				}
+		}
 
     public override void Deactivate(PlayerModel player)
     {
         base.Deactivate(player);
-    }
+				// 이벤트 해제
+				player.AttackHit -= Use;
+
+				Drone[] drones = player.transform.GetComponentsInChildren<Drone>();
+				if (drones.Length > 0)
+				{
+						foreach (Drone drone in drones)
+						{
+								drone.Attack -= Use;
+						}
+				}
+		}
 
     public override void Use(Transform transform)
     {
         base.Use(transform);
-    }
+				//TODO 적 보스인지 일반인지 구분
+        //TODO 약화 구현
+				//transform.GetComponent<DebuffHandler>().ApplyDebuff(DebuffHandler.DebuffData.Create);
+		}
 
-    public Skill_Five_Attack(SkillData skillData) : base(skillData)
+		public Skill_Five_Attack(SkillData skillData) : base(skillData)
     {
     }
 }
