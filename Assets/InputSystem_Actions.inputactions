@@ -16,7 +16,7 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "AttackM",
+                    "name": "NormalAttackM",
                     "type": "Value",
                     "id": "b54238c4-d292-4e9d-8ccc-19c21c2e7ad4",
                     "expectedControlType": "Vector2",
@@ -25,7 +25,7 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Attack",
+                    "name": "NormalAttack",
                     "type": "Button",
                     "id": "cd563506-6645-4449-9d1e-5d1a5a7caa02",
                     "expectedControlType": "",
@@ -43,7 +43,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Grenade",
+                    "name": "GrenadeAttack",
                     "type": "Button",
                     "id": "aaac4417-2323-406d-b239-92c9263fef08",
                     "expectedControlType": "",
@@ -52,7 +52,7 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Grenade_M",
+                    "name": "GrenadeAttackM",
                     "type": "Button",
                     "id": "1c62c1f3-35c2-4f67-be08-471639e35748",
                     "expectedControlType": "",
@@ -70,7 +70,7 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Special",
+                    "name": "SpecialAttack",
                     "type": "Button",
                     "id": "f56fdcfc-a908-489f-8852-b57b1a783da6",
                     "expectedControlType": "",
@@ -232,28 +232,6 @@
                 },
                 {
                     "name": "",
-                    "id": "4b758034-6412-46a9-b836-7b16ce9ece7a",
-                    "path": "<Gamepad>/rightStick",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Gamepad",
-                    "action": "AttackM",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "123a1616-6b0f-49b1-8cc4-9fc205f561e6",
-                    "path": "<Mouse>/rightButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Grenade",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "5df5cee5-be65-4962-9c0a-76c3d4643573",
                     "path": "<Keyboard>/space",
                     "interactions": "",
@@ -281,7 +259,18 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Attack",
+                    "action": "NormalAttack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4b758034-6412-46a9-b836-7b16ce9ece7a",
+                    "path": "<Gamepad>/rightStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "NormalAttack",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -292,7 +281,18 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Grenade_M",
+                    "action": "GrenadeAttack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "123a1616-6b0f-49b1-8cc4-9fc205f561e6",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "GrenadeAttack",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -303,7 +303,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Special",
+                    "action": "SpecialAttack",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -314,7 +314,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Special",
+                    "action": "SpecialAttack",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
