@@ -54,18 +54,13 @@ public class GameManager : MonoBehaviour
             DontDestroyOnLoad(gameObject);
         }
 
-
-        _skillManger.InitializeSkillManager();
+        _resourceManager.Initialize();
+        //_skillManger.InitializeSkillManager();
     }
 
     [SerializeField] ResourceManager _resourceManager;      // 리소스 매니저
 
     public ResourceManager ResourceManager => _resourceManager;
-
-    private void Start()
-    {
-        _resourceManager.Initialize();
-    }
 
     /// <summary>
     /// 스킬 매니저

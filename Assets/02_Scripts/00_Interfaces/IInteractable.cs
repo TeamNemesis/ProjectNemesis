@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -27,6 +28,8 @@ public interface IInteractable
     /// Interactor의 타입을 반드시 명시
     /// </summary>
     InteractableType InteractableType { get; }
+
+    event Action<IInteractable> OnInteracted;
 
     /// <summary>
     /// 상호작용을 실행하는 함수

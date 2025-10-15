@@ -66,37 +66,4 @@ public class MonsterBase : CharacterBase, IDamageable
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * 5f);
         }
     }
-
-		#region Test
-		public void Start()
-		{
-				Initialize();
-
-		}
-
-		public  void Use(Transform transform)
-		{
-				Debug.Log("monster poison");
-
-
-				DebuffHandler.DebuffData poison = new DebuffHandler.DebuffData();
-				poison.debuffName = Constants.DEBUFF_POISON;
-				poison.debuffDuration = 6f;
-				poison.debuffValue = 5f;
-				poison.maxStack = 5;
-
-
-
-				DebuffHandler debuffHandler = transform.GetComponent<DebuffHandler>();
-				debuffHandler.ApplyDebuff(poison);
-		}
-
-		public void Update()
-		{
-				if(Input.GetKeyDown(KeyCode.U))
-        {
-            Use(player);
-        }
-		}
-		#endregion
 }
