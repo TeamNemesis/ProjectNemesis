@@ -43,13 +43,7 @@ public class Skill_One_Attack : ActiveTech
         Debug.Log("Use " + _skillData.skillIdx);
 
 
-        DebuffHandler.DebuffData poison = new DebuffHandler.DebuffData();
-        poison.debuffName = Constants.DEBUFF_POISON;
-        poison.debuffDuration = 6f;
-        poison.debuffValue = 5f;
-        poison.maxStack = 5;
-
-
+        DebuffHandler.DebuffData poison = new DebuffHandler.DebuffData(Constants.DEBUFF_POISON,6f,5f,5);
 
         DebuffHandler debuffHandler = transform.GetComponent<DebuffHandler>();
         debuffHandler.ApplyDebuff(poison);

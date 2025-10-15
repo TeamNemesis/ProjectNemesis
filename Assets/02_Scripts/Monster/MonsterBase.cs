@@ -1,7 +1,5 @@
-using System;
 using UnityEngine;
 using UnityEngine.AI;
-using System.Collections;
 
 public class MonsterBase : CharacterModelBase
 {
@@ -12,11 +10,7 @@ public class MonsterBase : CharacterModelBase
     [SerializeField] protected float attackDelay = 0.5f;
     [SerializeField] public string targetTag = Constants.TAG_PLAYER;
 
-    [Header("상태이상")]
-    [SerializeField] public bool isStunned = false;    // 스턴
-    [SerializeField] public bool isPushed = false;     // 밀림
-    [SerializeField] public bool isBindned = false;    // 속박
-    [SerializeField] public bool isDead = false;       // 죽음
+
 
     [Header("Components")]
     [SerializeField] protected NavMeshAgent agent;
@@ -25,7 +19,7 @@ public class MonsterBase : CharacterModelBase
 
 
 
-		public override void Initialize()
+    public override void Initialize()
     {
         base.Initialize();
         agent = GetComponent<NavMeshAgent>();
@@ -34,12 +28,12 @@ public class MonsterBase : CharacterModelBase
         if (playerObj != null)
             player = playerObj.transform;
 
-        currentHealth = maxHealth;
+        SetCurrentHp(maxHealth);
 
-        debuffHandler.Initialize(agent);
+        debuffHandler.InitializeMonster(agent);
     }
 
-  
+
 
     protected bool CanSeePlayer()
     {
@@ -72,32 +66,32 @@ public class MonsterBase : CharacterModelBase
         }
     }
 
-		#region Test
-		public void Start()
-		{
-				Initialize();
+    #region Test
+    public void Start()
+    {
+        Initialize();
 
-		}
+    }
 
-		public  void Use(Transform transform)
-		{
-				Debug.Log("monster poison");
-
-
-				DebuffHandler.DebuffData poison = new DebuffHandler.DebuffData(Constants.DEBUFF_POISON,6f,5f);
-			
+    public void Use(Transform transform)
+    {
+        Debug.Log("monster poison");
 
 
-				DebuffHandler debuffHandler = transform.GetComponent<DebuffHandler>();
-				debuffHandler.ApplyDebuff(poison);
-		}
+        DebuffHandler.DebuffData poison = new DebuffHandler.DebuffData(Constants.DEBUFF_POISON, 6f, 5f);
 
-		public void Update()
-		{
-				if(Input.GetKeyDown(KeyCode.U))
+
+
+        DebuffHandler debuffHandler = transform.GetComponent<DebuffHandler>();
+        debuffHandler.ApplyDebuff(poison);
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.U))
         {
             Use(player);
         }
-		}
-		#endregion
+    }
+    #endregion
 }
