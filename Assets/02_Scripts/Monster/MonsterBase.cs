@@ -48,7 +48,6 @@ public class MonsterBase : CharacterModelBase
         {
             if (hit.transform.CompareTag(targetTag))
             {
-                Debug.Log("playerCheck");
                 return true;
             }
             return false;
