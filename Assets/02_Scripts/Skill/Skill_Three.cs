@@ -79,7 +79,7 @@ public class Skill_Three_Attck : ActiveTech
     public override void Activate(SkillManager skillManager, PlayerModel player)
     {
         base.Activate(skillManager,player);
-        player.Attack += Use;
+        player.AttackHit += Use;
         Drone[] drones = player.transform.GetComponentsInChildren<Drone>();
         if(drones.Length > 0)
         {
@@ -92,7 +92,7 @@ public class Skill_Three_Attck : ActiveTech
     public override void Deactivate(PlayerModel player)
     {
         base.Deactivate(player);
-        player.Attack -= Use;
+        player.AttackHit -= Use;
         Drone[] drones = player.transform.GetComponentsInChildren<Drone>();
         if (drones.Length > 0)
         {
