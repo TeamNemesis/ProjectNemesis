@@ -232,28 +232,6 @@
                 },
                 {
                     "name": "",
-                    "id": "4b758034-6412-46a9-b836-7b16ce9ece7a",
-                    "path": "<Gamepad>/rightStick",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Gamepad",
-                    "action": "NormalAttackM",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "123a1616-6b0f-49b1-8cc4-9fc205f561e6",
-                    "path": "<Mouse>/rightButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "GrenadeAttack",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "5df5cee5-be65-4962-9c0a-76c3d4643573",
                     "path": "<Keyboard>/space",
                     "interactions": "",
@@ -287,12 +265,34 @@
                 },
                 {
                     "name": "",
+                    "id": "4b758034-6412-46a9-b836-7b16ce9ece7a",
+                    "path": "<Gamepad>/rightStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "NormalAttack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "1c7fd2fe-3224-4cdd-b223-98ad27d0f1bf",
                     "path": "<Gamepad>/buttonEast",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "GrenadeAttackM",
+                    "action": "GrenadeAttack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "123a1616-6b0f-49b1-8cc4-9fc205f561e6",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "GrenadeAttack",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
