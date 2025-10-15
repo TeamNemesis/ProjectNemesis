@@ -5,189 +5,221 @@ using UnityEngine.AI;
 
 public class DebuffHandler : MonoBehaviour
 {
-    public class DebuffData
-    {
-        public string debuffName;      // 디버프 이름
-        public float debuffDuration;   // 지속시간
-        public float debuffValue;      // 초당 대미지나 배수값
-        public int maxStack;           // 최대 스택
-    }
+		public class DebuffData
+		{
+				public string debuffName;      // 디버프 이름
+				public float debuffDuration;   // 지속시간
+				public float debuffValue;      // 초당 대미지나 배수값
+				public int maxStack;           // 최대 스택
+		}
 
-    [SerializeField] 
-    private class ActiveDebuff
-    {
-        public DebuffData data;
-        public float remainingTime;
-        public float totalValue;
-        public int stackCount;
-        public IEnumerator routine;
+		[SerializeField]
+		private class ActiveDebuff
+		{
+				public DebuffData data;
+				public float remainingTime;
+				public float totalValue;
+				public int stackCount;
+				public IEnumerator routine;
 
-        public ActiveDebuff(DebuffData data, IEnumerator routine)
-        {
-            this.data = data;
-            remainingTime = data.debuffDuration;
-            totalValue = data.debuffValue;
-            stackCount = 1;
-            this.routine = routine;
-        }
-    }
+				public ActiveDebuff(DebuffData data, IEnumerator routine)
+				{
+						this.data = data;
+						remainingTime = data.debuffDuration;
+						totalValue = data.debuffValue;
+						stackCount = 1;
+						this.routine = routine;
+				}
+		}
 
-    [SerializeField]
-    private Dictionary<string, ActiveDebuff> activeDebuffs = new Dictionary<string, ActiveDebuff>();
-    private MonsterBase monster;
-    private NavMeshAgent agent;
 
-    private void Awake()
-    {
-        monster = GetComponent<MonsterBase>();
-        agent = GetComponent<NavMeshAgent>();
-    }
+		/// <summary>
+		/// 몬스터용 초기화 함수
+		/// </summary>
+		/// <param name="monsterAgent"></param>
+		public void Initialize(NavMeshAgent monsterAgent)
+		{
+				character = GetComponent<CharacterBase>();
+				if (gameObject.CompareTag(Constants.TAG_MONSTER))
+				{
+						agent = monsterAgent;
+				}
+		}
 
-    /// <summary>
-    /// 디버프 적용
-    /// </summary>
-    public void ApplyDebuff(DebuffData newDebuff)
-    {
-        if (monster == null || monster.isDead)
-            return;
+		/// <summary>
+		/// 플레이어용 초기화 함수
+		/// </summary>
+		public void Initialize()
+		{
+				character = GetComponent<CharacterBase>();
+				
+		}
 
-        if (activeDebuffs.ContainsKey(newDebuff.debuffName))
-        {
-            ActiveDebuff existing = activeDebuffs[newDebuff.debuffName];
 
-            // 스택형 디버프들
-            if (newDebuff.debuffName == Constants.DEBUFF_POISON || newDebuff.debuffName == Constants.DEBUFF_OVERLOAD)
-            {
-                if (existing.stackCount < newDebuff.maxStack)
-                {
-                    existing.stackCount++;
-                    existing.totalValue += newDebuff.debuffValue;
-                }
-                existing.remainingTime = newDebuff.debuffDuration;
-            }
-            else
-            {
-                existing.remainingTime = newDebuff.debuffDuration;
-                existing.totalValue = newDebuff.debuffValue;
-            }
+		[SerializeField]
+		private Dictionary<string, ActiveDebuff> activeDebuffs = new Dictionary<string, ActiveDebuff>();
+		private CharacterBase character;
+		private NavMeshAgent agent;
+		/// <summary>
+		/// 디버프 적용
+		/// </summary>
+		public void ApplyDebuff(DebuffData newDebuff)
+		{
 
-            return;
-        }
+				if (character == null || character.isDead)
+						return;
 
-        IEnumerator routine = (HandleDebuff(newDebuff));
-        activeDebuffs.Add(newDebuff.debuffName, new ActiveDebuff(newDebuff, routine));
-        StartCoroutine(activeDebuffs[newDebuff.debuffName].routine);
-    }
+				if (activeDebuffs.ContainsKey(newDebuff.debuffName))
+				{
+						ActiveDebuff existing = activeDebuffs[newDebuff.debuffName];
 
-    private IEnumerator HandleDebuff(DebuffData debuff)
-    {
-        Debug.Log(activeDebuffs.Count);
-        foreach(var debuffs in activeDebuffs)
-        {
-            Debug.Log(debuffs.Key);
-        }
-        {
+						// 스택형 디버프들
+						if (newDebuff.debuffName == Constants.DEBUFF_POISON || newDebuff.debuffName == Constants.DEBUFF_OVERLOAD)
+						{
+								if (existing.stackCount < newDebuff.maxStack)
+								{
+										existing.stackCount++;
+										existing.totalValue += newDebuff.debuffValue;
+								}
+								existing.remainingTime = newDebuff.debuffDuration;
+						}
+						else
+						{
+								existing.remainingTime = newDebuff.debuffDuration;
+								existing.totalValue = newDebuff.debuffValue;
+						}
 
-        ActiveDebuff active = activeDebuffs[debuff.debuffName];
+						return;
+				}
 
-        // 시작 시 1회 효과
-        switch (debuff.debuffName)
-        {
-            case Constants.DEBUFF_SLOW:
-                if (agent != null)
-                    agent.speed *= 0.7f;
-                break;
+				IEnumerator routine = (HandleDebuff(newDebuff));
+				activeDebuffs.Add(newDebuff.debuffName, new ActiveDebuff(newDebuff, routine));
+				StartCoroutine(activeDebuffs[newDebuff.debuffName].routine);
+		}
 
-            case Constants.DEBUFF_STUN:
-                StartCoroutine(StunCoroutine(debuff.debuffDuration));
-                break;
+		private IEnumerator HandleDebuff(DebuffData debuff)
+		{
 
-            case Constants.DEBUFF_CONFUSION:
-                StartCoroutine(ConfuseCoroutine(debuff.debuffDuration));
-                break;
-        }
 
-        while (active.remainingTime > 0f && !monster.isDead)
-        {
-            switch (debuff.debuffName)
-            {
-                case Constants.DEBUFF_POISON:
-                case Constants.DEBUFF_OVERLOAD:
-                        Debug.Log("takeDamage" + active.totalValue);
-                    monster.TakeDamage(active.totalValue);
-                    break;
-            }
+				ActiveDebuff active = activeDebuffs[debuff.debuffName];
 
-            active.remainingTime -= 1f;
-            yield return new WaitForSeconds(1f);
-        }
+				// 시작 시 1회 효과
+				switch (debuff.debuffName)
+				{
+						case Constants.DEBUFF_SLOW:
+								if (agent != null)
+								{
+										agent.speed *= 0.7f;
 
-        // 해제 시 복원
-        switch (debuff.debuffName)
-        {
-            case Constants.DEBUFF_SLOW:
-                if (agent != null)
-                    agent.speed /= 0.7f;
-                break;
-        }
+								}
+								else
+								{
+										character.SetMoveSpeed(3.5f);
+								}
+								break;
 
-        activeDebuffs.Remove(debuff.debuffName);
-        }
-    }
+						case Constants.DEBUFF_STUN:
+								StartCoroutine(StunCoroutine(debuff.debuffDuration));
+								break;
 
-    private IEnumerator StunCoroutine(float duration)
-    {
-        monster.isStunned = true;
+						case Constants.DEBUFF_CONFUSION:
+								MonsterBase monster = character.GetComponent<MonsterBase>();
+								StartCoroutine(ConfuseCoroutine(debuff.debuffDuration, monster));
+								break;
+				}
 
-        if (agent != null)
-            agent.isStopped = true;
+				while (active.remainingTime > 0f && !character.isDead)
+				{
+						switch (debuff.debuffName)
+						{
+								case Constants.DEBUFF_POISON:
+								case Constants.DEBUFF_OVERLOAD:
+										Debug.Log("takeDamage" + active.totalValue);
+										character.TakeDamage(active.totalValue);
+										break;
+						}
 
-        yield return new WaitForSeconds(duration);
+						active.remainingTime -= 1f;
+						yield return new WaitForSeconds(1f);
+				}
 
-        if (agent != null && !monster.isDead)
-            agent.isStopped = false;
+				// 해제 시 복원
+				switch (debuff.debuffName)
+				{
+						case Constants.DEBUFF_SLOW:
+								if (agent != null)
+								{
+										agent.speed /= 0.7f;
+								}
+								else
+								{
+										character.SetMoveSpeed(5f);
+								}
+								break;
+				}
 
-        monster.isStunned = false;
-    }
+				activeDebuffs.Remove(debuff.debuffName);
 
-    private IEnumerator ConfuseCoroutine(float duration)
-    {
-        string originalTag = monster.targetTag;
-        monster.targetTag = Constants.TAG_MONSTER;
+		}
 
-        yield return new WaitForSeconds(duration);
+		private IEnumerator StunCoroutine(float duration)
+		{
+				character.isStunned = true;
 
-        monster.targetTag = originalTag;
-    }
+				if (agent != null)
+						agent.isStopped = true;
 
-    public bool CheckDebuff(DebuffData data)
-    {
-        return activeDebuffs.ContainsKey(data.debuffName);
-    }
+				yield return new WaitForSeconds(duration);
 
-    public bool HasDebuff(string debuffName)
-    {
-        return activeDebuffs.ContainsKey(debuffName);
-    }
+				if (agent != null && !character.isDead)
+						agent.isStopped = false;
 
-    public int GetActiveDebuffCount()
-    {
-        int count = 0;
+				character.isStunned = false;
+		}
 
-        foreach (KeyValuePair<string, ActiveDebuff> pair in activeDebuffs)
-        {
-            ActiveDebuff debuff = pair.Value;
-            if (debuff != null && debuff.remainingTime > 0f)
-                count++;
-        }
+		/// <summary>
+		/// 혼란
+		/// </summary>
+		/// <param name="duration"></param>
+		/// <returns></returns>
+		private IEnumerator ConfuseCoroutine(float duration, MonsterBase monster)
+		{
+				string originalTag = monster.targetTag;
+				monster.targetTag = Constants.TAG_MONSTER;
 
-        return count;
-    }
+				yield return new WaitForSeconds(duration);
 
-    public int GetStackCount(string debuffName)
-    {
-        if (activeDebuffs.ContainsKey(debuffName))
-            return activeDebuffs[debuffName].stackCount;
-        return 0;
-    }
+				monster.targetTag = originalTag;
+		}
+
+		public bool CheckDebuff(DebuffData data)
+		{
+				return activeDebuffs.ContainsKey(data.debuffName);
+		}
+
+		public bool HasDebuff(string debuffName)
+		{
+				return activeDebuffs.ContainsKey(debuffName);
+		}
+
+		public int GetActiveDebuffCount()
+		{
+				int count = 0;
+
+				foreach (KeyValuePair<string, ActiveDebuff> pair in activeDebuffs)
+				{
+						ActiveDebuff debuff = pair.Value;
+						if (debuff != null && debuff.remainingTime > 0f)
+								count++;
+				}
+
+				return count;
+		}
+
+		public int GetStackCount(string debuffName)
+		{
+				if (activeDebuffs.ContainsKey(debuffName))
+						return activeDebuffs[debuffName].stackCount;
+				return 0;
+		}
 }

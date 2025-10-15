@@ -5,7 +5,8 @@ using UnityEngine;
 public enum InteractableType
 {
     Door,
-    UpgradePack,
+    TechSelectPack,
+    TechUpgradePack,
     Weapon,
 }
 
