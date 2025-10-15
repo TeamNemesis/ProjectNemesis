@@ -11,35 +11,36 @@ public class GameManager : MonoBehaviour
     /// 어디에서나 접근 가능한 싱글톤 인스턴스
     /// Instance로 접근시 GameManager가 씬에 없으면 자동으로 생성
     /// </summary>
-    //public static GameManager Instance
-    //{
-    //    // get 프로퍼티
-    //    get
-    //    {
-    //        // 만약 GameManager.Instance로 접근했는데 없다면
-    //        if (Instance == null)
-    //        {
-    //            // 씬에서 GameManager를 찾아보고
-    //            _instance = FindAnyObjectByType<GameManager>();
-    //            // 그래도 없다면
-    //            if (_instance == null)
-    //            {
-    //                // 게임오브젝트를 GameManager라는 이름으로 새로 만들고
-    //                GameObject obj = new GameObject("GameManager");
-    //                // GameManager 컴포넌트를 추가 후 _instance에 할당
-    //                _instance = obj.AddComponent<GameManager>();
-    //                // 씬 전환시 파괴되지 않도록 설정
-    //                DontDestroyOnLoad(obj);
-    //            }
-    //        }
-    //        // 문제 없이 찾았거나 생성했으면 _instance 반환
-    //        return _instance;
-    //    }
-    //}
-
-    public static GameManager Instance()
+    public static GameManager Instance
     {
-        return _instance;
+        // get 프로퍼티
+        get
+        {
+            Debug.Log("GameManager Instance 접근");
+            // 만약 GameManager.Instance로 접근했는데 없다면
+            if (_instance == null)
+            {
+                Debug.Log("Instance가 없습니다");
+                // 씬에서 GameManager를 찾아보고
+                _instance = FindAnyObjectByType<GameManager>();
+                Debug.Log("씬에서 GameManager 탐색 시도");
+                // 그래도 없다면
+                if (_instance == null)
+                {
+                    Debug.Log("씬에 GameManager가 없습니다");
+                    // 게임오브젝트를 GameManager라는 이름으로 새로 만들고
+                    GameObject obj = new GameObject("GameManager");
+                    Debug.Log("GameManager 생성");
+                    // GameManager 컴포넌트를 추가 후 _instance에 할당
+                    _instance = obj.AddComponent<GameManager>();
+                    Debug.Log("GameManager 컴포넌트 추가");
+                    // 씬 전환시 파괴되지 않도록 설정
+                    DontDestroyOnLoad(obj);
+                }
+            }
+            // 문제 없이 찾았거나 생성했으면 _instance 반환
+            return _instance;
+        }
     }
 
     public void Awake()
@@ -53,6 +54,8 @@ public class GameManager : MonoBehaviour
             _instance = this;
             DontDestroyOnLoad(gameObject);
         }
+        
+        
 
         _resourceManager.Initialize();
         //_skillManger.InitializeSkillManager();

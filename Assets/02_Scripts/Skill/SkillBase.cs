@@ -49,7 +49,7 @@ public abstract class SkillBase : MonoBehaviour
     public void InitializeSkill(SkillManager skillManager)
     {
         ReadJsonFile();
-        player = GameManager.Instance().player;
+        player = GameManager.Instance.player;
         _skillManager = skillManager;
     }
 

@@ -68,7 +68,7 @@ public class PlayerWeaponController : MonoBehaviour
     {
         Debug.Log("무기 장착");
         // ResourceManager에서 무기 프리팹을 가져와서
-        GameObject weaponPrefab = GameManager.Instance().ResourceManager.PlayerWeaponSetMap[newWeaponType].WeaponPrefab;
+        GameObject weaponPrefab = GameManager.Instance.ResourceManager.PlayerWeaponSetMap[newWeaponType].WeaponPrefab;
         // 해당 무기 타입에 맞는 무기 장착 위치에 생성
         GameObject weaponObj = Instantiate(weaponPrefab, GetParentTransform(newWeaponType));
         // 현재 장착된 무기로 설정

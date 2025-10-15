@@ -40,12 +40,4 @@ public class PlayerModel : CharacterModelBase
         OnHpChangedEventPlay(currentHealth); // 초기 체력 이벤트 발행
         debuffHandler.InitializePlayer();
     }
-
-    public override void Initialize()
-    {
-        base.Initialize();
-        //currentHealth = maxHealth; // 초기화 시 현재 체력을 최대 체력으로 설정
-        //OnHpChangedEventPlay(currentHealth); // 초기 체력 이벤트 발행
-        //debuffHandler.Initialize();
-    }
 }

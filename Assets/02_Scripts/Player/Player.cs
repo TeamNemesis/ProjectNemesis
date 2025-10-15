@@ -60,7 +60,7 @@ public class Player : MonoBehaviour
     /// <param name="weaponType"></param>
     void OnWeaponChanged(WeaponType weaponType)
     {
-        _currentWeaponSet = GameManager.Instance().ResourceManager.PlayerWeaponSetMap[weaponType];
+        _currentWeaponSet = GameManager.Instance.ResourceManager.PlayerWeaponSetMap[weaponType];
 
         _normalAttacker = _currentWeaponSet.NormalAttacker;
         //_grenadeAttacker = _currentWeaponSet.GrenadeAttacker;

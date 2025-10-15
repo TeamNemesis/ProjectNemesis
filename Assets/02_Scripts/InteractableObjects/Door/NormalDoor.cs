@@ -48,7 +48,7 @@ public class NormalDoor : Door
 
     public void SetSkillCompany()
     {
-        _selectedSkillCompany= GameManager.Instance().skillManager.DrawSkillCompany();
+        _selectedSkillCompany= GameManager.Instance.skillManager.DrawSkillCompany();
         Debug.Log(_selectedSkillCompany.skillBaseString);
     }
 

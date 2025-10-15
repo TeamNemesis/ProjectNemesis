@@ -71,9 +71,9 @@ public class Skill_Four : SkillBase
     /// <param name="skillLevel"></param>
     public void ActivateSpawnDrone(int skillLevel)
     {
-        Transform playerTranform = GameManager.Instance().player.transform;
+        Transform playerTranform = GameManager.Instance.player.transform;
         Drone drone = Instantiate(dronePrefab, playerTranform);
-        drone.InitializeDrone(GameManager.Instance().player);
+        drone.InitializeDrone(GameManager.Instance.player);
         droneList.Add(drone);
 
         float x = 0 - (float)(skillLevel - 1) / 2;
