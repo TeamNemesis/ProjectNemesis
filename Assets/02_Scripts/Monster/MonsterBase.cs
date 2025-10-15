@@ -12,6 +12,11 @@ public class MonsterBase : CharacterModelBase
     [SerializeField] protected float attackDelay = 0.5f;
     [SerializeField] public string targetTag = Constants.TAG_PLAYER;
 
+    [Header("상태이상")]
+    [SerializeField] public bool isStunned = false;    // 스턴
+    [SerializeField] public bool isPushed = false;     // 밀림
+    [SerializeField] public bool isBindned = false;    // 속박
+    [SerializeField] public bool isDead = false;       // 죽음
 
     [Header("Components")]
     [SerializeField] protected NavMeshAgent agent;

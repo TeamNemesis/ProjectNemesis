@@ -13,9 +13,9 @@ public class NebulaVanguard : MonsterBase
     }
     [Header("Stats")]
     [SerializeField] private bool _isAttacking = false;
-    [SerializeField] private float _box_Length = 1;
-    [SerializeField] private float _box_Height = 1;
-    [SerializeField] private float _box_Width = 1;
+    //[SerializeField] private float _box_Length = 1;
+    //[SerializeField] private float _box_Height = 1;
+    //[SerializeField] private float _box_Width = 1;
 
     [SerializeField]
     private State currentState = State.Idle;

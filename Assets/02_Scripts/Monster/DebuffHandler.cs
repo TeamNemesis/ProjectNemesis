@@ -93,10 +93,20 @@ public class DebuffHandler : MonoBehaviour
         /// <summary>
         /// 혼란 제작 함수.
         /// </summary>
-        /// <param name="duration"> 혼란의 지속시간 </param>
+        /// <param name="duration"> 혼란 지속시간 </param>
         public static DebuffData CreateConfusion(float duration = 3f)
         {
             return new DebuffData(Constants.DEBUFF_CONFUSION, duration, 0f);
+        }
+
+        /// <summary>
+        /// 속박 제작 함수.
+        /// </summary>
+        /// <param name="duration"> 속박 지속 시간</param>
+        /// <returns></returns>
+        public static DebuffData CreateBinding(float duration = 3f)
+        {
+            return new DebuffData(Constants.DEBUFF_BINDING, duration, 0f);
         }
     }
 
@@ -108,7 +118,7 @@ public class DebuffHandler : MonoBehaviour
         public float totalValue;
         public int stackCount;
         public Coroutine routine;
-        public Coroutine effectRoutine; // 스턴, 혼란 특별 관리용 코루틴 저장 변수
+        public Coroutine effectRoutine; // 스턴, 혼란, 속박 특별 관리용 코루틴 저장 변수
 
         public ActiveDebuff(DebuffData data)
         {
@@ -145,12 +155,13 @@ public class DebuffHandler : MonoBehaviour
                 existing.remainingTime = newDebuff.debuffDuration;
             }
 
-            // 그 외 디버프들. 스턴, 혼란일 경우 기존 코루틴 중단 후 새 코루틴으로 다시 시작
+            // 그 외 디버프들 시간 갱신. 스턴, 혼란일 경우 기존 코루틴 중단 후 새 코루틴으로 다시 시작
             else
             {
                 existing.remainingTime = newDebuff.debuffDuration;
                 existing.totalValue = newDebuff.debuffValue;
 
+                // 스턴
                 if (newDebuff.debuffName == Constants.DEBUFF_STUN)
                 {
                     if (existing.effectRoutine != null)
@@ -159,6 +170,8 @@ public class DebuffHandler : MonoBehaviour
                     }
                     existing.effectRoutine = StartCoroutine(StunCoroutine(newDebuff.debuffDuration));
                 }
+
+                // 혼란
                 else if (newDebuff.debuffName == Constants.DEBUFF_CONFUSION)
                 {
                     if (existing.effectRoutine != null)
@@ -167,8 +180,17 @@ public class DebuffHandler : MonoBehaviour
                     }
                     existing.effectRoutine = StartCoroutine(ConfuseCoroutine(newDebuff.debuffDuration));
                 }
-            }
 
+                // 속박
+                else if (newDebuff.debuffName == Constants.DEBUFF_BINDING)
+                {
+                    if (existing.effectRoutine != null)
+                    {
+                        StopCoroutine(existing.effectRoutine);
+                    }
+                    existing.effectRoutine = StartCoroutine(BindCoroutine(newDebuff.debuffDuration));
+                }
+            }
             return;
         }
         activeDebuffs.Add(newDebuff.debuffName, new ActiveDebuff(newDebuff));
@@ -179,6 +201,7 @@ public class DebuffHandler : MonoBehaviour
     {
         // 혹시모를 타이밍 오류 방지용 건드리지 말것
         yield return null;
+
         ActiveDebuff active = activeDebuffs[debuff.debuffName];
 
         // 시작 시 1회만 받는 효과들
@@ -190,6 +213,11 @@ public class DebuffHandler : MonoBehaviour
                 {
                     agent.speed = originalSpeed * active.totalValue;
                 }
+                break;
+
+            // 속박
+            case Constants.DEBUFF_BINDING:
+                active.effectRoutine = StartCoroutine(BindCoroutine(debuff.debuffDuration));
                 break;
 
             // 스턴
@@ -209,8 +237,7 @@ public class DebuffHandler : MonoBehaviour
             {
                 case Constants.DEBUFF_POISON:
                 case Constants.DEBUFF_OVERLOAD:
-                    Debug.Log("takeDamage " + active.totalValue);
-                    monster.TakeDamage(active.totalValue);
+                    monster.TakeDamage(active.totalValue);          // 플레이어 모댐증 적용 요망
                     break;
             }
 
@@ -221,6 +248,7 @@ public class DebuffHandler : MonoBehaviour
         // 해제 시 복원 - 현재 슬로우 이외의 다른 복원 요소 없음
         switch (debuff.debuffName)
         {
+            // 슬로우
             case Constants.DEBUFF_SLOW:
                 if (agent != null)
                 {
@@ -232,9 +260,26 @@ public class DebuffHandler : MonoBehaviour
         activeDebuffs.Remove(debuff.debuffName);
     }
 
+    /// <summary>
+    /// 스턴 코루틴
+    /// </summary>
+    /// <param name="duration"> 지속시간 </param>
     private IEnumerator StunCoroutine(float duration)
     {
         monster.isStunned = true;
+
+        yield return new WaitForSeconds(duration);
+
+        monster.isStunned = false;
+    }
+
+    /// <summary>
+    /// 속박 코루틴
+    /// </summary>
+    /// <param name="duration"> 지속시간 </param>
+    private IEnumerator BindCoroutine(float duration)
+    {
+        monster.isBindned = true;
 
         if (agent != null)
         {
@@ -248,9 +293,13 @@ public class DebuffHandler : MonoBehaviour
             agent.isStopped = false;
         }
 
-        monster.isStunned = false;
+        monster.isBindned = false;
     }
 
+    /// <summary>
+    /// 혼란 코루틴
+    /// </summary>
+    /// <param name="duration"> 지속시간 </param>
     private IEnumerator ConfuseCoroutine(float duration)
     {
         string originalTag = monsterBase.targetTag;
@@ -261,16 +310,27 @@ public class DebuffHandler : MonoBehaviour
         monsterBase.targetTag = originalTag;
     }
 
+    /// <summary>
+    /// 가지고있는 디버프를 확인하는 함수 (디버프 데이터로 확인)
+    /// </summary>
+    /// <param name="data"> 디버프 정보 </param>
     public bool CheckDebuff(DebuffData data)
     {
         return activeDebuffs.ContainsKey(data.debuffName);
     }
 
+    /// <summary>
+    /// 가지고있는 디버프를 확인하는 함수 (이름으로 확인)
+    /// </summary>
+    /// <param name="debuffName"> 디버프 이름 </param>
     public bool HasDebuff(string debuffName)
     {
         return activeDebuffs.ContainsKey(debuffName);
     }
 
+    /// <summary>
+    /// 가지고있는 디버프의 갯수를 반환하는 함수
+    /// </summary>
     public int GetActiveDebuffCount()
     {
         int count = 0;
@@ -287,6 +347,10 @@ public class DebuffHandler : MonoBehaviour
         return count;
     }
 
+
+    /// <summary>
+    /// 가지고있는 디버프의 현재 스택을 반환하는 함수
+    /// </summary>
     public int GetStackCount(string debuffName)
     {
         if (activeDebuffs.ContainsKey(debuffName))
