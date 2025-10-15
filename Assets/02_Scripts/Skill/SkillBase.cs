@@ -46,8 +46,9 @@ public abstract class SkillBase : MonoBehaviour
     [SerializeField]
     private string _skillDataPath;
 
-    public void InitializeSkill(SkillManager skillManager)
+    public virtual void InitializeSkill(SkillManager skillManager)
     {
+        Debug.Log("skill Initialize");
         ReadJsonFile();
         player = GameManager.Instance.player;
         _skillManager = skillManager;

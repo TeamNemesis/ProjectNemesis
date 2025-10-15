@@ -11,6 +11,15 @@ public class Skill_Four : SkillBase
     [SerializeField]
     private Drone dronePrefab;
     private List<Drone> droneList = new List<Drone>();
+    public override void InitializeSkill(SkillManager skillManager)
+    {
+        base.InitializeSkill(skillManager);
+        if (dronePrefab == null)
+        {
+            dronePrefab = Resources.Load<Drone>("Prefabs/Drone/DronePrefab");
+
+        }
+    }
     public override void ActivateSkill(SkillData choosedSkill)
     {
 

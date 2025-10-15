@@ -23,18 +23,7 @@ public class SkillManager : MonoBehaviour
     private Skill_Collab _skill_Collab;
     public Skill_Collab skill_Collab { get { return _skill_Collab; } }
     #endregion
-    [SerializeField]
-    private SkillBtn _skillBtnPrefab;
 
-    [SerializeField]
-    private GameObject _parentContent;
-
-    [SerializeField]
-    private Text _skillImageText;
-    [SerializeField]
-    private Text _skillScriptText;
-    [SerializeField]
-    private Text _skillLevelText;
 
      
 
@@ -104,13 +93,14 @@ public class SkillManager : MonoBehaviour
     /// <summary>
     /// 뽑은 스킬 리스트 순회하여 리스트 제작
     /// </summary>
-    public void CheckChooseSkillList()
+    public List<SkillData> GetChooseSkillList()
     {
+        List<SkillData> currentSkillData = new List<SkillData>();
         if (_skill_One.GetNumberSkillList() != 0)
         {
             foreach (SkillData skillData in _skill_One.currentSkillData)
             {
-                MakeSkillBtn(skillData, _parentContent.transform);
+                currentSkillData.Add(skillData);
             }
         }
 
@@ -118,7 +108,7 @@ public class SkillManager : MonoBehaviour
         {
             foreach (SkillData skillData in _skill_Two.currentSkillData)
             {
-                MakeSkillBtn(skillData, _parentContent.transform);
+                currentSkillData.Add(skillData);
             }
 
         }
@@ -127,7 +117,7 @@ public class SkillManager : MonoBehaviour
         {
             foreach (SkillData skillData in _skill_Three.currentSkillData)
             {
-                MakeSkillBtn(skillData, _parentContent.transform);
+                currentSkillData.Add(skillData);
             }
         }
 
@@ -135,7 +125,7 @@ public class SkillManager : MonoBehaviour
         {
             foreach (SkillData skillData in _skill_Four.currentSkillData)
             {
-                MakeSkillBtn(skillData, _parentContent.transform);
+                currentSkillData.Add(skillData);
             }
         }
 
@@ -143,7 +133,7 @@ public class SkillManager : MonoBehaviour
         {
             foreach (SkillData skillData in _skill_Five.currentSkillData)
             {
-                MakeSkillBtn(skillData, _parentContent.transform);
+                currentSkillData.Add(skillData);
             }
         }
 
@@ -151,24 +141,17 @@ public class SkillManager : MonoBehaviour
         {
             foreach (SkillData skillData in _skill_Collab.currentSkillData)
             {
-                MakeSkillBtn(skillData, _parentContent.transform);
+                currentSkillData.Add(skillData);
             }
         }
 
-    }
-
-    /// <summary>
-    /// 리스트 버튼 생성
-    /// </summary>
-    /// <param name="skillData"></param>
-    /// <param name="parentContent"></param>
-    public void MakeSkillBtn(SkillData skillData, Transform parentContent)
-    {
-        SkillBtn skillBtn = Instantiate(_skillBtnPrefab, parentContent);
-        skillBtn.SetSkillInfo(skillData);
-        skillBtn.GetComponent<Button>().onClick.AddListener(() => OnClick_SkillListBtn(skillBtn));
+        if (currentSkillData.Count > 0)
+            return currentSkillData;
+        else return null;
 
     }
+
+  
 
     /// <summary>
     /// 가중치에 따른 스킬 회사 반환
@@ -227,12 +210,7 @@ public class SkillManager : MonoBehaviour
         return skillOneNum + skillTwoNum + skillThreeNum + skillFourNum + skillFiveNum;
     }
 
-    public void OnClick_SkillListBtn(SkillBtn skillBtn)
-    {
-        _skillImageText.text = skillBtn.skillData.skillImagePath;
-        _skillScriptText.text = skillBtn.skillData.skillIdx.ToString() + "\n" + skillBtn.skillData.skillScript;
-        _skillLevelText.text = skillBtn.skillData.skillLevel.ToString();
-    }
+
 
     /// <summary>
     /// 콜라보 스킬 조건 검사
@@ -379,15 +357,6 @@ public class SkillManager : MonoBehaviour
         return bCheck;
     }
 
-    /// <summary>
-    /// 현재 소지 개수 리스트창 자식 오브젝트 파괴용
-    /// </summary>
-    public void OnClick_ListExitBtn()
-    {
-        foreach (Transform child in _parentContent.transform)
-        {
-            Destroy(child.gameObject);
-        }
-    }
+  
 
 }
