@@ -13,9 +13,9 @@ public class NebulaVanguard : MonsterBase
     }
     [Header("Stats")]
     [SerializeField] private bool _isAttacking = false;
-    //[SerializeField] private float _box_Length = 1;
-    //[SerializeField] private float _box_Height = 1;
-    //[SerializeField] private float _box_Width = 1;
+    [SerializeField] private float _box_Length = 3;
+    [SerializeField] private float _box_Height = 3;
+    [SerializeField] private float _box_Width = 3;
 
     [SerializeField]
     private State currentState = State.Idle;
@@ -84,13 +84,52 @@ public class NebulaVanguard : MonsterBase
     private IEnumerator PerformAttack()
     {
         _isAttacking = true;
+
         if (player != null && Vector3.Distance(transform.position, player.position) <= attackRange)
         {
-            // 공격 로직
-            Physics.OverlapBox(transform.position, player.position);
-            yield return null;
+            // 몬스터 기준 중심 위치 설정
+            Vector3 center = transform.position + transform.forward * (_box_Length / 2f);
+
+            // 박스의 반 크기
+            Vector3 halfExtents = new Vector3(_box_Width / 2f, _box_Height / 2f, _box_Length / 2f);
+
+            // 박스의 회전 (몬스터 정면을 기준으로 정렬)
+            Quaternion orientation = Quaternion.LookRotation(transform.forward);
+
+            // 박스 영역 안의 적 탐색
+            Collider[] hitEnemies = Physics.OverlapBox(center, halfExtents, orientation);
+
+
+            foreach (Collider enemy in hitEnemies)
+            {
+                if (enemy.TryGetComponent(out PlayerHealth playerHealth))
+                {
+                    yield return new WaitForSeconds(0.5f);
+                    float finalPlayerDistance = Vector3.Distance(transform.position, player.position);
+                    if (finalPlayerDistance <= attackRange)
+                    {
+                        if (playerHealth != null)
+                        {
+                            playerHealth.TakeDamage(attackDamage);
+                        }
+                    }
+                }
+            }
+            yield return new WaitForSeconds(attackDelay);
         }
         _isAttacking = false;
         currentState = State.Move; // 공격 후 다시 추격 상태로 전환
+    }
+
+
+    void OnDrawGizmosSelected()
+    {
+        Vector3 center = transform.position + transform.forward * (_box_Length / 2f);
+        Vector3 halfExtents = new Vector3(_box_Width / 2f, _box_Height / 2f, _box_Length / 2f);
+        Quaternion orientation = Quaternion.LookRotation(transform.forward);
+
+        Gizmos.color = Color.red;
+        Gizmos.matrix = Matrix4x4.TRS(center, orientation, Vector3.one);
+        Gizmos.DrawWireCube(Vector3.zero, halfExtents * 2f);
     }
 }

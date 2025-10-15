@@ -61,7 +61,6 @@ public class MonsterBase : MonoBehaviour, IDamageable
         {
             if (hit.transform.CompareTag(targetTag))
             {
-                Debug.Log("playerCheck");
                 return true;
             }
             return false;
