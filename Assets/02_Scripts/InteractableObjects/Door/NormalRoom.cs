@@ -12,11 +12,11 @@ public enum NormalDoorType
 /// <summary>
 /// 
 /// </summary>
-public class NormalDoor : Door
+public class NormalRoom : Room
 {
     [SerializeField] string door_Name = "normalDoor";
     [SerializeField] float door_Chance = 0.7f; // 노말룸의 등장 확률 설정
-    [SerializeField] DoorType door_Type = DoorType.Normal;
+    [SerializeField] RoomType door_Type = RoomType.Normal;
 
     [SerializeField] float door_CreditChance; // 크레딧 방 등장 확률
     [SerializeField] float door_HealChance; // 회복 방 등장 확률
@@ -26,9 +26,9 @@ public class NormalDoor : Door
 
     SkillBase _selectedSkillCompany;    // 이번에 뽑힌 스킬팩
 
-    public override string DoorName => door_Name;
-    public override float DoorChance => door_Chance;
-    public override DoorType DoorType => door_Type;
+    public override string RoomName => door_Name;
+    public override float RoomChance => door_Chance;
+    public override RoomType RoomType => door_Type;
 
     public override void Initialize()
     {

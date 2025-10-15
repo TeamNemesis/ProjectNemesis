@@ -51,5 +51,14 @@ public class InteractionController : MonoBehaviour
             }
         }
 
+        if(interactable.InteractableType == InteractableType.Door)
+        {
+            var doorInteractor = interactable as DoorInteractor;
+            if(doorInteractor != null)
+            {
+                // 나중에 문과 상호작용했을 때 처리할 로직 추가
+                Debug.Log($"문과 상호작용함, 연결된 방 타입: {doorInteractor.RoomType}");
+            }
+        }
     }
 }

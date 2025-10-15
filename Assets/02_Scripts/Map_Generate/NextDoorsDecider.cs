@@ -27,7 +27,7 @@ using UnityEngine;
 /// </summary>
 public class NextDoorsDecider : MonoBehaviour
 {
-    [SerializeField] Door[] _allDoors; // 모든 방 프리팹들을 담는 배열
+    [SerializeField] Room[] _allDoors; // 모든 방 프리팹들을 담는 배열
 
     [Header("다음 방 선택지 개수 확률")]
     [SerializeField] float _oneDoorChance = 0.1f; // 다음 방이 1개일 확률
@@ -38,41 +38,33 @@ public class NextDoorsDecider : MonoBehaviour
     [SerializeField] Transform[] _doorPositions; // 문이 생성될 위치들(최대 3개)
 
     [Header("다음 방 선택지 결정")]
-    [SerializeField] DoorType _currentDoorType; // 현재 방의 타입
+    [SerializeField] RoomType _currentDoorType; // 현재 방의 타입
+    [SerializeField] int _countOfNextDoors; // 다음 방 선택지의 개수(1~3)
     [SerializeField] int _currentDoorIndex; // 현재 방의 인덱스(0~15)
 
-    Dictionary<DoorType, Door> _candidateDoorsMap = new(); // 다음 방 후보군을 담는 딕셔너리(초기화 시 고정)
-    Dictionary<DoorType, Door> _nextDoorsMap = new(); // 다음 방 선택지로 등장할 방들을 저장할 딕셔너리(계속 바뀜)
-
-    private void Start()
-    {
-        Initialize();
-    }
+    Dictionary<RoomType, Room> _candidateDoorsMap = new(); // 다음 방 후보군을 담는 딕셔너리(초기화 시 고정)
+    Dictionary<RoomType, Room> _nextDoorsMap = new(); // 다음 방 선택지로 등장할 방들을 저장할 딕셔너리(계속 바뀜)
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            int count = GetNextDoorCount();
-            Door[] nextDoors = GetNextDoors(count);
-            foreach(var door in nextDoors)
-            {
-                door.Initialize();
-            }
+            _countOfNextDoors = GetNextDoorCount();
+            GenerateDoor(_countOfNextDoors);
         }
     }
 
     public void Initialize()
     {
-        foreach(Door door in _allDoors)
+        foreach(Room door in _allDoors)
         {
-            if(door.DoorType == DoorType.Start || door.DoorType == DoorType.Boss)
+            if(door.RoomType == RoomType.Start || door.RoomType == RoomType.Boss)
                 continue;
-            _candidateDoorsMap.Add(door.DoorType, door);
+            _candidateDoorsMap.Add(door.RoomType, door);
         }
     }
 
-    public void GenerateDoor()
+    public void GenerateDoor(int countOfNextDoors)
     {
         // 0번방(무기고)에서는 반드시 일반방으로 이어지는 1개의 문만 생성
         // 1번방부터 13번방까지는 확률적으로 1~3개의 문을 생성하되,
@@ -82,7 +74,7 @@ public class NextDoorsDecider : MonoBehaviour
         // 13번방에서는 반드시 보스로 이어지는 1개의 문을 생성
         // 14번방(보스방)에서는 게임 클리어 후 엔딩으로 이어지는 1개의 문만 생성
         // 그럼 현재 방의 인덱스별로 어떻게 다음 방 후보군을 구성하지?
-        
+        Room[] nextDoors = GetNextDoors(countOfNextDoors);
     }
 
     /// <summary>
@@ -90,24 +82,24 @@ public class NextDoorsDecider : MonoBehaviour
     /// </summary>
     /// <param name="count">반환할 방의 수</param>
     /// <returns></returns>
-    public Door[] GetNextDoors(int count)
+    public Room[] GetNextDoors(int count)
     {
         // 다음 방 선택지로 등장할 방들을 저장하는 딕셔너리 초기화
         _nextDoorsMap.Clear();
 
         // 다음 방 후보군 딕셔너리를 복사하여 다음 방 선택지 딕셔너리로 사용
         //_nextDoorsMap = _candidateDoorsMap; ---> 기존 사용방식인데 이건 참조형식이라서 원본이 바뀜
-        _nextDoorsMap = new Dictionary<DoorType, Door>(_candidateDoorsMap);
+        _nextDoorsMap = new Dictionary<RoomType, Room>(_candidateDoorsMap);
 
         // 현재 방이 상점, 실험실, 콜로세움인 경우 
-        if (_currentDoorType == DoorType.Shop || _currentDoorType == DoorType.Lab || _currentDoorType == DoorType.Colosseum)
+        if (_currentDoorType == RoomType.Shop || _currentDoorType == RoomType.Lab || _currentDoorType == RoomType.Colosseum)
         {
             //다음 방 후보군에서 제거(연속으로 등장하지 않도록)
             _nextDoorsMap.Remove(_currentDoorType);
         }
 
         // 딕셔너리에 남아있는 방들 중에서 확률적으로 다음 방 선택지의 개수를 결정하여 반환
-        Door[] nextDoors = new Door[count];
+        Room[] nextDoors = new Room[count];
         for (int i = 0; i < count; i++)
         {
             // for문 돌때마다 전체 확률 초기화
@@ -115,7 +107,7 @@ public class NextDoorsDecider : MonoBehaviour
             // 딕셔너리에 남아있는 방들의 확률을 모두 더해서 totalChance에 저장
             foreach (var door in _nextDoorsMap.Values)
             {
-                totalChance += door.DoorChance;
+                totalChance += door.RoomChance;
             }
             // 0부터 totalChance 사이의 랜덤한 값을 생성
             float rand = Random.Range(0f, totalChance);
@@ -124,27 +116,27 @@ public class NextDoorsDecider : MonoBehaviour
             // 다시 딕셔너리에 남아있는 방들을 돌면서 누적 확률을 계산하고
             foreach (var door in _nextDoorsMap.Values)
             {
-                cumulativeChance += door.DoorChance;
+                cumulativeChance += door.RoomChance;
                 //랜덤 값이 누적 확률보다 작거나 같아지는 순간
                 if (rand <= cumulativeChance)
                 {
                     //해당 방을 선택
                     nextDoors[i] = door;
                     // 일반 방이 아닌 방이 선택된 경우 다음 선택지에서 제외
-                    if (door.DoorType != DoorType.Normal)
+                    if (door.RoomType != RoomType.Normal)
                     {
-                        _nextDoorsMap.Remove(door.DoorType);
+                        _nextDoorsMap.Remove(door.RoomType);
                     }
                     break;
                 }
             }
         }
 
-        for (int i = 0; i < nextDoors.Length; i++)
-        {
-            //Debug.Log(nextDoors[i].DoorName);
-            Instantiate(nextDoors[i]);
-        }
+        //for (int i = 0; i < nextDoors.Length; i++)
+        //{
+        //    //Debug.Log(nextDoors[i].DoorName);
+        //    Instantiate(nextDoors[i]);
+        //}
         return nextDoors;
     }
 

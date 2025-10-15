@@ -5,7 +5,8 @@ public class PlayScene : MonoBehaviour
     [Header("----- 컴포넌트 참조 -----")]
     [SerializeField] Player _player;                               // 플레이어
     [SerializeField] PlayerInputHandler _inputHandler;             // 플레이어 입력 핸들러
-    [SerializeField] InteractionController _interactionController; // 상호작용 컨트롤러  
+    [SerializeField] InteractionController _interactionController; // 상호작용 컨트롤러
+    [SerializeField] NextDoorsDecider _nextDoorDecider;            // 다음 방 선택지 결정자
 
     private void Awake()
     {
@@ -24,5 +25,6 @@ public class PlayScene : MonoBehaviour
     {
         _player.Initialize();
         _interactionController.Initialize();
+        _nextDoorDecider.Initialize();
     }
 }

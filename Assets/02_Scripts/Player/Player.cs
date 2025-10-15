@@ -6,7 +6,7 @@
 public class Player : MonoBehaviour
 {
     [Header("----- 컴포넌트 참조 -----")]
-    [SerializeField] PlayerModel _model;                       // 플레이어 모델 컴포넌트
+    //[SerializeField] PlayerModel _model;                       // 플레이어 모델 컴포넌트
     [SerializeField] PlayerMover _mover;                       // 플레이어 이동 컴포넌트
     [SerializeField] PlayerDasher _dasher;                     // 플레이어 대시 컴포넌트
     [SerializeField] PlayerWeaponController _weaponController; // 플레이어 무기 관리 컴포넌트
