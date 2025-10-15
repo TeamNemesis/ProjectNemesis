@@ -3,7 +3,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class BallSecurityRobot : MonsterBase, IDamageAble
+public class BallSecurityRobot : MonsterBase
 {
     private enum State
     {
@@ -28,6 +28,7 @@ public class BallSecurityRobot : MonsterBase, IDamageAble
     private void Update()
     {
         if (isDead || player == null) return;
+        if (isStunned) return;
 
         switch (currentState)
         {
@@ -118,17 +119,5 @@ public class BallSecurityRobot : MonsterBase, IDamageAble
     {
         // 필요 시 폭발 이펙트, 사운드 추가 가능
         base.Die();
-    }
-
-    //IDamageAble 인터페이스 구현
-    public void TakeDamage(float damage)
-    {
-        if (isDead) return;
-        // 데미지를 int로 변환하여 적용 나중에 float로 바꿀 수도
-        currentHealth -= (int)damage;
-        if (currentHealth <= 0)
-        {
-            Die();
-        }
     }
 }

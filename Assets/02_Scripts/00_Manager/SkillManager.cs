@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class SkillManager : MonoBehaviour
 {
-    
+    #region skill
     private Skill_One _skill_One;
     public Skill_One skill_One { get { return _skill_One; } }
 
@@ -22,9 +22,12 @@ public class SkillManager : MonoBehaviour
 
     private Skill_Collab _skill_Collab;
     public Skill_Collab skill_Collab { get { return _skill_Collab; } }
-
+    #endregion
     [SerializeField]
     private SkillBtn _skillBtnPrefab;
+
+    [SerializeField]
+    private GameObject _parentContent;
 
     [SerializeField]
     private Text _skillImageText;
@@ -33,9 +36,54 @@ public class SkillManager : MonoBehaviour
     [SerializeField]
     private Text _skillLevelText;
 
-    public void Awake()
+     
+
+    #region reinforce
+    /// <summary>
+    /// 일반공격 강화 기술
+    /// </summary>
+    [SerializeField]
+    private ActiveTech _attackTech;
+    public ActiveTech attachTech { get { return _attackTech; } }
+    public void SetAttackTech(ActiveTech attackTech)
+    { 
+        _attackTech = attackTech;
+    }
+
+    /// <summary>
+    /// 유탄 강화 기술
+    /// </summary>
+    private ActiveTech _bombTech;
+    public ActiveTech bombTech { get { return _bombTech; } }
+    public void SetBombTech(ActiveTech bombTech)
     {
-      
+        _bombTech = bombTech; 
+    }
+
+    /// <summary>
+    /// 특수 공격 강화 기술
+    /// </summary>
+    private ActiveTech _skillTech;
+    public ActiveTech skillTech { get { return _skillTech; } }
+    public void SetSkillTech(ActiveTech skillTech)
+    { 
+        _skillTech = skillTech; 
+    }
+
+    /// <summary>
+    /// 대쉬 강화 기술
+    /// </summary>
+    private ActiveTech _dashTech;
+    public ActiveTech dashTech { get { return _dashTech; } }
+    public void SetDashTech(ActiveTech dashTech)
+    {
+        _dashTech = dashTech;
+    }
+    #endregion
+
+    public void InitializeSkillManager()
+    {
+
 
         _skill_One = GetComponent<Skill_One>();
         _skill_Two = GetComponent<Skill_Two>();
@@ -44,20 +92,25 @@ public class SkillManager : MonoBehaviour
         _skill_Five = GetComponent<Skill_Five>();
         _skill_Collab = GetComponent<Skill_Collab>();
 
+        _skill_One.InitializeSkill(this);
+        _skill_Two.InitializeSkill(this);
+        _skill_Three.InitializeSkill(this);
+        _skill_Four.InitializeSkill(this);
+        _skill_Five.InitializeSkill(this);
+        _skill_Collab.InitializeSkill(this);
+
     }
 
     /// <summary>
-    /// 고른 스킬 리스트 순회해서 버튼으로 보여줌
+    /// 뽑은 스킬 리스트 순회하여 리스트 제작
     /// </summary>
     public void CheckChooseSkillList()
     {
-        GameObject parentContent = GameObject.Find("Content");
-
         if (_skill_One.GetNumberSkillList() != 0)
         {
             foreach (SkillData skillData in _skill_One.currentSkillData)
             {
-                MakeSkillBtn(skillData, parentContent.transform);
+                MakeSkillBtn(skillData, _parentContent.transform);
             }
         }
 
@@ -65,7 +118,7 @@ public class SkillManager : MonoBehaviour
         {
             foreach (SkillData skillData in _skill_Two.currentSkillData)
             {
-                MakeSkillBtn(skillData, parentContent.transform);
+                MakeSkillBtn(skillData, _parentContent.transform);
             }
 
         }
@@ -74,7 +127,7 @@ public class SkillManager : MonoBehaviour
         {
             foreach (SkillData skillData in _skill_Three.currentSkillData)
             {
-                MakeSkillBtn(skillData, parentContent.transform);
+                MakeSkillBtn(skillData, _parentContent.transform);
             }
         }
 
@@ -82,7 +135,7 @@ public class SkillManager : MonoBehaviour
         {
             foreach (SkillData skillData in _skill_Four.currentSkillData)
             {
-                MakeSkillBtn(skillData, parentContent.transform);
+                MakeSkillBtn(skillData, _parentContent.transform);
             }
         }
 
@@ -90,7 +143,7 @@ public class SkillManager : MonoBehaviour
         {
             foreach (SkillData skillData in _skill_Five.currentSkillData)
             {
-                MakeSkillBtn(skillData, parentContent.transform);
+                MakeSkillBtn(skillData, _parentContent.transform);
             }
         }
 
@@ -98,14 +151,14 @@ public class SkillManager : MonoBehaviour
         {
             foreach (SkillData skillData in _skill_Collab.currentSkillData)
             {
-                MakeSkillBtn(skillData, parentContent.transform);
+                MakeSkillBtn(skillData, _parentContent.transform);
             }
         }
 
     }
 
     /// <summary>
-    /// 버튼 생성 함수
+    /// 리스트 버튼 생성
     /// </summary>
     /// <param name="skillData"></param>
     /// <param name="parentContent"></param>
@@ -118,7 +171,7 @@ public class SkillManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 확률에 따른 스킬 회사 뽑기
+    /// 가중치에 따른 스킬 회사 반환
     /// </summary>
     /// <returns></returns>
     public SkillBase DrawSkillCompany()
@@ -132,11 +185,10 @@ public class SkillManager : MonoBehaviour
         int totalNum = skillOneNum + skillTwoNum + skillThreeNum + skillFourNum + skillFiveNum;
 
 
-        // 임시 숫자를 저장할 변수
+        // 확률 총합
         int tempNum = Random.Range(0, totalNum);
 
 
-        Debug.Log("TempNum : " + tempNum);
         if (0 <= tempNum && tempNum < skillOneNum)
         {
             return _skill_One;
@@ -161,7 +213,7 @@ public class SkillManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 현재 가지고 있는 스킬 총 개수
+    /// 현재 가지고 있는 총 스킬 개수
     /// </summary>
     /// <returns></returns>
     public int GetTotalSkillNumber()
@@ -183,14 +235,14 @@ public class SkillManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 해당 회사의 콜라보 스킬 해금 조건이 만족되었는지 판단
+    /// 콜라보 스킬 조건 검사
     /// </summary>
     /// <param name="skillCompany"></param>
     public bool CheckCollabo(SkillBase skillCompany, out List<int> indexList)
     {
         indexList = new List<int>();
         bool bCheck = false;
-        // 매개 변수의 회사가 만족하는지 판단
+        // 현재 고른 기술팩의 조건 검사
         if (skillCompany.currentSkillData.Count < Constants.COLLABCNT)
         {
             indexList = null;
@@ -199,7 +251,7 @@ public class SkillManager : MonoBehaviour
 
         if (skillCompany == _skill_One)
         {
-            // 관련 회사 조건 검사
+            // 연관된 기술 회사 조건 검사
             if (_skill_Two.currentSkillData.Count >= Constants.COLLABCNT)
             {
                 int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 201);
@@ -224,7 +276,7 @@ public class SkillManager : MonoBehaviour
         }
         else if (skillCompany == _skill_Two)
         {
-            // 관련 회사 조건 검사
+            // 연관된 기술 회사 조건 검사
             if (_skill_Three.currentSkillData.Count >= Constants.COLLABCNT)
             {
                 int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 302);
@@ -249,7 +301,7 @@ public class SkillManager : MonoBehaviour
         }
         else if (skillCompany == _skill_Three)
         {
-            // 관련 회사 조건 검사
+            // 연관된 기술 회사 조건 검사
             if (_skill_Four.currentSkillData.Count >= Constants.COLLABCNT)
             {
                 int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 403);
@@ -274,7 +326,7 @@ public class SkillManager : MonoBehaviour
         }
         else if (skillCompany == _skill_Four)
         {
-            // 관련 회사 조건 검사
+            // 연관된 기술 회사 조건 검사
             if (_skill_Five.currentSkillData.Count >= Constants.COLLABCNT)
             {
                 int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 504);
@@ -299,7 +351,7 @@ public class SkillManager : MonoBehaviour
         }
         else if (skillCompany == _skill_Five)
         {
-            // 관련 회사 조건 검사
+            // 연관된 기술 회사 조건 검사
             if (_skill_Four.currentSkillData.Count >= Constants.COLLABCNT)
             {
                 int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 504);
@@ -322,7 +374,20 @@ public class SkillManager : MonoBehaviour
                 bCheck = true;
             }
         }
-            return bCheck;
+
+        // 콜라보 스킬 조건 만족하는지 반환
+        return bCheck;
+    }
+
+    /// <summary>
+    /// 현재 소지 개수 리스트창 자식 오브젝트 파괴용
+    /// </summary>
+    public void OnClick_ListExitBtn()
+    {
+        foreach (Transform child in _parentContent.transform)
+        {
+            Destroy(child.gameObject);
+        }
     }
 
 }

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.OnScreen;
 
 public class DragInputManager : MonoBehaviour
@@ -80,15 +81,13 @@ public class DragInputManager : MonoBehaviour
     {
         if (isLeftSide)
         {
-            //Debug.Log("왼쪽드래그 중");
-            //leftStick.SetActive(true);
+            Debug.Log("왼쪽드래그 중");
 
-            //드래그움직임이 Stick에 적용되게...
         }
         else
         {
-            //Debug.Log("오른쪽드래그 중");
-            //rightStick.SetActive(true);
+            Debug.Log("오른쪽드래그 중");
+
         }
             
     }
@@ -126,4 +125,27 @@ public class DragInputManager : MonoBehaviour
             rightStick.GetComponent<RectTransform>().anchoredPosition = localPoint;
         }
     }
+
+    // 모바일 기준에서 유탄 입력을 받았을때, 입력을 받고있을때, 입력이 끝났을때에 해당하는 함수를 구현해주세요.
+    //public void OnGrenade_M(InputAction.CallbackContext value)
+    //{
+    //    if (value.started)  //클릭
+    //    {
+    //        if (Physics.Raycast(mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue()),
+    //                            out RaycastHit hit,
+    //                            100f,
+    //                            groundMask))
+    //        {
+    //            currentRange = Instantiate(rangePrefab, hit.point, Quaternion.identity);
+    //            isDragging = true;
+    //        }
+    //    }
+    //    else if (value.canceled)    //드랍
+    //    {
+    //        if (currentRange != null)
+    //            Destroy(currentRange);
+
+    //        isDragging = false;
+    //    }
+    //}
 }
