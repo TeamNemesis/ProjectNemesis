@@ -145,7 +145,18 @@ public class DragInputManager : MonoBehaviour
     }
     public void DragGrenade()
     {
-
+        if (isDragging && currentRange != null)
+        {
+            if (Physics.Raycast(mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue()),
+                                out RaycastHit hit,
+                                100f,
+                                groundMask))
+            {
+                Vector3 pos = hit.point;
+                pos.y = 0; // 필요 시 고정
+                currentRange.transform.position = pos;
+            }
+        }
     }
     public void EndGrenade()
     {
