@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 
 /// <summary>
@@ -53,8 +53,4 @@ public class PlayerModel : CharacterModelBase
         OnHpChangedEventPlay(currentHealth); // 초기 체력 이벤트 발행
         debuffHandler.InitializePlayer();
     }
-
-
-
-
 }

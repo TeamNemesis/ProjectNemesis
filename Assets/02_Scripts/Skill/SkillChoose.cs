@@ -41,7 +41,7 @@ public class SkillChoose : MonoBehaviour
         _skillCompany = skillComapany;
         int skillNum = _skillCompany.skillList.Count;
         List<int> indexList;
-        bool bCheckCollab = GameManager.Instance().skillManager.CheckCollabo(_skillCompany, out indexList);
+        bool bCheckCollab = GameManager.Instance.skillManager.CheckCollabo(_skillCompany, out indexList);
         if (bCheckCollab && indexList.Count>0)
         {
             skillNum += indexList.Count;
@@ -68,7 +68,7 @@ public class SkillChoose : MonoBehaviour
                 loopCnt++;
                 if (bCheckCollab && indexList.Count>0 && tempNum < Constants.COLLABPER)
                 {
-                    _skillCompany = GameManager.Instance().skillManager.skill_Collab;
+                    _skillCompany = GameManager.Instance.skillManager.skill_Collab;
                     tempNum = Random.Range(0,indexList.Count);
                     tempNum = indexList[tempNum];
                 }
@@ -94,25 +94,25 @@ public class SkillChoose : MonoBehaviour
 
 
 
-        if (_skillCompany == null || GameManager.Instance().skillManager.GetTotalSkillNumber() == 0)
+        if (_skillCompany == null || GameManager.Instance.skillManager.GetTotalSkillNumber() == 0)
         {
             Debug.Log("Error");
             _skillBtnPanel.SetActive(false);
             return;
         }
 
-        for (int i = 0; i < Mathf.Min(Constants.SKILLCNT, GameManager.Instance().skillManager.GetTotalSkillNumber()); i++)
+        for (int i = 0; i < Mathf.Min(Constants.SKILLCNT, GameManager.Instance.skillManager.GetTotalSkillNumber()); i++)
         {
 
             int tempNum = 0;
             // 임시 인트
             do
             {
-                _skillCompany = GameManager.Instance().skillManager.DrawSkillCompany();
+                _skillCompany = GameManager.Instance.skillManager.DrawSkillCompany();
 
                 while (_skillCompany.currentSkillData.Count == 0 || loopCnt > 10)
                 {
-                    _skillCompany = GameManager.Instance().skillManager.DrawSkillCompany();
+                    _skillCompany = GameManager.Instance.skillManager.DrawSkillCompany();
 
                 }
                 Debug.Log(_skillCompany.currentSkillData.Count + _skillCompany.name);
@@ -192,7 +192,7 @@ public class SkillChoose : MonoBehaviour
     #region testBtn
     public void OnClick_DrawSkillCompany()
     {
-        SetSkillComapany(GameManager.Instance().skillManager.DrawSkillCompany());
+        SetSkillComapany(GameManager.Instance.skillManager.DrawSkillCompany());
     }
 
     public void OnClick_skillCompanyOne(Skill_One skillCompany)
