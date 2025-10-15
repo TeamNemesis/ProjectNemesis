@@ -44,7 +44,10 @@ public class DebuffHandler : MonoBehaviour
             maxStack = Maxstack;
         }
 
-
+        public static DebuffData CreateBurn(float duration = 5f)
+        {
+            return new DebuffData(Constants.DEBUFF_SLOW, duration, 0);
+        }
 
         /// <summary>
         /// 슬로우 제작 함수
@@ -229,6 +232,8 @@ public class DebuffHandler : MonoBehaviour
             case Constants.DEBUFF_CONFUSION:
                 active.effectRoutine = StartCoroutine(ConfuseCoroutine(debuff.debuffDuration));
                 break;
+            default:
+                break;
         }
 
         while (active.remainingTime > 0f && !character.isDead)
@@ -238,6 +243,8 @@ public class DebuffHandler : MonoBehaviour
                 case Constants.DEBUFF_POISON:
                 case Constants.DEBUFF_OVERLOAD:
                     character.TakeDamage(active.totalValue);          // 플레이어 모댐증 적용 요망
+                    break;
+                default:
                     break;
             }
 
@@ -254,6 +261,8 @@ public class DebuffHandler : MonoBehaviour
                 {
                     agent.speed = originalSpeed;
                 }
+                break;
+            default:
                 break;
         }
 
@@ -348,7 +357,6 @@ public class DebuffHandler : MonoBehaviour
                 count++;
             }
         }
-
         return count;
     }
 
@@ -411,8 +419,9 @@ public class DebuffHandler : MonoBehaviour
                     }
                     character.isBindned = false;
                     break;
+                default:
+                    break;
             }
-
             activeDebuffs.Remove(debuffName);
         }
     }

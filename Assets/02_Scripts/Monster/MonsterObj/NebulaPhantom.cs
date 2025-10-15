@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class NebulaVanguard : MonsterBase
+public class NebulaPhantom : MonsterBase
 {
     [SerializeField]
     private enum State
@@ -11,24 +11,28 @@ public class NebulaVanguard : MonsterBase
         Attack, // 공격
         Die     // 죽음
     }
-    [Header("Stats")]
+    [Header("Local Stats")]
+    [SerializeField] private float aimingDelay; // 조준 시간(공격 전 대기 시간)
     [SerializeField] private bool _isAttacking = false;
-    [SerializeField] private float _box_Length = 3;
-    [SerializeField] private float _box_Height = 3;
-    [SerializeField] private float _box_Width = 3;
+
+    [Header("Laser")]
+    [SerializeField] private GameObject laser;
 
     [SerializeField]
     private State currentState = State.Idle;
+
+    //private void Start()
+    //{
+    //    StartCoroutine(HidingFunction());
+    //}
 
     private void Update()
     {
         if (isDead || player == null) return;
         if (isStunned) return;
 
-        if (CanSeePlayer())
-        {
-            LookAtPlayer();
-        }
+        LookAtPlayer();
+        StartCoroutine(HidingFunction());
 
         switch (currentState)
         {
@@ -49,7 +53,6 @@ public class NebulaVanguard : MonsterBase
                 break;
         }
     }
-
 
 
     private void HandleIdle()
@@ -87,49 +90,54 @@ public class NebulaVanguard : MonsterBase
 
         if (player != null && Vector3.Distance(transform.position, player.position) <= attackRange)
         {
-            // 몬스터 기준 중심 위치 설정
-            Vector3 center = transform.position + transform.forward * (_box_Length / 2f);
+            laser.SetActive(true);
+            yield return new WaitForSeconds(attackDelay);
 
-            // 박스의 반 크기
-            Vector3 halfExtents = new Vector3(_box_Width / 2f, _box_Height / 2f, _box_Length / 2f);
+            float laserLength = 40f; // 사거리
 
-            // 박스의 회전 (몬스터 정면을 기준으로 정렬)
-            Quaternion orientation = Quaternion.LookRotation(transform.forward);
+            // 레이저 시작 위치를 플레이어 높이에 맞춤
+            Vector3 startPos = transform.position + transform.forward * 0.5f;
+            startPos.y = player.position.y + 0.5f;
 
-            // 박스 영역 안의 적 탐색
-            Collider[] hitEnemies = Physics.OverlapBox(center, halfExtents, orientation);
+            // 디버그용 레이저 표시
+            Debug.DrawRay(startPos, transform.forward * laserLength, Color.green, 0.3f);
 
-
-            foreach (Collider enemy in hitEnemies)
+            // 벽에 막히는 Raycast
+            if (Physics.Raycast(startPos, transform.forward, out RaycastHit hit, laserLength, ~0, QueryTriggerInteraction.Collide))
             {
-                if (enemy.TryGetComponent(out PlayerHealth playerHealth))
+                if (hit.collider.CompareTag(targetTag))
                 {
-                    yield return new WaitForSeconds(0.5f);
-                    float finalPlayerDistance = Vector3.Distance(transform.position, player.position);
-                    if (finalPlayerDistance <= attackRange)
+                    var damageable = hit.collider.GetComponent<IDamageable>();
+                    if (damageable != null)
                     {
-                        if (playerHealth != null)
-                        {
-                            playerHealth.TakeDamage(attackDamage);
-                        }
+                        damageable.TakeDamage(10);
+                        Debug.Log("플레이어 피격");
                     }
                 }
+                else
+                {
+                    Debug.Log($"총이 {hit.collider.name} 에 막힘");
+                }
             }
-            yield return new WaitForSeconds(attackDelay);
+
+            laser.SetActive(false);
+            yield return new WaitForSeconds(attackDelay / 2);
         }
+
         _isAttacking = false;
         currentState = State.Move; // 공격 후 다시 추격 상태로 전환
     }
 
-
-    void OnDrawGizmosSelected()
+    private IEnumerator HidingFunction()
     {
-        Vector3 center = transform.position + transform.forward * (_box_Length / 2f);
-        Vector3 halfExtents = new Vector3(_box_Width / 2f, _box_Height / 2f, _box_Length / 2f);
-        Quaternion orientation = Quaternion.LookRotation(transform.forward);
-
-        Gizmos.color = Color.red;
-        Gizmos.matrix = Matrix4x4.TRS(center, orientation, Vector3.one);
-        Gizmos.DrawWireCube(Vector3.zero, halfExtents * 2f);
+        Renderer renderer = gameObject.GetComponent<Renderer>();
+        float hidingTimer = 0f;
+        hidingTimer += Time.deltaTime;
+        if (hidingTimer >= 10f)
+        {
+            renderer.enabled = false;
+            yield return new WaitForSeconds(1f);
+            renderer.enabled = true;
+        }
     }
 }

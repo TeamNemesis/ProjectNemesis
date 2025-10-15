@@ -13,7 +13,7 @@ public class BallSecurityRobot : MonsterBase
         Die     // ÆÄ±«µÊ
     }
 
-    [Header("Stats"), SerializeField]
+    [Header("Local Stats"), SerializeField]
     private float _explosionRadius = 3f;      // ½ÇÁ¦ Æø¹ß ¹üÀ§
 
     // attackDamage, attackRange, attackDelay, isDead µîÀº MonsterBase¿¡¼­ »ó¼ÓµÊ
@@ -104,7 +104,8 @@ public class BallSecurityRobot : MonsterBase
             float finalPlayerDistance = Vector3.Distance(transform.position, player.position);
             if (finalPlayerDistance <= _explosionRadius)
             {
-                PlayerHealth playerHealth = player.GetComponent<PlayerHealth>();
+                
+                IDamageable playerHealth = player.GetComponent<IDamageable>();
                 if (playerHealth != null)
                 {
                     playerHealth.TakeDamage(attackDamage);
