@@ -52,12 +52,6 @@ public class NormalRoom : Room
         Debug.Log(_selectedSkillCompany.skillBaseString);
     }
 
-    void SetDoor(int doorType)
-    {
-        // doorType에 따라 문 생성
-        // 예: if (doorType == (int)NormalDoorType.Credit) { /* 크레딧 방 문 생성 코드 */ }
-    }
-
     int GetRandomDoorType()
     {
         float totalChance = door_CreditChance + door_HealChance + door_UpgradeChance + door_ChromeChance + door_SkillPackChance;
