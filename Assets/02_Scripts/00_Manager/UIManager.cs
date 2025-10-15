@@ -100,7 +100,7 @@ public void MakeCurrentSkillList()
 
     public SkillBtn MakeSkillBtn()
     {
-        return Instantiate(_skillBtnPrefab, _parentPanel.transform);
+        return Instantiate(_skillChooseBtnPrefab, _parentPanel.transform);
     }
 
 
