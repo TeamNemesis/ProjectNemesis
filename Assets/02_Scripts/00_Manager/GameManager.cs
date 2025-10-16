@@ -54,6 +54,23 @@ public class GameManager : MonoBehaviour
             _instance = this;
             DontDestroyOnLoad(gameObject);
         }
+        
+        //_resourceManager.Initialize();
+        
+        if(_skillManger==null)
+        {
+            _skillManger = Resources.Load<SkillManager>("Prefabs/Skill/SkillManager");
+        }
+        _skillManger.InitializeSkillManager();
+
+        if(_uiManager==null)
+        {
+            _uiManager = Resources.Load<UIManager>("Prefabs/Skill/UIManager");
+            _uiManager = Instantiate(_uiManager);
+            _uiManager.name = "UIManager";
+            
+        }
+        _uiManager.InitializeManger();
     }
 
     [SerializeField] ResourceManager _resourceManager;      // 리소스 매니저
@@ -67,6 +84,13 @@ public class GameManager : MonoBehaviour
     private SkillManager _skillManger;
     
     public SkillManager skillManager { get { return _skillManger; } }
+
+    /// <summary>
+    /// UIManager
+    /// </summary>
+    [SerializeField]
+    private UIManager _uiManager;
+    public UIManager UIManager { get { return _uiManager; } }
 
     /// <summary>
     /// 플레이어(Test용)

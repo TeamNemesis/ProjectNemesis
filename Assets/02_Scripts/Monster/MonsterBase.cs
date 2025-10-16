@@ -3,11 +3,12 @@ using UnityEngine.AI;
 
 public class MonsterBase : CharacterModelBase
 {
-    [Header("Stats")]
+    [Header("Base Stats")]
     [SerializeField] protected int attackDamage = 10;
     [SerializeField] protected float attackRange = 2f;
     [SerializeField] protected float detectionRange = 10f;
     [SerializeField] protected float attackDelay = 0.5f;
+    [SerializeField] protected float originalSpeed = 10f;
     [SerializeField] public string targetTag = Constants.TAG_PLAYER;
 
 
@@ -17,12 +18,17 @@ public class MonsterBase : CharacterModelBase
     [SerializeField] protected Transform player;
 
 
+    private void Start()
+    {
+        Initialize();
+    }
 
 
     public override void Initialize()
     {
         base.Initialize();
         agent = GetComponent<NavMeshAgent>();
+        originalSpeed = agent.speed;
 
         GameObject playerObj = GameObject.FindGameObjectWithTag(targetTag);
         if (playerObj != null)
@@ -48,7 +54,6 @@ public class MonsterBase : CharacterModelBase
         {
             if (hit.transform.CompareTag(targetTag))
             {
-                Debug.Log("playerCheck");
                 return true;
             }
             return false;
@@ -65,33 +70,4 @@ public class MonsterBase : CharacterModelBase
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * 5f);
         }
     }
-
-    #region Test
-    public void Start()
-    {
-        Initialize();
-
-    }
-
-    public void Use(Transform transform)
-    {
-        Debug.Log("monster poison");
-
-
-        DebuffHandler.DebuffData poison = new DebuffHandler.DebuffData(Constants.DEBUFF_POISON, 6f, 5f);
-
-
-
-        DebuffHandler debuffHandler = transform.GetComponent<DebuffHandler>();
-        debuffHandler.ApplyDebuff(poison);
-    }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.U))
-        {
-            Use(player);
-        }
-    }
-    #endregion
 }
