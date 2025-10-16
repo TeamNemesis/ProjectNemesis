@@ -32,6 +32,16 @@ public static class Constants
     /// </summary>
     public static int LOOPCNT = 100;
 
+    /// <summary>
+    /// 자동회복 주기
+    /// </summary>
+    public static float HEAL_SECOND = 3.0f;
+
+    /// <summary>
+    /// 자동회복 힐량
+    /// </summary>
+    public static int HEAL_AMOUNT = 1;
+
     #endregion
 
     #region tag

@@ -1,4 +1,5 @@
 using System;
+using System.Security.Cryptography;
 using UnityEngine;
 
 /// <summary>
@@ -9,9 +10,9 @@ public abstract class CharacterModelBase : MonoBehaviour, IDamageable
     [SerializeField] 
     protected int _maxHealth = 100;
     public int maxHealth { get { return _maxHealth; } } // 최대 체력을 반환하는 속성
-    public void SetMaxHp(int maxHp)
+    public void SetMaxHp(int plusMaxHp)
     {
-        _maxHealth = maxHp;
+        _maxHealth += plusMaxHp;
         OnMaxHpChanged?.Invoke(_maxHealth);
     }
 
@@ -66,6 +67,20 @@ public abstract class CharacterModelBase : MonoBehaviour, IDamageable
     public virtual void Initialize()
     {
         debuffHandler = GetComponent<DebuffHandler>();
+    }
+
+    /// <summary>
+    /// 체력 회복
+    /// </summary>
+    /// <param name="plusHp"></param>
+    public void Heal(int plusHp)
+    {
+        _currentHealth += plusHp;
+        if(_currentHealth > maxHealth)
+        {
+            _currentHealth = maxHealth;
+        }
+        OnHpChanged?.Invoke(_currentHealth);
     }
 
     public void TakeDamage(float damage)
