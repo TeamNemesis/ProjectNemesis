@@ -122,6 +122,6 @@ public static class Constants
     #endregion
 
     #region ResourcesPath
-    public static string RESOURCES_PATH_PLAYER_WEAPONSET = "ScriptableObjects/Player/PlayerWeponSets";
+    public static string RESOURCES_PATH_PLAYER_WEAPONSET = "ScriptableObjects/Player/PlayerWeaponSets";
     #endregion
 }

@@ -34,6 +34,12 @@ public class GameManager : MonoBehaviour
                     // GameManager 컴포넌트를 추가 후 _instance에 할당
                     _instance = obj.AddComponent<GameManager>();
                     Debug.Log("GameManager 컴포넌트 추가");
+                    _instance._resourceManager = obj.AddComponent<ResourceManager>();
+                    //_instance._skillManger = obj.AddComponent<SkillManager>();
+
+                    _instance._resourceManager.Initialize();
+                    //_instance._skillManger.InitializeSkillManager();
+
                     // 씬 전환시 파괴되지 않도록 설정
                     DontDestroyOnLoad(obj);
                 }

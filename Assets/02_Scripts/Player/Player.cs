@@ -44,7 +44,7 @@ public class Player : MonoBehaviour
 
         _interactableGuideView.Initialize();
 
-        _model.Initialize();
+        //_model.Initialize();
         _weaponController.Initialize();
     }
 
