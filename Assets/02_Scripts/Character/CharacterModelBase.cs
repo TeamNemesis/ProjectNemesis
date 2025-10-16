@@ -13,6 +13,7 @@ public abstract class CharacterModelBase : MonoBehaviour, IDamageable
     public void SetMaxHp(int plusMaxHp)
     {
         _maxHealth += plusMaxHp;
+        _currentHealth += plusMaxHp;
         OnMaxHpChanged?.Invoke(_maxHealth);
     }
 

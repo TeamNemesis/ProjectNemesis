@@ -18,6 +18,6 @@ public class GrenadeDamageArea : AreaDamageBase
 
     public override void ActiveSkill(Transform target)
     {
-        target.GetComponent<CharacterModelBase>().TakeDamage(_grenadeDamage);
+        target.GetComponent<IDamageable>().TakeDamage(_grenadeDamage);
     }
 }

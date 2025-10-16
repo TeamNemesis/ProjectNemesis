@@ -131,7 +131,7 @@ public class SkillData
     {
         _skillLevel = 0;
         _skillCompany.currentSkillData.Remove(this);
-
+        _skillCompany.SkillNumUp(this,-1);
         // 업그레이드 가능 리스트에 있다면
         if (GameManager.Instance.skillManager.upgradeSkillList.Contains(this))
         {

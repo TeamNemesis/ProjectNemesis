@@ -104,6 +104,24 @@ public class SkillManager : MonoBehaviour
     public List<SkillData> GetChooseSkillList()
     {
         List<SkillData> currentSkillData = new List<SkillData>();
+
+
+        if (_skill_Mutant.GetNumberSkillList() != 0)
+        {
+            foreach (SkillData skillData in _skill_Mutant.currentSkillData)
+            {
+                currentSkillData.Add(skillData);
+            }
+        }
+
+        if (_skill_Collab.GetNumberSkillList() != 0)
+        {
+            foreach (SkillData skillData in _skill_Collab.currentSkillData)
+            {
+                currentSkillData.Add(skillData);
+            }
+        }
+
         if (_skill_One.GetNumberSkillList() != 0)
         {
             foreach (SkillData skillData in _skill_One.currentSkillData)
@@ -145,13 +163,7 @@ public class SkillManager : MonoBehaviour
             }
         }
 
-        if (_skill_Collab.GetNumberSkillList() != 0)
-        {
-            foreach (SkillData skillData in _skill_Collab.currentSkillData)
-            {
-                currentSkillData.Add(skillData);
-            }
-        }
+     
 
         if (currentSkillData.Count > 0)
             return currentSkillData;
@@ -167,11 +179,11 @@ public class SkillManager : MonoBehaviour
     /// <returns></returns>
     public SkillBase DrawSkillCompany()
     {
-        int skillOneNum = _skill_One.GetNumberSkillList() + 1;
-        int skillTwoNum = _skill_Two.GetNumberSkillList() + 1;
-        int skillThreeNum = _skill_Three.GetNumberSkillList() + 1;
-        int skillFourNum = _skill_Four.GetNumberSkillList() + 1;
-        int skillFiveNum = _skill_Five.GetNumberSkillList() + 1;
+        int skillOneNum = _skill_One.skillNum + 1;
+        int skillTwoNum = _skill_Two.skillNum + 1;
+        int skillThreeNum = _skill_Three.skillNum + 1;
+        int skillFourNum = _skill_Four.skillNum + 1;
+        int skillFiveNum = _skill_Five.skillNum + 1;
 
         int totalNum = skillOneNum + skillTwoNum + skillThreeNum + skillFourNum + skillFiveNum;
 
@@ -240,7 +252,7 @@ public class SkillManager : MonoBehaviour
             // 연관된 기술 회사 조건 검사
             if (_skill_Two.currentSkillData.Count >= Constants.COLLABCNT)
             {
-                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 201);
+                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == Constants.INDEX_ONE_TWO);
                 if (index != Constants.NOCONTAININDEX)
                 {
                     indexList.Add(index);
@@ -251,7 +263,7 @@ public class SkillManager : MonoBehaviour
 
             if (_skill_Five.currentSkillData.Count >= Constants.COLLABCNT)
             {
-                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 105);
+                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == Constants.INDEX_FIVE_ONE);
                 if (index != Constants.NOCONTAININDEX)
                 {
                     indexList.Add(index);
@@ -265,7 +277,7 @@ public class SkillManager : MonoBehaviour
             // 연관된 기술 회사 조건 검사
             if (_skill_Three.currentSkillData.Count >= Constants.COLLABCNT)
             {
-                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 302);
+                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == Constants.INDEX_TWO_THREE);
                 if (index != Constants.NOCONTAININDEX)
                 {
                     indexList.Add(index);
@@ -276,7 +288,7 @@ public class SkillManager : MonoBehaviour
 
             if (_skill_One.currentSkillData.Count >= Constants.COLLABCNT)
             {
-                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 201);
+                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == Constants.INDEX_ONE_TWO);
                 if (index != Constants.NOCONTAININDEX)
                 {
                     indexList.Add(index);
@@ -290,7 +302,7 @@ public class SkillManager : MonoBehaviour
             // 연관된 기술 회사 조건 검사
             if (_skill_Four.currentSkillData.Count >= Constants.COLLABCNT)
             {
-                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 403);
+                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == Constants.INDEX_THREE_FOUR);
                 if (index != Constants.NOCONTAININDEX)
                 {
                     indexList.Add(index);
@@ -301,7 +313,7 @@ public class SkillManager : MonoBehaviour
 
             if (_skill_Two.currentSkillData.Count >= Constants.COLLABCNT)
             {
-                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 302);
+                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == Constants.INDEX_TWO_THREE);
                 if (index != Constants.NOCONTAININDEX)
                 {
                     indexList.Add(index);
@@ -315,7 +327,7 @@ public class SkillManager : MonoBehaviour
             // 연관된 기술 회사 조건 검사
             if (_skill_Five.currentSkillData.Count >= Constants.COLLABCNT)
             {
-                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 504);
+                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == Constants.INDEX_FOUR_FIVE);
                 if (index != Constants.NOCONTAININDEX)
                 {
                     indexList.Add(index);
@@ -326,7 +338,7 @@ public class SkillManager : MonoBehaviour
 
             if (_skill_Three.currentSkillData.Count >= Constants.COLLABCNT)
             {
-                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 403);
+                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == Constants.INDEX_THREE_FOUR);
                 if (index != Constants.NOCONTAININDEX)
                 {
                     indexList.Add(index);
@@ -340,7 +352,7 @@ public class SkillManager : MonoBehaviour
             // 연관된 기술 회사 조건 검사
             if (_skill_Four.currentSkillData.Count >= Constants.COLLABCNT)
             {
-                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 504);
+                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == Constants.INDEX_FOUR_FIVE);
                 if (index != Constants.NOCONTAININDEX)
                 {
                     indexList.Add(index);
@@ -351,7 +363,7 @@ public class SkillManager : MonoBehaviour
 
             if (_skill_One.currentSkillData.Count >= Constants.COLLABCNT)
             {
-                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 105);
+                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == Constants.INDEX_FIVE_ONE);
                 if (index != Constants.NOCONTAININDEX)
                 {
                     indexList.Add(index);

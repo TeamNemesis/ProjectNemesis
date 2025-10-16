@@ -12,6 +12,16 @@ public abstract class SkillBase : MonoBehaviour
     protected SkillManager _skillManager;
 
     /// <summary>
+    /// 현재 가지고 있는 스킬 개수
+    /// </summary>
+    protected int _skillNum;
+    public int skillNum { get { return _skillNum; } }
+    public virtual void SkillNumUp(SkillData skilldata, int num)
+    {
+        _skillNum+= num;
+    }
+
+    /// <summary>
     /// Json파일로 부터 데이터를 저장할 리스트
     /// </summary>
     private List<skillJsonData> _skillJsonDataList = new List<skillJsonData>();
@@ -53,6 +63,7 @@ public abstract class SkillBase : MonoBehaviour
         ReadJsonFile();
         player = GameManager.Instance.player;
         _skillManager = skillManager;
+        _skillNum = 0;
     }
 
     public void ReadJsonFile()
@@ -92,6 +103,7 @@ public abstract class SkillBase : MonoBehaviour
         if (_skillList.Remove(skillData))
         {
             _currentSkillData.Add(skillData);
+            SkillNumUp(skillData,1);
             // MaxLevel이 1이 아니라면(업그레이드 가능하다면)
             if (skillData.skillMaxLevel != 1)
             {

@@ -42,6 +42,10 @@ public static class Constants
     /// </summary>
     public static int HEAL_AMOUNT = 1;
 
+    /// <summary>
+    /// 범위 증가 스킬을 위한 계수
+    /// </summary>
+    public static float SKILL_EXTENT = 1f;
     #endregion
 
     #region tag
@@ -52,7 +56,18 @@ public static class Constants
 
     public const string TAG_MONSTER = "Monster";
 
+
     #endregion
+
+    #region skillIndex
+    public const int INDEX_ONE_TWO = 60;
+    public const int INDEX_FIVE_ONE = 61;
+    public const int INDEX_TWO_THREE = 62;
+    public const int INDEX_THREE_FOUR = 63;
+    public const int INDEX_FOUR_FIVE = 64;
+
+    #endregion
+
 
     #region Drone
 
