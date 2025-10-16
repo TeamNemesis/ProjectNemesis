@@ -8,10 +8,4 @@ public class ShopRoom : Room
 
     public override string RoomName => _roomName;
     public override float RoomChance => _roomChance;
-    public override RoomType RoomType => _roomType;
-
-    public override void Initialize()
-    {
-        //Debug.Log("상점 생성됨");
-    }
 }

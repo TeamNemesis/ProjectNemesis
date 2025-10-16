@@ -14,14 +14,21 @@ public abstract class Room : MonoBehaviour
 {
     [SerializeField] protected Transform[] _doorSpawnPointsLeft;  // 왼쪽 문 생성 위치
     [SerializeField] protected Transform[] _doorSpawnPointsRight; // 오른쪽 문 생성 위치
+
+    RoomInfo _roomInfo; // 방의 정보
+
     public Transform[] DoorSpawnPointsLeft => _doorSpawnPointsLeft;
     public Transform[] DoorSpawnPointsRight => _doorSpawnPointsRight;
 
     public abstract string RoomName { get; }    // 방의 이름(자식에서 반드시 정의)
     public abstract float RoomChance { get; }   // 방의 등장 확률(자식에서 반드시 정의)
-    public abstract RoomType RoomType { get; }  // 방의 타입(자식에서 반드시 정의)
+    public RoomInfo RoomInfo => _roomInfo; // 방의 정보
 
-    public abstract void Initialize();
+
+    public virtual void Initialize(RoomType roomType, NormalRoomType? normalRoomType, TechSelectPackType? techSelectPackType)
+    {
+        _roomInfo = new RoomInfo(roomType, normalRoomType, techSelectPackType);
+    }
 
     /// <summary>
     /// 입력받은 count 수만큼 다음 문들이 생성될 위치들을 Transform배열로 반환
@@ -83,5 +90,10 @@ public abstract class Room : MonoBehaviour
             default:
                 return null;
         }
+    }
+
+    public void SetRoomInfo(RoomInfo roomInfo)
+    {
+        _roomInfo = roomInfo;
     }
 }

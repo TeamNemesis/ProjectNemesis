@@ -13,25 +13,24 @@ public class RoomSpawner : MonoBehaviour
     public void Initialize()
     {
         // 시작 시 StartRoom 생성
-        SpawnRoom(RoomType.Start);
+        SpawnRoom(RoomType.Start, null, null);
     }
 
-    /// <summary>
-    /// 입력받은 RoomType에 따라 방을 생성하는 함수
-    /// </summary>
-    /// <param name="roomType"></param>
-    public void SpawnRoom(RoomType roomType)
+    
+    public void SpawnRoom(RoomType roomType, NormalRoomType? normalRoomType, TechSelectPackType? techSelectPackType)
     {
         GameObject roomPrefab = GameManager.Instance.ResourceManager.RoomPrefabMap[roomType];
         if (roomPrefab != null)
         {
-            Instantiate(roomPrefab, Vector3.zero, Quaternion.identity);
-            
-            Room room = roomPrefab.GetComponent<Room>();
-            if(room != null)
+            // Instantiate로 새 GameObject 생성
+            GameObject roomObj = Instantiate(roomPrefab, Vector3.zero, Quaternion.identity);
+
+            // 생성된 오브젝트에서 Room 컴포넌트 가져오기
+            Room room = roomObj.GetComponent<Room>();
+            if (room != null)
             {
-                OnRoomSpawned?.Invoke(room);
-                room.Initialize();
+                room.Initialize(roomType, normalRoomType, techSelectPackType);
+                OnRoomSpawned?.Invoke(room); // 이벤트는 Initialize 이후로 옮기는게 더 안전
             }
             else
             {

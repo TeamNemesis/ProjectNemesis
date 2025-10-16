@@ -8,10 +8,4 @@ public class LabRoom : Room
 
     public override string RoomName => _roomName;
     public override float RoomChance => _roomChance;
-    public override RoomType RoomType => _roomType;
-
-    public override void Initialize()
-    {
-        //Debug.Log("실험실 생성됨");
-    }
 }

@@ -13,7 +13,18 @@ using UnityEngine;
 // 6. 
 public class MapController : MonoBehaviour
 {
-    
+    // GetNextRoomCount()
+    // -> 다음 방 선택지 개수 결정을 int로 받아옴
+
+    // GetNextRoomTypes(int count, RoomType currentRoomType, int currentRoomIndex, bool hasLabRoomAppeared, out int normalRoomCount)
+    // -> 다음 방 선택지 개수, 현재 방 타입, 현재 방 인덱스, 실험실 등장 여부를 인자로 넘기고, 다음 방 선택지로 등장할 방들의 타입을 RoomType배열로 받아옴
+    // 이때 normalRoomCount는 out으로 몇개의 일반방이 선택되었는지 받아옴
+
+    // GetNextNormalRoomTypes(int normalRoomCount, out techSelectPackCount)
+    // -> normalRoomCount만큼 일반방 타입을 결정하여 NormalRoomType배열로 받아오고, techSelectPackCount는 out으로 몇개의 기술선택팩 방이 선택되었는지 받아옴
+
+    // GetNextTechSelectPackTypes(int techSelectPackCount)
+    // -> techSelectPackCount만큼 기술선택팩 방 타입을 결정하여 TechSelectPackType배열로 받아옴
 
     [SerializeField] RoomSpawner _roomSpawner; // 방 생성 컴포넌트
     [SerializeField] DoorSpawner _doorSpawner; // 문 생성 컴포넌트
@@ -43,12 +54,12 @@ public class MapController : MonoBehaviour
         // 현재 방 카운트 증가
         _currentRoomCount++;
         // 실험실 방 등장 여부 갱신
-        if (room.RoomType == RoomType.Lab)
+        if (room.RoomInfo.RoomType == RoomType.Lab)
         {
             _hasLabRoomAppeared = true;
         }
 
-        if (room.RoomType == RoomType.Start)
+        if (room.RoomInfo.RoomType == RoomType.Start)
         {
             // RoomType이 StartRoom일 때는 문 생성 로직을 타지 않고
             // 다음 방은 무조건 NormalRoom이어야 하므로
@@ -64,12 +75,19 @@ public class MapController : MonoBehaviour
         // 문의 개수만큼 문이 생성될 위치 정보 받아오기
         Transform[] doorPositions = _currentRoom.GetNextDoorPositions(nextDoorCount);
 
-        // 문의 개수만큼 로직에 따라 문의 타입 결정하기
+        // 문의 개수만큼 로직에 따라 RoomType 결정 함수로부터 다음 RoomType 배열 받아오기
         RoomType[] doorTypes = _doorDecider.GetNextRoomTypes(
             nextDoorCount,
-            _currentRoom.RoomType,
+            _currentRoom.RoomInfo.RoomType,
             _currentRoomCount,
-            _hasLabRoomAppeared);
+            _hasLabRoomAppeared,
+            out int normalRoomCount);
+
+        // normalRoomCount가 1이상이면 normalRoomType 결정 함수로부터 결정된 일반방 타입 배열 받아오기
+        if(normalRoomCount > 0)
+        {
+            
+        }
 
         for (int i = 0; i < nextDoorCount; i++)
         {

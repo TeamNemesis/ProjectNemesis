@@ -14,7 +14,7 @@ public enum NormalRoomType
 /// </summary>
 public class NormalRoom : Room
 {
-    [SerializeField] string door_Name = "normalDoor";
+    [SerializeField] string _roomName = "normalDoor";
     [SerializeField] float door_Chance = 0.7f; // 노말룸의 등장 확률 설정
     [SerializeField] RoomType door_Type = RoomType.Normal;
 
@@ -24,62 +24,7 @@ public class NormalRoom : Room
     [SerializeField] float door_ChromeChance; // 크롬 방 등장 확률
     [SerializeField] float door_SkillPackChance; // 스킬팩 방 등장 확률
 
-    SkillBase _selectedSkillCompany;    // 이번에 뽑힌 스킬팩
-
     public override string RoomName => door_Name;
     public override float RoomChance => door_Chance;
-    public override RoomType RoomType => door_Type;
-
-    public override void Initialize()
-    {
-        //Debug.Log("노말룸 생성됨");
-        GetRandomDoorType();
-    }
-
-    [ContextMenu("임의값 반영하기")]
-    void SetDefaultChances()
-    {
-        door_CreditChance = 0.1f;
-        door_HealChance = 0.05f;
-        door_UpgradeChance = 0.2f;
-        door_ChromeChance = 0.05f;
-        door_SkillPackChance = 0.5f;
-    }
-
-    public void SetSkillCompany()
-    {
-        _selectedSkillCompany= GameManager.Instance.skillManager.DrawSkillCompany();
-        Debug.Log(_selectedSkillCompany.skillBaseString);
-    }
-
-    int GetRandomDoorType()
-    {
-        float totalChance = door_CreditChance + door_HealChance + door_UpgradeChance + door_ChromeChance + door_SkillPackChance;
-        float randomValue = Random.Range(0f, totalChance);
-        if (randomValue < door_CreditChance)
-        {
-            Debug.Log("크레딧방 생성됨");
-            return (int)NormalRoomType.Credit;
-        }
-        else if (randomValue < door_CreditChance + door_HealChance)
-        {
-            Debug.Log("회복방 생성됨");
-            return (int)NormalRoomType.Heal;
-        }
-        else if (randomValue < door_CreditChance + door_HealChance + door_UpgradeChance)
-        {
-            Debug.Log("업그레이드방 생성됨");
-            return (int)NormalRoomType.TechUpgrade;
-        }
-        else if (randomValue < door_CreditChance + door_HealChance + door_UpgradeChance + door_ChromeChance)
-        {
-            Debug.Log("크롬방 생성됨");
-            return (int)NormalRoomType.Chrome;
-        }
-        else
-        {
-            Debug.Log("스킬팩방 생성됨");
-            return (int)NormalRoomType.TechSelect;
-        }
-    }
+    
 }

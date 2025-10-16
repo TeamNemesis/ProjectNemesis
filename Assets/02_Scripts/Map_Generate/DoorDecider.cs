@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 // 0~14
@@ -39,22 +40,7 @@ public class DoorDecider : MonoBehaviour
 
     public void Initialize()
     {
-        InitializeCandidateRoomChanceDict();
-    }
-
-    /// <summary>
-    /// 다음 방 후보군 딕셔너리 초기화
-    /// </summary>
-    void InitializeCandidateRoomChanceDict()
-    {
-        foreach (GameObject roomObj in GameManager.Instance.ResourceManager.RoomPrefabMap.Values)
-        {
-            Room room = roomObj.GetComponent<Room>();
-            if (room != null && room.RoomType != RoomType.Boss && room.RoomType != RoomType.Start && !_candidateRoomChanceMap.ContainsKey(room.RoomType))
-            {
-                _candidateRoomChanceMap.Add(room.RoomType, room.RoomChance);
-            }
-        }
+        
     }
 
     /// <summary>
@@ -81,8 +67,9 @@ public class DoorDecider : MonoBehaviour
     /// <param name="currentRoomType">현재 방 타입</param>
     /// <param name="currentRoomIndex">현재 방 인덱스</param>
     /// <param name="hasLabRoomAppeared">실험실 등장 여부</param>
+    /// <param name="normalRoomCount">이번에 선택된 일반방의 개수(출력용)</param>
     /// <returns></returns>
-    public RoomType[] GetNextRoomTypes(int count, RoomType currentRoomType, int currentRoomIndex, bool hasLabRoomAppeared)
+    public RoomType[] GetNextRoomTypes(int count, RoomType currentRoomType, int currentRoomIndex, bool hasLabRoomAppeared,out int normalRoomCount)
     {
         // ----- 입력값을 검증하여 예외 처리 ----- 
         if (count < 1 || count > 3)
@@ -94,11 +81,17 @@ public class DoorDecider : MonoBehaviour
         // ----- 특수 조건(강제성이 있는 조건?) 처리 -----
         // 0번 방(무기고): 다음 방은 무조건 일반방
         if (currentRoomIndex == 0)
+        {
+            normalRoomCount = 1;
             return new RoomType[] { RoomType.Normal };
+        }
 
         // 13번 방(보스 직전): 보스 확정 등장
         if (currentRoomIndex == 13)
+        {
+            normalRoomCount = 0;
             return new RoomType[] { RoomType.Boss };
+        }
 
         // 12번 방(상점 강제)
         var types = new List<RoomType>();
@@ -107,7 +100,12 @@ public class DoorDecider : MonoBehaviour
         // ----- 특수 조건(강제성이 있는 조건?) 처리 -----
 
         // ----- 선택지로 증장할 수 있는 방 후보군 구성하기 -----
-        // 후보군 복사
+        // 후보군 초기화
+        _candidateRoomChanceMap.Clear();
+        _candidateRoomChanceMap.Add(RoomType.Normal, 0.7f);    // 일반방
+        _candidateRoomChanceMap.Add(RoomType.Shop, 0.15f);     // 상점
+        _candidateRoomChanceMap.Add(RoomType.Lab, 0.1f);       // 실험실
+        _candidateRoomChanceMap.Add(RoomType.Colosseum, 0.05f); // 투기장
         var nextRoomChanceMap = new Dictionary<RoomType, float>(_candidateRoomChanceMap);
 
         // 실험실은 맵 전체에서 한 번만 등장
@@ -164,6 +162,7 @@ public class DoorDecider : MonoBehaviour
         // ----- 조건에 따라 확률적으로 다음 방 선택지 결정하기 -----
 
         // 위 과정에서 선택된 방의 타입들을 배열로 만들어 반환
+        normalRoomCount = types.Count(x => x == RoomType.Normal);
         return types.ToArray();
     }
 }
