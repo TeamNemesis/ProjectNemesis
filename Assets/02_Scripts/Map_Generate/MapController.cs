@@ -65,7 +65,7 @@ public class MapController : MonoBehaviour
         Transform[] doorPositions = _currentRoom.GetNextDoorPositions(nextDoorCount);
 
         // 문의 개수만큼 로직에 따라 문의 타입 결정하기
-        RoomType[] doorTypes = _doorDecider.GetNextDoorTypes(
+        RoomType[] doorTypes = _doorDecider.GetNextRoomTypes(
             nextDoorCount,
             _currentRoom.RoomType,
             _currentRoomCount,

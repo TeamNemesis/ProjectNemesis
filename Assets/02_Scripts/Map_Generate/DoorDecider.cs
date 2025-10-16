@@ -82,13 +82,16 @@ public class DoorDecider : MonoBehaviour
     /// <param name="currentRoomIndex">현재 방 인덱스</param>
     /// <param name="hasLabRoomAppeared">실험실 등장 여부</param>
     /// <returns></returns>
-    public RoomType[] GetNextDoorTypes(int count, RoomType currentRoomType, int currentRoomIndex, bool hasLabRoomAppeared)
+    public RoomType[] GetNextRoomTypes(int count, RoomType currentRoomType, int currentRoomIndex, bool hasLabRoomAppeared)
     {
+        // ----- 입력값을 검증하여 예외 처리 ----- 
         if (count < 1 || count > 3)
             throw new ArgumentOutOfRangeException("문의 개수는 1~3개 사이여야 합니다.");
         if (currentRoomIndex < 0 || currentRoomIndex > 14)
             throw new ArgumentOutOfRangeException("방 인덱스는 0~14 사이여야 합니다.");
+        // ----- 입력값을 검증하여 예외 처리 ----- 
 
+        // ----- 특수 조건(강제성이 있는 조건?) 처리 -----
         // 0번 방(무기고): 다음 방은 무조건 일반방
         if (currentRoomIndex == 0)
             return new RoomType[] { RoomType.Normal };
@@ -101,7 +104,9 @@ public class DoorDecider : MonoBehaviour
         var types = new List<RoomType>();
         if (currentRoomIndex == 12)
             types.Add(RoomType.Shop);
+        // ----- 특수 조건(강제성이 있는 조건?) 처리 -----
 
+        // ----- 선택지로 증장할 수 있는 방 후보군 구성하기 -----
         // 후보군 복사
         var nextRoomChanceMap = new Dictionary<RoomType, float>(_candidateRoomChanceMap);
 
@@ -119,7 +124,9 @@ public class DoorDecider : MonoBehaviour
         // 12번 방이면 상점은 이미 넣었으므로 후보군에서 제거
         if (currentRoomIndex == 12)
             nextRoomChanceMap.Remove(RoomType.Shop);
+        // ----- 선택지로 증장할 수 있는 방 후보군 구성하기 -----
 
+        // ----- 조건에 따라 확률적으로 다음 방 선택지 결정하기 -----
         // 선택지 중복 방지: 일반방은 중복 허용, 특수방은 중복 제거
         for (int i = types.Count; i < count; i++)
         {
@@ -154,7 +161,9 @@ public class DoorDecider : MonoBehaviour
             // 일반방은 중복 허용이므로 후보군에서 제거 안 함
             // 특수방만 후보군에서 제거(위 for문에서 처리됨)
         }
+        // ----- 조건에 따라 확률적으로 다음 방 선택지 결정하기 -----
 
+        // 위 과정에서 선택된 방의 타입들을 배열로 만들어 반환
         return types.ToArray();
     }
 }

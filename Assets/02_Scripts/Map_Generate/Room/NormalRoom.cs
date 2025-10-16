@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
 
-public enum NormalDoorType
+public enum NormalRoomType
 {
-    Credit, // 크레딧 문
-    Heal, // 회복 문
-    Upgrade, // 업그레이드 문
-    Chrome, // 크롬 문
-    SkillPack // 스킬팩 문
+    Credit, 
+    Heal,
+    TechSelect, 
+    TechUpgrade,
+    Chrome,
 }
 
 /// <summary>
@@ -59,27 +59,27 @@ public class NormalRoom : Room
         if (randomValue < door_CreditChance)
         {
             Debug.Log("크레딧방 생성됨");
-            return (int)NormalDoorType.Credit;
+            return (int)NormalRoomType.Credit;
         }
         else if (randomValue < door_CreditChance + door_HealChance)
         {
             Debug.Log("회복방 생성됨");
-            return (int)NormalDoorType.Heal;
+            return (int)NormalRoomType.Heal;
         }
         else if (randomValue < door_CreditChance + door_HealChance + door_UpgradeChance)
         {
             Debug.Log("업그레이드방 생성됨");
-            return (int)NormalDoorType.Upgrade;
+            return (int)NormalRoomType.TechUpgrade;
         }
         else if (randomValue < door_CreditChance + door_HealChance + door_UpgradeChance + door_ChromeChance)
         {
             Debug.Log("크롬방 생성됨");
-            return (int)NormalDoorType.Chrome;
+            return (int)NormalRoomType.Chrome;
         }
         else
         {
             Debug.Log("스킬팩방 생성됨");
-            return (int)NormalDoorType.SkillPack;
+            return (int)NormalRoomType.TechSelect;
         }
     }
 }
