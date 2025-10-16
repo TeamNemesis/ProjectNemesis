@@ -20,32 +20,36 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private Transform _parentContent;
 
-   public void InitializeManger()
+    public void InitializeManger()
     {
-       
-       _skillBtnPrefab = Resources.Load<SkillBtn>("Prefabs/Skill/SkillBtnPrefab");
-        
+        if (_skillBtnPrefab == null)
+        {
+            _skillBtnPrefab = Resources.Load<SkillBtn>("Prefabs/Skill/SkillBtnPrefab");
+        }
 
-     _skillChooseBtnPrefab = Resources.Load<SkillBtn>("Prefabs/Skill/SkillChoosePrefab");
+        if (_skillChooseBtnPrefab == null)
+        {
+            _skillChooseBtnPrefab = Resources.Load<SkillBtn>("Prefabs/Skill/SkillChoosePrefab");
+        }
 
     }
 
-/// <summary>
-/// 현재 보유 기술 목록 리스트 제작
-/// </summary>
-public void MakeCurrentSkillList()
+    /// <summary>
+    /// 현재 보유 기술 목록 리스트 제작
+    /// </summary>
+    public void MakeCurrentSkillList()
     {
 
         _listPanel.SetActive(true);
         List<SkillData> list = GameManager.Instance.skillManager.GetChooseSkillList();
 
         // 보유 기술이 없다면 리턴
-        if(list==null)
+        if (list == null)
         {
             return;
         }
 
-        foreach(SkillData skill in list)
+        foreach (SkillData skill in list)
         {
             MakeSkillBtn(skill, _parentContent);
         }
