@@ -9,13 +9,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5547878642204777666}
-  - component: {fileID: 2359109184481519391}
-  - component: {fileID: 7175057837019761706}
-  - component: {fileID: 4281797882256113937}
-  - component: {fileID: 2264179380418422717}
   - component: {fileID: 2787208731291682719}
-  - component: {fileID: 2877908474790907534}
+  - component: {fileID: 2264179380418422717}
+  - component: {fileID: 4281797882256113937}
+  - component: {fileID: 7175057837019761706}
+  - component: {fileID: 2359109184481519391}
   - component: {fileID: 6357598694723018803}
+  - component: {fileID: -5676911947839820524}
+  - component: {fileID: 2877908474790907534}
   m_Layer: 0
   m_Name: SkillManager
   m_TagString: Untagged
@@ -38,7 +39,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2359109184481519391
+--- !u!114 &2787208731291682719
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -47,11 +48,39 @@ MonoBehaviour:
   m_GameObject: {fileID: 8808745369581792552}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b901ccfbca879794a9d45684de6507f6, type: 3}
+  m_Script: {fileID: 11500000, guid: 085bfcbf8acda074a8f9336ce3cad4ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   skillBaseString: 
-  _skillDataPath: whtjdgh1931/5stTechData
+  _skillDataPath: whtjdgh1931/1stTechData
+--- !u!114 &2264179380418422717
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8808745369581792552}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa80da09536f64e4db4c5c0e4132419f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skillBaseString: 
+  _skillDataPath: whtjdgh1931/2ndTechData
+--- !u!114 &4281797882256113937
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8808745369581792552}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e02a0eb887f256049a70fd78bc29c36b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skillBaseString: 
+  _skillDataPath: whtjdgh1931/3rdTechData
 --- !u!114 &7175057837019761706
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -67,7 +96,7 @@ MonoBehaviour:
   skillBaseString: 
   _skillDataPath: whtjdgh1931/4thTechData
   dronePrefab: {fileID: -1284445065136028588, guid: 10fae87dd47724a41bcb6edb7c2269c9, type: 3}
---- !u!114 &4281797882256113937
+--- !u!114 &2359109184481519391
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -76,51 +105,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 8808745369581792552}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e02a0eb887f256049a70fd78bc29c36b, type: 3}
+  m_Script: {fileID: 11500000, guid: b901ccfbca879794a9d45684de6507f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   skillBaseString: 
-  _skillDataPath: whtjdgh1931/3rdTechData
---- !u!114 &2264179380418422717
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8808745369581792552}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fa80da09536f64e4db4c5c0e4132419f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  skillBaseString: 
-  _skillDataPath: whtjdgh1931/2ndTechData
---- !u!114 &2787208731291682719
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8808745369581792552}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 085bfcbf8acda074a8f9336ce3cad4ef, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  skillBaseString: 
-  _skillDataPath: whtjdgh1931/1stTechData
---- !u!114 &2877908474790907534
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8808745369581792552}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a66e456406cbda41bf7152377bc4612, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  _skillDataPath: whtjdgh1931/5stTechData
 --- !u!114 &6357598694723018803
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -134,4 +123,30 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skillBaseString: 
+  _skillDataPath: whtjdgh1931/collaboTech
+--- !u!114 &-5676911947839820524
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8808745369581792552}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db01b2a369f007249a03c181eb8a8744, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skillBaseString: 
   _skillDataPath: whtjdgh1931/MutantTechData
+--- !u!114 &2877908474790907534
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8808745369581792552}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a66e456406cbda41bf7152377bc4612, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

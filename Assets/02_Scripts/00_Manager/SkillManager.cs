@@ -22,6 +22,9 @@ public class SkillManager : MonoBehaviour
 
     private Skill_Collab _skill_Collab;
     public Skill_Collab skill_Collab { get { return _skill_Collab; } }
+
+    private Skill_Mutant _skill_Mutant;
+    public Skill_Mutant skill_Mutant { get { return _skill_Mutant; }}
     #endregion
 
 
@@ -70,16 +73,21 @@ public class SkillManager : MonoBehaviour
     }
     #endregion
 
+    /// <summary>
+    /// 업그레이드 가능 스킬들 목록
+    /// </summary>
+    private List<SkillData> _upgradeSkillList = new List<SkillData>();
+    public List<SkillData> upgradeSkillList { get { return _upgradeSkillList; } }
+
     public void InitializeSkillManager()
     {
-
-
         _skill_One = GetComponent<Skill_One>();
         _skill_Two = GetComponent<Skill_Two>();
         _skill_Three = GetComponent<Skill_Three>();
         _skill_Four = GetComponent<Skill_Four>();
         _skill_Five = GetComponent<Skill_Five>();
         _skill_Collab = GetComponent<Skill_Collab>();
+        _skill_Mutant = GetComponent<Skill_Mutant>();
 
         _skill_One.InitializeSkill(this);
         _skill_Two.InitializeSkill(this);
@@ -87,7 +95,7 @@ public class SkillManager : MonoBehaviour
         _skill_Four.InitializeSkill(this);
         _skill_Five.InitializeSkill(this);
         _skill_Collab.InitializeSkill(this);
-
+        _skill_Mutant.InitializeSkill(this);
     }
 
     /// <summary>

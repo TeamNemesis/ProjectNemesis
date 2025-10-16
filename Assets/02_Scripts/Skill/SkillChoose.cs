@@ -24,7 +24,7 @@ public class SkillChoose : MonoBehaviour
         _skillCompany = skill;
     }
 
-
+    #region chooseSkill
 
     /// <summary>
     /// 초기 스킬 선택 버튼 생성
@@ -79,48 +79,6 @@ public class SkillChoose : MonoBehaviour
         _tempSkillList.Clear();
     }
 
-    /// <summary>
-    /// 스킬 업그레이드 버튼 생성
-    /// </summary>
-    public void SetUpgradeBtn()
-    {
-        GameManager.Instance.UIManager.SetActiveSkillBtnPanel(true);
-
-
-        if (_skillCompany == null || GameManager.Instance.skillManager.GetTotalSkillNumber() == 0)
-        {
-            Debug.Log("Error");
-            GameManager.Instance.UIManager.SetActiveSkillBtnPanel(false);
-            return;
-        }
-
-        for (int i = 0; i < Mathf.Min(Constants.SKILLCNT, GameManager.Instance.skillManager.GetTotalSkillNumber()); i++)
-        {
-
-            int tempNum = 0;
-            // 임시 인트
-            do
-            {
-                _skillCompany = GameManager.Instance.skillManager.DrawSkillCompany();
-
-                while (_skillCompany.currentSkillData.Count == 0 || loopCnt > 10)
-                {
-                    _skillCompany = GameManager.Instance.skillManager.DrawSkillCompany();
-
-                }
-                Debug.Log(_skillCompany.currentSkillData.Count + _skillCompany.name);
-                tempNum = Random.Range(0, _skillCompany.currentSkillData.Count);
-
-                loopCnt++;
-            }
-            while (SetUpgradeSkillBtn(tempNum) && loopCnt < Constants.LOOPCNT);
-            Debug.Log("Loop : " + loopCnt);
-            loopCnt = 0;
-        }
-
-        _tempSkillList.Clear();
-
-    }
 
     /// <summary>
     /// 버튼에 스킬 정보 세팅
@@ -142,14 +100,53 @@ public class SkillChoose : MonoBehaviour
         }
         else return true;
     }
+    #endregion
 
+    #region Upgrade
+    /// <summary>
+    /// 스킬 업그레이드 버튼 생성
+    /// </summary>
+    public void SetUpgradeBtn()
+    {
+        GameManager.Instance.UIManager.SetActiveSkillBtnPanel(true);
+        int upgradeSkillNum = GameManager.Instance.skillManager.upgradeSkillList.Count;
+
+
+        if (upgradeSkillNum == 0)
+        {
+            Debug.Log("Error");
+            GameManager.Instance.UIManager.SetActiveSkillBtnPanel(false);
+            return;
+        }
+
+        for (int i = 0; i < upgradeSkillNum; i++)
+        {
+
+            int tempNum = 0;
+            // 임시 인트
+            do
+            {
+                tempNum = Random.Range(0, upgradeSkillNum);
+
+                loopCnt++;
+            }
+            while (SetUpgradeSkillBtn(tempNum) && loopCnt < Constants.LOOPCNT);
+            Debug.Log("Loop : " + loopCnt);
+            loopCnt = 0;
+        }
+
+        _tempSkillList.Clear();
+
+    }
+
+    #endregion
 
     public bool SetUpgradeSkillBtn(int skillNum)
     {
-        if (!_tempSkillList.Contains(_skillCompany.currentSkillData[skillNum].skillIdx))
+        if (!_tempSkillList.Contains(GameManager.Instance.skillManager.upgradeSkillList[skillNum].skillIdx))
         {
             SkillBtn skillBtn = GameManager.Instance.UIManager.MakeSkillBtn();
-            skillBtn.SetSkillInfo(_skillCompany.currentSkillData[skillNum]);
+            skillBtn.SetSkillInfo(GameManager.Instance.skillManager.upgradeSkillList[skillNum]);
             skillBtn.GetComponent<Button>().onClick.AddListener(() => OnClick_SkillBtnClick(skillBtn));
             _tempSkillList.Add(skillBtn.skillData.skillIdx);
             return false;
@@ -162,7 +159,7 @@ public class SkillChoose : MonoBehaviour
     /// </summary>
     public void OnClick_SkillBtnClick(SkillBtn skillBtn)
     {
-        if (skillBtn.skillData.LevelUp())
+        if (skillBtn.skillData.ChooseSkill())
         {
             skillBtn.skillData.skillCompany.ChooseSkill(skillBtn.skillData);
 

@@ -73,7 +73,7 @@ public class UIManager : MonoBehaviour
     {
         _skillImageText.text = skillBtn.skillData.skillImagePath;
         _skillScriptText.text = skillBtn.skillData.skillIdx.ToString() + "\n" + skillBtn.skillData.skillScript;
-        _skillLevelText.text = skillBtn.skillData.skillLevel.ToString();
+        _skillLevelText.text = skillBtn.skillData.skillLevel.ToString() + " / " + skillBtn.skillData.skillMaxLevel.ToString();
     }
 
     /// <summary>
