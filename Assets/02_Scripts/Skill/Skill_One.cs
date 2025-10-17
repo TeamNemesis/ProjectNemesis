@@ -45,7 +45,12 @@ public class Skill_One : SkillBase
             // 피의 갈증
             case 12:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
-
+                ActiveTech skillSPAttack = new Skill_One_SPAttack(choosedSkill);
+                if (_skillManager.attachTech != null)
+                {
+                    _skillManager.attachTech.Deactivate(player);
+                }
+                skillSPAttack.Activate(_skillManager, player);
                 break;
 
             // 약육강식

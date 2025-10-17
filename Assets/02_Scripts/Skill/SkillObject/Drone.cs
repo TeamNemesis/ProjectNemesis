@@ -99,7 +99,7 @@ public class Drone : MonoBehaviour, IReinforce, IPoolable
     {
         if (GameManager.Instance.skillManager.attachTech != null)
         {
-            Attack += GameManager.Instance.skillManager.attachTech.Use;
+            Attack += GameManager.Instance.skillManager.attachTech.HitEnemy;
         }
     }
 

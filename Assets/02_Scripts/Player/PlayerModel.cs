@@ -19,6 +19,18 @@ public class PlayerModel : CharacterModelBase
     /// 테스트용 공격 적중시 이벤트
     /// </summary>
     public event Action<Transform> AttackHit;
+
+    /// <summary>
+    /// 테스트용 특수 공격 실행 이벤트
+    /// </summary>
+    public event Action SPAttackTry;
+
+    /// <summary>
+    /// 테스트용 특수 공격 적중 이벤트
+    /// </summary>
+    public event Action<Transform> SPAttackHit;
+
+
     /// <summary>
     /// 플레이어 테스트용 공격력
     /// </summary>

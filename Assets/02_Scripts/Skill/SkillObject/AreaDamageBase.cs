@@ -3,6 +3,8 @@ using UnityEngine;
 
 /// <summary>
 /// 영역내에 한번에 효과를 주는 스킬
+/// CheckTarget 구현됨, CheckTarget이 Target에게 ActiveSkill 실행
+/// ActiveSkill 구현 필요
 /// </summary>
 public class AreaDamageBase : MonoBehaviour
 {

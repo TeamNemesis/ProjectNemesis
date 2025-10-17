@@ -240,7 +240,6 @@ public class ObjectPool : MonoBehaviour
         }
 
         int index = inUsePools[obj.name].IndexOf(obj);
-        Debug.Log(index);
         if (index >= 0)
         {
             inUsePools[obj.name].RemoveAt(index);

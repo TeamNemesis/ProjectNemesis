@@ -6,6 +6,11 @@ using UnityEngine;
 /// </summary>
 public class Skill_Two : SkillBase
 {
+    /// <summary>
+    /// 폭사 프리팹
+    /// </summary>
+    [SerializeField]
+    private ExplosionDeath _explosionDeathPrefab;
 
     public override void ActivateSkill(SkillData choosedSkill)
     {
@@ -15,7 +20,12 @@ public class Skill_Two : SkillBase
             // 베고, 찌르고, 부수고
             case 20:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
-                
+                ActiveTech skillAttack = new Skill_Two_Attack(choosedSkill);
+                if (_skillManager.attachTech != null)
+                {
+                    _skillManager.attachTech.Deactivate(player);
+                }
+                skillAttack.Activate(_skillManager, player);
                 break;
 
                 // 폭발!
@@ -27,7 +37,12 @@ public class Skill_Two : SkillBase
                 // 비밀무기
             case 22:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
-
+                ActiveTech skillSPAttack = new Skill_Two_SPAttack(choosedSkill);
+                if (_skillManager.attachTech != null)
+                {
+                    _skillManager.attachTech.Deactivate(player);
+                }
+                skillSPAttack.Activate(_skillManager, player);
                 break;
 
                 // 깜짝선물
@@ -51,6 +66,9 @@ public class Skill_Two : SkillBase
             case 26:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
 
+                //TODO 몬스터 스포너에 몬스터 생성시 이벤트에 연결
+                // monsterSpawner.OnSpawnMonster += (monster)=>monster.OnDie+=MakeExplosion;
+
                 break;
 
                 // 기폭제
@@ -67,6 +85,13 @@ public class Skill_Two : SkillBase
 
         }
     }
+
+    #region 폭사
+    public void MakeExplosion()
+    {
+        ObjectPool.Instance.GetFromPool<ExplosionDeath>(_explosionDeathPrefab,transform.position);
+    }
+    #endregion
 }
 
 
