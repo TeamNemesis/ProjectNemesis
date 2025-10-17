@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class ObjectPool : MonoBehaviour
 {
@@ -157,7 +156,7 @@ public class ObjectPool : MonoBehaviour
     /// <summary>
     /// 풀에서 오브젝트 가져오기
     /// </summary>
-    public T GetFromPool<T>(IPoolable poolable, Vector3 position)
+    public T GetFromPool<T>(IPoolable poolable, Vector3 position, Transform parentTransform = null)
     {
         GameObject prefabObject = poolable.GetGameObject();
         if (!availablePools.ContainsKey(prefabObject.name))
@@ -172,12 +171,16 @@ public class ObjectPool : MonoBehaviour
         if (availablePools[prefabObject.name].Count == 0)
         {
             Debug.LogWarning($"'{prefabObject.name}' 풀이 비어있습니다! 새로운 오브젝트를 생성합니다.");
-            return CreateNewObject(prefabObject,position).GetComponent<T>();
+            return CreateNewObject(prefabObject, position).GetComponent<T>();
         }
 
         GameObject obj = availablePools[prefabObject.name][availablePools[prefabObject.name].Count - 1];
         availablePools[prefabObject.name].RemoveAt(availablePools[prefabObject.name].Count - 1);
         obj.transform.position = position;
+        if(parentTransform!=null)
+        {
+            obj.transform.SetParent(parentTransform);
+        }
         obj.SetActive(true);
         obj.GetComponent<IPoolable>().Initialize();
         inUsePools[prefabObject.name].Add(obj);
@@ -188,10 +191,19 @@ public class ObjectPool : MonoBehaviour
     /// <summary>
     /// 풀이 비어있을 때 새로운 오브젝트 생성
     /// </summary>
-    private GameObject CreateNewObject(GameObject prefabObject, Vector3 position)
+    private GameObject CreateNewObject(GameObject prefabObject, Vector3 position, Transform parentTransform = null)
     {
+        GameObject newObj;
         // 새 객체 생성
-        GameObject newObj = Instantiate(prefabObject);
+        if (parentTransform == null)
+        {
+            newObj = Instantiate(prefabObject);
+        }
+        else
+        {
+            newObj = Instantiate(prefabObject, parentTransform);
+        }
+
         newObj.name = prefabObject.name;
 
         // 객체 저장을 위한 부모 저장용 오브젝트풀 자식 객체

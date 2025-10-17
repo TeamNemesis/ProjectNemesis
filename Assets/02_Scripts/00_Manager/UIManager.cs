@@ -65,7 +65,7 @@ public class UIManager : MonoBehaviour
     {
         
 
-        SkillBtn skillBtn = Instantiate(_skillBtnPrefab, parentContent);
+        SkillBtn skillBtn = ObjectPool.Instance.GetFromPool<SkillBtn>(_skillBtnPrefab, parentContent);
         skillBtn.SetSkillInfo(skillData);
         skillBtn.GetComponent<Button>().onClick.AddListener(() => OnClick_SkillListBtn(skillBtn));
 
