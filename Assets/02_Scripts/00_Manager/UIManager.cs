@@ -63,6 +63,8 @@ public class UIManager : MonoBehaviour
     /// <param name="parentContent"></param>
     public void MakeSkillBtn(SkillData skillData, Transform parentContent)
     {
+        
+
         SkillBtn skillBtn = Instantiate(_skillBtnPrefab, parentContent);
         skillBtn.SetSkillInfo(skillData);
         skillBtn.GetComponent<Button>().onClick.AddListener(() => OnClick_SkillListBtn(skillBtn));

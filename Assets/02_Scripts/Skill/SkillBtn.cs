@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SkillBtn : MonoBehaviour
+public class SkillBtn : MonoBehaviour,IPoolable
 {
 		/// <summary>
 		/// 배치된 스킬 데이터
@@ -47,4 +47,19 @@ public class SkillBtn : MonoBehaviour
 						_skillLevel.text = choosedSkill.skillLevel.ToString() + " / " + choosedSkill.skillMaxLevel.ToString();
 				}
 		}
+
+    public void Initialize()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public GameObject GetGameObject()
+    {
+		return gameObject;
+    }
+
+    public void ReleaseObject()
+    {
+        throw new System.NotImplementedException();
+    }
 }

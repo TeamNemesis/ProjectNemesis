@@ -127,7 +127,7 @@ public class Skill_One : SkillBase
     public void SpreadPoison()
     {
         //TODO 스킬 확인
-        GameObject poisonSpread = ObjectPool.Instance.GetFromPool(_hitPoisonSpreadPrefab,player.transform.position);
+        PoisonSpread poisonSpread = ObjectPool.Instance.GetFromPool<PoisonSpread>(_hitPoisonSpreadPrefab,player.transform.position);
         
     }
 
