@@ -43,6 +43,7 @@ public class InteractableDetector : MonoBehaviour
         // DetectPoint 위치에서 반지름 _radius, 레이어마스크 _targetLayerMask로
         // OverlapSphere를 수행하여 감지된 콜라이더 중 가장 가까운 콜라이더를 찾는다.
         int hitCount = Physics.OverlapSphereNonAlloc(_detectPoint.position, _radius, _hits, _targetLayerMask);
+        Debug.Log(hitCount + "개의 물체 감지됨");
 
         // 감지된 물체가 있을 경우 IInteractable 인터페이스를 갖고 있는지 확인
         IInteractable nearestInteractable = null;
@@ -88,7 +89,7 @@ public class InteractableDetector : MonoBehaviour
         // 감지된 IInteractable이 없으면 함수 종료
         if (_detectedInteractable == null) return;
 
-        _detectedInteractable.Interact(transform);
+        _detectedInteractable.StartInteract(transform);
     }
 
     /// <summary>

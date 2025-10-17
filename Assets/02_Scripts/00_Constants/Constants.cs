@@ -152,6 +152,6 @@ public static class Constants
 
     #region Map
     public static string RESOURCES_PATH_ROOM_PREFABS = "Prefabs/Map/Rooms";
-    public static string RESOURCES_PATH_DOOR_PREFAB = "Prefabs/Map/Doors";
+    public static string RESOURCES_PATH_DOOR_PREFAB = "Prefabs/Map/Doors/Door";
     #endregion
 }

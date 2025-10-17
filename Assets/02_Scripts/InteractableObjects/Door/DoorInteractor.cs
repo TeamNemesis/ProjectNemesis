@@ -7,28 +7,50 @@ using UnityEngine;
 public class DoorInteractor : InteractableObject
 {
     [SerializeField] Transform _guidePoint;
-    [SerializeField] RoomType _roomType; // 이 문이 연결하는 방의 타입
+    [SerializeField] InteractableType _interactableType = InteractableType.Door;
 
-    public override Vector3 GuidePoint => _guidePoint.position;
+    [SerializeField] RoomInfo _roomInfo;
 
-    public override InteractableType InteractableType => InteractableType.Door;
-    public RoomType RoomType => _roomType;
+    public override Vector3 GuidePoint
+    {
+        get
+        {
+            if (_guidePoint == null)
+            {
+                // 방어적 처리: GuidePoint가 없으면 transform 위치 사용
+                return transform.position;
+            }
+            return _guidePoint.position;
+        }
+    }
 
+    public RoomInfo RoomInfo => _roomInfo;
+    public override InteractableType InteractableType => _interactableType;
+
+    // 파생에서 event를 다시 선언하지 마세요; base.OnInteracted를 그대로 사용합니다.
     public override event Action<IInteractable> OnInteracted;
 
-    public override void Interact(Transform subject)
+    public override void StartInteract(Transform subject)
     {
-        Debug.Log("문과 상호작용 함");
+        if (_roomInfo == null)
+        {
+            Debug.LogError($"DoorInteractor.StartInteract: RoomInfo가 null입니다. Door가 올바르게 Initialize 되었는지 확인하세요. (object={name})");
+            return;
+        }
+
+        Debug.Log("문과 상호작용 함: " + name);
         OnInteracted?.Invoke(this);
     }
 
-    /// <summary>
-    /// 이 문이 연결되는 방의 타입을 설정하는 함수
-    /// 방이 생성됨과 동시에 문이 생성될 때 각 문에 달려있는 이 DoorInteractor의 RoomType을 설정해줘야 합니다.
-    /// </summary>
-    /// <param name="roomType"></param>
-    public void SetRoomType(RoomType roomType)
+    // RoomInfo를 세팅하는 안전한 공개 메서드
+    public void SetRoomInfo(RoomInfo roomInfo)
     {
-        _roomType = roomType;
+        if (roomInfo == null)
+        {
+            Debug.LogError("DoorInteractor.SetRoomInfo 호출 시 roomInfo가 null입니다! 호출자 스택을 확인하세요.");
+            return;
+        }
+        _roomInfo = roomInfo;
+        Debug.Log($"{name}: {_roomInfo.RoomType} 방 정보로 문 설정됨");
     }
 }

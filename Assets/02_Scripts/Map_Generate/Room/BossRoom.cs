@@ -8,6 +8,6 @@ public class BossRoom : Room
     [SerializeField] RoomType _roomType = RoomType.Boss;
 
     public override string RoomName => _roomName;
-
     public override float RoomChance => _roomChance;
+    public override RoomType RoomType => _roomType;
 }

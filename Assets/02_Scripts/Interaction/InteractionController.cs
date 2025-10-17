@@ -7,32 +7,44 @@ using UnityEngine;
 /// </summary>
 public class InteractionController : MonoBehaviour
 {
-    [SerializeField] InteractableObject[] _interactors;   // 상호작용 가능한 오브젝트들을 에디터에서 할당받음
-
-    Dictionary<InteractableType, IInteractable> _interactableMap = new();   // 상호작용 가능한 오브젝트들을 타입별로 저장할 딕셔너리
+    Dictionary<InteractableType, List<IInteractable>> _interactableMap = new();     // 상호작용 가능한 오브젝트들을 타입별로 맵핑
 
     public event Action<WeaponType> OnWeaponInteract;   // 무기와 상호작용했을 때 발행되는 이벤트
+    public event Action<RoomInfo> OnDoorInteract;       // 문과 상호작용했을 때 발행되는 이벤트
 
     public void Initialize()
     {
-        InitailizeInteractableMap();
+        var manager = GameManager.Instance.InteractableManager;
+        manager.OnInteractableRegistered += OnInteractorAdded;
+        manager.OnInteractableUnregistered += OnInteractorRemoved;
     }
 
-    /// <summary>
-    /// 상호작용 가능한 오브젝트들을 타입별로 맵핑
-    /// </summary>
-    void InitailizeInteractableMap()
+    void OnInteractorAdded(IInteractable interactable)
     {
-        foreach(var interactable in _interactors)
+        if (!_interactableMap.TryGetValue(interactable.InteractableType, out var list))
         {
-            if (!_interactableMap.ContainsKey(interactable.InteractableType))
-            {
-                _interactableMap.Add(interactable.InteractableType, interactable);
-            }
-
-            // 각각의 상호작용 가능한 물체들의 이벤트를 분류하는 함수가 구독하도록 설정
-            interactable.OnInteracted += PublishInteractableEventByType;
+            list = new List<IInteractable>();
+            _interactableMap[interactable.InteractableType] = list;
         }
+        list.Add(interactable);
+
+        // 구독: 상호작용 시작/완료
+        interactable.OnInteracted += PublishInteractableEventByType;
+        interactable.OnInteractionCompleted += OnInteractableCompleted;
+
+    }
+
+    void OnInteractorRemoved(IInteractable interactable)
+    {
+        if (_interactableMap.TryGetValue(interactable.InteractableType, out var list))
+        {
+            list.Remove(interactable);
+            if (list.Count == 0) _interactableMap.Remove(interactable.InteractableType);
+        }
+
+        // 구독 해제
+        interactable.OnInteracted -= PublishInteractableEventByType;
+        interactable.OnInteractionCompleted -= OnInteractableCompleted;
     }
 
     /// <summary>
@@ -42,23 +54,57 @@ public class InteractionController : MonoBehaviour
     /// <param name="interactable"></param>
     void PublishInteractableEventByType(IInteractable interactable)
     {
-        if(interactable.InteractableType == InteractableType.Weapon)
+        // 시작 이벤트에 대한 기본 라우팅 (필요 시 더 처리)
+        switch (interactable.InteractableType)
         {
-            var weaponInteractor = interactable as WeaponInteractor;
-            if(weaponInteractor != null)
-            {
-                OnWeaponInteract?.Invoke(weaponInteractor.WeaponType);
-            }
+            case InteractableType.Weapon:
+                if (interactable is WeaponInteractor w)
+                    OnWeaponInteract?.Invoke(w.WeaponType);
+                break;
+            case InteractableType.Door:
+                if (interactable is DoorInteractor d)
+                {
+                    if (d.RoomInfo == null)
+                    {
+                        Debug.LogError("InteractionController.PublishInteractableEventByType: DoorInteractor의 RoomInfo가 null입니다!");
+                        return;
+                    }
+                    OnDoorInteract?.Invoke(d.RoomInfo);
+                    Debug.Log(d.RoomInfo.RoomType + " 방으로 가는 문과 상호작용 이벤트 발행됨");
+                }
+                break;
+                // 기타 타입 처리
         }
+    }
 
-        if(interactable.InteractableType == InteractableType.Door)
+    void OnInteractableCompleted(IInteractable interactable)
+    {
+        // 완료 이벤트 라우팅: 예를 들어 문이나 아이템 등은 상호작용이 끝나면 파괴해야 한다
+        switch (interactable.InteractableType)
         {
-            var doorInteractor = interactable as DoorInteractor;
-            if(doorInteractor != null)
-            {
-                // 나중에 문과 상호작용했을 때 처리할 로직 추가
-                Debug.Log($"문과 상호작용함, 연결된 방 타입: {doorInteractor.RoomType}");
-            }
+            case InteractableType.Door:
+                // 실제 Unity 오브젝트로 캐스트해서 파괴
+                if (interactable is MonoBehaviour mb)
+                {
+                    // mb.gameObject 를 파괴하면 컴포넌트와 게임오브젝트 모두 제거
+                    Destroy(mb.gameObject);
+                }
+                else
+                {
+                    // 드물지만 MonoBehaviour가 아닐 경우(예: ScriptableObject라면) UnityEngine.Object로 캐스트 시도
+                    var uo = interactable as UnityEngine.Object;
+                    if (uo != null) Destroy(uo);
+                    else Debug.LogWarning("Interactable is not a UnityEngine.Object, cannot Destroy it directly.");
+                }
+                break;
+            case InteractableType.TechSelectPack:
+                break;
+            case InteractableType.TechUpgradePack:
+                break;
+            case InteractableType.Weapon:
+                break;
+            default:
+                break;
         }
     }
 }

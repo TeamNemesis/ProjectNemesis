@@ -22,6 +22,7 @@ public abstract class Room : MonoBehaviour
 
     public abstract string RoomName { get; }    // 방의 이름(자식에서 반드시 정의)
     public abstract float RoomChance { get; }   // 방의 등장 확률(자식에서 반드시 정의)
+    public abstract RoomType RoomType { get; }     // 방의 타입(자식에서 반드시 정의)
     public RoomInfo RoomInfo => _roomInfo; // 방의 정보
 
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 // 방 생성 플로우를 생각해보자
@@ -31,16 +32,54 @@ public class MapController : MonoBehaviour
     [SerializeField] DoorDecider _doorDecider; // 다음 방 선택지 결정 컴포넌트
 
     [SerializeField] Room _currentRoom; // 현재 방
-    [SerializeField] int _currentRoomCount; // 현재 몇번째 방인지(시작 방은 0, 다음 방은 1, ...)
+    [SerializeField] Door[] _currentDoors; // 현재 방의 문들
+    [SerializeField] int _currentRoomCount = -1; // 현재 몇번째 방인지(시작 방은 0, 다음 방은 1, ...)
     [SerializeField] bool _hasLabRoomAppeared = false; // 실험실 방이 이미 등장했는지 여부
 
     public void Initialize()
     {
         _roomSpawner.OnRoomSpawned += OnRoomSpawned;
+        _doorSpawner.DoorInteracted += OnDoorInteracted;
 
         _roomSpawner.Initialize();
         //_doorSpawner.Initialize();
         _doorDecider.Initialize();
+    }
+
+    void OnDoorInteracted(IInteractable interactable)
+    {
+        DoorInteractor doorInteractor = interactable as DoorInteractor;
+        if (doorInteractor != null)
+        {
+            SpawnRoom(doorInteractor.RoomInfo);
+        }
+        else
+        {
+            Debug.LogError("OnDoorInteracted 호출 시 interactable이 Door가 아닙니다!");
+        }
+    }
+
+    public void SpawnRoom(RoomInfo roomInfo)
+    {
+        if (roomInfo == null)
+        {
+            Debug.LogError("SpawnRoom 호출 시 roomInfo가 null입니다! 호출자 스택을 확인하세요.");
+            return;
+        }
+
+        if (_roomSpawner == null)
+        {
+            Debug.LogError("MapController._roomSpawner가 null입니다! Inspector에서 할당되었는지 확인하세요.");
+            return;
+        }
+
+        // 정상 호출이면 진행
+        // 현재 방을 파괴하고 새로운 방 생성 요청
+        if (_currentRoom != null)
+        {
+            DestroyCurrentRoomObjects();
+        }
+        _roomSpawner.SpawnRoom(roomInfo.RoomType, roomInfo.NormalRoomType, roomInfo.TechSelectPackType);
     }
 
     /// <summary>
@@ -51,32 +90,18 @@ public class MapController : MonoBehaviour
     {
         // 현재 방 갱신
         _currentRoom = room;
-        // 현재 방 카운트 증가
         _currentRoomCount++;
-        // 실험실 방 등장 여부 갱신
         if (room.RoomInfo.RoomType == RoomType.Lab)
         {
             _hasLabRoomAppeared = true;
         }
 
-        if (room.RoomInfo.RoomType == RoomType.Start)
-        {
-            // RoomType이 StartRoom일 때는 문 생성 로직을 타지 않고
-            // 다음 방은 무조건 NormalRoom이어야 하므로
-            StartRoom startRoom = room as StartRoom;
-
-            return;
-        }
-
-        // 문의 개수 결정
         int nextDoorCount = _doorDecider.GetNextDoorCount();
         int normalRoomCount;
         int techSelectPackCount = 0;
 
-        // 문 위치 얻기
         Transform[] doorPositions = _currentRoom.GetNextDoorPositions(nextDoorCount);
 
-        // RoomType 배열 얻기
         RoomType[] doorTypes = _doorDecider.GetNextRoomTypes(
             nextDoorCount,
             _currentRoom.RoomInfo.RoomType,
@@ -84,35 +109,24 @@ public class MapController : MonoBehaviour
             _hasLabRoomAppeared,
             out normalRoomCount);
 
-        // 일반방 타입들 얻기 (normalRoomCount가 0이면 GetNormalRoomTypes는 빈 배열 반환해야 함)
         NormalRoomType[] normalRoomTypes = new NormalRoomType[0];
         if (normalRoomCount > 0)
         {
             normalRoomTypes = _doorDecider.GetNormalRoomTypes(normalRoomCount, out techSelectPackCount);
         }
 
-        // 기술팩 타입들 얻기
         TechSelectPackType[] techPackTypes = new TechSelectPackType[0];
         if (techSelectPackCount > 0)
         {
             techPackTypes = GameManager.Instance.skillManager.GetSkillPackTypes(techSelectPackCount);
         }
 
-        // 유효성 검사: 배열 길이 체크
-        if (doorTypes.Length != nextDoorCount)
-            Debug.LogWarning("doorTypes length != nextDoorCount");
+        // 생성된 문을 모을 리스트
+        List<Door> createdDoors = new List<Door>();
 
-        if (normalRoomTypes.Length < normalRoomCount)
-            Debug.LogError("normalRoomTypes 부족");
-
-        if (techPackTypes.Length < techSelectPackCount)
-            Debug.LogError("techPackTypes 부족");
-
-        // 소비 인덱스
         int normalIdx = 0;
         int techIdx = 0;
 
-        // 각 문 생성
         for (int i = 0; i < nextDoorCount; i++)
         {
             RoomType rt = (i < doorTypes.Length) ? doorTypes[i] : RoomType.Normal;
@@ -125,8 +139,7 @@ public class MapController : MonoBehaviour
                 if (normalIdx < normalRoomTypes.Length)
                 {
                     nrt = normalRoomTypes[normalIdx++];
-                    // 만약 NormalRoomType이 기술팩을 의미하면 techPack에서 꺼내 연결
-                    if (nrt == NormalRoomType.TechSelect) // (예시 enum 값 이름)
+                    if (nrt == NormalRoomType.TechSelect)
                     {
                         if (techIdx < techPackTypes.Length)
                         {
@@ -144,21 +157,69 @@ public class MapController : MonoBehaviour
                 }
             }
 
-            // RoomInfo 생성
             var nextRoomInfo = new RoomInfo(rt, nrt, tpt);
 
-            // DoorSpawner에 문 생성 요청 (아래 예시 SpawnDoor 시그니처 참고)
             Door door = _doorSpawner.SpawnDoor(doorPositions[i], nextRoomInfo);
+            if (door != null)
+            {
+                // 부모를 현재 방으로 설정하면 방 파괴 시 문도 같이 파괴됨
+                door.transform.SetParent(_currentRoom.transform, worldPositionStays: true);
+
+                createdDoors.Add(door);
+
+                Debug.Log($"Spawned door instance: {door.name} (roomType={nextRoomInfo.RoomType})");
+            }
+            else
+            {
+                Debug.LogWarning($"Door spawn failed at index {i}");
+            }
         }
 
-        // 선택지에 실험실(Lab)이 포함되어 있으면 플래그 처리할지 결정
-        // (주의: 보통은 '실제로 방에 들어갔을 때' 플래그를 true로 하는 것이 맞음)
-        // 예: if (doorTypes.Any(t => t == RoomType.Lab)) _hasLabRoomAppeared = true;
+        // createdDoors를 배열로 보관
+        _currentDoors = createdDoors.ToArray();
+
         if (Array.Exists(doorTypes, t => t == RoomType.Lab))
         {
             _hasLabRoomAppeared = true;
         }
     }
 
+    void DestroyCurrentRoomObjects()
+    {
+        // 파괴할 방
+        if (_currentRoom != null)
+        {
+            // 안전 체크: 이 객체가 씬에 있는 인스턴스인가?
+            if (_currentRoom.gameObject.scene.IsValid())
+            {
+                Debug.Log($"Destroying current room instance: {_currentRoom.name}");
+                Destroy(_currentRoom.gameObject);
+            }
+            else
+            {
+                Debug.LogWarning($"CurrentRoom appears to be an asset, not a scene instance: {_currentRoom.name}. Skipping Destroy.");
+            }
+            _currentRoom = null;
+        }
 
+        // 문들 파괴
+        if (_currentDoors != null)
+        {
+            foreach (var door in _currentDoors)
+            {
+                if (door == null) continue;
+
+                if (door.gameObject.scene.IsValid())
+                {
+                    Debug.Log($"Destroying door instance: {door.name}");
+                    Destroy(door.gameObject);
+                }
+                else
+                {
+                    Debug.LogWarning($"Door appears to be an asset, not a scene instance: {door.name}. Skipping Destroy.");
+                }
+            }
+            _currentDoors = null;
+        }
+    }
 }

@@ -29,6 +29,7 @@ public class GameManager : MonoBehaviour
                     // GameManager 컴포넌트를 추가 후 _instance에 할당
                     _instance = obj.AddComponent<GameManager>();
                     _instance._resourceManager = obj.AddComponent<ResourceManager>();
+                    _instance._interactableManager = obj.AddComponent<InteractableManager>();
                     //_instance._skillManger = obj.AddComponent<SkillManager>();
 
                     _instance._resourceManager.Initialize();
@@ -76,6 +77,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] ResourceManager _resourceManager;      // 리소스 매니저
 
     public ResourceManager ResourceManager => _resourceManager;
+
+    [SerializeField] InteractableManager _interactableManager; // 상호작용 매니저
+    public InteractableManager InteractableManager => _interactableManager;
 
     /// <summary>
     /// 스킬 매니저

@@ -1,6 +1,9 @@
+using System;
+
 /// <summary>
 /// 각 방의 런타임 정보를 담는 클래스
 /// </summary>
+[Serializable]
 public class RoomInfo
 {       
     public RoomType RoomType;                          // 방 타입

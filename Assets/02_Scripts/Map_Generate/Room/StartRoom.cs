@@ -9,5 +9,6 @@ public class StartRoom : Room
 
     public override string RoomName => _roomName;
     public override float RoomChance => _roomChance;
+    public override RoomType RoomType => _roomType;
     public Transform DoorPosForStartRoom => _doorPosForStartRoom;
 }
