@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class ObjectPool : MonoBehaviour
 {
@@ -156,29 +157,30 @@ public class ObjectPool : MonoBehaviour
     /// <summary>
     /// 풀에서 오브젝트 가져오기
     /// </summary>
-    public GameObject GetFromPool(string poolName, GameObject prefabObject, Vector3 position)
+    public GameObject GetFromPool(IPoolable poolable, Vector3 position)
     {
-        if (!availablePools.ContainsKey(poolName))
+        GameObject prefabObject = poolable.GetGameObject();
+        if (!availablePools.ContainsKey(prefabObject.name))
         {
-            availablePools.Add(poolName, new List<GameObject>());
-            if (!inUsePools.ContainsKey(poolName))
+            availablePools.Add(prefabObject.name, new List<GameObject>());
+            if (!inUsePools.ContainsKey(prefabObject.name))
             {
-
-                inUsePools.Add(poolName, new List<GameObject>());
+                inUsePools.Add(prefabObject.name, new List<GameObject>());
             }
         }
 
-        if (availablePools[poolName].Count == 0)
+        if (availablePools[prefabObject.name].Count == 0)
         {
-            Debug.LogWarning($"'{poolName}' 풀이 비어있습니다! 새로운 오브젝트를 생성합니다.");
-            return CreateNewObject(poolName, prefabObject);
+            Debug.LogWarning($"'{prefabObject.name}' 풀이 비어있습니다! 새로운 오브젝트를 생성합니다.");
+            return CreateNewObject(prefabObject,position);
         }
 
-        GameObject obj = availablePools[poolName][availablePools[poolName].Count - 1];
-        availablePools[poolName].RemoveAt(availablePools[poolName].Count - 1);
+        GameObject obj = availablePools[prefabObject.name][availablePools[prefabObject.name].Count - 1];
+        availablePools[prefabObject.name].RemoveAt(availablePools[prefabObject.name].Count - 1);
         obj.transform.position = position;
         obj.SetActive(true);
-        inUsePools[poolName].Add(obj);
+        obj.GetComponent<IPoolable>().Initialize();
+        inUsePools[prefabObject.name].Add(obj);
 
         return obj;
     }
@@ -186,14 +188,54 @@ public class ObjectPool : MonoBehaviour
     /// <summary>
     /// 풀이 비어있을 때 새로운 오브젝트 생성
     /// </summary>
-    private GameObject CreateNewObject(string poolName, GameObject prefabObject)
+    private GameObject CreateNewObject(GameObject prefabObject, Vector3 position)
     {
-
+        // 새 객체 생성
         GameObject newObj = Instantiate(prefabObject);
+        newObj.name = prefabObject.name;
+
+        // 객체 저장을 위한 부모 저장용 오브젝트풀 자식 객체
+        if (!poolContainers.ContainsKey(prefabObject.name))
+        {
+            GameObject container = new GameObject($"Pool_{prefabObject.name}");
+            container.transform.SetParent(transform);
+            poolContainers[prefabObject.name] = container;
+        }
+
+        newObj.transform.position = position;
+
         newObj.SetActive(true);
-        inUsePools[poolName].Add(newObj);
-        Debug.Log($"'{poolName}' 풀의 새로운 오브젝트가 생성되었습니다.");
+        newObj.GetComponent<IPoolable>().Initialize();
+        inUsePools[prefabObject.name].Add(newObj);
+        Debug.Log($"'{prefabObject.name}' 풀의 새로운 오브젝트가 생성되었습니다.");
         return newObj;
+    }
+
+    public void ReleaseToPoolByInterface(IPoolable poolable)
+    {
+        GameObject obj = poolable.GetGameObject();
+
+        if (!inUsePools.ContainsKey(obj.name))
+        {
+            Debug.LogWarning($"'{obj.name}' 풀에 반환할 수 없습니다. 풀이 존재하지 않습니다.");
+            Destroy(obj);
+            return;
+        }
+
+        int index = inUsePools[obj.name].IndexOf(obj);
+        if (index >= 0)
+        {
+            inUsePools[obj.name].RemoveAt(index);
+            availablePools[obj.name].Add(obj);
+            obj.SetActive(false);
+            obj.transform.SetParent(poolContainers[obj.name].transform);
+            obj.transform.position = Vector3.zero;
+            obj.transform.rotation = Quaternion.identity;
+        }
+        else
+        {
+            Debug.LogWarning($"오브젝트 '{obj.name}'은 이 풀에서 사용 중이 아닙니다.");
+        }
     }
     #endregion
     /// <summary>

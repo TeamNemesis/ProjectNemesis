@@ -127,16 +127,11 @@ public class Skill_One : SkillBase
     public void SpreadPoison()
     {
         //TODO 스킬 확인
-        GameObject poisonSpread = ObjectPool.Instance.GetFromPool(Constants.POOL_POISONSPREAD, _hitPoisonSpreadPrefab.gameObject,player.transform.position);
+        GameObject poisonSpread = ObjectPool.Instance.GetFromPool(_hitPoisonSpreadPrefab,player.transform.position);
         
-        StartCoroutine(DestroyPoisonSpreadCoroutine(0.5f,poisonSpread));
     }
 
-    public IEnumerator DestroyPoisonSpreadCoroutine(float time,GameObject gameObject)
-    {
-        yield return new WaitForSeconds(time);
-        ObjectPool.Instance.ReleaseToPool(gameObject);
-    }
+
 
     #endregion
 

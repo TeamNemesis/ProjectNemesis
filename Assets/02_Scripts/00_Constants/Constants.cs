@@ -68,9 +68,6 @@ public static class Constants
 
     #endregion
 
-    #region ObjectPool
-    public const string POOL_POISONSPREAD = "poisonSpread";
-    #endregion
     #region Drone
 
     /// <summary>
