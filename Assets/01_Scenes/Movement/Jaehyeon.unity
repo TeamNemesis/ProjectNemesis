@@ -6505,7 +6505,7 @@ Transform:
   m_GameObject: {fileID: 1084780204}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 20, y: 0, z: 20}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -12669,6 +12669,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Shop
       objectReference: {fileID: 0}
+    - target: {fileID: 6931090642116197499, guid: 46377b1c596d508449d44d3421a41e69, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -12785,7 +12789,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3964092372154465484, guid: 67c8f32851e349f4aa96d2162ea23f26, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 3964092372154465484, guid: 67c8f32851e349f4aa96d2162ea23f26, type: 3}
       propertyPath: m_LocalPosition.y
@@ -12793,7 +12797,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3964092372154465484, guid: 67c8f32851e349f4aa96d2162ea23f26, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 3964092372154465484, guid: 67c8f32851e349f4aa96d2162ea23f26, type: 3}
       propertyPath: m_LocalRotation.w
@@ -13015,6 +13019,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: 'DoorPrefab '
       objectReference: {fileID: 0}
+    - target: {fileID: 2330536972911145392, guid: 4f6c94927c2bd2646a2aa7f7c706d7bf, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5652848882629151662, guid: 4f6c94927c2bd2646a2aa7f7c706d7bf, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -13072,10 +13080,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Colossuem
       objectReference: {fileID: 0}
-    - target: {fileID: 1128815881739949039, guid: 96b81e71f2712e642b4986a15f118ef8, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 6864665939703734725, guid: 96b81e71f2712e642b4986a15f118ef8, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -13132,10 +13136,6 @@ PrefabInstance:
     - target: {fileID: 6230638420874134406, guid: c057e82405bc64c43a02ec9f2187e970, type: 3}
       propertyPath: m_Name
       value: BossRoom
-      objectReference: {fileID: 0}
-    - target: {fileID: 6230638420874134406, guid: c057e82405bc64c43a02ec9f2187e970, type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8688089000836881102, guid: c057e82405bc64c43a02ec9f2187e970, type: 3}
       propertyPath: m_LocalPosition.x
