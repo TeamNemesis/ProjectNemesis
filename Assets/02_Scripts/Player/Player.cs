@@ -6,10 +6,12 @@
 public class Player : MonoBehaviour
 {
     [Header("----- 컴포넌트 참조 -----")]
-    [SerializeField] PlayerModel _model;                       // 플레이어 모델 컴포넌트
+    //[SerializeField] PlayerModel _model;                       // 플레이어 모델 컴포넌트
     [SerializeField] PlayerMover _mover;                       // 플레이어 이동 컴포넌트
     [SerializeField] PlayerDasher _dasher;                     // 플레이어 대시 컴포넌트
     [SerializeField] PlayerWeaponController _weaponController; // 플레이어 무기 관리 컴포넌트
+    [SerializeField] PlayerAnimator _animator;                 // 플레이어 애니메이터 컴포넌트
+    [SerializeField] PlayerGrenadeAttacker _grenadeAttacker;   // 플레이어 유탄 발사 컴포넌트
 
     [Header("----- UI 컴포넌트 -----")]
     // [SerializeField] PlayerView _view;                         // 플레이어 UI 컴포넌트
@@ -22,9 +24,8 @@ public class Player : MonoBehaviour
 
     [Header("----- 무기가 바뀌면 같이 바뀌는 컴포넌트(읽기 전용) -----")]
     [SerializeField] PlayerNormalAttacker _normalAttacker;     // 플레이어 일반 공격 컴포넌트
-    [SerializeField] PlayerGrenadeAttacker _grenadeAttacker;   // 플레이어 유탄 발사 컴포넌트(얘는 일단 안바뀜)
+    //[SerializeField] PlayerGrenadeAttacker _grenadeAttacker;   // 플레이어 유탄 발사 컴포넌트(얘는 일단 안바뀜)
     [SerializeField] PlayerSpecialAttacker _specialAttacker;   // 플레이어 특수 공격 컴포넌트
-    [SerializeField] PlayerAnimator _animator;                 // 플레이어 애니메이터 컴포넌트
 
     [Header("----- 읽기 전용 -----")]
     [SerializeField] PlayerWeaponSet _currentWeaponSet;        // 현재 플레이어 무기 세트
@@ -43,8 +44,13 @@ public class Player : MonoBehaviour
 
         _interactableGuideView.Initialize();
 
-        _model.Initialize();
+        //_model.Initialize();
         _weaponController.Initialize();
+    }
+
+    public void OnWeaponInteracted(WeaponType newWeaponType)
+    {
+        _weaponController.OnWeaponInteracted(newWeaponType);
     }
 
     /// <summary>
@@ -54,12 +60,13 @@ public class Player : MonoBehaviour
     /// <param name="weaponType"></param>
     void OnWeaponChanged(WeaponType weaponType)
     {
-        _currentWeaponSet = GameManager.Instance().ResourceManager.PlayerWeaponSetMap[weaponType];
+        _currentWeaponSet = GameManager.Instance.ResourceManager.PlayerWeaponSetMap[weaponType];
 
         _normalAttacker = _currentWeaponSet.NormalAttacker;
-        _grenadeAttacker = _currentWeaponSet.GrenadeAttacker;
+        //_grenadeAttacker = _currentWeaponSet.GrenadeAttacker;
         _specialAttacker = _currentWeaponSet.SpecialAttacker;
-        _animator = _currentWeaponSet.Animator;
+
+        _animator.SetAnimator(_currentWeaponSet.AnimController);
         // 만약 이펙트가 바뀌거나 사운드 등 효과가 필요해서 이벤트가 필요하다면
         // 무기변경 이벤트를 만들어서 여기에 추가
     }
@@ -88,6 +95,7 @@ public class Player : MonoBehaviour
     public void NormalAttack()
     {
         _normalAttacker.Attack();
+        _animator.OnNormalAttack();
     }
 
     /// <summary>

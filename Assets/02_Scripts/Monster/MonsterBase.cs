@@ -1,16 +1,16 @@
-using System;
 using UnityEngine;
 using UnityEngine.AI;
-using System.Collections;
 
-public class MonsterBase : CharacterBase, IDamageable
+public class MonsterBase : CharacterModelBase
 {
-    [Header("Stats")]
+    [Header("Base Stats")]
     [SerializeField] protected int attackDamage = 10;
     [SerializeField] protected float attackRange = 2f;
     [SerializeField] protected float detectionRange = 10f;
     [SerializeField] protected float attackDelay = 0.5f;
+    [SerializeField] protected float originalSpeed = 10f;
     [SerializeField] public string targetTag = Constants.TAG_PLAYER;
+
 
 
     [Header("Components")]
@@ -18,23 +18,28 @@ public class MonsterBase : CharacterBase, IDamageable
     [SerializeField] protected Transform player;
 
 
+    private void Start()
+    {
+        Initialize();
+    }
 
 
-		public override void Initialize()
+    public override void Initialize()
     {
         base.Initialize();
         agent = GetComponent<NavMeshAgent>();
+        originalSpeed = agent.speed;
 
         GameObject playerObj = GameObject.FindGameObjectWithTag(targetTag);
         if (playerObj != null)
             player = playerObj.transform;
 
-        currentHealth = maxHealth;
+        SetCurrentHp(maxHealth);
 
-        debuffHandler.Initialize(agent);
+        debuffHandler.InitializeMonster(agent);
     }
 
-  
+
 
     protected bool CanSeePlayer()
     {
@@ -49,7 +54,6 @@ public class MonsterBase : CharacterBase, IDamageable
         {
             if (hit.transform.CompareTag(targetTag))
             {
-                Debug.Log("playerCheck");
                 return true;
             }
             return false;
@@ -66,37 +70,4 @@ public class MonsterBase : CharacterBase, IDamageable
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * 5f);
         }
     }
-
-		#region Test
-		public void Start()
-		{
-				Initialize();
-
-		}
-
-		public  void Use(Transform transform)
-		{
-				Debug.Log("monster poison");
-
-
-				DebuffHandler.DebuffData poison = new DebuffHandler.DebuffData();
-				poison.debuffName = Constants.DEBUFF_POISON;
-				poison.debuffDuration = 6f;
-				poison.debuffValue = 5f;
-				poison.maxStack = 5;
-
-
-
-				DebuffHandler debuffHandler = transform.GetComponent<DebuffHandler>();
-				debuffHandler.ApplyDebuff(poison);
-		}
-
-		public void Update()
-		{
-				if(Input.GetKeyDown(KeyCode.U))
-        {
-            Use(player);
-        }
-		}
-		#endregion
 }
