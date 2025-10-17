@@ -14,6 +14,7 @@ public class DebuffHandler : MonoBehaviour
     private MonsterBase monster;
 
 
+
     public void InitializeMonster(NavMeshAgent agent)
     {
         character = GetComponent<CharacterModelBase>();
@@ -311,17 +312,50 @@ public class DebuffHandler : MonoBehaviour
     /// <param name="duration"> 지속시간 </param>
     private IEnumerator ConfuseCoroutine(float duration)
     {
-        if (monster == null)
+        Transform thisTarget = monster.GetTarget();
+        if (monster == null) yield break;
+        string originalTag = monster.targetTag;
+        
+        Transform originalTarget = thisTarget;
+
+        float elapsedTime = 0f;
+
+        monster.targetTag = Constants.TAG_MONSTER;
+        monster.SetTarget(null);
+        while (elapsedTime < duration)
         {
-            yield break;
+            // 현재 타겟이 죽었거나 없으면 새로 찾기
+            if (thisTarget == null)
+            {
+                GameObject[] monsters = GameObject.FindGameObjectsWithTag(Constants.TAG_MONSTER);
+                Transform closestMonster = null;
+                float closestDistance = Mathf.Infinity;
+
+                foreach (GameObject obj in monsters)
+                {
+                    if (obj.transform == monster.transform || !obj.activeSelf) continue;
+                    float distance = Vector3.Distance(monster.transform.position, obj.transform.position);
+                    if (distance < closestDistance)
+                    {
+                        closestDistance = distance;
+                        closestMonster = obj.transform;
+                    }
+                }
+
+                if (closestMonster != null)
+                {
+                    monster.SetTarget(closestMonster);
+                    thisTarget = closestMonster;
+                }
+            }
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
         }
 
-        string originalTag = monster.targetTag;
-        monster.targetTag = Constants.TAG_MONSTER;
-
-        yield return new WaitForSeconds(duration);
-
         monster.targetTag = originalTag;
+        monster.SetTarget(originalTarget);
+        Debug.Log("Confuse ended. Target restored to: " + (originalTarget == null ? "null" : originalTarget.name));
     }
 
     /// <summary>

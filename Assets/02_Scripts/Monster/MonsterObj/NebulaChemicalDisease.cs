@@ -24,7 +24,7 @@ public class NebulaChemicalDisease : MonsterBase
 
     private void Update()
     {
-        if (isDead || player == null) return;
+        if (isDead || _target == null) return;
         if (isStunned) return;
 
         if (CanSeePlayer())
@@ -57,7 +57,7 @@ public class NebulaChemicalDisease : MonsterBase
     private void HandleIdle()
     {
         // 플레이어와 거리
-        float distance = Vector3.Distance(transform.position, player.position);
+        float distance = Vector3.Distance(transform.position, _target.position);
         if (distance <= detectionRange && CanSeePlayer())
         {
             currentState = State.Move;
@@ -65,8 +65,8 @@ public class NebulaChemicalDisease : MonsterBase
     }
     private void HandleMove()
     {
-        if (player == null) return;
-        float distance = Vector3.Distance(transform.position, player.position);
+        if (_target == null) return;
+        float distance = Vector3.Distance(transform.position, _target.position);
         if (distance > detectionRange || !CanSeePlayer())
         {
             agent.ResetPath();
@@ -74,7 +74,7 @@ public class NebulaChemicalDisease : MonsterBase
             return;
         }
 
-        agent.SetDestination(player.position);
+        agent.SetDestination(_target.position);
 
         if (distance <= attackRange && CanSeePlayer())
         {
@@ -86,7 +86,7 @@ public class NebulaChemicalDisease : MonsterBase
     private IEnumerator PerformAttack()
     {
         _isAttacking = true;
-        if (player != null && Vector3.Distance(transform.position, player.position) <= attackRange)
+        if (_target != null && Vector3.Distance(transform.position, _target.position) <= attackRange)
         {
             poisonFieldPrefab.gameObject.transform.localScale = new Vector3(_poisinFieldRadius, 1, _poisinFieldRadius);
             poisonFieldPrefab.GetComponent<PoisinField>().SetDuration(_poisinFieldDuration); // 독성 구름 지속 시간 설정

@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 4438692647137676839}
   m_Layer: 0
   m_Name: BallSecurityRobot
-  m_TagString: Untagged
+  m_TagString: Monster
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -157,9 +157,10 @@ MonoBehaviour:
   attackRange: 2
   detectionRange: 10
   attackDelay: 0.5
+  originalSpeed: 10
   targetTag: Player
   agent: {fileID: 0}
-  player: {fileID: 0}
+  target: {fileID: 0}
   _explosionRadius: 3
   circlePrefab: {fileID: 2297966890909199157, guid: e1cdcf7ba7eac0445a237bf39c1ee586, type: 3}
   _isFusing: 0

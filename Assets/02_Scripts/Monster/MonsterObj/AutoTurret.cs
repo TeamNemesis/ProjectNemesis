@@ -21,7 +21,7 @@ public class AutoTurret : MonsterBase
 
     private void Update()
     {
-        if (isDead || player == null) return;
+        if (isDead || _target == null) return;
         if (isStunned) return;
 
         switch (currentState)
@@ -45,7 +45,7 @@ public class AutoTurret : MonsterBase
     private void HandleIdle()
     {
         // 플레이어와 거리
-        float distance = Vector3.Distance(transform.position, player.position);
+        float distance = Vector3.Distance(transform.position, _target.position);
         if (distance <= attackRange && CanSeePlayer())
         {
             currentState = State.Attack;
@@ -56,7 +56,7 @@ public class AutoTurret : MonsterBase
     {
         _isAttacking = true;
 
-        if (player != null && Vector3.Distance(transform.position, player.position) <= attackRange)
+        if (_target != null && Vector3.Distance(transform.position, _target.position) <= attackRange)
         {
 
             GameObject bullet = Instantiate(turretBulletPrefab, transform.position + transform.forward, transform.rotation);
