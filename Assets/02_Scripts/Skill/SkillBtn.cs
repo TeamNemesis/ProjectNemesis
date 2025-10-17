@@ -50,7 +50,7 @@ public class SkillBtn : MonoBehaviour,IPoolable
 
     public void Initialize()
     {
-        throw new System.NotImplementedException();
+		
     }
 
     public GameObject GetGameObject()
@@ -60,6 +60,25 @@ public class SkillBtn : MonoBehaviour,IPoolable
 
     public void ReleaseObject()
     {
-        throw new System.NotImplementedException();
+        if (_skillScirpt != null)
+        {
+            _skillScirpt.text = null;
+        }
+        if (_skillImage != null)
+        {
+            _skillImage.text = null;
+        }
+        if (_skillIDX != null)
+        {
+            _skillIDX.text = null;
+        }
+        if (_skillLevel != null)
+        {
+            _skillLevel.text = null;
+        }
+        _skillData = null;
+		GetComponent<Button>().onClick.RemoveAllListeners();
+        Debug.Log("¹öÆ° ÇØÁ¦µÊ");
+
     }
 }

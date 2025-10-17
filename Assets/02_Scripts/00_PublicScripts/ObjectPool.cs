@@ -171,7 +171,7 @@ public class ObjectPool : MonoBehaviour
         if (availablePools[prefabObject.name].Count == 0)
         {
             Debug.LogWarning($"'{prefabObject.name}' 풀이 비어있습니다! 새로운 오브젝트를 생성합니다.");
-            return CreateNewObject(prefabObject, position).GetComponent<T>();
+            return CreateNewObject(prefabObject, position,parentTransform).GetComponent<T>();
         }
 
         GameObject obj = availablePools[prefabObject.name][availablePools[prefabObject.name].Count - 1];
@@ -223,10 +223,15 @@ public class ObjectPool : MonoBehaviour
         return newObj;
     }
 
+    /// <summary>
+    /// 인터페이스를 이용한 오브젝트풀 해제
+    /// </summary>
+    /// <param name="poolable"></param>
     public void ReleaseToPoolByInterface(IPoolable poolable)
     {
-        GameObject obj = poolable.GetGameObject();
+        poolable.ReleaseObject();
 
+        GameObject obj = poolable.GetGameObject();
         if (!inUsePools.ContainsKey(obj.name))
         {
             Debug.LogWarning($"'{obj.name}' 풀에 반환할 수 없습니다. 풀이 존재하지 않습니다.");
@@ -235,6 +240,7 @@ public class ObjectPool : MonoBehaviour
         }
 
         int index = inUsePools[obj.name].IndexOf(obj);
+        Debug.Log(index);
         if (index >= 0)
         {
             inUsePools[obj.name].RemoveAt(index);

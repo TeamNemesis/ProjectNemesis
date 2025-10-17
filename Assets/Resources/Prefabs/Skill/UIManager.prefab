@@ -694,23 +694,11 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 8791578957173703662}
         m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
-        m_MethodName: DestroyParentChildObject
+        m_MethodName: OnClickListExitBtn
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 6172900564164755599}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Transform, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 6590944227003047992}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -1517,6 +1505,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 216223a803660624ab17ea426f3ff4b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _skillBtnPrefab: {fileID: 1992862676028647339, guid: f49b63eb8d3e87343965fb71735bd7ff, type: 3}
   _listPanel: {fileID: 6590944227003047992}
   _skillImageText: {fileID: 6760284403962772458}
   _skillScriptText: {fileID: 82416561226726590}
