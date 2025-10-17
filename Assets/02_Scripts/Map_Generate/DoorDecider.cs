@@ -35,6 +35,13 @@ public class DoorDecider : MonoBehaviour
     [SerializeField] float _twoDoorChance = 0.6f; // 다음 방이 2개일 확률
     [SerializeField] float _threeDoorChance = 0.3f; // 다음 방이 3개일 확률
 
+    [Header("NormalRoom의 세부 타입 확률")]
+    [SerializeField] float door_CreditChance; // 크레딧 방 등장 확률
+    [SerializeField] float door_HealChance; // 회복 방 등장 확률
+    [SerializeField] float door_UpgradeChance; // 업그레이드 방 등장 확률
+    [SerializeField] float door_ChromeChance; // 크롬 방 등장 확률
+    [SerializeField] float door_SkillPackChance; // 스킬팩 방 등장 확률
+
     // 다음 방 후보군들의 생성 확률을 저장할 딕셔너리
     Dictionary<RoomType, float> _candidateRoomChanceMap = new();
 
@@ -163,6 +170,39 @@ public class DoorDecider : MonoBehaviour
 
         // 위 과정에서 선택된 방의 타입들을 배열로 만들어 반환
         normalRoomCount = types.Count(x => x == RoomType.Normal);
+        return types.ToArray();
+    }
+
+    public NormalRoomType[] GetNormalRoomTypes(int normalRoomCount, out int techSelectPackCount)
+    {
+        // ----- 입력값을 검증하여 예외 처리 ----- 
+        if (normalRoomCount < 0 || normalRoomCount > 3)
+            throw new ArgumentOutOfRangeException("일반방 개수는 0~3개 사이여야 합니다.");
+        // ----- 입력값을 검증하여 예외 처리 ----- 
+        var types = new List<NormalRoomType>();
+        techSelectPackCount = 0;
+        // 일반방이 0개면 빈 배열 반환
+        if (normalRoomCount == 0)
+            return types.ToArray();
+        // 일반방이 1~3개일 때 확률적으로 결정
+        for (int i = 0; i < normalRoomCount; i++)
+        {
+            float totalChance = door_CreditChance + door_HealChance + door_UpgradeChance + door_ChromeChance + door_SkillPackChance;
+            float rand = UnityEngine.Random.Range(0f, totalChance);
+            if (rand < door_CreditChance)
+                types.Add(NormalRoomType.Credit);
+            else if (rand < door_CreditChance + door_HealChance)
+                types.Add(NormalRoomType.Heal);
+            else if (rand < door_CreditChance + door_HealChance + door_UpgradeChance)
+                types.Add(NormalRoomType.TechUpgrade);
+            else if (rand < door_CreditChance + door_HealChance + door_UpgradeChance + door_ChromeChance)
+                types.Add(NormalRoomType.Chrome);
+            else
+            {
+                types.Add(NormalRoomType.TechSelect);
+                techSelectPackCount++;
+            }
+        }
         return types.ToArray();
     }
 }

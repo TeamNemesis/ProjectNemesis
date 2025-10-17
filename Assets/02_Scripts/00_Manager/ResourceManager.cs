@@ -51,23 +51,23 @@ public class ResourceManager : MonoBehaviour
 
     void InitializeRoomPrefabDict()
     {
-        _roomPrefabMap.Clear();
-        foreach (GameObject prefab in _roomPrefabs)
-        {
-            Room room = prefab.GetComponent<Room>();
-            if(room == null)
-            {
-                Debug.LogError($"RoomPrefab {prefab.name}에 Room 컴포넌트가 없습니다.");
-                return;
-            }
-            if (room != null && !_roomPrefabMap.ContainsKey(room.RoomType))
-            {
-                _roomPrefabMap.Add(room.RoomType, prefab);
-            }
-            else
-            {
-                Debug.LogWarning($"이미 {room.RoomType} 타입의 방 프리팹이 존재합니다.");
-            }
-        }
+        //_roomPrefabMap.Clear();
+        //foreach (GameObject prefab in _roomPrefabs)
+        //{
+        //    Room room = prefab.GetComponent<Room>();
+        //    if(room == null)
+        //    {
+        //        Debug.LogError($"RoomPrefab {prefab.name}에 Room 컴포넌트가 없습니다.");
+        //        return;
+        //    }
+        //    if (room != null && !_roomPrefabMap.ContainsKey(room.RoomType))
+        //    {
+        //        _roomPrefabMap.Add(room.RoomType, prefab);
+        //    }
+        //    else
+        //    {
+        //        Debug.LogWarning($"이미 {room.RoomType} 타입의 방 프리팹이 존재합니다.");
+        //    }
+        //}
     }
 }

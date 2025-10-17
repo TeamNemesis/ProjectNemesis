@@ -3,18 +3,16 @@ using UnityEngine;
 public class Door : MonoBehaviour
 {
     [SerializeField] DoorInteractor _doorInteractor;    // 문이 상호작용 가능하도록 하는 컴포넌트
+    RoomInfo _roomInfo;
 
-    public void Initialize(RoomType roomType)
+    public void Initialize(RoomInfo info)
     {
-        
-        SetReward(roomType);
+        _roomInfo = info;
+        SetReward(_roomInfo); // 보상/아이콘 표시 등
     }
 
-    /// <summary>
-    /// 문이 생성될 때 문의 보상을 설정하는 함수
-    /// </summary>
-    public void SetReward(RoomType roomType)
+    void SetReward(RoomInfo info)
     {
-        
+        // info.RoomType / info.NormalRoomType / info.TechSelectPackType에 따라 UI 세팅
     }
 }

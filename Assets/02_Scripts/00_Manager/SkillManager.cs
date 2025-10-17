@@ -216,6 +216,50 @@ public class SkillManager : MonoBehaviour
     }
 
     /// <summary>
+    /// 입력받은 개수만큼 가중치에 따른 스킬 회사 반환
+    /// </summary>
+    /// <param name="count"></param>
+    /// <returns></returns>
+    public TechSelectPackType[] GetSkillPackTypes(int count)
+    {
+        int skillOneNum = _skill_One.skillNum + 1;
+        int skillTwoNum = _skill_Two.skillNum + 1;
+        int skillThreeNum = _skill_Three.skillNum + 1;
+        int skillFourNum = _skill_Four.skillNum + 1;
+        int skillFiveNum = _skill_Five.skillNum + 1;
+
+        int totalNum = skillOneNum + skillTwoNum + skillThreeNum + skillFourNum + skillFiveNum;
+
+        TechSelectPackType[] packTypes = new TechSelectPackType[count];
+
+        for (int i=0; i<count; i++)
+        {
+            int totalChance = Random.Range(0, totalNum);
+            if(totalChance < skillOneNum)
+            {
+                packTypes[i] = TechSelectPackType.Company1;
+            }
+            else if(totalChance < skillOneNum + skillTwoNum)
+            {
+                packTypes[i] = TechSelectPackType.Company2;
+            }
+            else if(totalChance < skillOneNum + skillTwoNum + skillThreeNum)
+            {
+                packTypes[i] = TechSelectPackType.Company3;
+            }
+            else if(totalChance < skillOneNum + skillTwoNum + skillThreeNum + skillFourNum)
+            {
+                packTypes[i] = TechSelectPackType.Company4;
+            }
+            else
+            {
+                packTypes[i] = TechSelectPackType.Company5;
+            }
+        }
+        return packTypes;
+    }
+
+    /// <summary>
     /// 현재 가지고 있는 총 스킬 개수
     /// </summary>
     /// <returns></returns>
