@@ -11,6 +11,7 @@ public class Skill_One : SkillBase
     /// <summary>
     /// 피격시 생성할 독 프리팹
     /// </summary>
+    [SerializeField]
     private PoisonSpread _hitPoisonSpreadPrefab;
 
     /// <summary>
@@ -125,8 +126,16 @@ public class Skill_One : SkillBase
 
     public void SpreadPoison()
     {
-        //TODO 오브젝트풀 등록
-        Destroy(Instantiate(_hitPoisonSpreadPrefab, player.transform.position, player.transform.rotation), 0.5f);
+        //TODO 스킬 확인
+        GameObject poisonSpread = ObjectPool.Instance.GetFromPool(Constants.POOL_POISONSPREAD, _hitPoisonSpreadPrefab.gameObject,player.transform.position);
+        
+        StartCoroutine(DestroyPoisonSpreadCoroutine(0.5f,poisonSpread));
+    }
+
+    public IEnumerator DestroyPoisonSpreadCoroutine(float time,GameObject gameObject)
+    {
+        yield return new WaitForSeconds(time);
+        ObjectPool.Instance.ReleaseToPool(gameObject);
     }
 
     #endregion
@@ -150,6 +159,9 @@ public class Skill_One : SkillBase
         }
     }
     #endregion
+
+
+
 }
 
 

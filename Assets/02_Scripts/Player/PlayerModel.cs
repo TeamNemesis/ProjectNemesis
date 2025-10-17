@@ -29,6 +29,7 @@ public class PlayerModel : CharacterModelBase
     {
         if (Input.GetKeyDown(KeyCode.U))
         {
+            GameManager.Instance.skillManager.skill_One.SpreadPoison();
             OnAttackHit();
         }
     }

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Threading;
 using UnityEngine;
 
 public class ObjectPool : MonoBehaviour
@@ -17,7 +16,7 @@ public class ObjectPool : MonoBehaviour
 
     [SerializeField] private List<GameObject> poolObjects = new List<GameObject>();
 
-    private void Initialize()
+    private void Awake()
     {
         InitializeAllPools();
         if (instance == null)
@@ -68,7 +67,7 @@ public class ObjectPool : MonoBehaviour
             availablePools[initialPrefab.name] = new List<GameObject>();
             inUsePools[initialPrefab.name] = new List<GameObject>();
 
-            // 정ㅇ리용 게임 오브젝트
+            // 정리용 게임 오브젝트
             GameObject container = new GameObject($"Pool_{initialPrefab.name}");
             container.transform.SetParent(transform);
             poolContainers[initialPrefab.name] = container;
@@ -153,6 +152,50 @@ public class ObjectPool : MonoBehaviour
         return null;
     }
 
+    #region 오브젝트풀 임시 생성
+    /// <summary>
+    /// 풀에서 오브젝트 가져오기
+    /// </summary>
+    public GameObject GetFromPool(string poolName, GameObject prefabObject, Vector3 position)
+    {
+        if (!availablePools.ContainsKey(poolName))
+        {
+            availablePools.Add(poolName, new List<GameObject>());
+            if (!inUsePools.ContainsKey(poolName))
+            {
+
+                inUsePools.Add(poolName, new List<GameObject>());
+            }
+        }
+
+        if (availablePools[poolName].Count == 0)
+        {
+            Debug.LogWarning($"'{poolName}' 풀이 비어있습니다! 새로운 오브젝트를 생성합니다.");
+            return CreateNewObject(poolName, prefabObject);
+        }
+
+        GameObject obj = availablePools[poolName][availablePools[poolName].Count - 1];
+        availablePools[poolName].RemoveAt(availablePools[poolName].Count - 1);
+        obj.transform.position = position;
+        obj.SetActive(true);
+        inUsePools[poolName].Add(obj);
+
+        return obj;
+    }
+
+    /// <summary>
+    /// 풀이 비어있을 때 새로운 오브젝트 생성
+    /// </summary>
+    private GameObject CreateNewObject(string poolName, GameObject prefabObject)
+    {
+
+        GameObject newObj = Instantiate(prefabObject);
+        newObj.SetActive(true);
+        inUsePools[poolName].Add(newObj);
+        Debug.Log($"'{poolName}' 풀의 새로운 오브젝트가 생성되었습니다.");
+        return newObj;
+    }
+    #endregion
     /// <summary>
     /// 풀에 오브젝트 반환 (사용 완료)
     /// </summary>
