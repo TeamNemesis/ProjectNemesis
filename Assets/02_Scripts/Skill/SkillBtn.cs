@@ -78,7 +78,6 @@ public class SkillBtn : MonoBehaviour,IPoolable
         }
         _skillData = null;
 		GetComponent<Button>().onClick.RemoveAllListeners();
-        Debug.Log("버튼 해제됨");
 
     }
 }

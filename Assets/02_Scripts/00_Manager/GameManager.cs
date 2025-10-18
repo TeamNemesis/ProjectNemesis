@@ -16,7 +16,6 @@ public class GameManager : MonoBehaviour
         // get 프로퍼티
         get
         {
-            Debug.Log("GameManager Instance 접근");
             // 만약 GameManager.Instance로 접근했는데 없다면
             if (_instance == null)
             {

@@ -10,6 +10,7 @@ public abstract class ActiveTech
 {
     [Header("기술 정보")]
     [SerializeField] protected SkillData _skillData; // 기술의 이름
+    public SkillData skillData { get {  return _skillData; } }
 
     public string TechIdx => _skillData.skillIdx.ToString(); // 기술의 번호를 반환하는 속성
     public string TechDescription => _skillData.skillScript; // 기술의 설명을 반환하는 속성
@@ -24,19 +25,24 @@ public abstract class ActiveTech
     /// </summary>
     public virtual void Activate(SkillManager skillManager, PlayerModel player)
     {
+       
         switch (_skillData.skillTag)
         {
             case Constants.SKILL_TAG_ATTACK:
+                Debug.Log("일반공격 변경");
                 skillManager.SetAttackTech(this);
                 break;
             case Constants.SKILL_TAG_GEN:
-                skillManager.SetBombTech(this);
+								Debug.Log("유탄 변경");
+								skillManager.SetBombTech(this);
                 break;
             case Constants.SKILL_TAG_SP:
-                skillManager.SetSkillTech(this);
+								Debug.Log("특수공격 변경");
+								skillManager.SetSkillTech(this);
                 break;
             case Constants.SKILL_TAG_DASH:
-                skillManager.SetDashTech(this);
+								Debug.Log("대쉬 변경");
+								skillManager.SetDashTech(this);
                 break;
             default:
                 Debug.Log("skill Tag : " + _skillData.skillTag);

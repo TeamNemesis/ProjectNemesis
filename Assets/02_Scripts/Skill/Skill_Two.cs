@@ -21,10 +21,13 @@ public class Skill_Two : SkillBase
             case 20:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 ActiveTech skillAttack = new Skill_Two_Attack(choosedSkill);
-                if (_skillManager.attachTech != null)
+                if (_skillManager.attackTech != null)
                 {
-                    _skillManager.attachTech.Deactivate(player);
-                }
+										if (_skillManager.attackTech.skillData.skillIdx != choosedSkill.skillIdx)
+										{
+												_skillManager.attackTech.Deactivate(player);
+										}
+								}
                 skillAttack.Activate(_skillManager, player);
                 break;
 
@@ -38,10 +41,13 @@ public class Skill_Two : SkillBase
             case 22:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 ActiveTech skillSPAttack = new Skill_Two_SPAttack(choosedSkill);
-                if (_skillManager.attachTech != null)
+                if (_skillManager.attackTech != null)
                 {
-                    _skillManager.attachTech.Deactivate(player);
-                }
+										if (_skillManager.attackTech.skillData.skillIdx != choosedSkill.skillIdx)
+										{
+												_skillManager.attackTech.Deactivate(player);
+										}
+								}
                 skillSPAttack.Activate(_skillManager, player);
                 break;
 

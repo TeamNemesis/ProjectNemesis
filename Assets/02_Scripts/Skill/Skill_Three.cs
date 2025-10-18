@@ -20,10 +20,13 @@ public class Skill_Three : SkillBase
             // 중력자 무기
             case 30:
                 ActiveTech skillAttack = new Skill_Three_Attck(choosedSkill);
-                if (_skillManager.attachTech != null)
+                if (_skillManager.attackTech != null)
                 {
-                    _skillManager.attachTech.Deactivate(player);
-                }
+										if (_skillManager.attackTech.skillData.skillIdx != choosedSkill.skillIdx)
+										{
+												_skillManager.attackTech.Deactivate(player);
+										}
+								}
                 skillAttack.Activate(_skillManager, player);
                 break;
 
