@@ -10,6 +10,7 @@ public class Skill_One_SPAttack : ActiveTech
 
     public override event Action OnTechUsed;
 
+    private Action _AttackTry;
     /// <summary> 
     /// 공격 한 번 당 한 번만 적용하도록 하기 위한 필드값
     /// </summary>
@@ -19,7 +20,8 @@ public class Skill_One_SPAttack : ActiveTech
     {
         // 공격 적중 시 이벤트에 추가
         base.Activate(skillManager, player);
-        player.SPAttackTry+=AttackTry;
+        _AttackTry = () => AttackTry(player);
+        player.SPAttackTry += _AttackTry;
         player.SPAttackHit += HitEnemy;
        
     }
@@ -28,8 +30,8 @@ public class Skill_One_SPAttack : ActiveTech
         // 리스트 제거
         base.Deactivate(player);
         // 이벤트 해제
-        player.SPAttackTry -= AttackTry;
-        player.SPAttackHit -= HitEnemy;
+        player.SPAttackTry -= _AttackTry;
+				player.SPAttackHit -= HitEnemy;
         
 
     }
@@ -37,7 +39,7 @@ public class Skill_One_SPAttack : ActiveTech
     /// <summary>
     /// 공격 시도 시 변수 초기화
     /// </summary>
-    public override void AttackTry()
+    public override void AttackTry(PlayerModel player)
     {
         isHit = false;
     }

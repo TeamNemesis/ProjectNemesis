@@ -42,18 +42,26 @@ public class Skill_One : SkillBase
 						// 포자 퍼뜨리기
 						case 11:
 								Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
-
+								ActiveTech skillGrenade = new Skill_One_Grenade(choosedSkill);
+								if (_skillManager.bombTech != null)
+								{
+										if (_skillManager.bombTech.skillData.skillIdx != choosedSkill.skillIdx)
+										{
+												_skillManager.bombTech.Deactivate(player);
+										}
+								}
+								skillGrenade.Activate(_skillManager, player);
 								break;
 
 						// 피의 갈증
 						case 12:
 								Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
 								ActiveTech skillSPAttack = new Skill_One_SPAttack(choosedSkill);
-								if (_skillManager.attackTech != null)
+								if (_skillManager.skillTech != null)
 								{
-										if (_skillManager.attackTech.skillData.skillIdx != choosedSkill.skillIdx)
+										if (_skillManager.skillTech.skillData.skillIdx != choosedSkill.skillIdx)
 										{
-												_skillManager.attackTech.Deactivate(player);
+												_skillManager.skillTech.Deactivate(player);
 										}
 								}
 								skillSPAttack.Activate(_skillManager, player);
@@ -62,6 +70,14 @@ public class Skill_One : SkillBase
 						// 약육강식
 						case 13:
 								Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
+								ActiveTech skillDash = new Skill_One_Dash(choosedSkill);
+								if (_skillManager.dashTech != null)
+								{
+										if (_skillManager.dashTech.skillData.skillIdx != choosedSkill.skillIdx)
+										{
+												_skillManager.dashTech.Deactivate(player);
+										}
+								}
 								break;
 
 						// 넘치는 활력
@@ -83,7 +99,7 @@ public class Skill_One : SkillBase
 								//TODO 플레이어 모델에 받는데미지 감소 계수를 추가하여 10퍼센트 
 
 								//TODO 피격시 이벤트에 함수 추가 SpreadPoison
-
+								player.PlayerHit += ()=>SpreadPoison(player);
 								break;
 
 						// 진화
@@ -135,10 +151,12 @@ public class Skill_One : SkillBase
 
 		#region 독성혈액
 
-		public void SpreadPoison()
+		public void SpreadPoison(PlayerModel player)
 		{
+				Vector3 position = player.transform.position;
+				position.y = 0;
 				//TODO 스킬 확인
-				PoisonSpread poisonSpread = ObjectPool.Instance.GetFromPool<PoisonSpread>(_hitPoisonSpreadPrefab, player.transform.position);
+				PoisonSpread poisonSpread = ObjectPool.Instance.GetFromPool<PoisonSpread>(_hitPoisonSpreadPrefab,position);
 
 		}
 

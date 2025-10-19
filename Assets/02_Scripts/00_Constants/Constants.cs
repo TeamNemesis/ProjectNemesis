@@ -60,11 +60,34 @@ public static class Constants
 
     #endregion
 
+    /// <summary>
+    /// 일반적인 폭발물 오브젝트 유지 시간
+    /// </summary>
+    public static float SKILL_REMAIN = 0.5f;
+
+
     #region Skill_One
+
+    /// <summary>
+    /// 특수 공격 강화(포자 퍼뜨리기) 독 중첩 주기
+    /// </summary>
+    public static float SKILL_ONE_SPATTACK_STACKTIME = 1f;
+
+    /// <summary>
+    /// 장판 지속 시간
+    /// </summary>
+    public static float SKILL_ONE_SPATTACK_TIME = 3f;
+
     /// <summary>
     /// 피의 갈증 힐량
     /// </summary>
     public static int SKILL_ONE_SPATTACKHEAL = 2;
+
+    /// <summary>
+    /// 피격시 독 지속 시간
+    /// </summary>
+    public static float SKILL_ONE_HITPOISONSPREAD_TIME = 0.5f;
+
     #endregion
 
     #region Skill_Two

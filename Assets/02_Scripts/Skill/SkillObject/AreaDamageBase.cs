@@ -35,7 +35,7 @@ public class AreaDamageBase : MonoBehaviour
     {
         
         // 콜라이더 탐색 (필요하다면 레이어마스크 설정)
-        int hitColliders = Physics.OverlapSphereNonAlloc(transform.position, _areaExtent * Constants.SKILL_EXTENT, _results);
+        int hitColliders = Physics.OverlapSphereNonAlloc(transform.position, _areaExtent/2 * Constants.SKILL_EXTENT, _results);
 
 
         for (int i = 0; i < hitColliders; i++)

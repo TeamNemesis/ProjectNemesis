@@ -72,7 +72,7 @@ public abstract class ActiveTech
     /// <summary>
     /// 공격 시도 시 호출되는 메서드
     /// </summary>
-    public virtual void AttackTry()
+    public virtual void AttackTry(PlayerModel player)
     {
 
     }

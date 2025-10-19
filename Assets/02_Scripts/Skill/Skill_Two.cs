@@ -34,8 +34,16 @@ public class Skill_Two : SkillBase
                 // 폭발!
             case 21:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
-
-                break;
+								ActiveTech skillGrenade = new Skill_Two_Grenade(choosedSkill);
+								if (_skillManager.bombTech != null)
+								{
+										if (_skillManager.bombTech.skillData.skillIdx != choosedSkill.skillIdx)
+										{
+												_skillManager.bombTech.Deactivate(player);
+										}
+								}
+								skillGrenade.Activate(_skillManager, player);
+								break;
 
                 // 비밀무기
             case 22:
@@ -73,7 +81,7 @@ public class Skill_Two : SkillBase
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
 
                 //TODO 몬스터 스포너에 몬스터 생성시 이벤트에 연결
-                // monsterSpawner.OnSpawnMonster += (monster)=>monster.OnDie+=MakeExplosion;
+                // monsterSpawner.OnSpawnMonster += (monster)=>monster.OnDie+=()=>MakeExplosion(monster.transform);
 
                 break;
 
@@ -93,9 +101,11 @@ public class Skill_Two : SkillBase
     }
 
     #region 폭사
-    public void MakeExplosion()
+    public void MakeExplosion(Transform monsterTransform)
     {
-        ObjectPool.Instance.GetFromPool<ExplosionDeath>(_explosionDeathPrefab,transform.position);
+        Vector3 position = monsterTransform.position;
+        position.y = 0;
+        ObjectPool.Instance.GetFromPool<ExplosionDeath>(_explosionDeathPrefab,position);
     }
     #endregion
 }

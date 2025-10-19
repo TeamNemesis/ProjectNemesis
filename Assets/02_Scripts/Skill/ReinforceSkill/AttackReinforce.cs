@@ -9,6 +9,8 @@ public class Skill_One_Attack : ActiveTech
 
     public override event Action OnTechUsed;
 
+    
+
     public override void Activate(SkillManager skillManager, PlayerModel player)
     {
         // 공격 적중 시 이벤트에 추가
@@ -160,6 +162,7 @@ public class Skill_Four_Attack : ActiveTech
 {
     public int stack;
 
+    private Action _AttackTry;
 
     public override event Action OnTechUsed;
 
@@ -167,23 +170,24 @@ public class Skill_Four_Attack : ActiveTech
     {
         // 공격 시도 시 이벤트에 추가
         base.Activate(skillManager, player);
-        player.AttackTry += AttackTry;
+        _AttackTry =()=> AttackTry(player);
+        player.AttackTry += _AttackTry;
         player.AttackHit += HitEnemy;
         Drone[] drones = player.transform.GetComponentsInChildren<Drone>();
         if (drones.Length > 0)
         {
             foreach (Drone drone in drones)
             {
-                drone.attackTry += AttackTry;
+                drone.attackTry += _AttackTry;
             }
         }
     }
     public override void Deactivate(PlayerModel player)
     {
-        // 리스트 제거
+        // 리스트 제거s
         base.Deactivate(player);
         // 이벤트 해제
-        player.AttackTry -= AttackTry;
+        player.AttackTry -= _AttackTry;
         player.AttackHit -= HitEnemy;
 
         Drone[] drones = player.transform.GetComponentsInChildren<Drone>();
@@ -191,7 +195,7 @@ public class Skill_Four_Attack : ActiveTech
         {
             foreach (Drone drone in drones)
             {
-                drone.attackTry -= AttackTry;
+                drone.attackTry -= _AttackTry;
             }
         }
 
@@ -199,9 +203,14 @@ public class Skill_Four_Attack : ActiveTech
 
   
 
-    public override void AttackTry()
+    public override void AttackTry(PlayerModel player)
     {
         stack++;
+        // 최대 스택 체한
+        if(stack>10)
+        {
+            stack = 10;
+        }
     }
 
     public override void HitEnemy(Transform transform)
