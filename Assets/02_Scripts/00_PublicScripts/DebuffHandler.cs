@@ -182,6 +182,13 @@ public class DebuffHandler : MonoBehaviour
                     {
                         StopCoroutine(existing.effectRoutine);
                     }
+                    // 기존 혼란 상태를 먼저 정리
+                    if (monster != null)
+                    {
+                        monster.targetTag = Constants.TAG_PLAYER;
+                        monster.SetTarget(null);
+                    }
+                    // 새 혼란 코루틴 시작
                     existing.effectRoutine = StartCoroutine(ConfuseCoroutine(newDebuff.debuffDuration));
                 }
 
@@ -312,20 +319,39 @@ public class DebuffHandler : MonoBehaviour
     /// <param name="duration"> 지속시간 </param>
     private IEnumerator ConfuseCoroutine(float duration)
     {
-        Transform thisTarget = monster.GetTarget();
         if (monster == null) yield break;
-        string originalTag = monster.targetTag;
-        
-        Transform originalTarget = thisTarget;
+
+        // 혼란 상태에 들어가기 전에 원래 상태 저장
+        // 이미 혼란 상태면 건너뛰기
+        bool wasAlreadyConfused = monster.targetTag == Constants.TAG_MONSTER;
+        string originalTag = wasAlreadyConfused ? Constants.TAG_PLAYER : monster.targetTag;
+        Transform originalTarget = wasAlreadyConfused ? null : monster.GetTarget();
 
         float elapsedTime = 0f;
 
+        // 혼란 상태 시작
         monster.targetTag = Constants.TAG_MONSTER;
         monster.SetTarget(null);
+
         while (elapsedTime < duration)
         {
+            // 남은 시간 확인
+            if (activeDebuffs.ContainsKey(Constants.DEBUFF_CONFUSION))
+            {
+                ActiveDebuff activeDebuff = activeDebuffs[Constants.DEBUFF_CONFUSION];
+                if (activeDebuff.remainingTime <= 0)
+                {
+                    break;
+                }
+            }
+            else
+            {
+                break;
+            }
+
             // 현재 타겟이 죽었거나 없으면 새로 찾기
-            if (thisTarget == null)
+            Transform currentTarget = monster.GetTarget();
+            if (currentTarget == null || !currentTarget.gameObject.activeSelf)
             {
                 GameObject[] monsters = GameObject.FindGameObjectsWithTag(Constants.TAG_MONSTER);
                 Transform closestMonster = null;
@@ -333,7 +359,9 @@ public class DebuffHandler : MonoBehaviour
 
                 foreach (GameObject obj in monsters)
                 {
-                    if (obj.transform == monster.transform || !obj.activeSelf) continue;
+                    if (obj.transform == monster.transform || !obj.activeSelf)
+                        continue;
+
                     float distance = Vector3.Distance(monster.transform.position, obj.transform.position);
                     if (distance < closestDistance)
                     {
@@ -345,7 +373,6 @@ public class DebuffHandler : MonoBehaviour
                 if (closestMonster != null)
                 {
                     monster.SetTarget(closestMonster);
-                    thisTarget = closestMonster;
                 }
             }
 
@@ -353,9 +380,29 @@ public class DebuffHandler : MonoBehaviour
             yield return null;
         }
 
-        monster.targetTag = originalTag;
-        monster.SetTarget(originalTarget);
-        Debug.Log("Confuse ended. Target restored to: " + (originalTarget == null ? "null" : originalTarget.name));
+        // 혼란 상태 복구
+        if (!character.isDead && monster != null)
+        {
+            monster.targetTag = originalTag;
+
+            // originalTarget이 null이면 플레이어를 자동으로 찾기
+            if (originalTarget == null)
+            {
+                GameObject playerObj = GameObject.FindGameObjectWithTag(Constants.TAG_PLAYER);
+                if (playerObj != null)
+                {
+                    monster.SetTarget(playerObj.transform);
+                }
+                else
+                {
+                    monster.SetTarget(null);
+                }
+            }
+            else
+            {
+                monster.SetTarget(originalTarget);
+            }
+        }
     }
 
     /// <summary>

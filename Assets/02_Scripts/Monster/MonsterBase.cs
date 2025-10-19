@@ -57,11 +57,17 @@ public class MonsterBase : CharacterModelBase
         Vector3 dir = (_target.position - transform.position).normalized;
         float dist = Vector3.Distance(transform.position, _target.position);
 
-        int mask = LayerMask.GetMask(targetTag, Constants.LAYER_MASK_WALL);
+        // 혼란 상태면 거리만 체크 (시야 무시)
+        DebuffHandler debuffHandler = GetComponent<DebuffHandler>();
+        if (debuffHandler != null && debuffHandler.HasDebuff(Constants.DEBUFF_CONFUSION))
+        {
+            return true;  // 혼란 상태면 항상 true
+        }
 
+        int mask = LayerMask.GetMask(targetTag, Constants.LAYER_MASK_WALL);
         if (Physics.Raycast(transform.position + Vector3.up * 0.3f, dir, out RaycastHit hit, dist, mask))
         {
-            if (hit.transform.CompareTag(targetTag))
+            if (hit.transform == _target)
             {
                 return true;
             }
