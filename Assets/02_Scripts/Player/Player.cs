@@ -32,7 +32,9 @@ public class Player : MonoBehaviour
     [Header("----- 읽기 전용 -----")]
     [SerializeField] PlayerWeaponSet _currentWeaponSet;        // 현재 플레이어 무기 세트
 
-    public event Action<RoomInfo> OnDoorInteract;
+    // public event Action<RoomInfo> OnDoorInteract;
+    // 문이 상호작용 되었을 때 문과 관련된쪽에서 이벤트를 발행하고 있고
+    // 그 이벤트를 받아서 문이나 방을 생성하고 있으므로 이건 중복 발행하지 않음
 
     /// <summary>
     /// Player 초기화 함수
@@ -70,7 +72,7 @@ public class Player : MonoBehaviour
             return;
         }
         Debug.Log(roomInfo.RoomType + " 방으로 가는 문과 상호작용 함");
-        OnDoorInteract?.Invoke(roomInfo);
+        // OnDoorInteract?.Invoke(roomInfo);
     }
 
     /// <summary>
@@ -80,7 +82,7 @@ public class Player : MonoBehaviour
     /// <param name="weaponType"></param>
     void OnWeaponChanged(WeaponType weaponType)
     {
-        _currentWeaponSet = GameManager.Instance.ResourceManager.PlayerWeaponSetMap[weaponType];
+        _currentWeaponSet = GameManager.Instance.DataManager.WeaponSetMap[weaponType];
 
         _normalAttacker = _currentWeaponSet.NormalAttacker;
         //_grenadeAttacker = _currentWeaponSet.GrenadeAttacker;

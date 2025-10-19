@@ -16,8 +16,6 @@ public class PlayScene : MonoBehaviour
         _inputHandler.OnGrenadeAttackInputEnded += _player.GrenadeAttack;
         _inputHandler.OnSpecialAttackInput += _player.SpecialAttack;
         _inputHandler.OnInteractInput += _player.ExecuteInteraction;
-
-        _player.OnDoorInteract += _mapController.SpawnRoom;
     }
 
     private void Start()

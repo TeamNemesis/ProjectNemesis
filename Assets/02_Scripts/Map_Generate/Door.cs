@@ -1,99 +1,139 @@
 ﻿using System;
+using System.Resources;
 using UnityEngine;
 
 /// <summary>
-/// Door(프리팹 루트) — 실제 상호작용은 DoorInteractor가 담당.
-/// Door는 DoorInteractor를 통해 RoomInfo를 전달하고, 등록/구독 관리를 보조합니다.
+/// Door: 문 프리팹 루트. DoorInteractor가 실제 입력을 감지하고,
+/// Door는 RoomInfo를 보관하여 문 위의 UI/프리뷰를 보여주고 상호작용을 중계한다.
+/// 
+/// 책임:
+/// - 런타임 RoomInfo 보유 (프리팹 직렬화 아님)
+/// - DoorInteractor 이벤트 중계
+/// - DoorView에 시각 데이터 적용 (RoomInfo -> ResourceManager lookup)
+/// - InteractableManager에 등록/해제 (의존성 주입 허용)
+/// 
+/// 주의:
+/// - Initialize로 주입된 의존성 사용 권장 (테스트/풀링 용이)
 /// </summary>
 public class Door : MonoBehaviour
 {
-    [SerializeField] DoorInteractor _doorInteractor;    // 문 상호작용 컴포넌트 (IInteractable 구현체)
+    [SerializeField] DoorInteractor _doorInteractor; // 반드시 프리팹에 연결되어 있어야 함
+    [SerializeField] DoorView _doorView;             // 시각적 표현 담당(아이콘, 프리뷰 등)
+
+    // RoomInfo는 런타임에 주입만 받고 프리팹에 저장되지 않도록 SerializeField 제거
     RoomInfo _roomInfo;
+    public RoomInfo RoomInfo => _roomInfo; // 외부는 읽기 전용으로 접근
 
-    public RoomInfo RoomInfo => _roomInfo;
-
-    // DoorSpawner / MapController가 구독할 수 있는 중계 이벤트
+    // 중계 이벤트: MapController 등에서 구독
     public event Action<IInteractable> DoorInteracted;
 
+    // 등록한 매니저(주입될 수 있음)
+    //IInteractableManager _interactableManager;
+    //IResourceManager _resourceManager; // ResourceManager 인터페이스(게임의 ResourceManager 래퍼)
+
+    bool _isInitialized = false;
+
     /// <summary>
-    /// 생성 직후 호출해서 초기화합니다.
-    /// - info는 null이 아니어야 합니다.
-    /// - 내부 DoorInteractor가 반드시 프리팹에 연결되어 있어야 합니다.
+    /// 초기화: 반드시 RoomInfo를 주입해야 함.
+    /// 의존성 매니저는 주입하지 않으면 GameManager.Instance에서 가져옵니다(기존 호환성 유지).
     /// </summary>
     public void Initialize(RoomInfo info)
     {
-        // 안전 검사
-        if (info == null)
-        {
-            Debug.LogError("Door.Initialize: info가 null입니다.");
-            return;
-        }
+        if (info == null) throw new ArgumentNullException(nameof(info));
+        if (_doorInteractor == null) Debug.LogError("Door.Initialize: _doorInteractor is null on prefab.");
 
-        if (_doorInteractor == null)
-        {
-            Debug.LogError("Door.Initialize: _doorInteractor가 할당되어 있지 않습니다. Door 프리팹을 확인하세요.");
-            return;
-        }
+        // 의존성 설정(주입 우선, 없으면 전역에서 가져오기)
+        //_interactableManager = interactableManager ?? GameManager.Instance?.InteractableManager;
+        //_resourceManager = resourceManager ?? GameManager.Instance?.ResourceManager;
 
-        // RoomInfo 설정
+        // 상태 주입
         _roomInfo = info;
 
-        // DoorInteractor에 정보 전달
+        // DoorInteractor와 안전하게 구독/등록
         _doorInteractor.SetRoomInfo(_roomInfo);
 
-        // DoorInteractor의 이벤트를 중계하도록 구독
-        // (중복 구독을 방지하려면 먼저 해제 시도)
+        // 방지: 중복 구독
         _doorInteractor.OnInteracted -= OnDoorInteracted;
         _doorInteractor.OnInteracted += OnDoorInteracted;
 
-        // InteractableManager에 등록(InteractionController는 여기서 등록된 IInteractable을 받음)
-        var mgr = GameManager.Instance?.InteractableManager;
-        if (mgr != null)
-        {
-            mgr.Register(_doorInteractor); // 반드시 IInteractable 구현체를 등록
-            Debug.Log($"Door.Initialize: Registered door interactor to InteractableManager. Current room: {_roomInfo.RoomType}");
-        }
-        else
-        {
-            Debug.LogWarning("Door.Initialize: InteractableManager가 null입니다. 등록되지 않았습니다.");
-        }
+        // 등록
+        //_interactableManager?.Register(_doorInteractor);
 
-        // 시각 / 보상 등 초기화
-        SetRoomInfo(_roomInfo);
+        // 시각 적용: RoomInfo(ID) -> ResourceManager -> DoorView
+        //ApplyVisualsForRoomInfo(_roomInfo);
+
+        _isInitialized = true;
     }
 
+    /// <summary>
+    /// RoomInfo에 따라 DoorView에 미리보기/아이콘/텍스트 등을 적용한다.
+    /// 실제 asset lookup은 ResourceManager가 담당.
+    /// </summary>
+    //void ApplyVisualsForRoomInfo(RoomInfo info)
+    //{
+    //    if (_doorView == null) return;
+    //    if (_resourceManager == null)
+    //    {
+    //        Debug.LogWarning("Door.ApplyVisualsForRoomInfo: ResourceManager not provided.");
+    //        return;
+    //    }
+
+    //    // 기본 룸 데이터 적용
+    //    var roomData = _resourceManager.GetRoomData(info.RoomType);
+    //    if (roomData != null)
+    //    {
+    //        _doorView.ApplyRoomDataPreview(roomData);
+    //    }
+    //    else
+    //    {
+    //        _doorView.ClearPreview();
+    //    }
+
+    //    // Normal + TechSelect이면 회사별 테크팩 미리보기 적용(예시)
+    //    if (info.RoomType == RoomType.Normal && info.NormalRoomType == NormalRoomType.TechSelect)
+    //    {
+    //        string companyId = GameManager.Instance?.CompanyManager?.CurrentCompanyId;
+    //        var techCfg = _resourceManager.GetTechPackConfig(companyId) ?? _resourceManager.GetDefaultTechPackConfig();
+    //        if (techCfg != null)
+    //            _doorView.ApplyTechPackPreview(techCfg);
+    //    }
+    //}
+
+    // OnInteracted 중계
     void OnDoorInteracted(IInteractable interactable)
     {
-        // 중계 이벤트: InteractionController / MapController가 DoorInteracted 이벤트를 구독할 수 있음
         DoorInteracted?.Invoke(interactable);
     }
 
-    void SetRoomInfo(RoomInfo roomInfo)
-    {
-        _roomInfo = roomInfo;
-        SetReward();
-    }
-
-    void SetReward()
-    {
-        // TODO: roomInfo에 따라 아이콘/라벨/보상을 설정
-    }
-
-    // 안전하게 구독 해제하고 레지스트리에서 제거
+    // 안전한 해제: OnDisable은 풀링/씬 전환 시에도 안전하도록 방어적 처리
     void OnDisable()
     {
+        // 이벤트 해제
         if (_doorInteractor != null)
-        {
             _doorInteractor.OnInteracted -= OnDoorInteracted;
 
-            var mgr = GameManager.Instance?.InteractableManager;
-            if (mgr != null)
-            {
-                mgr.Unregister(_doorInteractor);
-            }
-        }
+        // 매니저에서 해제
+        //if (_interactableManager != null)
+        //    _interactableManager.Unregister(_doorInteractor);
 
-        // 중계 이벤트도 초기화 (옵션)
-        DoorInteracted = null;
+        // 선택적으로 중계 이벤트 초기화(구독자들이 수동 해제를 더 좋아하면 제거 가능)
+        // DoorInteracted = null;
+    }
+
+    /// <summary>
+    /// 풀링용 초기화 해제: 재사용 시 반드시 호출해야 함.
+    /// - 구독 해제, 등록 해제, 뷰 초기화, 내부 RoomInfo null화
+    /// </summary>
+    public void ResetForReuse()
+    {
+        if (_doorInteractor != null)
+            _doorInteractor.OnInteracted -= OnDoorInteracted;
+
+        //if (_interactableManager != null)
+        //    _interactableManager.Unregister(_doorInteractor);
+
+        //_doorView?.ClearPreview();
+        _roomInfo = null;
+        _isInitialized = false;
     }
 }
