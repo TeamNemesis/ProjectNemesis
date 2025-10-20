@@ -23,6 +23,7 @@ public class NebulaVanguard : MonsterBase
 
     [SerializeField] private MeshRenderer _meshRenderer;
     [SerializeField] private GameObject range;
+    [SerializeField] private GameObject bladeWave;
     private bool isPattern1 = false;
 
     private void Update()
@@ -84,6 +85,7 @@ public class NebulaVanguard : MonsterBase
 
             isPattern1 = true;
         }
+        
         
 
 
@@ -169,11 +171,16 @@ public class NebulaVanguard : MonsterBase
         _meshRenderer = GetComponent<MeshRenderer>();
         _meshRenderer.enabled = false;
 
-        // ScaleTime이 끝날 때까지 기다림
+        //
         yield return StartCoroutine(ScaleTime());
 
-        // 코루틴이 다 끝난 뒤 실행됨
-        _meshRenderer.enabled = true;   //보이기
+        //보이기
+        _meshRenderer.enabled = true;
+
+        //블레이드 파동 3번
+        transform.LookAt(player);
+
+        yield return StartCoroutine(BladeWave());
     }
     private IEnumerator ScaleTime()
     {
@@ -198,6 +205,33 @@ public class NebulaVanguard : MonsterBase
         Destroy(rangePrefab);
 
     }
+    private IEnumerator BladeWave()
+    {
+        int waveCount = 3;
+        float cool = 1f;
+
+        for (int i = 0; i < waveCount; i++)
+        {
+            // 프리팹 발사
+            ShootBlade();
+
+            // 1초 대기
+            yield return new WaitForSeconds(cool);
+        }
+    }
+    void ShootBlade()
+    {
+        // 플레이어의 위치를 가져오되, 높이는 몬스터 높이와 동일하게 맞추기
+        Vector3 targetPos = new Vector3(player.position.x, transform.position.y, player.position.z);
+
+        // 수평 방향으로만 LookAt
+        transform.LookAt(targetPos);
+
+        // 생성
+        Vector3 spawnPos = new Vector3(transform.position.x, 1f, transform.position.z) + transform.forward * 1f;
+        GameObject blade = Instantiate(bladeWave, spawnPos, transform.rotation);
+    }
+
 
     void Pattern2()
     {
