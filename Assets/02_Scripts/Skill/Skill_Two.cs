@@ -114,7 +114,7 @@ public class Skill_Two : SkillBase
     {
         Vector3 position = monsterTransform.position;
         position.y = 0;
-        ObjectPool.Instance.GetFromPool(_explosionDeathPrefab, position).GetComponent<ExplosionDeath>().Initialize();
+        ObjectPool.Instance.GetFromPool(_explosionDeathPrefab, position, _explosionDeathPrefab.transform.rotation).GetComponent<ExplosionDeath>().Initialize();
     }
     #endregion
 

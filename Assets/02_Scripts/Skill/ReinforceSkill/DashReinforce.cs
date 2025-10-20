@@ -41,7 +41,7 @@ public class Skill_One_Dash : ActiveTech
     {
         Vector3 position = player.transform.position;
         position.y = 0;
-        ObjectPool.Instance.GetFromPool(_poisonDashPrefab,position).GetComponent<PoisonDash>().Initialize();
+        ObjectPool.Instance.GetFromPool(_poisonDashPrefab,position, _poisonDashPrefab.transform.rotation).GetComponent<PoisonDash>().Initialize();
     }
 
 
@@ -92,7 +92,7 @@ public class Skill_Two_Dash : ActiveTech
     {
         Vector3 position = player.transform.position;
         position.y = 0;
-        ObjectPool.Instance.GetFromPool(_dashReinforcePrefab, position).GetComponent<DashReinforcePrefab>().Initialize();
+        ObjectPool.Instance.GetFromPool(_dashReinforcePrefab, position, _dashReinforcePrefab.transform.rotation).GetComponent<DashReinforcePrefab>().Initialize();
     }
 
     public Skill_Two_Dash(SkillData skillData) : base(skillData)

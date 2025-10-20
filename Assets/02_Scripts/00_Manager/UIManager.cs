@@ -65,7 +65,7 @@ public class UIManager : MonoBehaviour
     {
 
 
-        SkillBtn skillBtn = ObjectPool.Instance.GetFromPool(_skillBtnPrefab, _skillBtnPrefab.transform.position, parentContent).GetComponent<SkillBtn>();
+        SkillBtn skillBtn = ObjectPool.Instance.GetFromPool(_skillBtnPrefab, _skillBtnPrefab.transform.position, _skillBtnPrefab.transform.rotation, parentContent).GetComponent<SkillBtn>();
         skillBtn.Initialize();
         skillBtn.SetSkillInfo(skillData);
         skillBtn.GetComponent<Button>().onClick.AddListener(() => OnClick_SkillListBtn(skillBtn));
@@ -116,7 +116,7 @@ public class UIManager : MonoBehaviour
 
     public SkillBtn MakeSkillBtn()
     {
-        SkillBtn skillBtn = ObjectPool.Instance.GetFromPool(_skillChooseBtnPrefab, Vector3.zero, _parentPanel.transform).GetComponent<SkillBtn>();
+        SkillBtn skillBtn = ObjectPool.Instance.GetFromPool(_skillChooseBtnPrefab, Vector3.zero, _skillChooseBtnPrefab.transform.rotation, _parentPanel.transform).GetComponent<SkillBtn>();
         skillBtn.Initialize();
         return skillBtn;
     }
