@@ -283,6 +283,10 @@ PrefabInstance:
       value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 3156450904419965930, guid: 8fb7464f2132e3543ac3eafe0c4e1fcb, type: 3}
+      propertyPath: _characterController
+      value: 
+      objectReference: {fileID: 1942256305}
+    - target: {fileID: 3156450904419965930, guid: 8fb7464f2132e3543ac3eafe0c4e1fcb, type: 3}
       propertyPath: _interactableGuideView
       value: 
       objectReference: {fileID: 259508391}
@@ -985,7 +989,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3394557516210102622, guid: feade145562d1894ba8ad4482705b1ae, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8466363583261330775, guid: feade145562d1894ba8ad4482705b1ae, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1194,6 +1198,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eccc1521f13268c4f884417658d86ae3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!143 &1942256305 stripped
+CharacterController:
+  m_CorrespondingSourceObject: {fileID: 8109413294957839125, guid: 8fb7464f2132e3543ac3eafe0c4e1fcb, type: 3}
+  m_PrefabInstance: {fileID: 517634069}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2024873965
 GameObject:
   m_ObjectHideFlags: 0

@@ -21,10 +21,10 @@ public class ResourceManager : MonoBehaviour
     {
         DoorPrefab = _doorPrefab != null
             ? _doorPrefab
-            : Resources.Load<GameObject>("Prefabs/Door"); // 경로 규칙 예시
+            : Resources.Load<GameObject>(Constants.RESOURCES_PATH_DOOR_PREFAB); // 경로 규칙 예시
 
-        PlayerWeaponSets = Resources.LoadAll<PlayerWeaponSet>("PlayerWeaponSets");
-        RoomDataSOs = Resources.LoadAll<RoomDataSO>("RoomDataSOs");
+        PlayerWeaponSets = Resources.LoadAll<PlayerWeaponSet>(Constants.RESOURCES_PATH_PLAYER_WEAPONSET);
+        RoomDataSOs = Resources.LoadAll<RoomDataSO>(Constants.RESOURCES_PATH_ROOMDATASO);
 
         // (선택) 간단한 검증 로그
         if (DoorPrefab == null)
