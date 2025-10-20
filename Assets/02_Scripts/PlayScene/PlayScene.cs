@@ -28,7 +28,8 @@ public class PlayScene : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.F3))
         {
-            GameManager.Instance.PoolManager.GetFromPool("Prefabs/Bullet/Bullet");
+
+            GameObject obj=  GameManager.Instance.PoolManager.GetFromPool("Prefabs/Bullet/Bullet");
         }
     }
 }

@@ -8,6 +8,7 @@ public class Bullet : PoolableObject
 {
     [SerializeField] float _moveSpeed = 50f; // 탄환의 이동 속도
     [SerializeField] float _lifeTime = 2f;   // 탄환의 생존 시간
+    [SerializeField] Poolable _bulletPoolable;
 
     public event Action OnLifeTimeExpired; // 생존 시간 만료 이벤트
 
@@ -20,7 +21,7 @@ public class Bullet : PoolableObject
     {
         if(other.CompareTag(Constants.TAG_MONSTER))
         {
-            Destroy(gameObject);
+            _bulletPoolable.ReturnToPool();
         }
     }
 
@@ -36,6 +37,6 @@ public class Bullet : PoolableObject
 
     public void ReleaseObject()
     {
-        throw new NotImplementedException();
+        
     }
 }
