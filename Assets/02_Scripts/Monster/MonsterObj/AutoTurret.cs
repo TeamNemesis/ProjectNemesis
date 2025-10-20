@@ -3,6 +3,9 @@ using UnityEngine;
 
 public class AutoTurret : MonsterBase
 {
+
+    [SerializeField] float bulletLifeTime = 8f;
+
     [SerializeField]
     private enum State
     {
@@ -63,8 +66,7 @@ public class AutoTurret : MonsterBase
             TurretBullet turretBullet = bullet.GetComponent<TurretBullet>();
             if (turretBullet != null)
             {
-                turretBullet.SetTarget(targetTag);
-                turretBullet.SetDamage(attackDamage);
+                turretBullet.Initialize(targetTag, attackDamage, bulletLifeTime);
             }
             yield return new WaitForSeconds(attackDelay);
         }
