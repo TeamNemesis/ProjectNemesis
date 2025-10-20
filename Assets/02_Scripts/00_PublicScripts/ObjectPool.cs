@@ -128,7 +128,7 @@ public class ObjectPool : MonoBehaviour
     /// <summary>
     /// 풀에서 오브젝트 가져오기
     /// </summary>
-    public T GetFromPool<T>(PoolableObject poolable, Vector3 position, Transform parentTransform = null)
+    public GameObject GetFromPool(PoolableObject poolable, Vector3 position, Transform parentTransform = null)
     {
         GameObject prefabObject = poolable.gameObject;
         if (!availablePools.ContainsKey(prefabObject.name))
@@ -143,7 +143,7 @@ public class ObjectPool : MonoBehaviour
         if (availablePools[prefabObject.name].Count == 0)
         {
             Debug.LogWarning($"'{prefabObject.name}' 풀이 비어있습니다! 새로운 오브젝트를 생성합니다.");
-            return CreateNewObject(prefabObject, position,parentTransform).GetComponent<T>();
+            return CreateNewObject(prefabObject, position,parentTransform);
         }
 
         GameObject obj = availablePools[prefabObject.name][availablePools[prefabObject.name].Count - 1];
@@ -156,7 +156,7 @@ public class ObjectPool : MonoBehaviour
         obj.SetActive(true);
         inUsePools[prefabObject.name].Add(obj);
 
-        return obj.GetComponent<T>();
+        return obj;
     }
 
     /// <summary>
