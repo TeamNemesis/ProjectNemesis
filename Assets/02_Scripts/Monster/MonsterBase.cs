@@ -15,7 +15,16 @@ public class MonsterBase : CharacterModelBase
 
     [Header("Components")]
     [SerializeField] protected NavMeshAgent agent;
-    [SerializeField] protected Transform player;
+    [SerializeField] protected Transform _target;
+
+    public Transform GetTarget()
+    {
+        return _target;
+    }
+    public void SetTarget(Transform target)
+    {
+        _target = target;
+    }
 
 
     private void Start()
@@ -30,9 +39,9 @@ public class MonsterBase : CharacterModelBase
         agent = GetComponent<NavMeshAgent>();
         originalSpeed = agent.speed;
 
-        GameObject playerObj = GameObject.FindGameObjectWithTag(targetTag);
-        if (playerObj != null)
-            player = playerObj.transform;
+        GameObject targetObj = GameObject.FindGameObjectWithTag(targetTag);
+        if (targetObj != null)
+            _target = targetObj.transform;
 
         SetCurrentHp(maxHealth);
 
@@ -43,16 +52,22 @@ public class MonsterBase : CharacterModelBase
 
     protected bool CanSeePlayer()
     {
-        if (player == null) return false;
+        if (_target == null) return false;
 
-        Vector3 dir = (player.position - transform.position).normalized;
-        float dist = Vector3.Distance(transform.position, player.position);
+        Vector3 dir = (_target.position - transform.position).normalized;
+        float dist = Vector3.Distance(transform.position, _target.position);
+
+        // 혼란 상태면 거리만 체크 (시야 무시)
+        DebuffHandler debuffHandler = GetComponent<DebuffHandler>();
+        if (debuffHandler != null && debuffHandler.HasDebuff(Constants.DEBUFF_CONFUSION))
+        {
+            return true;  // 혼란 상태면 항상 true
+        }
 
         int mask = LayerMask.GetMask(targetTag, Constants.LAYER_MASK_WALL);
-
         if (Physics.Raycast(transform.position + Vector3.up * 0.3f, dir, out RaycastHit hit, dist, mask))
         {
-            if (hit.transform.CompareTag(targetTag))
+            if (hit.transform == _target)
             {
                 return true;
             }
@@ -63,7 +78,7 @@ public class MonsterBase : CharacterModelBase
 
     protected void LookAtPlayer()
     {
-        Vector3 dir = (player.position - transform.position).normalized;
+        Vector3 dir = (_target.position - transform.position).normalized;
         if (dir != Vector3.zero)
         {
             Quaternion targetRot = Quaternion.LookRotation(dir);

@@ -68,7 +68,6 @@ public static class Constants
 
     #endregion
 
-
     #region Drone
 
     /// <summary>

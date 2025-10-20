@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: -7441764321670143569}
   m_Layer: 0
   m_Name: NebulaVanguard
-  m_TagString: Untagged
+  m_TagString: Monster
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -137,9 +137,10 @@ MonoBehaviour:
   attackRange: 3.5
   detectionRange: 20
   attackDelay: 2
+  originalSpeed: 10
   targetTag: Player
   agent: {fileID: 0}
-  player: {fileID: 0}
+  target: {fileID: 0}
   _isAttacking: 0
   _box_Length: 3
   _box_Height: 3

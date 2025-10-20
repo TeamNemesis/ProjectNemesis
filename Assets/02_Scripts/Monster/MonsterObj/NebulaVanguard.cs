@@ -22,7 +22,7 @@ public class NebulaVanguard : MonsterBase
 
     private void Update()
     {
-        if (isDead || player == null) return;
+        if (isDead || _target == null) return;
         if (isStunned) return;
 
         if (CanSeePlayer())
@@ -55,7 +55,7 @@ public class NebulaVanguard : MonsterBase
     private void HandleIdle()
     {
         // 플레이어와 거리
-        float distance = Vector3.Distance(transform.position, player.position);
+        float distance = Vector3.Distance(transform.position, _target.position);
         if (distance <= detectionRange && CanSeePlayer())
         {
             currentState = State.Move;
@@ -63,8 +63,8 @@ public class NebulaVanguard : MonsterBase
     }
     private void HandleMove()
     {
-        if (player == null) return;
-        float distance = Vector3.Distance(transform.position, player.position);
+        if (_target == null) return;
+        float distance = Vector3.Distance(transform.position, _target.position);
         if (distance > detectionRange || !CanSeePlayer())
         {
             agent.ResetPath();
@@ -72,7 +72,7 @@ public class NebulaVanguard : MonsterBase
             return;
         }
 
-        agent.SetDestination(player.position);
+        agent.SetDestination(_target.position);
 
         if (distance <= attackRange && CanSeePlayer())
         {
@@ -83,10 +83,10 @@ public class NebulaVanguard : MonsterBase
 
     private IEnumerator PerformAttack()
     {
-        float distance = Vector3.Distance(transform.position, player.position);
+        float distance = Vector3.Distance(transform.position, _target.position);
         _isAttacking = true;
 
-        if (player != null && distance <= attackRange)
+        if (_target != null && distance <= attackRange)
         {
             // 몬스터 기준 중심 위치 설정
             Vector3 center = transform.position + transform.forward * (_box_Length / 2f);
@@ -106,7 +106,7 @@ public class NebulaVanguard : MonsterBase
                 if (target.TryGetComponent(out IDamageable playerHealth) && target.tag == targetTag)
                 {
                     yield return new WaitForSeconds(0.5f);
-                    float finalPlayerDistance = Vector3.Distance(transform.position, player.position);
+                    float finalPlayerDistance = Vector3.Distance(transform.position, base._target.position);
                     if (finalPlayerDistance <= attackRange)
                     {
                         if (playerHealth != null)

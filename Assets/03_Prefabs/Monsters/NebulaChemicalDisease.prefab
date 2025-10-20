@@ -125,7 +125,7 @@ GameObject:
   - component: {fileID: -4375606426315485317}
   m_Layer: 0
   m_Name: NebulaChemicalDisease
-  m_TagString: Untagged
+  m_TagString: Monster
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -246,9 +246,10 @@ MonoBehaviour:
   attackRange: 10
   detectionRange: 30
   attackDelay: 3
+  originalSpeed: 10
   targetTag: Player
   agent: {fileID: 0}
-  player: {fileID: 0}
+  target: {fileID: 0}
   _poisinFieldDuration: 5
   _poisinFieldRadius: 3
   _isAttacking: 0

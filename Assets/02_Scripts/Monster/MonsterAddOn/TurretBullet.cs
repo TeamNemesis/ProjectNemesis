@@ -5,10 +5,15 @@ public class TurretBullet : MonoBehaviour
     private float speed = 7f; // ÃÑ¾Ë ¼Óµµ
     private float lifeTime = 5f; // ÃÑ¾Ë ¼ö¸í
     private float damage;
+    private string targetTag;
 
     public void SetDamage(float damage)
     {
         this.damage = damage;
+    }
+    public void SetTarget(string targetTag)
+    {
+        this.targetTag = targetTag;
     }
     private void Start()
     {
@@ -20,7 +25,7 @@ public class TurretBullet : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag(targetTag))
         {
             IDamageable damageable = other.GetComponent<IDamageable>();
             if (damageable != null)

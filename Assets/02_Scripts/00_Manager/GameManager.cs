@@ -73,7 +73,7 @@ public class GameManager : MonoBehaviour
             _uiManager.name = "UIManager";
             
         }
-        _uiManager.InitializeManger();
+        _uiManager.InitializeManager();
     }
 
     [SerializeField] ResourceManager _resourceManager;      // 리소스 매니저
