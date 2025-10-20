@@ -40,4 +40,19 @@ public class Poolable : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
+    public void Initialize()
+    {
+        
+    }
+
+    public GameObject GetGameObject()
+    {
+        return gameObject;
+    }
+
+    public void ReleaseObject()
+    {
+        
+    }
 }

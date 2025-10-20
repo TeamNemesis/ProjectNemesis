@@ -1,4 +1,5 @@
 ﻿using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
 /// <summary>
@@ -54,7 +55,7 @@ public class Player : MonoBehaviour
         _mover.Initialize(_characterController);
         _dasher.Initialize(_characterController);
         _weaponController.Initialize();
-
+        
         _interactionController.Initialize();
         _interactableGuideView.Initialize();
 
@@ -83,11 +84,18 @@ public class Player : MonoBehaviour
     /// 컴포넌트들을 무기에 맞게 변경한다.
     /// </summary>
     /// <param name="weaponType"></param>
-    void OnWeaponChanged(WeaponType weaponType)
+    void OnWeaponChanged(Weapon weapon)
     {
-        _currentWeaponSet = GameManager.Instance.DataManager.WeaponSetMap[weaponType];
+        _currentWeaponSet = GameManager.Instance.DataManager.WeaponSetMap[weapon.WeaponType];
 
         _normalAttacker = _currentWeaponSet.NormalAttacker;
+        if (weapon.WeaponType == WeaponType.Rifle)
+        {
+            PlayerRifleNormalAttacker playerRifleNormalAttacker = _normalAttacker as PlayerRifleNormalAttacker;
+            RifleWeapon rifleWeapon = weapon as RifleWeapon;
+
+            playerRifleNormalAttacker.Initialize(rifleWeapon.FirePos);
+        }
         //_grenadeAttacker = _currentWeaponSet.GrenadeAttacker;
         _specialAttacker = _currentWeaponSet.SpecialAttacker;
 
@@ -104,6 +112,7 @@ public class Player : MonoBehaviour
     {
         _mover.Move(moveDir);
         _animator.OnMove(moveDir.magnitude);
+        
     }
 
     /// <summary>
@@ -112,6 +121,8 @@ public class Player : MonoBehaviour
     public void Dash()
     {
         _dasher.Dash(transform.transform.forward, 5f, 0.2f);
+        _animator.OnDash();
+
     }
 
     /// <summary>
@@ -121,6 +132,7 @@ public class Player : MonoBehaviour
     {
         _normalAttacker.Attack();
         _animator.OnNormalAttack();
+
     }
 
     /// <summary>
@@ -129,6 +141,7 @@ public class Player : MonoBehaviour
     public void GrenadeAttack()
     {
         _grenadeAttacker.GrenadeAttack();
+        
     }
 
     /// <summary>
@@ -137,6 +150,7 @@ public class Player : MonoBehaviour
     public void SpecialAttack()
     {
         _specialAttacker.SpecialAttack();
+
     }
 
     /// <summary>

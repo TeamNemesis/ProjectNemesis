@@ -130,9 +130,11 @@ public class ObjectPool : MonoBehaviour
     /// </summary>
     public GameObject GetFromPool(PoolableObject poolable, Vector3 position,Quaternion rotation, Transform parentTransform = null)
     {
+        Debug.Log("Get");
         GameObject prefabObject = poolable.gameObject;
         if (!availablePools.ContainsKey(prefabObject.name))
         {
+            Debug.Log("available");
             availablePools.Add(prefabObject.name, new List<GameObject>());
             if (!inUsePools.ContainsKey(prefabObject.name))
             {
@@ -154,6 +156,14 @@ public class ObjectPool : MonoBehaviour
         {
             obj.transform.SetParent(parentTransform);
         }
+        
+        if (poolable is IInitializePoolable)
+        {
+        Debug.Log(poolable is IInitializePoolable);
+            IInitializePoolable initializePoolable = poolable as IInitializePoolable;
+            initializePoolable.Initialize();
+        }
+                
         obj.SetActive(true);
         inUsePools[prefabObject.name].Add(obj);
 

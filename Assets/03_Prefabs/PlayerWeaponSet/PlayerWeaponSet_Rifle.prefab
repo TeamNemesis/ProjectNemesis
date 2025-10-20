@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5790800955275035744}
-  - component: {fileID: 7334192657205155511}
   - component: {fileID: 4811750245455790356}
+  - component: {fileID: 7334192657205155511}
   m_Layer: 0
   m_Name: PlayerWeaponSet_Rifle
   m_TagString: Untagged
@@ -33,18 +33,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7334192657205155511
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8591027014455789198}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d275a53a0d5f21747b98724b7c533980, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &4811750245455790356
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -57,3 +45,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c6e8c783a2fe7744682b0e87d671e469, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &7334192657205155511
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8591027014455789198}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d275a53a0d5f21747b98724b7c533980, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _firePoint: {fileID: 0}
+  _bulletPrefab: {fileID: -8901218431766360776, guid: 753ae3df63cb2b34886c16993b63cd3a, type: 3}

@@ -27,7 +27,9 @@ public class SkillManager : MonoBehaviour
     public Skill_Mutant skill_Mutant { get { return _skill_Mutant; }}
     #endregion
 
+    Player _player;
 
+    public Player Player => _player;
      
 
     #region reinforce
