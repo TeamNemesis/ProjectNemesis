@@ -159,10 +159,9 @@ public class ObjectPool : MonoBehaviour
         
         if (poolable is IInitializePoolable)
         {
-        Debug.Log(poolable is IInitializePoolable);
-            IInitializePoolable initializePoolable = poolable as IInitializePoolable;
+            IInitializePoolable initializePoolable = obj.GetComponent<PoolableObject>() as IInitializePoolable;
             initializePoolable.Initialize();
-        }
+        } 
                 
         obj.SetActive(true);
         inUsePools[prefabObject.name].Add(obj);
@@ -212,12 +211,21 @@ public class ObjectPool : MonoBehaviour
     public void ReleaseToPoolByInterface(PoolableObject poolable)
     {
         GameObject obj = poolable.gameObject;
+
+        if(poolable is IReleasePoolable)
+        {
+						IReleasePoolable releaseObject = obj.GetComponent<PoolableObject>() as IReleasePoolable;
+						releaseObject.ReleaseObjectPool();
+				}
+
         if (!inUsePools.ContainsKey(obj.name))
         {
             Debug.LogWarning($"'{obj.name}' 풀에 반환할 수 없습니다. 풀이 존재하지 않습니다.");
             Destroy(obj);
             return;
         }
+
+        
 
         int index = inUsePools[obj.name].IndexOf(obj);
         if (index >= 0)
