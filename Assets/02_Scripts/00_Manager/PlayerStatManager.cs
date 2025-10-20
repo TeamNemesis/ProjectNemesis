@@ -31,8 +31,55 @@ public class PlayerStatManager : MonoBehaviour
     /// <summary>
     /// 원거리 일반 공격력
     /// </summary>
-    private float RifleAttackDamage;
-    #endregion 
+    private float _playerRifleAttackDamage;
+    public float playerRifleAttackDamage;
+    public void AddPlayerRifleAttackDamage(float plusPlayerRifleAttack)
+    {
+        _playerRifleAttackDamage += plusPlayerRifleAttack;  
+    }
+
+    /// <summary>
+    /// 원거리 특수 공격력
+    /// </summary>
+    private float _playerRifleSPAttackDamage;
+    public float playerRifleSPAttackDamage;
+    public void AddPlayerRifleSPAttackDamage(float plusPlayerRifleSPAttackDamage)
+    {
+        _playerRifleSPAttackDamage += plusPlayerRifleSPAttackDamage;
+    }
+
+    /// <summary>
+    /// 플레이어 블렛 이동 속도
+    /// </summary>
+    private float _playerBulletMoveSpeed;
+    public float playerBulletMoveSpeed;
+    public void AddPlayerBulletMoveSpeed(float plusPlayerBulletMoveSpeed)
+    {
+        _playerBulletMoveSpeed += plusPlayerBulletMoveSpeed;
+    }
+
+    /// <summary>
+    /// 플레이어 블렛 지속 시간
+    /// </summary>
+    private float _playerBulletLifeTime;
+    public float playerBulletLifeTime;
+    public void AddPlayerBulletLifeTime(float plusPlayerBulletLifeTime)
+    {
+        _playerBulletLifeTime += plusPlayerBulletLifeTime;
+    }
+
+    #endregion
+    #region 특수장비
+    /// <summary>
+    /// 특수장비 일반 공격력
+    /// </summary>
+    private float _playerHackAttackDamage;
+    public float playerHackAttackDamage;
+    public void AddPlayerHackAttackDamage(float plusPlayerHackAttackDamage)
+    {
+        _playerHackAttackDamage += plusPlayerHackAttackDamage;
+    }
+    #endregion
     /// <summary>
     /// 플레이어 일반 공격 데미지 계수
     /// </summary>
@@ -42,6 +89,8 @@ public class PlayerStatManager : MonoBehaviour
     {
         _playerAttackDamage += plusDamage;
     }
+
+
 
     /// <summary>
     /// 플레이어 유탄 공격 데미지 계수
