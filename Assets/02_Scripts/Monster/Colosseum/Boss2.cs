@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 using static UnityEngine.LightAnchor;
 
-public class SecurityDogEModel : MonsterBase
+public class Boss2 : MonsterBase
 {
     [SerializeField]
     private enum State
@@ -21,7 +21,9 @@ public class SecurityDogEModel : MonsterBase
     [SerializeField] private float currentCoolTime = 0;
     [SerializeField] private Vector3 jumpDirection;
     [SerializeField] private float jumpTimer;
-    
+
+    [SerializeField] private GameObject poisonfield;
+
 
     [SerializeField]
     private State currentState = State.Idle;
@@ -90,48 +92,23 @@ public class SecurityDogEModel : MonsterBase
 
     private IEnumerator PerformAttack()
     {
+        yield return null;
         _isAttacking = true;
-        float distance = Vector3.Distance(transform.position, _target.position);
 
-        if (distance < attackRange)
-        {
-            //점프 준비
-            agent.isStopped = true;
-            yield return new WaitForSeconds(jumpPrepareTime);
-
-            jumpDirection = (_target.position - transform.position).normalized;
-
-            jumpTimer = 0f;
-
-            agent.enabled = false;
-
-            while (jumpTimer < jumpDuration && _isAttacking)
-            {
-                jumpTimer += Time.deltaTime;
-                transform.position += jumpDirection * jumpSpeed * Time.deltaTime;
-                yield return null;
-            }
-
-            currentCoolTime = 0f;
-            agent.enabled = true;
-            if (agent.enabled && agent.isOnNavMesh)
-            {
-                agent.isStopped = false;
-            }
-        }
         _isAttacking = false;
         currentState = State.Move;
     }
 
-    private void OnTriggerEnter(Collider other)
+
+
+    private IEnumerator Pattern1()
     {
-        if (_isAttacking && other.CompareTag(targetTag))
+        if (_target != null)
         {
-            var playerHealth = other.GetComponent<PlayerHealth>();
-            if (playerHealth != null)
-            {
-                playerHealth.TakeDamage(attackDamage);
-            }
+            Transform targetPos = _target.transform;
+
+            
         }
+        yield return null;
     }
 }

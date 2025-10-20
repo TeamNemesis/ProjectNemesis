@@ -14,7 +14,7 @@ public class AutoTurret : MonsterBase
     [SerializeField] private bool _isAttacking = false;
 
     [Header("TurretBulletPrefab"), SerializeField]
-    private GameObject turretBulletPrefab; // ÅÍ·¿ ÃÑ¾Ë ÇÁ¸®Æé
+    private PoolableObject turretbullet; // ÅÍ·¿ ÃÑ¾Ë ÇÁ¸®Æé
 
     [SerializeField]
     private State currentState = State.Idle;
@@ -58,11 +58,12 @@ public class AutoTurret : MonsterBase
 
         if (_target != null && Vector3.Distance(transform.position, _target.position) <= attackRange)
         {
-
-            GameObject bullet = Instantiate(turretBulletPrefab, transform.position + transform.forward, transform.rotation);
+            GameObject bullet = ObjectPool.Instance.GetFromPool(turretbullet, transform.position);
+            bullet.transform.rotation = transform.rotation;
             TurretBullet turretBullet = bullet.GetComponent<TurretBullet>();
             if (turretBullet != null)
             {
+                turretBullet.SetTarget(targetTag);
                 turretBullet.SetDamage(attackDamage);
             }
             yield return new WaitForSeconds(attackDelay);
