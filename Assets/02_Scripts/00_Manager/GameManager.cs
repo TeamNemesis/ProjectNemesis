@@ -19,24 +19,25 @@ public class GameManager : MonoBehaviour
             // 만약 GameManager.Instance로 접근했는데 없다면
             if (_instance == null)
             {
-                Debug.Log("Instance가 없습니다");
                 // 씬에서 GameManager를 찾아보고
                 _instance = FindAnyObjectByType<GameManager>();
-                Debug.Log("씬에서 GameManager 탐색 시도");
                 // 그래도 없다면
                 if (_instance == null)
                 {
-                    Debug.Log("씬에 GameManager가 없습니다");
                     // 게임오브젝트를 GameManager라는 이름으로 새로 만들고
                     GameObject obj = new GameObject("GameManager");
-                    Debug.Log("GameManager 생성");
                     // GameManager 컴포넌트를 추가 후 _instance에 할당
                     _instance = obj.AddComponent<GameManager>();
-                    Debug.Log("GameManager 컴포넌트 추가");
                     _instance._resourceManager = obj.AddComponent<ResourceManager>();
+                    _instance._interactableManager = obj.AddComponent<InteractableManager>();
+                    _instance._dataManager = obj.AddComponent<DataManager>();
+                    _instance._poolManager = obj.AddComponent<PoolManager>();
+
                     //_instance._skillManger = obj.AddComponent<SkillManager>();
 
                     _instance._resourceManager.Initialize();
+                    _instance._dataManager.Initialize(_instance._resourceManager);
+                    _instance._poolManager.Initialze(_instance._resourceManager);
                     //_instance._skillManger.InitializeSkillManager();
 
                     // 씬 전환시 파괴되지 않도록 설정
@@ -81,6 +82,15 @@ public class GameManager : MonoBehaviour
     [SerializeField] ResourceManager _resourceManager;      // 리소스 매니저
 
     public ResourceManager ResourceManager => _resourceManager;
+
+    [SerializeField] InteractableManager _interactableManager; // 상호작용 매니저
+    public InteractableManager InteractableManager => _interactableManager;
+
+    [SerializeField] DataManager _dataManager;             // 데이터 매니저
+    public DataManager DataManager => _dataManager;
+
+    [SerializeField] PoolManager _poolManager;                 // 풀 매니저
+    public PoolManager PoolManager => _poolManager;
 
     /// <summary>
     /// 스킬 매니저

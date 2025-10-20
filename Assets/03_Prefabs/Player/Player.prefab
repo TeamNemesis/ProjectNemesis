@@ -16314,12 +16314,12 @@ GameObject:
   - component: {fileID: 7213136122546190982}
   - component: {fileID: 8109413294957839125}
   - component: {fileID: 3156450904419965930}
-  - component: {fileID: 2279772619319925652}
   - component: {fileID: 1408123802961593971}
   - component: {fileID: 7485950795144225414}
   - component: {fileID: 4078730498369923449}
   - component: {fileID: 5043909572372578531}
   - component: {fileID: 2917658685428383882}
+  - component: {fileID: 5841804461378878716}
   - component: {fileID: 649767713196792657}
   m_Layer: 7
   m_Name: Player
@@ -16409,38 +16409,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eccc1521f13268c4f884417658d86ae3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _model: {fileID: 2279772619319925652}
   _mover: {fileID: 1408123802961593971}
   _dasher: {fileID: 7485950795144225414}
   _weaponController: {fileID: 4078730498369923449}
   _animator: {fileID: 5043909572372578531}
   _grenadeAttacker: {fileID: 2917658685428383882}
+  _interactionController: {fileID: 5841804461378878716}
   _interactableDetector: {fileID: 649767713196792657}
   _interactableGuideView: {fileID: 0}
   _isInteractable: 0
   _normalAttacker: {fileID: 0}
   _specialAttacker: {fileID: 0}
   _currentWeaponSet: {fileID: 0}
---- !u!114 &2279772619319925652
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8951883238645882597}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4dd914b0022246a47a8ce199a9933656, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 100
-  currentHealth: 0
-  _moveSpeed: 5
-  isStunned: 0
-  isPushed: 0
-  isDead: 0
-  debuffHandler: {fileID: 0}
-  currentTarget: {fileID: 0}
 --- !u!114 &1408123802961593971
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16454,7 +16434,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _characterController: {fileID: 8109413294957839125}
-  _moveSpeed: 5
+  _moveSpeed: 20
 --- !u!114 &7485950795144225414
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16506,6 +16486,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1e11405ac3bb6b34d8bf1bbf8d173135, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &5841804461378878716
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8951883238645882597}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db5986ff9be9c45429983a1b7127e691, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &649767713196792657

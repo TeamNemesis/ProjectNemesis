@@ -203,5 +203,11 @@ public static class Constants
 
     #region ResourcesPath
     public static string RESOURCES_PATH_PLAYER_WEAPONSET = "ScriptableObjects/Player/PlayerWeaponSets";
+
+    #region Map
+    public static string RESOURCES_PATH_ROOMDATASO = "ScriptableObjects/Map/Rooms";
+    public static string RESOURCES_PATH_DOOR_PREFAB = "Prefabs/Map/Doors/Door";
+    #endregion
+
     #endregion
 }

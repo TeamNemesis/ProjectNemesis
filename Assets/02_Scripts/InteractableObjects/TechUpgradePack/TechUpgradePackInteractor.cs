@@ -11,7 +11,7 @@ public class TechUpgradePackInteractor : InteractableObject
 
     public override event Action<IInteractable> OnInteracted;
 
-    public override void Interact(Transform subject)
+    public override void StartInteract(Transform subject)
     {
         Debug.Log("업그레이드 팩과 상호작용 함");
     }

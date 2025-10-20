@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 /// <summary>
 /// 플레이어의 주요 컴포넌트들을 관리하는 최상위 클래스
@@ -6,7 +7,8 @@
 public class Player : MonoBehaviour
 {
     [Header("----- 컴포넌트 참조 -----")]
-    [SerializeField] PlayerModel _model;                       // 플레이어 모델 컴포넌트
+    //[SerializeField] PlayerModel _model;                       // 플레이어 모델 컴포넌트
+    [SerializeField] CharacterController _characterController; // 플레이어 캐릭터 컨트롤러 컴포넌트
     [SerializeField] PlayerMover _mover;                       // 플레이어 이동 컴포넌트
     [SerializeField] PlayerDasher _dasher;                     // 플레이어 대시 컴포넌트
     [SerializeField] PlayerWeaponController _weaponController; // 플레이어 무기 관리 컴포넌트
@@ -17,6 +19,7 @@ public class Player : MonoBehaviour
     // [SerializeField] PlayerView _view;                         // 플레이어 UI 컴포넌트
 
     [Header("----- 상호작용 컴포넌트 -----")]
+    [SerializeField] InteractionController _interactionController;      //상호작용 컨트롤러
     [SerializeField] InteractableDetector _interactableDetector;        //상호작용 감지기
     [SerializeField] InteractionGuideView _interactableGuideView;       //상호작용 안내 뷰
 
@@ -30,6 +33,10 @@ public class Player : MonoBehaviour
     [Header("----- 읽기 전용 -----")]
     [SerializeField] PlayerWeaponSet _currentWeaponSet;        // 현재 플레이어 무기 세트
 
+    // public event Action<RoomInfo> OnDoorInteract;
+    // 문이 상호작용 되었을 때 문과 관련된쪽에서 이벤트를 발행하고 있고
+    // 그 이벤트를 받아서 문이나 방을 생성하고 있으므로 이건 중복 발행하지 않음
+
     /// <summary>
     /// Player 초기화 함수
     /// </summary>
@@ -38,19 +45,37 @@ public class Player : MonoBehaviour
 
 
         _weaponController.OnWeaponChanged += OnWeaponChanged;
-
+        
+        _interactionController.OnWeaponInteract += OnWeaponInteracted;
+        _interactionController.OnDoorInteract += OnDoorInteracted;
         _interactableDetector.OnDetected += InteractableDetected;
         _interactableDetector.OnMissed += InteractableMissed;
 
+        _mover.Initialize(_characterController);
+        _dasher.Initialize(_characterController);
+        _weaponController.Initialize();
+
+        _interactionController.Initialize();
         _interactableGuideView.Initialize();
 
         //_model.Initialize();
-        _weaponController.Initialize();
+       
     }
 
     public void OnWeaponInteracted(WeaponType newWeaponType)
     {
         _weaponController.OnWeaponInteracted(newWeaponType);
+    }
+
+    public void OnDoorInteracted(RoomInfo roomInfo)
+    {
+        if(roomInfo == null)
+        {
+            Debug.LogError("Player.OnDoorInteracted 호출 시 roomInfo가 null입니다! 호출자 스택을 확인하세요.");
+            return;
+        }
+        Debug.Log(roomInfo.RoomType + " 방으로 가는 문과 상호작용 함");
+        // OnDoorInteract?.Invoke(roomInfo);
     }
 
     /// <summary>
@@ -60,7 +85,7 @@ public class Player : MonoBehaviour
     /// <param name="weaponType"></param>
     void OnWeaponChanged(WeaponType weaponType)
     {
-        _currentWeaponSet = GameManager.Instance.ResourceManager.PlayerWeaponSetMap[weaponType];
+        _currentWeaponSet = GameManager.Instance.DataManager.WeaponSetMap[weaponType];
 
         _normalAttacker = _currentWeaponSet.NormalAttacker;
         //_grenadeAttacker = _currentWeaponSet.GrenadeAttacker;
@@ -86,7 +111,7 @@ public class Player : MonoBehaviour
     /// </summary>
     public void Dash()
     {
-        _dasher.Dash();
+        _dasher.Dash(transform.transform.forward, 5f, 0.2f);
     }
 
     /// <summary>
