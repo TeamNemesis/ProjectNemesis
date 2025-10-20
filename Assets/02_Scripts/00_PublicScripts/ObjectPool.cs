@@ -128,7 +128,7 @@ public class ObjectPool : MonoBehaviour
     /// <summary>
     /// 풀에서 오브젝트 가져오기
     /// </summary>
-    public GameObject GetFromPool(PoolableObject poolable, Vector3 position, Transform parentTransform = null)
+    public GameObject GetFromPool(PoolableObject poolable, Vector3 position,Quaternion rotation, Transform parentTransform = null)
     {
         GameObject prefabObject = poolable.gameObject;
         if (!availablePools.ContainsKey(prefabObject.name))
@@ -143,12 +143,13 @@ public class ObjectPool : MonoBehaviour
         if (availablePools[prefabObject.name].Count == 0)
         {
             Debug.LogWarning($"'{prefabObject.name}' 풀이 비어있습니다! 새로운 오브젝트를 생성합니다.");
-            return CreateNewObject(prefabObject, position,parentTransform);
+            return CreateNewObject(prefabObject, position,rotation,parentTransform);
         }
 
         GameObject obj = availablePools[prefabObject.name][availablePools[prefabObject.name].Count - 1];
         availablePools[prefabObject.name].RemoveAt(availablePools[prefabObject.name].Count - 1);
         obj.transform.position = position;
+        obj.transform.rotation = rotation;
         if(parentTransform!=null)
         {
             obj.transform.SetParent(parentTransform);
@@ -162,7 +163,7 @@ public class ObjectPool : MonoBehaviour
     /// <summary>
     /// 풀이 비어있을 때 새로운 오브젝트 생성
     /// </summary>
-    private GameObject CreateNewObject(GameObject prefabObject, Vector3 position, Transform parentTransform = null)
+    private GameObject CreateNewObject(GameObject prefabObject, Vector3 position,Quaternion rotation, Transform parentTransform = null)
     {
         GameObject newObj;
         // 새 객체 생성
@@ -186,6 +187,7 @@ public class ObjectPool : MonoBehaviour
         }
 
         newObj.transform.position = position;
+        newObj.transform.rotation = rotation;
 
         newObj.SetActive(true);
         inUsePools[prefabObject.name].Add(newObj);

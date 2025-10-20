@@ -24,10 +24,6 @@ public class PoisonDash : AreaDamageBase
         StartCoroutine(ReleaseCoroutine());
     }
 
-    public void ReleaseObject()
-    {
-
-    }
 
     public override void ActiveSkill(Transform target)
     {

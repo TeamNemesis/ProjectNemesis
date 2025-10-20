@@ -504,7 +504,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -841,6 +841,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _resourceManager: {fileID: 0}
+  _interactableManager: {fileID: 0}
+  _dataManager: {fileID: 0}
+  _poolManager: {fileID: 0}
   _skillManger: {fileID: 0}
   _uiManager: {fileID: 0}
   _player: {fileID: 1850715906}
