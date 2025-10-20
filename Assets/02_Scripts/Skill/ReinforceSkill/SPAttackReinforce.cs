@@ -20,15 +20,15 @@ public class Skill_One_SPAttack : ActiveTech
     {
         // 공격 적중 시 이벤트에 추가
         base.Activate(skillManager, player);
-        _AttackTry = () => AttackTry(player);
+        _AttackTry = () => ActiveTry(player);
         player.SPAttackTry += _AttackTry;
         player.SPAttackHit += HitEnemy;
        
     }
-    public override void Deactivate(PlayerModel player)
+    public override void Deactivate(PlayerModel player,bool isSameSkill)
     {
         // 리스트 제거
-        base.Deactivate(player);
+        base.Deactivate(player, isSameSkill);
         // 이벤트 해제
         player.SPAttackTry -= _AttackTry;
 				player.SPAttackHit -= HitEnemy;
@@ -39,7 +39,7 @@ public class Skill_One_SPAttack : ActiveTech
     /// <summary>
     /// 공격 시도 시 변수 초기화
     /// </summary>
-    public override void AttackTry(PlayerModel player)
+    public override void ActiveTry(PlayerModel player)
     {
         isHit = false;
     }
@@ -92,10 +92,10 @@ public class Skill_Two_SPAttack : ActiveTech
         // player.playerSPAttack = (특수 공격 증가 식)
         
     }
-    public override void Deactivate(PlayerModel player)
+    public override void Deactivate(PlayerModel player, bool isSameSkill)
     {
         // 리스트 제거
-        base.Deactivate(player);
+        base.Deactivate(player,isSameSkill);
         // 이벤트 해제
         player.playerAttack = originalSPAttack;
 

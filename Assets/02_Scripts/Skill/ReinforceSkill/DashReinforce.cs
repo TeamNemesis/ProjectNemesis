@@ -7,41 +7,47 @@ using UnityEngine;
 public class Skill_One_Dash : ActiveTech
 {
 
-		public override event Action OnTechUsed;
+    public override event Action OnTechUsed;
 
-		/// <summary>
-		/// 대쉬 시작 독 프리팹
-		/// </summary>
-		[SerializeField]
+    /// <summary>
+    /// 대쉬 시작 독 프리팹
+    /// </summary>
+    [SerializeField]
+    private PoisonDash _poisonDashPrefab;
+
+    public override void Activate(SkillManager skillManager, PlayerModel player)
+    {
+        if(_poisonDashPrefab == null)
+        {
+            _poisonDashPrefab = Resources.Load<PoisonDash>("Prefabs/Skill/SkillObject/Skill_One/PoisonDash");
+        }
+        // 공격 적중 시 이벤트에 추가
+        base.Activate(skillManager, player);
+        // 대쉬 공격력 설정
+        _poisonDashPrefab.SetDashDamage((int)(skillData.skillLevel * skillData.skillLevelValue_1 + skillData.skillBaseValue_1));
+        //TODO 대쉬 입력 시 이벤트에 연결
+
+    }
+    public override void Deactivate(PlayerModel player, bool isSameSkill)
+    {
+        // 리스트 제거
+        base.Deactivate(player, isSameSkill);
+        // 이벤트 해제
+        //TODO 대쉬 입력 시 이벤트에 해제
+
+    }
+
+    public override void ActiveTry(PlayerModel player)
+    {
+        Vector3 position = player.transform.position;
+        position.y = 0;
+        ObjectPool.Instance.GetFromPool<PoisonDash>(_poisonDashPrefab,position);
+    }
 
 
-		public override void Activate(SkillManager skillManager, PlayerModel player)
-		{
-				// 공격 적중 시 이벤트에 추가
-				base.Activate(skillManager, player);
-				//TODO 대쉬 입력 시 이벤트에 연결
-
-		}
-		public override void Deactivate(PlayerModel player)
-		{
-				// 리스트 제거
-				base.Deactivate(player);
-				// 이벤트 해제
-				//TODO 대쉬 입력 시 이벤트에 해제
-
-		}
-
-		public override void AttackTry(PlayerModel player)
-		{
-				Vector3 position = player.transform.position;
-				position.y = 0;
-				//ObjectPool.Instantiate()
-		}
-
-
-		public Skill_One_Dash(SkillData skillData) : base(skillData)
-		{
-		}
+    public Skill_One_Dash(SkillData skillData) : base(skillData)
+    {
+    }
 }
 
 /// <summary>
@@ -49,42 +55,47 @@ public class Skill_One_Dash : ActiveTech
 /// </summary>
 public class Skill_Two_Dash : ActiveTech
 {
-		private DashReinforcePrefab _dashReinforcePrefab;
+    private DashReinforcePrefab _dashReinforcePrefab;
 
-		public Action _AttackTry;
+    /// <summary>
+    /// 대쉬 실행시 실행할 액션
+    /// </summary>
+    public Action _DashTry;
 
-		public override event Action OnTechUsed;
+    public override event Action OnTechUsed;
 
-		/// <summary>
-		/// 착탄 지점 독 프리팹
-		/// </summary>
-		[SerializeField]
+    /// <summary>
+    /// 착탄 지점 독 프리팹
+    /// </summary>
+    [SerializeField]
 
-		public override void Activate(SkillManager skillManager, PlayerModel player)
-		{
-				// 공격 적중 시 이벤트에 추가
-				base.Activate(skillManager, player);
-				_dashReinforcePrefab = Resources.Load<DashReinforcePrefab>("Prefabs/Skill/SkillObject/Skill_Two/SkillTwoDash");
-				_AttackTry = () => AttackTry(player);
-				//TODO 대쉬 시작 이벤트에 연결
+    public override void Activate(SkillManager skillManager, PlayerModel player)
+    {
+        // 공격 적중 시 이벤트에 추가
+        base.Activate(skillManager, player);
+        _dashReinforcePrefab = Resources.Load<DashReinforcePrefab>("Prefabs/Skill/SkillObject/Skill_Two/SkillTwoDash");
 
-		}
-		public override void Deactivate(PlayerModel player)
-		{
-				// 리스트 제거
-				base.Deactivate(player);
-				// 이벤트 해제
-				//TODO 대쉬 시작시 이벤트에서 해제 
-		}
+        _DashTry = () => ActiveTry(player);
+        //TODO 대쉬 시작 이벤트에 연결
 
-		public override void AttackTry(PlayerModel player)
-		{
-				Vector3 position = player.transform.position;
-				position.y = 0;
-				ObjectPool.Instance.GetFromPool<DashReinforcePrefab>(_dashReinforcePrefab, position);
-		}
+    }
+    public override void Deactivate(PlayerModel player, bool isSameSkill)
+    {
+        // 리스트 제거
+        base.Deactivate(player, isSameSkill);
+        // 이벤트 해제
 
-		public Skill_Two_Dash(SkillData skillData) : base(skillData)
-		{
-		}
+        //TODO 대쉬 시작시 이벤트에서 해제 
+    }
+
+    public override void ActiveTry(PlayerModel player)
+    {
+        Vector3 position = player.transform.position;
+        position.y = 0;
+        ObjectPool.Instance.GetFromPool<DashReinforcePrefab>(_dashReinforcePrefab, position);
+    }
+
+    public Skill_Two_Dash(SkillData skillData) : base(skillData)
+    {
+    }
 }

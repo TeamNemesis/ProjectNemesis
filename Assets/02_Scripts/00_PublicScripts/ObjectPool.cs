@@ -227,27 +227,9 @@ public class ObjectPool : MonoBehaviour
         }
     }
 
-		/// <summary>
-		/// 지속 시간 후 오브젝트 풀 해제 코루틴 호출
-		/// </summary>
-		/// <param name="time"></param>
-		/// <param name="poolable"></param>
-		public void ReleaseToPoolByTime(float time, IPoolable poolable)
-    {
-        StartCoroutine(ReleaseToPoolByTimeCoroutine(time, poolable));
-    }
+	
 
-    /// <summary>
-    /// 지속 시간 후 오브젝트 풀 해제 코루틴
-    /// </summary>
-    /// <param name="time"></param>
-    /// <param name="poolable"></param>
-    /// <returns></returns>
-    private IEnumerator ReleaseToPoolByTimeCoroutine(float time, IPoolable poolable)
-    {
-        yield return new WaitForSeconds(time);
-        ReleaseToPoolByInterface(poolable);
-    }
+  
     #endregion
     /// <summary>
     /// 풀에 오브젝트 반환 (사용 완료)

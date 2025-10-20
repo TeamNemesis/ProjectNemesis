@@ -55,9 +55,9 @@ public abstract class ActiveTech
     /// <summary>
     /// 기술이 제거될 때 호출되는 메서드
     /// </summary>
-    public virtual void Deactivate(PlayerModel player)
+    public virtual void Deactivate(PlayerModel player,bool isSameSkill)
     {
-        _skillData.RemoveList();
+        _skillData.RemoveList(isSameSkill);
         Debug.Log("스킬 교체" + _skillData.skillIdx);
     }
 
@@ -72,7 +72,7 @@ public abstract class ActiveTech
     /// <summary>
     /// 공격 시도 시 호출되는 메서드
     /// </summary>
-    public virtual void AttackTry(PlayerModel player)
+    public virtual void ActiveTry(PlayerModel player)
     {
 
     }

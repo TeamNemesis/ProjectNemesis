@@ -12,6 +12,11 @@ public class Skill_Two : SkillBase
     [SerializeField]
     private ExplosionDeath _explosionDeathPrefab;
 
+    /// <summary>
+    /// 전투스킬 강화, 모든 데미지 추가, 스킬 인덱스, 증가값
+    /// </summary>
+    public event Action<int,float> CombatEquipment;
+
     public override void ActivateSkill(SkillData choosedSkill)
     {
 
@@ -23,60 +28,64 @@ public class Skill_Two : SkillBase
                 ActiveTech skillAttack = new Skill_Two_Attack(choosedSkill);
                 if (_skillManager.attackTech != null)
                 {
-										if (_skillManager.attackTech.skillData.skillIdx != choosedSkill.skillIdx)
-										{
-												_skillManager.attackTech.Deactivate(player);
-										}
-								}
+                    _skillManager.attackTech.Deactivate(player, _skillManager.attackTech.skillData.skillIdx != choosedSkill.skillIdx);
+
+                }
                 skillAttack.Activate(_skillManager, player);
                 break;
 
-                // 폭발!
+            // 폭발!
             case 21:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
-								ActiveTech skillGrenade = new Skill_Two_Grenade(choosedSkill);
-								if (_skillManager.bombTech != null)
-								{
-										if (_skillManager.bombTech.skillData.skillIdx != choosedSkill.skillIdx)
-										{
-												_skillManager.bombTech.Deactivate(player);
-										}
-								}
-								skillGrenade.Activate(_skillManager, player);
-								break;
+                ActiveTech skillGrenade = new Skill_Two_Grenade(choosedSkill);
+                if (_skillManager.bombTech != null)
+                {
 
-                // 비밀무기
+                    _skillManager.bombTech.Deactivate(player, _skillManager.bombTech.skillData.skillIdx != choosedSkill.skillIdx);
+
+                }
+                skillGrenade.Activate(_skillManager, player);
+                break;
+
+            // 비밀무기
             case 22:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 ActiveTech skillSPAttack = new Skill_Two_SPAttack(choosedSkill);
                 if (_skillManager.attackTech != null)
                 {
-										if (_skillManager.attackTech.skillData.skillIdx != choosedSkill.skillIdx)
-										{
-												_skillManager.attackTech.Deactivate(player);
-										}
-								}
+
+                    _skillManager.skillTech.Deactivate(player, _skillManager.skillTech.skillData.skillIdx != choosedSkill.skillIdx);
+
+                }
                 skillSPAttack.Activate(_skillManager, player);
                 break;
 
-                // 깜짝선물
+            // 깜짝선물
             case 23:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
+                ActiveTech skillDashAttack = new Skill_Two_Dash(choosedSkill);
+                if (_skillManager.attackTech != null)
+                {
+
+                    _skillManager.dashTech.Deactivate(player, _skillManager.dashTech.skillData.skillIdx != choosedSkill.skillIdx);
+
+                }
+                skillDashAttack.Activate(_skillManager, player);
                 break;
 
-                // 전투장비 강화
+            // 전투장비 강화
             case 24:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
-
+                OnCombatEquipment(choosedSkill);
                 break;
 
-                // 폭격 클러스터
+            // 개선된 폭격
             case 25:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
 
                 break;
 
-                // 폭사
+            // 폭사
             case 26:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
 
@@ -85,14 +94,14 @@ public class Skill_Two : SkillBase
 
                 break;
 
-                // 기폭제
+            // 기폭제
             case 27:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 //TODO 범위 스킬 구현에 대한 계수 회의 필요
                 // 범위 증가
                 Constants.SKILL_EXTENT = 1.1f;
                 break;
-            
+
             default:
                 Debug.Log("에러, 배정되지 않은 idx");
                 break;
@@ -105,8 +114,23 @@ public class Skill_Two : SkillBase
     {
         Vector3 position = monsterTransform.position;
         position.y = 0;
-        ObjectPool.Instance.GetFromPool<ExplosionDeath>(_explosionDeathPrefab,position);
+        ObjectPool.Instance.GetFromPool<ExplosionDeath>(_explosionDeathPrefab, position);
     }
+    #endregion
+
+    #region 전투장비 강화
+
+    /// <summary>
+    /// 전투장비 이벤트 발행
+    /// </summary>
+    /// <param name="skillData"></param>
+    public void OnCombatEquipment(SkillData skillData)
+    {
+        float totalDamageUp = (float)(skillData.skillLevel * skillData.skillLevelValue_1 + skillData.skillBaseValue_1);
+        CombatEquipment?.Invoke(skillData.skillIdx,totalDamageUp);
+        
+    }
+
     #endregion
 }
 

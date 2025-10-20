@@ -25,10 +25,10 @@ public class Skill_One_Grenade : ActiveTech
 				player.GrenadeBomb += GrenadeBomb;
 
 		}
-		public override void Deactivate(PlayerModel player)
+		public override void Deactivate(PlayerModel player, bool isSameSkill)
 		{
 				// 리스트 제거
-				base.Deactivate(player);
+				base.Deactivate(player, isSameSkill);
 				// 이벤트 해제
 				//TODO 유탄 폭발시 이벤트에서 해제
 				player.GrenadeBomb -= GrenadeBomb;
@@ -54,7 +54,7 @@ public class Skill_One_Grenade : ActiveTech
 /// </summary>
 public class Skill_Two_Grenade : ActiveTech
 {
-
+	
 		public override event Action OnTechUsed;
 
 		private int originalGrenadeAttack = 100;
@@ -69,10 +69,10 @@ public class Skill_Two_Grenade : ActiveTech
 				// 공격 적중 시 이벤트에 추가
 
 		}
-		public override void Deactivate(PlayerModel player)
+	public override void Deactivate(PlayerModel player, bool isSameSkill)
 		{
 				// 리스트 제거
-				base.Deactivate(player);
+				base.Deactivate(player, isSameSkill);
 				// 유탄공격력 복귀
 				player.playerAttack = originalGrenadeAttack;
 	
