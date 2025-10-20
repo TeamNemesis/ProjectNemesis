@@ -23,4 +23,12 @@ public class PlayScene : MonoBehaviour
         _player.Initialize();
         _mapController.Initialize();
     }
+
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.F3))
+        {
+            GameManager.Instance.PoolManager.GetFromPool("Prefabs/Bullet/Bullet");
+        }
+    }
 }
