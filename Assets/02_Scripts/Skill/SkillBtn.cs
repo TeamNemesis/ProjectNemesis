@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SkillBtn : MonoBehaviour,IPoolable
+public class SkillBtn : PoolableObject
 {
 		/// <summary>
 		/// 배치된 스킬 데이터

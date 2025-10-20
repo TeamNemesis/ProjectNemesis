@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class DashReinforcePrefab : AreaDamageBase,IPoolable
+public class DashReinforcePrefab : AreaDamageBase
 {
 		public override void ActiveSkill(Transform target)
 		{

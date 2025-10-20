@@ -6,7 +6,7 @@ using UnityEngine;
 /// CheckTarget 구현됨, CheckTarget이 Target에게 ActiveSkill 실행
 /// ActiveSkill 구현 필요
 /// </summary>
-public class AreaDamageBase : MonoBehaviour
+public class AreaDamageBase : PoolableObject
 {
     /// <summary>
     /// 데미지 범위 넓이

@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// 비브르 모션 특수 공격 강화 시 유탄 공격 지점에 생성할 프리팹 클래스
 /// </summary>
-public class GrenadePoison : AreaDotBase,IPoolable
+public class GrenadePoison : AreaDotBase
 {
 		/// <summary>
 		/// 실행 중인 코루틴 목록

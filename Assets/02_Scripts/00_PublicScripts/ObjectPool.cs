@@ -128,9 +128,9 @@ public class ObjectPool : MonoBehaviour
     /// <summary>
     /// 풀에서 오브젝트 가져오기
     /// </summary>
-    public T GetFromPool<T>(IPoolable poolable, Vector3 position, Transform parentTransform = null)
+    public T GetFromPool<T>(PoolableObject poolable, Vector3 position, Transform parentTransform = null)
     {
-        GameObject prefabObject = poolable.GetGameObject();
+        GameObject prefabObject = poolable.gameObject;
         if (!availablePools.ContainsKey(prefabObject.name))
         {
             availablePools.Add(prefabObject.name, new List<GameObject>());
@@ -154,7 +154,6 @@ public class ObjectPool : MonoBehaviour
             obj.transform.SetParent(parentTransform);
         }
         obj.SetActive(true);
-        obj.GetComponent<IPoolable>().Initialize();
         inUsePools[prefabObject.name].Add(obj);
 
         return obj.GetComponent<T>();
@@ -189,7 +188,6 @@ public class ObjectPool : MonoBehaviour
         newObj.transform.position = position;
 
         newObj.SetActive(true);
-        newObj.GetComponent<IPoolable>().Initialize();
         inUsePools[prefabObject.name].Add(newObj);
         Debug.Log($"'{prefabObject.name}' 풀의 새로운 오브젝트가 생성되었습니다.");
         return newObj;
@@ -199,11 +197,9 @@ public class ObjectPool : MonoBehaviour
     /// 인터페이스를 이용한 오브젝트풀 해제
     /// </summary>
     /// <param name="poolable"></param>
-    public void ReleaseToPoolByInterface(IPoolable poolable)
+    public void ReleaseToPoolByInterface(PoolableObject poolable)
     {
-        poolable.ReleaseObject();
-
-        GameObject obj = poolable.GetGameObject();
+        GameObject obj = poolable.gameObject;
         if (!inUsePools.ContainsKey(obj.name))
         {
             Debug.LogWarning($"'{obj.name}' 풀에 반환할 수 없습니다. 풀이 존재하지 않습니다.");

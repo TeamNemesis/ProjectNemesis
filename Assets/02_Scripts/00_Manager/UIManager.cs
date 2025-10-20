@@ -85,7 +85,7 @@ public class UIManager : MonoBehaviour
     {
         foreach (Transform child in _parentContent.transform)
         {
-            IPoolable childPool = child.GetComponent<IPoolable>();
+            PoolableObject childPool = child.GetComponent<PoolableObject>();
             if (childPool != null)
             {
                 ObjectPool.Instance.ReleaseToPoolByInterface(childPool);
@@ -125,7 +125,7 @@ public class UIManager : MonoBehaviour
 
         foreach (Transform child in children)
         {
-            IPoolable childPool = child.GetComponent<IPoolable>();
+            PoolableObject childPool = child.GetComponent<PoolableObject>();
             if (childPool != null)
             {
                 ObjectPool.Instance.ReleaseToPoolByInterface(childPool);
@@ -143,7 +143,7 @@ public class UIManager : MonoBehaviour
         }
         foreach (Transform child in children)
         {
-            IPoolable childPool = child.GetComponent<IPoolable>();
+            PoolableObject childPool = child.GetComponent<PoolableObject>();
             Debug.Log(childPool == null);
             if (childPool != null)
             {

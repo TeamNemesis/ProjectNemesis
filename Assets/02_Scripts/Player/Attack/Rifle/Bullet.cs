@@ -4,7 +4,7 @@ using UnityEngine;
 /// <summary>
 /// 총기류의 탄환을 관리하는 클래스
 /// </summary>
-public class Bullet : MonoBehaviour, IPoolable
+public class Bullet : PoolableObject
 {
     [SerializeField] float _moveSpeed = 50f; // 탄환의 이동 속도
     [SerializeField] float _lifeTime = 2f;   // 탄환의 생존 시간

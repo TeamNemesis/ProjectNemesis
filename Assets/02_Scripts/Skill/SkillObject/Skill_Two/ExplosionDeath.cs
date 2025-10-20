@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class ExplosionDeath : AreaDamageBase, IPoolable
+public class ExplosionDeath : AreaDamageBase
 {
 
 
@@ -22,7 +22,7 @@ public class ExplosionDeath : AreaDamageBase, IPoolable
         target.GetComponent<IDamageable>().TakeDamage(Constants.EXPLOSIONDEATH_DAMAGE);
     }
 
-    public IEnumerator DestroyExplosionCoroutine(float time, IPoolable gameObject)
+    public IEnumerator DestroyExplosionCoroutine(float time, PoolableObject gameObject)
     {
         yield return new WaitForSeconds(time);
         ObjectPool.Instance.ReleaseToPoolByInterface(gameObject);

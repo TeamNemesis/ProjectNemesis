@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class Drone : MonoBehaviour, IReinforce, IPoolable
+public class Drone : PoolableObject, IReinforce
 {
     [SerializeField]
     private enum State

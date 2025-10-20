@@ -2,7 +2,7 @@ using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class PoisonDash : AreaDamageBase, IPoolable
+public class PoisonDash : AreaDamageBase
 {
     [SerializeField]
     private int _dashDamage;
