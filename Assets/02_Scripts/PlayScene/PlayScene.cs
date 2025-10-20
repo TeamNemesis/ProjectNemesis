@@ -7,6 +7,8 @@ public class PlayScene : MonoBehaviour
     [SerializeField] PlayerInputHandler _inputHandler;             // 플레이어 입력 핸들러
     [SerializeField] MapController _mapController;                 // 맵 컨트롤러
 
+    public MapController MapController => _mapController;
+
     private void Awake()
     {
         _inputHandler.OnMoveInput += _player.Move;
@@ -26,10 +28,5 @@ public class PlayScene : MonoBehaviour
 
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.F3))
-        {
-
-            GameObject obj=  GameManager.Instance.PoolManager.GetFromPool("Prefabs/Bullet/Bullet");
-        }
     }
 }

@@ -19,6 +19,11 @@ public class MapController : MonoBehaviour
     [SerializeField] int _currentRoomCount = -1;
     [SerializeField] bool _hasLabRoomAppeared = false;
 
+    public Room CurrentRoom => _currentRoom;
+    public Door[] CurrentDoors => _currentDoors;
+    public int CurrentRoomCount => _currentRoomCount;
+    public bool HasLabRoomAppeared => _hasLabRoomAppeared;
+
     public void Initialize()
     {
         if (_roomSpawner == null) Debug.LogError("MapController.Initialize: _roomSpawner is null");

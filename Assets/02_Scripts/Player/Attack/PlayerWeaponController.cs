@@ -16,7 +16,9 @@ public class PlayerWeaponController : MonoBehaviour
     [Header("----- 확인용 -----")]
     [SerializeField] Weapon _currentWeapon;
 
-    public event Action<WeaponType> OnWeaponChanged;
+    public Weapon CurrentWeapon => _currentWeapon;
+
+    public event Action<Weapon> OnWeaponChanged;
 
     /// <summary>
     /// 초기화 함수
@@ -25,7 +27,7 @@ public class PlayerWeaponController : MonoBehaviour
     {
         //Debug.Log("초기 무기 장착");
         EquipWeapon(WeaponType.Rifle);
-        OnWeaponChanged?.Invoke(WeaponType.Rifle);
+        OnWeaponChanged?.Invoke(_currentWeapon);
     }
 
     /// <summary>
@@ -38,7 +40,7 @@ public class PlayerWeaponController : MonoBehaviour
         if (_currentWeapon == null)
         {
             EquipWeapon(newWeaponType);
-            OnWeaponChanged?.Invoke(newWeaponType);
+            OnWeaponChanged?.Invoke(_currentWeapon);
             return;
         }
 
@@ -57,14 +59,14 @@ public class PlayerWeaponController : MonoBehaviour
             Destroy(_currentWeapon.gameObject);
             // 새로운 무기 장착
             EquipWeapon(newWeaponType);
-            OnWeaponChanged?.Invoke(newWeaponType);
+            OnWeaponChanged?.Invoke(_currentWeapon);
         }
     }
 
     /// <summary>
     /// 무기 장착 시 호출되는 함수
     /// </summary>
-    public void EquipWeapon(WeaponType newWeaponType)
+    public Weapon EquipWeapon(WeaponType newWeaponType)
     {
         //Debug.Log("무기 장착");
         // ResourceManager에서 무기 프리팹을 가져와서
@@ -74,7 +76,9 @@ public class PlayerWeaponController : MonoBehaviour
         // 현재 장착된 무기로 설정
         _currentWeapon = weaponObj.GetComponent<Weapon>();
         // 무기 초기화
-        _currentWeapon.Initialize();
+        _currentWeapon.Initialize(newWeaponType);
+        // 장착된 무기 반환
+        return _currentWeapon;
     }
 
     /// <summary>

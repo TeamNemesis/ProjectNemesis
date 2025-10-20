@@ -109,9 +109,9 @@ public static class Constants
     /// 플레이어 태그
     /// </summary>
     public const string TAG_PLAYER = "Player";
-
     public const string TAG_MONSTER = "Monster";
-
+    public const string TAG_BULLET = "Bullet";
+    public const string TAG_ENVIRONMENT = "Environment";
 
     #endregion
 
@@ -199,6 +199,7 @@ public static class Constants
     public static string ANIPARAM_ONNORMALATTACK = "OnNormalAttack";
     public static string ANIPARAM_ONSPECIALATTACK = "OnSpecialAttack";
     public static string ANIPARAM_ONGRENADEATTACK = "OnGrenadeAttack";
+    public static string ANIPARAM_ONDASH = "OnDash";
     #endregion
 
     #region ResourcesPath
