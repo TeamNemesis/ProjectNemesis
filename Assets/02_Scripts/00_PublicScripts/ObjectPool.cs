@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Threading;
 using UnityEngine;
 
 public class ObjectPool : MonoBehaviour
@@ -17,7 +16,7 @@ public class ObjectPool : MonoBehaviour
 
     [SerializeField] private List<GameObject> poolObjects = new List<GameObject>();
 
-    private void Initialize()
+    private void Awake()
     {
         InitializeAllPools();
         if (instance == null)
@@ -68,7 +67,7 @@ public class ObjectPool : MonoBehaviour
             availablePools[initialPrefab.name] = new List<GameObject>();
             inUsePools[initialPrefab.name] = new List<GameObject>();
 
-            // 정ㅇ리용 게임 오브젝트
+            // 정리용 게임 오브젝트
             GameObject container = new GameObject($"Pool_{initialPrefab.name}");
             container.transform.SetParent(transform);
             poolContainers[initialPrefab.name] = container;
@@ -124,6 +123,110 @@ public class ObjectPool : MonoBehaviour
         return null;
     }
 
+    #region 오브젝트풀 임시 생성
+    /// <summary>
+    /// 풀에서 오브젝트 가져오기
+    /// </summary>
+    public T GetFromPool<T>(IPoolable poolable, Vector3 position, Transform parentTransform = null)
+    {
+        GameObject prefabObject = poolable.GetGameObject();
+        if (!availablePools.ContainsKey(prefabObject.name))
+        {
+            availablePools.Add(prefabObject.name, new List<GameObject>());
+            if (!inUsePools.ContainsKey(prefabObject.name))
+            {
+                inUsePools.Add(prefabObject.name, new List<GameObject>());
+            }
+        }
+
+        if (availablePools[prefabObject.name].Count == 0)
+        {
+            Debug.LogWarning($"'{prefabObject.name}' 풀이 비어있습니다! 새로운 오브젝트를 생성합니다.");
+            return CreateNewObject(prefabObject, position,parentTransform).GetComponent<T>();
+        }
+
+        GameObject obj = availablePools[prefabObject.name][availablePools[prefabObject.name].Count - 1];
+        availablePools[prefabObject.name].RemoveAt(availablePools[prefabObject.name].Count - 1);
+        obj.transform.position = position;
+        if(parentTransform!=null)
+        {
+            obj.transform.SetParent(parentTransform);
+        }
+        obj.SetActive(true);
+        obj.GetComponent<IPoolable>().Initialize();
+        inUsePools[prefabObject.name].Add(obj);
+
+        return obj.GetComponent<T>();
+    }
+
+    /// <summary>
+    /// 풀이 비어있을 때 새로운 오브젝트 생성
+    /// </summary>
+    private GameObject CreateNewObject(GameObject prefabObject, Vector3 position, Transform parentTransform = null)
+    {
+        GameObject newObj;
+        // 새 객체 생성
+        if (parentTransform == null)
+        {
+            newObj = Instantiate(prefabObject);
+        }
+        else
+        {
+            newObj = Instantiate(prefabObject, parentTransform);
+        }
+
+        newObj.name = prefabObject.name;
+
+        // 객체 저장을 위한 부모 저장용 오브젝트풀 자식 객체
+        if (!poolContainers.ContainsKey(prefabObject.name))
+        {
+            GameObject container = new GameObject($"Pool_{prefabObject.name}");
+            container.transform.SetParent(transform);
+            poolContainers[prefabObject.name] = container;
+        }
+
+        newObj.transform.position = position;
+
+        newObj.SetActive(true);
+        newObj.GetComponent<IPoolable>().Initialize();
+        inUsePools[prefabObject.name].Add(newObj);
+        Debug.Log($"'{prefabObject.name}' 풀의 새로운 오브젝트가 생성되었습니다.");
+        return newObj;
+    }
+
+    /// <summary>
+    /// 인터페이스를 이용한 오브젝트풀 해제
+    /// </summary>
+    /// <param name="poolable"></param>
+    public void ReleaseToPoolByInterface(IPoolable poolable)
+    {
+        poolable.ReleaseObject();
+
+        GameObject obj = poolable.GetGameObject();
+        if (!inUsePools.ContainsKey(obj.name))
+        {
+            Debug.LogWarning($"'{obj.name}' 풀에 반환할 수 없습니다. 풀이 존재하지 않습니다.");
+            Destroy(obj);
+            return;
+        }
+
+        int index = inUsePools[obj.name].IndexOf(obj);
+        Debug.Log(index);
+        if (index >= 0)
+        {
+            inUsePools[obj.name].RemoveAt(index);
+            availablePools[obj.name].Add(obj);
+            obj.SetActive(false);
+            obj.transform.SetParent(poolContainers[obj.name].transform);
+            obj.transform.position = Vector3.zero;
+            obj.transform.rotation = Quaternion.identity;
+        }
+        else
+        {
+            Debug.LogWarning($"오브젝트 '{obj.name}'은 이 풀에서 사용 중이 아닙니다.");
+        }
+    }
+    #endregion
     /// <summary>
     /// 풀에 오브젝트 반환 (사용 완료)
     /// </summary>

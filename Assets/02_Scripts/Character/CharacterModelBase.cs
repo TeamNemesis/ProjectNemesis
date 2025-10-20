@@ -121,6 +121,6 @@ public abstract class CharacterModelBase : MonoBehaviour, IDamageable
         OnDieEvent?.Invoke();
 
         isDead = true;
-        Destroy(gameObject);
+        //Destroy(gameObject);
     }
 }

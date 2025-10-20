@@ -4,11 +4,11 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
-    #region 현재 보유 스킬 리스트
+    [SerializeField]
     private SkillBtn _skillBtnPrefab;
-
     [SerializeField]
     private GameObject _listPanel;
+    #region 현재 보유 스킬 리스트
 
     [SerializeField]
     private Text _skillImageText;
@@ -20,7 +20,7 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private Transform _parentContent;
 
-    public void InitializeManger()
+    public void InitializeManager()
     {
         if (_skillBtnPrefab == null)
         {
@@ -63,7 +63,9 @@ public class UIManager : MonoBehaviour
     /// <param name="parentContent"></param>
     public void MakeSkillBtn(SkillData skillData, Transform parentContent)
     {
-        SkillBtn skillBtn = Instantiate(_skillBtnPrefab, parentContent);
+
+
+        SkillBtn skillBtn = ObjectPool.Instance.GetFromPool<SkillBtn>(_skillBtnPrefab, _skillBtnPrefab.transform.position, parentContent);
         skillBtn.SetSkillInfo(skillData);
         skillBtn.GetComponent<Button>().onClick.AddListener(() => OnClick_SkillListBtn(skillBtn));
 
@@ -83,7 +85,11 @@ public class UIManager : MonoBehaviour
     {
         foreach (Transform child in _parentContent.transform)
         {
-            Destroy(child.gameObject);
+            IPoolable childPool = child.GetComponent<IPoolable>();
+            if (childPool != null)
+            {
+                ObjectPool.Instance.ReleaseToPoolByInterface(childPool);
+            }
         }
     }
     #endregion
@@ -104,24 +110,51 @@ public class UIManager : MonoBehaviour
 
     public SkillBtn MakeSkillBtn()
     {
-        return Instantiate(_skillChooseBtnPrefab, _parentPanel.transform);
+        return ObjectPool.Instance.GetFromPool<SkillBtn>(_skillChooseBtnPrefab, Vector3.zero, _parentPanel.transform);
     }
 
 
     #endregion
-    public void DestroyChildObject(Transform childObject)
+    public void DestroyChildObject(Transform parentObject)
     {
-        foreach (Transform child in childObject.parent)
+        Transform[] children = new Transform[parentObject.childCount];
+        for (int i = 0; i < parentObject.childCount; i++)
         {
-            Destroy(child.gameObject);
+            children[i] = parentObject.GetChild(i);
         }
+
+        foreach (Transform child in children)
+        {
+            IPoolable childPool = child.GetComponent<IPoolable>();
+            Debug.Log(childPool == null);
+            if (childPool != null)
+            {
+                Debug.Log("childPool");
+                ObjectPool.Instance.ReleaseToPoolByInterface(childPool);
+            }
+        }
+
     }
 
-    public void DestroyParentChildObject(Transform parentObject)
+    public void OnClickListExitBtn(Transform content)
     {
-        foreach (Transform child in parentObject)
+        Transform[] children = new Transform[content.childCount];
+        for (int i = 0; i < content.childCount; i++)
         {
-            Destroy(child.gameObject);
+            children[i] = content.GetChild(i);
         }
+        foreach (Transform child in children)
+        {
+            IPoolable childPool = child.GetComponent<IPoolable>();
+            Debug.Log(childPool == null);
+            if (childPool != null)
+            {
+                Debug.Log("childPool");
+                ObjectPool.Instance.ReleaseToPoolByInterface(childPool);
+            }
+        }
+
+    _listPanel.SetActive(false);
     }
+
 }

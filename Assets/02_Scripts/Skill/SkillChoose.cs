@@ -19,7 +19,7 @@ public class SkillChoose : MonoBehaviour
     /// </summary>
     private SkillBase _skillCompany;
     public SkillBase skillCompany { get { return _skillCompany; } }
-    public void SetSkillComapany(SkillBase skill)
+    public void SetSkillCompany(SkillBase skill)
     {
         _skillCompany = skill;
     }
@@ -159,6 +159,10 @@ public class SkillChoose : MonoBehaviour
     /// </summary>
     public void OnClick_SkillBtnClick(SkillBtn skillBtn)
     {
+        if(skillBtn.skillData == null)
+        {
+            Debug.Log("skillData is Null");
+        }
         if (skillBtn.skillData.ChooseSkill())
         {
             skillBtn.skillData.skillCompany.ChooseSkill(skillBtn.skillData);
@@ -166,7 +170,7 @@ public class SkillChoose : MonoBehaviour
         }
         skillBtn.skillData.skillCompany.ActivateSkill(skillBtn.skillData);
 
-        GameManager.Instance.UIManager.DestroyChildObject(skillBtn.transform);
+        GameManager.Instance.UIManager.DestroyChildObject(skillBtn.transform.parent);
 
         GameManager.Instance.UIManager.SetActiveSkillBtnPanel(false);
     }
@@ -178,32 +182,32 @@ public class SkillChoose : MonoBehaviour
     #region testBtn
     public void OnClick_DrawSkillCompany()
     {
-        SetSkillComapany(GameManager.Instance.skillManager.DrawSkillCompany());
+        SetSkillCompany(GameManager.Instance.skillManager.DrawSkillCompany());
     }
 
     public void OnClick_skillCompanyOne()
     {
-        SetSkillComapany(GameManager.Instance.skillManager.skill_One);
+        SetSkillCompany(GameManager.Instance.skillManager.skill_One);
     }
 
     public void OnClick_skillCompanyTwo()
     {
-        SetSkillComapany(GameManager.Instance.skillManager.skill_Two);
+        SetSkillCompany(GameManager.Instance.skillManager.skill_Two);
     }
 
     public void OnClick_skillCompanyThree()
     {
-        SetSkillComapany(GameManager.Instance.skillManager.skill_Three);
+        SetSkillCompany(GameManager.Instance.skillManager.skill_Three);
     }
 
     public void OnClick_skillCompanyFour()
     {
-        SetSkillComapany(GameManager.Instance.skillManager.skill_Four);
+        SetSkillCompany(GameManager.Instance.skillManager.skill_Four);
     }
 
     public void OnClick_skillCompanyFive()
     {
-        SetSkillComapany(GameManager.Instance.skillManager.skill_Five);
+        SetSkillCompany(GameManager.Instance.skillManager.skill_Five);
     }
 
     public void OnClick_ListBtn()
