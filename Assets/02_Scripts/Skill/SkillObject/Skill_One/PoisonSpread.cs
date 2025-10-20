@@ -35,7 +35,5 @@ public class PoisonSpread : AreaDamageBase
         StartCoroutine(DestroyPoisonSpreadCoroutine());
     }
 
-    public void ReleaseObject()
-    {
-    }
+  
 }

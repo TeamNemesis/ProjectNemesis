@@ -37,7 +37,8 @@ public class Skill_One_Grenade : ActiveTech
 		public void GrenadeBomb(Vector3 position)
 		{
 				position.y = 0;
-				ObjectPool.Instance.GetFromPool(_grenadePoisonPrefab, position);
+				ObjectPool.Instance.GetFromPool(_grenadePoisonPrefab, position, _grenadePoisonPrefab.transform.rotation).GetComponent<GrenadePoison>().Initialize();
+
 		}
 
 

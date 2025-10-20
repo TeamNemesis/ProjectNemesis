@@ -28,7 +28,4 @@ public class ExplosionDeath : AreaDamageBase
         ObjectPool.Instance.ReleaseToPoolByInterface(gameObject);
     }
 
-    public void ReleaseObject()
-    {
-    }
 }

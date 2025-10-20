@@ -153,8 +153,8 @@ public class Skill_One : SkillBase
         Vector3 position = player.transform.position;
         position.y = 0;
         //TODO 스킬 확인
-        PoisonSpread poisonSpread = ObjectPool.Instance.GetFromPool(_hitPoisonSpreadPrefab, position).GetComponent<PoisonSpread>();
-
+        PoisonSpread poisonSpread = ObjectPool.Instance.GetFromPool(_hitPoisonSpreadPrefab, position,_hitPoisonSpreadPrefab.transform.rotation).GetComponent<PoisonSpread>();
+        poisonSpread.Initialize();
     }
 
 

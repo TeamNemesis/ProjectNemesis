@@ -22,10 +22,7 @@ public class DashReinforcePrefab : AreaDamageBase
 				StartCoroutine(ReleaseObjectCoroutine());
 		}
 
-		public void ReleaseObject()
-		{
-
-		}
+	
 
 		IEnumerator ReleaseObjectCoroutine()
 		{

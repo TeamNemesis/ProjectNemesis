@@ -102,6 +102,8 @@ public abstract class CharacterModelBase : MonoBehaviour, IDamageable
             debuffHandler.RemoveDebuff(Constants.DEBUFF_BURN);
         }
 
+       
+
         _currentHealth -= (int)damage;
         if (currentHealth <= 0)
         {

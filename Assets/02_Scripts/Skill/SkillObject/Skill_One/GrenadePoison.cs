@@ -79,6 +79,7 @@ public class GrenadePoison : AreaDotBase
 		public IEnumerator ReleasePoisonArea()
 		{
 				yield return new WaitForSeconds(Constants.SKILL_ONE_SPATTACK_TIME);
+		ReleaseObject();
 				ObjectPool.Instance.ReleaseToPoolByInterface(this);
 		}
 }
