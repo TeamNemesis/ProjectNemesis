@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 
 /// <summary>
@@ -11,20 +11,33 @@ public class PlayerModel : CharacterModelBase
 
 
     #region Test
-    public event Action<Transform> Attack;
+    /// <summary>
+    /// 테스트용 공격 실행 이벤트
+    /// </summary>
+    public event Action AttackTry;
+    /// <summary>
+    /// 테스트용 공격 적중시 이벤트
+    /// </summary>
+    public event Action<Transform> AttackHit;
+    /// <summary>
+    /// 플레이어 테스트용 공격력
+    /// </summary>
+    public int playerAttack;
     public Transform currentTarget;
 
     public void Update()
     {
         if (Input.GetKeyDown(KeyCode.U))
         {
-            OnAttack();
+            OnAttackHit();
         }
     }
 
-    public void OnAttack()
+  
+
+    public void OnAttackHit()
     {
-        Attack?.Invoke(currentTarget);
+        AttackHit?.Invoke(currentTarget);
     }
     #endregion
 
@@ -40,8 +53,4 @@ public class PlayerModel : CharacterModelBase
         OnHpChangedEventPlay(currentHealth); // 초기 체력 이벤트 발행
         debuffHandler.InitializePlayer();
     }
-
-
-
-
 }

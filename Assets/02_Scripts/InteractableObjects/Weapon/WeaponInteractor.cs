@@ -1,21 +1,24 @@
 ﻿using System;
 using UnityEngine;
 
-public class WeaponInteractor : MonoBehaviour, IInteractable
+/// <summary>
+/// 상호작용 가능한 무기(훈련장의 무기)가 상호작용 하기 위해 구현하는 클래스
+/// </summary>
+public class WeaponInteractor : InteractableObject
 {
     [SerializeField] Transform _guidePoint;
     [SerializeField] WeaponType _weaponType;
 
-    public Vector3 GuidePoint => _guidePoint.position;
+    public override Vector3 GuidePoint => _guidePoint.position;
 
-    public InteractableType InteractableType => InteractableType.Weapon;
+    public override InteractableType InteractableType => InteractableType.Weapon;
     public WeaponType WeaponType => _weaponType;
 
-    public event Action<WeaponType> OnWeaponInteracted;
+    public override event Action<IInteractable> OnInteracted;
 
-    public void Interact(Transform subject)
+    public override void StartInteract(Transform subject)
     {
         Debug.Log("무기와 상호작용 함");
-        OnWeaponInteracted?.Invoke(_weaponType);
+        OnInteracted?.Invoke(this);
     }
 }

@@ -11,12 +11,13 @@ public class Skill_Three : SkillBase
     {
         switch (choosedSkill.skillIdx)
         {
-            
+
         }
 
 
         switch (choosedSkill.skillIdx)
         {
+            // 중력자 무기
             case 30:
                 ActiveTech skillAttack = new Skill_Three_Attck(choosedSkill);
                 if (_skillManager.attachTech != null)
@@ -25,42 +26,49 @@ public class Skill_Three : SkillBase
                 }
                 skillAttack.Activate(_skillManager, player);
                 break;
+
+            // 소용돌이
             case 31:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
 
                 break;
+
+                // 반동
             case 32:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
 
                 break;
+
+                // 절대영역
             case 33:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 break;
 
+
+                // 불운
             case 34:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
 
                 break;
+
+                // 적색 편이
             case 35:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
-
+                 //TODO 적이 발사하는 발사체에 적 정보 필요
                 break;
+
+                // 중력 증폭
             case 36:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
 
                 break;
+
+                // 사건의 지평선
             case 37:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
 
                 break;
-            case 38:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
-
-                break;
-            case 39:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
-
-                break;
+           
             default:
                 Debug.Log("에러, 배정되지 않은 idx");
                 break;
@@ -78,12 +86,12 @@ public class Skill_Three_Attck : ActiveTech
     public override event Action OnTechUsed;
     public override void Activate(SkillManager skillManager, PlayerModel player)
     {
-        base.Activate(skillManager,player);
-        player.Attack += Use;
+        base.Activate(skillManager, player);
+        player.AttackHit += Use;
         Drone[] drones = player.transform.GetComponentsInChildren<Drone>();
-        if(drones.Length > 0)
+        if (drones.Length > 0)
         {
-            foreach(Drone drone in drones)
+            foreach (Drone drone in drones)
             {
                 drone.Attack += Use;
             }
@@ -92,7 +100,7 @@ public class Skill_Three_Attck : ActiveTech
     public override void Deactivate(PlayerModel player)
     {
         base.Deactivate(player);
-        player.Attack -= Use;
+        player.AttackHit -= Use;
         Drone[] drones = player.transform.GetComponentsInChildren<Drone>();
         if (drones.Length > 0)
         {

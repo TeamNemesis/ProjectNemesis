@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 7397185431323260536}
   - component: {fileID: 2012678651111824598}
   - component: {fileID: 7539578067776936276}
+  - component: {fileID: 4438692647137676839}
   m_Layer: 0
   m_Name: BallSecurityRobot
   m_TagString: Untagged
@@ -144,16 +145,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd942227042c3604fae64d06c0343c77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
-  currentHealth: 0
+  _maxHealth: 100
+  _currentHealth: 0
+  _moveSpeed: 5
+  isStunned: 0
+  isPushed: 0
+  isBindned: 0
+  isDead: 0
+  debuffHandler: {fileID: 0}
   attackDamage: 10
   attackRange: 2
-  attackDelay: 0.5
-  isDead: 0
   detectionRange: 10
+  attackDelay: 0.5
+  targetTag: Player
   agent: {fileID: 0}
   player: {fileID: 0}
   _explosionRadius: 3
   circlePrefab: {fileID: 2297966890909199157, guid: e1cdcf7ba7eac0445a237bf39c1ee586, type: 3}
   _isFusing: 0
   currentState: 0
+--- !u!114 &4438692647137676839
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3718066384490971411}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 725c1c87d9a2e3346bd4c5a3c364f518, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 /// <summary>
 /// 플레이어의 주요 컴포넌트들을 관리하는 최상위 클래스
@@ -6,15 +7,18 @@
 public class Player : MonoBehaviour
 {
     [Header("----- 컴포넌트 참조 -----")]
-    [SerializeField] PlayerModel _model;                       // 플레이어 모델 컴포넌트
+    //[SerializeField] PlayerModel _model;                       // 플레이어 모델 컴포넌트
     [SerializeField] PlayerMover _mover;                       // 플레이어 이동 컴포넌트
     [SerializeField] PlayerDasher _dasher;                     // 플레이어 대시 컴포넌트
     [SerializeField] PlayerWeaponController _weaponController; // 플레이어 무기 관리 컴포넌트
+    [SerializeField] PlayerAnimator _animator;                 // 플레이어 애니메이터 컴포넌트
+    [SerializeField] PlayerGrenadeAttacker _grenadeAttacker;   // 플레이어 유탄 발사 컴포넌트
 
     [Header("----- UI 컴포넌트 -----")]
     // [SerializeField] PlayerView _view;                         // 플레이어 UI 컴포넌트
 
     [Header("----- 상호작용 컴포넌트 -----")]
+    [SerializeField] InteractionController _interactionController;      //상호작용 컨트롤러
     [SerializeField] InteractableDetector _interactableDetector;        //상호작용 감지기
     [SerializeField] InteractionGuideView _interactableGuideView;       //상호작용 안내 뷰
 
@@ -22,12 +26,15 @@ public class Player : MonoBehaviour
 
     [Header("----- 무기가 바뀌면 같이 바뀌는 컴포넌트(읽기 전용) -----")]
     [SerializeField] PlayerNormalAttacker _normalAttacker;     // 플레이어 일반 공격 컴포넌트
-    [SerializeField] PlayerGrenadeAttacker _grenadeAttacker;   // 플레이어 유탄 발사 컴포넌트(얘는 일단 안바뀜)
+    //[SerializeField] PlayerGrenadeAttacker _grenadeAttacker;   // 플레이어 유탄 발사 컴포넌트(얘는 일단 안바뀜)
     [SerializeField] PlayerSpecialAttacker _specialAttacker;   // 플레이어 특수 공격 컴포넌트
-    [SerializeField] PlayerAnimator _animator;                 // 플레이어 애니메이터 컴포넌트
 
     [Header("----- 읽기 전용 -----")]
     [SerializeField] PlayerWeaponSet _currentWeaponSet;        // 현재 플레이어 무기 세트
+
+    // public event Action<RoomInfo> OnDoorInteract;
+    // 문이 상호작용 되었을 때 문과 관련된쪽에서 이벤트를 발행하고 있고
+    // 그 이벤트를 받아서 문이나 방을 생성하고 있으므로 이건 중복 발행하지 않음
 
     /// <summary>
     /// Player 초기화 함수
@@ -37,14 +44,35 @@ public class Player : MonoBehaviour
 
 
         _weaponController.OnWeaponChanged += OnWeaponChanged;
-
+        
+        _interactionController.OnWeaponInteract += OnWeaponInteracted;
+        _interactionController.OnDoorInteract += OnDoorInteracted;
         _interactableDetector.OnDetected += InteractableDetected;
         _interactableDetector.OnMissed += InteractableMissed;
 
+        _weaponController.Initialize();
+
+        _interactionController.Initialize();
         _interactableGuideView.Initialize();
 
-        _model.Initialize();
-        _weaponController.Initialize();
+        //_model.Initialize();
+       
+    }
+
+    public void OnWeaponInteracted(WeaponType newWeaponType)
+    {
+        _weaponController.OnWeaponInteracted(newWeaponType);
+    }
+
+    public void OnDoorInteracted(RoomInfo roomInfo)
+    {
+        if(roomInfo == null)
+        {
+            Debug.LogError("Player.OnDoorInteracted 호출 시 roomInfo가 null입니다! 호출자 스택을 확인하세요.");
+            return;
+        }
+        Debug.Log(roomInfo.RoomType + " 방으로 가는 문과 상호작용 함");
+        // OnDoorInteract?.Invoke(roomInfo);
     }
 
     /// <summary>
@@ -54,12 +82,13 @@ public class Player : MonoBehaviour
     /// <param name="weaponType"></param>
     void OnWeaponChanged(WeaponType weaponType)
     {
-        _currentWeaponSet = GameManager.Instance().ResourceManager.PlayerWeaponSetMap[weaponType];
+        _currentWeaponSet = GameManager.Instance.DataManager.WeaponSetMap[weaponType];
 
         _normalAttacker = _currentWeaponSet.NormalAttacker;
-        _grenadeAttacker = _currentWeaponSet.GrenadeAttacker;
+        //_grenadeAttacker = _currentWeaponSet.GrenadeAttacker;
         _specialAttacker = _currentWeaponSet.SpecialAttacker;
-        _animator = _currentWeaponSet.Animator;
+
+        _animator.SetAnimator(_currentWeaponSet.AnimController);
         // 만약 이펙트가 바뀌거나 사운드 등 효과가 필요해서 이벤트가 필요하다면
         // 무기변경 이벤트를 만들어서 여기에 추가
     }
@@ -88,6 +117,7 @@ public class Player : MonoBehaviour
     public void NormalAttack()
     {
         _normalAttacker.Attack();
+        _animator.OnNormalAttack();
     }
 
     /// <summary>

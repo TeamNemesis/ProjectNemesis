@@ -22,19 +22,11 @@ public class SkillManager : MonoBehaviour
 
     private Skill_Collab _skill_Collab;
     public Skill_Collab skill_Collab { get { return _skill_Collab; } }
+
+    private Skill_Mutant _skill_Mutant;
+    public Skill_Mutant skill_Mutant { get { return _skill_Mutant; }}
     #endregion
-    [SerializeField]
-    private SkillBtn _skillBtnPrefab;
 
-    [SerializeField]
-    private GameObject _parentContent;
-
-    [SerializeField]
-    private Text _skillImageText;
-    [SerializeField]
-    private Text _skillScriptText;
-    [SerializeField]
-    private Text _skillLevelText;
 
      
 
@@ -81,16 +73,21 @@ public class SkillManager : MonoBehaviour
     }
     #endregion
 
+    /// <summary>
+    /// 업그레이드 가능 스킬들 목록
+    /// </summary>
+    private List<SkillData> _upgradeSkillList = new List<SkillData>();
+    public List<SkillData> upgradeSkillList { get { return _upgradeSkillList; } }
+
     public void InitializeSkillManager()
     {
-
-
         _skill_One = GetComponent<Skill_One>();
         _skill_Two = GetComponent<Skill_Two>();
         _skill_Three = GetComponent<Skill_Three>();
         _skill_Four = GetComponent<Skill_Four>();
         _skill_Five = GetComponent<Skill_Five>();
         _skill_Collab = GetComponent<Skill_Collab>();
+        _skill_Mutant = GetComponent<Skill_Mutant>();
 
         _skill_One.InitializeSkill(this);
         _skill_Two.InitializeSkill(this);
@@ -98,19 +95,38 @@ public class SkillManager : MonoBehaviour
         _skill_Four.InitializeSkill(this);
         _skill_Five.InitializeSkill(this);
         _skill_Collab.InitializeSkill(this);
-
+        _skill_Mutant.InitializeSkill(this);
     }
 
     /// <summary>
     /// 뽑은 스킬 리스트 순회하여 리스트 제작
     /// </summary>
-    public void CheckChooseSkillList()
+    public List<SkillData> GetChooseSkillList()
     {
+        List<SkillData> currentSkillData = new List<SkillData>();
+
+
+        if (_skill_Mutant.GetNumberSkillList() != 0)
+        {
+            foreach (SkillData skillData in _skill_Mutant.currentSkillData)
+            {
+                currentSkillData.Add(skillData);
+            }
+        }
+
+        if (_skill_Collab.GetNumberSkillList() != 0)
+        {
+            foreach (SkillData skillData in _skill_Collab.currentSkillData)
+            {
+                currentSkillData.Add(skillData);
+            }
+        }
+
         if (_skill_One.GetNumberSkillList() != 0)
         {
             foreach (SkillData skillData in _skill_One.currentSkillData)
             {
-                MakeSkillBtn(skillData, _parentContent.transform);
+                currentSkillData.Add(skillData);
             }
         }
 
@@ -118,7 +134,7 @@ public class SkillManager : MonoBehaviour
         {
             foreach (SkillData skillData in _skill_Two.currentSkillData)
             {
-                MakeSkillBtn(skillData, _parentContent.transform);
+                currentSkillData.Add(skillData);
             }
 
         }
@@ -127,7 +143,7 @@ public class SkillManager : MonoBehaviour
         {
             foreach (SkillData skillData in _skill_Three.currentSkillData)
             {
-                MakeSkillBtn(skillData, _parentContent.transform);
+                currentSkillData.Add(skillData);
             }
         }
 
@@ -135,7 +151,7 @@ public class SkillManager : MonoBehaviour
         {
             foreach (SkillData skillData in _skill_Four.currentSkillData)
             {
-                MakeSkillBtn(skillData, _parentContent.transform);
+                currentSkillData.Add(skillData);
             }
         }
 
@@ -143,32 +159,19 @@ public class SkillManager : MonoBehaviour
         {
             foreach (SkillData skillData in _skill_Five.currentSkillData)
             {
-                MakeSkillBtn(skillData, _parentContent.transform);
+                currentSkillData.Add(skillData);
             }
         }
 
-        if (_skill_Collab.GetNumberSkillList() != 0)
-        {
-            foreach (SkillData skillData in _skill_Collab.currentSkillData)
-            {
-                MakeSkillBtn(skillData, _parentContent.transform);
-            }
-        }
+     
+
+        if (currentSkillData.Count > 0)
+            return currentSkillData;
+        else return null;
 
     }
 
-    /// <summary>
-    /// 리스트 버튼 생성
-    /// </summary>
-    /// <param name="skillData"></param>
-    /// <param name="parentContent"></param>
-    public void MakeSkillBtn(SkillData skillData, Transform parentContent)
-    {
-        SkillBtn skillBtn = Instantiate(_skillBtnPrefab, parentContent);
-        skillBtn.SetSkillInfo(skillData);
-        skillBtn.GetComponent<Button>().onClick.AddListener(() => OnClick_SkillListBtn(skillBtn));
-
-    }
+  
 
     /// <summary>
     /// 가중치에 따른 스킬 회사 반환
@@ -176,11 +179,11 @@ public class SkillManager : MonoBehaviour
     /// <returns></returns>
     public SkillBase DrawSkillCompany()
     {
-        int skillOneNum = _skill_One.GetNumberSkillList() + 1;
-        int skillTwoNum = _skill_Two.GetNumberSkillList() + 1;
-        int skillThreeNum = _skill_Three.GetNumberSkillList() + 1;
-        int skillFourNum = _skill_Four.GetNumberSkillList() + 1;
-        int skillFiveNum = _skill_Five.GetNumberSkillList() + 1;
+        int skillOneNum = _skill_One.skillNum + 1;
+        int skillTwoNum = _skill_Two.skillNum + 1;
+        int skillThreeNum = _skill_Three.skillNum + 1;
+        int skillFourNum = _skill_Four.skillNum + 1;
+        int skillFiveNum = _skill_Five.skillNum + 1;
 
         int totalNum = skillOneNum + skillTwoNum + skillThreeNum + skillFourNum + skillFiveNum;
 
@@ -213,6 +216,50 @@ public class SkillManager : MonoBehaviour
     }
 
     /// <summary>
+    /// 입력받은 개수만큼 가중치에 따른 스킬 회사 반환
+    /// </summary>
+    /// <param name="count"></param>
+    /// <returns></returns>
+    public TechSelectPackType[] GetSkillPackTypes(int count)
+    {
+        int skillOneNum = _skill_One.skillNum + 1;
+        int skillTwoNum = _skill_Two.skillNum + 1;
+        int skillThreeNum = _skill_Three.skillNum + 1;
+        int skillFourNum = _skill_Four.skillNum + 1;
+        int skillFiveNum = _skill_Five.skillNum + 1;
+
+        int totalNum = skillOneNum + skillTwoNum + skillThreeNum + skillFourNum + skillFiveNum;
+
+        TechSelectPackType[] packTypes = new TechSelectPackType[count];
+
+        for (int i=0; i<count; i++)
+        {
+            int totalChance = Random.Range(0, totalNum);
+            if(totalChance < skillOneNum)
+            {
+                packTypes[i] = TechSelectPackType.Company1;
+            }
+            else if(totalChance < skillOneNum + skillTwoNum)
+            {
+                packTypes[i] = TechSelectPackType.Company2;
+            }
+            else if(totalChance < skillOneNum + skillTwoNum + skillThreeNum)
+            {
+                packTypes[i] = TechSelectPackType.Company3;
+            }
+            else if(totalChance < skillOneNum + skillTwoNum + skillThreeNum + skillFourNum)
+            {
+                packTypes[i] = TechSelectPackType.Company4;
+            }
+            else
+            {
+                packTypes[i] = TechSelectPackType.Company5;
+            }
+        }
+        return packTypes;
+    }
+
+    /// <summary>
     /// 현재 가지고 있는 총 스킬 개수
     /// </summary>
     /// <returns></returns>
@@ -227,12 +274,7 @@ public class SkillManager : MonoBehaviour
         return skillOneNum + skillTwoNum + skillThreeNum + skillFourNum + skillFiveNum;
     }
 
-    public void OnClick_SkillListBtn(SkillBtn skillBtn)
-    {
-        _skillImageText.text = skillBtn.skillData.skillImagePath;
-        _skillScriptText.text = skillBtn.skillData.skillIdx.ToString() + "\n" + skillBtn.skillData.skillScript;
-        _skillLevelText.text = skillBtn.skillData.skillLevel.ToString();
-    }
+
 
     /// <summary>
     /// 콜라보 스킬 조건 검사
@@ -254,7 +296,7 @@ public class SkillManager : MonoBehaviour
             // 연관된 기술 회사 조건 검사
             if (_skill_Two.currentSkillData.Count >= Constants.COLLABCNT)
             {
-                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 201);
+                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == Constants.INDEX_ONE_TWO);
                 if (index != Constants.NOCONTAININDEX)
                 {
                     indexList.Add(index);
@@ -265,7 +307,7 @@ public class SkillManager : MonoBehaviour
 
             if (_skill_Five.currentSkillData.Count >= Constants.COLLABCNT)
             {
-                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 105);
+                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == Constants.INDEX_FIVE_ONE);
                 if (index != Constants.NOCONTAININDEX)
                 {
                     indexList.Add(index);
@@ -279,7 +321,7 @@ public class SkillManager : MonoBehaviour
             // 연관된 기술 회사 조건 검사
             if (_skill_Three.currentSkillData.Count >= Constants.COLLABCNT)
             {
-                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 302);
+                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == Constants.INDEX_TWO_THREE);
                 if (index != Constants.NOCONTAININDEX)
                 {
                     indexList.Add(index);
@@ -290,7 +332,7 @@ public class SkillManager : MonoBehaviour
 
             if (_skill_One.currentSkillData.Count >= Constants.COLLABCNT)
             {
-                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 201);
+                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == Constants.INDEX_ONE_TWO);
                 if (index != Constants.NOCONTAININDEX)
                 {
                     indexList.Add(index);
@@ -304,7 +346,7 @@ public class SkillManager : MonoBehaviour
             // 연관된 기술 회사 조건 검사
             if (_skill_Four.currentSkillData.Count >= Constants.COLLABCNT)
             {
-                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 403);
+                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == Constants.INDEX_THREE_FOUR);
                 if (index != Constants.NOCONTAININDEX)
                 {
                     indexList.Add(index);
@@ -315,7 +357,7 @@ public class SkillManager : MonoBehaviour
 
             if (_skill_Two.currentSkillData.Count >= Constants.COLLABCNT)
             {
-                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 302);
+                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == Constants.INDEX_TWO_THREE);
                 if (index != Constants.NOCONTAININDEX)
                 {
                     indexList.Add(index);
@@ -329,7 +371,7 @@ public class SkillManager : MonoBehaviour
             // 연관된 기술 회사 조건 검사
             if (_skill_Five.currentSkillData.Count >= Constants.COLLABCNT)
             {
-                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 504);
+                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == Constants.INDEX_FOUR_FIVE);
                 if (index != Constants.NOCONTAININDEX)
                 {
                     indexList.Add(index);
@@ -340,7 +382,7 @@ public class SkillManager : MonoBehaviour
 
             if (_skill_Three.currentSkillData.Count >= Constants.COLLABCNT)
             {
-                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 403);
+                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == Constants.INDEX_THREE_FOUR);
                 if (index != Constants.NOCONTAININDEX)
                 {
                     indexList.Add(index);
@@ -354,7 +396,7 @@ public class SkillManager : MonoBehaviour
             // 연관된 기술 회사 조건 검사
             if (_skill_Four.currentSkillData.Count >= Constants.COLLABCNT)
             {
-                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 504);
+                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == Constants.INDEX_FOUR_FIVE);
                 if (index != Constants.NOCONTAININDEX)
                 {
                     indexList.Add(index);
@@ -365,7 +407,7 @@ public class SkillManager : MonoBehaviour
 
             if (_skill_One.currentSkillData.Count >= Constants.COLLABCNT)
             {
-                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == 105);
+                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == Constants.INDEX_FIVE_ONE);
                 if (index != Constants.NOCONTAININDEX)
                 {
                     indexList.Add(index);
@@ -379,15 +421,6 @@ public class SkillManager : MonoBehaviour
         return bCheck;
     }
 
-    /// <summary>
-    /// 현재 소지 개수 리스트창 자식 오브젝트 파괴용
-    /// </summary>
-    public void OnClick_ListExitBtn()
-    {
-        foreach (Transform child in _parentContent.transform)
-        {
-            Destroy(child.gameObject);
-        }
-    }
+  
 
 }

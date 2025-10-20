@@ -11,35 +11,39 @@ public class GameManager : MonoBehaviour
     /// 어디에서나 접근 가능한 싱글톤 인스턴스
     /// Instance로 접근시 GameManager가 씬에 없으면 자동으로 생성
     /// </summary>
-    //public static GameManager Instance
-    //{
-    //    // get 프로퍼티
-    //    get
-    //    {
-    //        // 만약 GameManager.Instance로 접근했는데 없다면
-    //        if (Instance == null)
-    //        {
-    //            // 씬에서 GameManager를 찾아보고
-    //            _instance = FindAnyObjectByType<GameManager>();
-    //            // 그래도 없다면
-    //            if (_instance == null)
-    //            {
-    //                // 게임오브젝트를 GameManager라는 이름으로 새로 만들고
-    //                GameObject obj = new GameObject("GameManager");
-    //                // GameManager 컴포넌트를 추가 후 _instance에 할당
-    //                _instance = obj.AddComponent<GameManager>();
-    //                // 씬 전환시 파괴되지 않도록 설정
-    //                DontDestroyOnLoad(obj);
-    //            }
-    //        }
-    //        // 문제 없이 찾았거나 생성했으면 _instance 반환
-    //        return _instance;
-    //    }
-    //}
-
-    public static GameManager Instance()
+    public static GameManager Instance
     {
-        return _instance;
+        // get 프로퍼티
+        get
+        {
+            // 만약 GameManager.Instance로 접근했는데 없다면
+            if (_instance == null)
+            {
+                // 씬에서 GameManager를 찾아보고
+                _instance = FindAnyObjectByType<GameManager>();
+                // 그래도 없다면
+                if (_instance == null)
+                {
+                    // 게임오브젝트를 GameManager라는 이름으로 새로 만들고
+                    GameObject obj = new GameObject("GameManager");
+                    // GameManager 컴포넌트를 추가 후 _instance에 할당
+                    _instance = obj.AddComponent<GameManager>();
+                    _instance._resourceManager = obj.AddComponent<ResourceManager>();
+                    _instance._interactableManager = obj.AddComponent<InteractableManager>();
+                    _instance._dataManager = obj.AddComponent<DataManager>();
+                    //_instance._skillManger = obj.AddComponent<SkillManager>();
+
+                    _instance._resourceManager.Initialize();
+                    _instance._dataManager.Initialize(_instance._resourceManager);
+                    //_instance._skillManger.InitializeSkillManager();
+
+                    // 씬 전환시 파괴되지 않도록 설정
+                    DontDestroyOnLoad(obj);
+                }
+            }
+            // 문제 없이 찾았거나 생성했으면 _instance 반환
+            return _instance;
+        }
     }
 
     public void Awake()
@@ -53,19 +57,34 @@ public class GameManager : MonoBehaviour
             _instance = this;
             DontDestroyOnLoad(gameObject);
         }
-
-
+        
+        //_resourceManager.Initialize();
+        
+        if(_skillManger==null)
+        {
+            _skillManger = Resources.Load<SkillManager>("Prefabs/Skill/SkillManager");
+        }
         _skillManger.InitializeSkillManager();
+
+        if(_uiManager==null)
+        {
+            _uiManager = Resources.Load<UIManager>("Prefabs/Skill/UIManager");
+            _uiManager = Instantiate(_uiManager);
+            _uiManager.name = "UIManager";
+            
+        }
+        _uiManager.InitializeManger();
     }
 
     [SerializeField] ResourceManager _resourceManager;      // 리소스 매니저
 
     public ResourceManager ResourceManager => _resourceManager;
 
-    private void Start()
-    {
-        _resourceManager.Initialize();
-    }
+    [SerializeField] InteractableManager _interactableManager; // 상호작용 매니저
+    public InteractableManager InteractableManager => _interactableManager;
+
+    [SerializeField] DataManager _dataManager;             // 데이터 매니저
+    public DataManager DataManager => _dataManager;
 
     /// <summary>
     /// 스킬 매니저
@@ -74,6 +93,13 @@ public class GameManager : MonoBehaviour
     private SkillManager _skillManger;
     
     public SkillManager skillManager { get { return _skillManger; } }
+
+    /// <summary>
+    /// UIManager
+    /// </summary>
+    [SerializeField]
+    private UIManager _uiManager;
+    public UIManager UIManager { get { return _uiManager; } }
 
     /// <summary>
     /// 플레이어(Test용)

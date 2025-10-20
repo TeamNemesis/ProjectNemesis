@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -28,8 +29,11 @@ public interface IInteractable
     /// </summary>
     InteractableType InteractableType { get; }
 
+    event Action<IInteractable> OnInteracted;
+    event Action<IInteractable> OnInteractionCompleted;
+
     /// <summary>
     /// 상호작용을 실행하는 함수
     /// </summary>
-    void Interact(Transform subject);
+    void StartInteract(Transform subject);
 }

@@ -29,6 +29,7 @@ public class PlayerInputHandler : MonoBehaviour
 
         // 각 액션에 대한 콜백 함수 등록
         actionMap["Move"].performed += OnMove;
+        actionMap["Move"].canceled += OnMove;
         actionMap["Dash"].started += OnDash;
         actionMap["Interact"].started += OnInteract;
         actionMap["NormalAttack"].started += OnNormalAttack;
@@ -37,9 +38,8 @@ public class PlayerInputHandler : MonoBehaviour
         actionMap["SpecialAttack"].started += OnSpecialAttack;
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
-        // 이동 입력은 실시간으로 받아와야 하므로 FixedUpdate에서 이벤트 호출
         OnMoveInput?.Invoke(_moveDir);
     }
 
@@ -49,7 +49,16 @@ public class PlayerInputHandler : MonoBehaviour
     /// <param name="value"></param>
     public void OnMove(InputAction.CallbackContext value)
     { 
-        _moveDir = value.ReadValue<Vector2>();
+        if(value.performed)
+        {
+            _moveDir = value.ReadValue<Vector2>();
+            //Debug.Log($"이동 입력받음: {_moveDir}");
+        }
+        else if (value.canceled)
+        {
+            _moveDir = Vector2.zero;
+            //Debug.Log("이동 입력 멈춤");
+        }
     }
 
     /// <summary>

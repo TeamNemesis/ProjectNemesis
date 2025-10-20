@@ -124,6 +124,7 @@ GameObject:
   - component: {fileID: 8264492883468287342}
   - component: {fileID: 900541771517750140}
   - component: {fileID: 3854052272450954835}
+  - component: {fileID: 3268806528149902651}
   m_Layer: 0
   m_Name: NebulaPhantom
   m_TagString: Untagged
@@ -235,18 +236,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1abb3d4db9b5c764bb8012c48a58f6ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
-  currentHealth: 0
+  _maxHealth: 100
+  _currentHealth: 0
+  _moveSpeed: 5
+  isStunned: 0
+  isPushed: 0
+  isBindned: 0
+  isDead: 0
+  debuffHandler: {fileID: 0}
   attackDamage: 10
   attackRange: 30
   detectionRange: 50
   attackDelay: 0.5
-  isDead: 0
+  targetTag: Player
   agent: {fileID: 0}
   player: {fileID: 0}
   aimingDelay: 0
   _isAttacking: 0
-  laserPointerPrefab: {fileID: 7754088949335976299, guid: 369dc6d013b7b8f4b9fb4c25d8716c76, type: 3}
+  laser: {fileID: 0}
   currentState: 0
 --- !u!195 &3854052272450954835
 NavMeshAgent:
@@ -270,3 +277,15 @@ NavMeshAgent:
   m_BaseOffset: 1
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &3268806528149902651
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8056503113930403980}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 725c1c87d9a2e3346bd4c5a3c364f518, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

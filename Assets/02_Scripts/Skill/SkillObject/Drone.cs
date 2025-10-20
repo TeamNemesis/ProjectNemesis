@@ -11,7 +11,15 @@ public class Drone : MonoBehaviour, IReinforce
         Attack // 공격
     }
 
+    /// <summary>
+    /// 공격 적중시 이벤트 실행
+    /// </summary>
     public event Action<Transform> Attack;
+
+    /// <summary>
+    /// 공격 실행시 이벤트 실행
+    /// </summary>
+    public event Action attackTry;
 
     //TODO 플레이어 스탯 필드
 
@@ -89,9 +97,9 @@ public class Drone : MonoBehaviour, IReinforce
 
     public void InitializeDrone(PlayerModel player)
     {
-        if(GameManager.Instance().skillManager.attachTech!=null)
+        if(GameManager.Instance.skillManager.attachTech!=null)
         {
-            Attack+=GameManager.Instance().skillManager.attachTech.Use;
+            Attack+=GameManager.Instance.skillManager.attachTech.Use;
         }
     }
 

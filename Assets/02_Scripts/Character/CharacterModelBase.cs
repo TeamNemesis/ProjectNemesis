@@ -1,4 +1,5 @@
 using System;
+using System.Security.Cryptography;
 using UnityEngine;
 
 /// <summary>
@@ -9,9 +10,10 @@ public abstract class CharacterModelBase : MonoBehaviour, IDamageable
     [SerializeField] 
     protected int _maxHealth = 100;
     public int maxHealth { get { return _maxHealth; } } // 최대 체력을 반환하는 속성
-    public void SetMaxHp(int maxHp)
+    public void SetMaxHp(int plusMaxHp)
     {
-        _maxHealth = maxHp;
+        _maxHealth += plusMaxHp;
+        _currentHealth += plusMaxHp;
         OnMaxHpChanged?.Invoke(_maxHealth);
     }
 
@@ -53,13 +55,12 @@ public abstract class CharacterModelBase : MonoBehaviour, IDamageable
 
     public event Action OnDieEvent;
 
+    [SerializeField] protected DebuffHandler debuffHandler;
+
     public void OnHpChangedEventPlay(int currentHp)
     {
         OnHpChanged?.Invoke(currentHp);
     }
-
-    [SerializeField] protected DebuffHandler debuffHandler;
-
 
     /// <summary>
     /// 캐릭터 생성 시 초기화 함수
@@ -67,7 +68,20 @@ public abstract class CharacterModelBase : MonoBehaviour, IDamageable
     public virtual void Initialize()
     {
         debuffHandler = GetComponent<DebuffHandler>();
+    }
 
+    /// <summary>
+    /// 체력 회복
+    /// </summary>
+    /// <param name="plusHp"></param>
+    public void Heal(int plusHp)
+    {
+        _currentHealth += plusHp;
+        if(_currentHealth > maxHealth)
+        {
+            _currentHealth = maxHealth;
+        }
+        OnHpChanged?.Invoke(_currentHealth);
     }
 
     public void TakeDamage(float damage)
@@ -86,6 +100,7 @@ public abstract class CharacterModelBase : MonoBehaviour, IDamageable
         if (debuffHandler != null && debuffHandler.HasDebuff(Constants.DEBUFF_BURN))
         {
             damage *= 2f;
+            debuffHandler.RemoveDebuff(Constants.DEBUFF_BURN);
         }
 
         _currentHealth -= (int)damage;
