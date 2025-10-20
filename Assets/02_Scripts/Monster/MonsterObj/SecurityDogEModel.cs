@@ -28,7 +28,7 @@ public class SecurityDogEModel : MonsterBase
 
     private void Update()
     {
-        if (isDead || player == null) return;
+        if (isDead || _target == null) return;
         if (isStunned) return;
         currentCoolTime += Time.deltaTime;
 
@@ -62,7 +62,7 @@ public class SecurityDogEModel : MonsterBase
     private void HandleIdle()
     {
         // 플레이어와 거리
-        float distance = Vector3.Distance(transform.position, player.position);
+        float distance = Vector3.Distance(transform.position, _target.position);
         if (distance <= detectionRange && CanSeePlayer())
         {
             currentState = State.Move;
@@ -70,8 +70,8 @@ public class SecurityDogEModel : MonsterBase
     }
     private void HandleMove()
     {
-        if (player == null) return;
-        float distance = Vector3.Distance(transform.position, player.position);
+        if (_target == null) return;
+        float distance = Vector3.Distance(transform.position, _target.position);
         if (distance > detectionRange || !CanSeePlayer())
         {
             agent.ResetPath();
@@ -79,7 +79,7 @@ public class SecurityDogEModel : MonsterBase
             return;
         }
 
-        agent.SetDestination(player.position);
+        agent.SetDestination(_target.position);
 
         if (distance <= attackRange && CanSeePlayer())
         {
@@ -91,7 +91,7 @@ public class SecurityDogEModel : MonsterBase
     private IEnumerator PerformAttack()
     {
         _isAttacking = true;
-        float distance = Vector3.Distance(transform.position, player.position);
+        float distance = Vector3.Distance(transform.position, _target.position);
 
         if (distance < attackRange)
         {
@@ -99,7 +99,7 @@ public class SecurityDogEModel : MonsterBase
             agent.isStopped = true;
             yield return new WaitForSeconds(jumpPrepareTime);
 
-            jumpDirection = (player.position - transform.position).normalized;
+            jumpDirection = (_target.position - transform.position).normalized;
 
             jumpTimer = 0f;
 
@@ -125,7 +125,7 @@ public class SecurityDogEModel : MonsterBase
 
     private void OnTriggerEnter(Collider other)
     {
-        if (_isAttacking && other.CompareTag("Player"))
+        if (_isAttacking && other.CompareTag(targetTag))
         {
             var playerHealth = other.GetComponent<PlayerHealth>();
             if (playerHealth != null)

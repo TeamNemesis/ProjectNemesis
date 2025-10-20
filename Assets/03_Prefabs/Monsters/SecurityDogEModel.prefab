@@ -18,7 +18,7 @@ GameObject:
   - component: {fileID: 6935371344567721242}
   m_Layer: 0
   m_Name: SecurityDogEModel
-  m_TagString: Untagged
+  m_TagString: Monster
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -139,7 +139,7 @@ MonoBehaviour:
   originalSpeed: 3
   targetTag: Player
   agent: {fileID: 0}
-  player: {fileID: 0}
+  target: {fileID: 0}
   _isAttacking: 0
   jumpPrepareTime: 2
   jumpSpeed: 30

@@ -48,7 +48,6 @@ public abstract class CharacterModelBase : MonoBehaviour, IDamageable
     [SerializeField] public bool isBindned = false;    // 속박
     [SerializeField] public bool isDead = false;       // 죽음
 
-
     public event Action<int> OnHpChanged; // 체력 변경 시 발생하는 이벤트
     public event Action<int> OnMaxHpChanged; // 최대 체력 변경 시 발생 이벤트
     public event Action<float> OnMoveSpeedChanged; // 이동 속도 변경 시 발생하는 이벤트

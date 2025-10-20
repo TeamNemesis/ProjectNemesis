@@ -127,7 +127,7 @@ GameObject:
   - component: {fileID: 3268806528149902651}
   m_Layer: 0
   m_Name: NebulaPhantom
-  m_TagString: Untagged
+  m_TagString: Monster
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -248,9 +248,10 @@ MonoBehaviour:
   attackRange: 30
   detectionRange: 50
   attackDelay: 0.5
+  originalSpeed: 10
   targetTag: Player
   agent: {fileID: 0}
-  player: {fileID: 0}
+  target: {fileID: 0}
   aimingDelay: 0
   _isAttacking: 0
   laser: {fileID: 0}

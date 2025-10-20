@@ -85,35 +85,6 @@ public class ObjectPool : MonoBehaviour
     }
 
     /// <summary>
-    /// 풀에 오브젝트 추가 (이미 생성된 오브젝트를 풀에 등록)
-    /// </summary>
-    public void AddToPool(GameObject obj)
-    {
-        if (!availablePools.ContainsKey(obj.name))
-        {
-            availablePools[obj.name] = new List<GameObject>();
-            inUsePools[obj.name] = new List<GameObject>();
-
-            if (!poolContainers.ContainsKey(obj.name))
-            {
-                GameObject container = new GameObject($"Pool_{obj.name}");
-                container.transform.SetParent(transform);
-                poolContainers[obj.name] = container;
-            }
-        }
-
-        // 사용 중이던 오브젝트면 사용 완료 상태로 변경
-        if (inUsePools[obj.name].Contains(obj))
-        {
-            inUsePools[obj.name].Remove(obj);
-        }
-
-        obj.SetActive(false);
-        obj.transform.SetParent(poolContainers[obj.name].transform);
-        availablePools[obj.name].Add(obj);
-    }
-
-    /// <summary>
     /// 풀에서 오브젝트 가져오기
     /// </summary>
     public GameObject GetFromPool(string poolName)
@@ -297,8 +268,6 @@ public class ObjectPool : MonoBehaviour
             availablePools[obj.name].Add(obj);
             obj.SetActive(false);
             obj.transform.SetParent(poolContainers[obj.name].transform);
-            obj.transform.position = Vector3.zero;
-            obj.transform.rotation = Quaternion.identity;
         }
         else
         {
