@@ -24,21 +24,15 @@ public class SkillChoose : MonoBehaviour
         _skillCompany = skill;
     }
 
-
-    [SerializeField]
-    private GameObject _skillBtnPanel;
-    [SerializeField]
-    private GameObject _parentPanel;
-    [SerializeField]
-    private SkillBtn _skillBtnPrefab;
-
+    #region chooseSkill
 
     /// <summary>
     /// 초기 스킬 선택 버튼 생성
     /// </summary>
-    public void SetBtn(SkillBase skillComapany)
+    public void SetBtn()
     {
-        _skillCompany = skillComapany;
+        // 콜라보 스킬에서 복원을 위한 임시 보관
+        SkillBase tempSkillCompany = _skillCompany;
         int skillNum = _skillCompany.skillList.Count;
         List<int> indexList;
         bool bCheckCollab = GameManager.Instance.skillManager.CheckCollabo(_skillCompany, out indexList);
@@ -47,12 +41,12 @@ public class SkillChoose : MonoBehaviour
             skillNum += indexList.Count;
         }
 
-        _skillBtnPanel.SetActive(true);
+        GameManager.Instance.UIManager.SetActiveSkillBtnPanel(true);
 
         if (_skillCompany == null || skillNum == 0)
         {
             Debug.Log("Error");
-            _skillBtnPanel.SetActive(false);
+            GameManager.Instance.UIManager.SetActiveSkillBtnPanel(false);
             return;
         }
 
@@ -63,7 +57,7 @@ public class SkillChoose : MonoBehaviour
             // 임시 인트
             do
             {
-                _skillCompany = skillComapany;
+                _skillCompany = tempSkillCompany;
                 tempNum = Random.Range(0, 100);
                 loopCnt++;
                 if (bCheckCollab && indexList.Count>0 && tempNum < Constants.COLLABPER)
@@ -85,38 +79,54 @@ public class SkillChoose : MonoBehaviour
         _tempSkillList.Clear();
     }
 
+
+    /// <summary>
+    /// 버튼에 스킬 정보 세팅
+    /// </summary>
+    public bool SetSkillBtn(int skillNum)
+    {
+        // 예외처리
+        if (skillNum > _skillCompany.skillList.Count)
+        {
+            return true;
+        }
+        if (!_tempSkillList.Contains(_skillCompany.skillList[skillNum].skillIdx))
+        {
+            SkillBtn skillBtn = GameManager.Instance.UIManager.MakeSkillBtn();
+            skillBtn.SetSkillInfo(_skillCompany.skillList[skillNum]);
+            skillBtn.GetComponent<Button>().onClick.AddListener(() => OnClick_SkillBtnClick(skillBtn));
+            _tempSkillList.Add(skillBtn.skillData.skillIdx);
+            return false;
+        }
+        else return true;
+    }
+    #endregion
+
+    #region Upgrade
     /// <summary>
     /// 스킬 업그레이드 버튼 생성
     /// </summary>
     public void SetUpgradeBtn()
     {
-        _skillBtnPanel.SetActive(true);
+        GameManager.Instance.UIManager.SetActiveSkillBtnPanel(true);
+        int upgradeSkillNum = GameManager.Instance.skillManager.upgradeSkillList.Count;
 
 
-
-        if (_skillCompany == null || GameManager.Instance.skillManager.GetTotalSkillNumber() == 0)
+        if (upgradeSkillNum == 0)
         {
             Debug.Log("Error");
-            _skillBtnPanel.SetActive(false);
+            GameManager.Instance.UIManager.SetActiveSkillBtnPanel(false);
             return;
         }
 
-        for (int i = 0; i < Mathf.Min(Constants.SKILLCNT, GameManager.Instance.skillManager.GetTotalSkillNumber()); i++)
+        for (int i = 0; i < upgradeSkillNum; i++)
         {
 
             int tempNum = 0;
             // 임시 인트
             do
             {
-                _skillCompany = GameManager.Instance.skillManager.DrawSkillCompany();
-
-                while (_skillCompany.currentSkillData.Count == 0 || loopCnt > 10)
-                {
-                    _skillCompany = GameManager.Instance.skillManager.DrawSkillCompany();
-
-                }
-                Debug.Log(_skillCompany.currentSkillData.Count + _skillCompany.name);
-                tempNum = Random.Range(0, _skillCompany.currentSkillData.Count);
+                tempNum = Random.Range(0, upgradeSkillNum);
 
                 loopCnt++;
             }
@@ -129,34 +139,14 @@ public class SkillChoose : MonoBehaviour
 
     }
 
-
-    /// <summary>
-    /// 버튼에 스킬 정보 세팅
-    /// </summary>
-    public bool SetSkillBtn(int skillNum)
-    {
-        // 예외처리
-        if(skillNum > _skillCompany.skillList.Count)
-        {
-            return true;
-        }
-        if (!_tempSkillList.Contains(_skillCompany.skillList[skillNum].skillIdx))
-        {
-            SkillBtn skillBtn = Instantiate(_skillBtnPrefab, _parentPanel.transform);
-            skillBtn.SetSkillInfo(_skillCompany.skillList[skillNum]);
-            skillBtn.GetComponent<Button>().onClick.AddListener(() => OnClick_SkillBtnClick(skillBtn));
-            _tempSkillList.Add(skillBtn.skillData.skillIdx);
-            return false;
-        }
-        else return true;
-    }
+    #endregion
 
     public bool SetUpgradeSkillBtn(int skillNum)
     {
-        if (!_tempSkillList.Contains(_skillCompany.currentSkillData[skillNum].skillIdx))
+        if (!_tempSkillList.Contains(GameManager.Instance.skillManager.upgradeSkillList[skillNum].skillIdx))
         {
-            SkillBtn skillBtn = Instantiate(_skillBtnPrefab, _parentPanel.transform);
-            skillBtn.SetSkillInfo(_skillCompany.currentSkillData[skillNum]);
+            SkillBtn skillBtn = GameManager.Instance.UIManager.MakeSkillBtn();
+            skillBtn.SetSkillInfo(GameManager.Instance.skillManager.upgradeSkillList[skillNum]);
             skillBtn.GetComponent<Button>().onClick.AddListener(() => OnClick_SkillBtnClick(skillBtn));
             _tempSkillList.Add(skillBtn.skillData.skillIdx);
             return false;
@@ -169,20 +159,16 @@ public class SkillChoose : MonoBehaviour
     /// </summary>
     public void OnClick_SkillBtnClick(SkillBtn skillBtn)
     {
-        if (skillBtn.skillData.LevelUp())
+        if (skillBtn.skillData.ChooseSkill())
         {
             skillBtn.skillData.skillCompany.ChooseSkill(skillBtn.skillData);
 
         }
         skillBtn.skillData.skillCompany.ActivateSkill(skillBtn.skillData);
 
-        foreach (Transform child in _parentPanel.transform)
-        {
-            Destroy(child.gameObject);
-        }
+        GameManager.Instance.UIManager.DestroyChildObject(skillBtn.transform);
 
-
-        _skillBtnPanel.SetActive(false);
+        GameManager.Instance.UIManager.SetActiveSkillBtnPanel(false);
     }
 
 
@@ -195,32 +181,35 @@ public class SkillChoose : MonoBehaviour
         SetSkillComapany(GameManager.Instance.skillManager.DrawSkillCompany());
     }
 
-    public void OnClick_skillCompanyOne(Skill_One skillCompany)
+    public void OnClick_skillCompanyOne()
     {
-        SetSkillComapany(skillCompany);
+        SetSkillComapany(GameManager.Instance.skillManager.skill_One);
     }
 
-    public void OnClick_skillCompanyTwo(Skill_Two skillCompany)
+    public void OnClick_skillCompanyTwo()
     {
-        SetSkillComapany(skillCompany);
+        SetSkillComapany(GameManager.Instance.skillManager.skill_Two);
     }
 
-    public void OnClick_skillCompanyThree(Skill_Three skillCompany)
+    public void OnClick_skillCompanyThree()
     {
-        SetSkillComapany(skillCompany);
+        SetSkillComapany(GameManager.Instance.skillManager.skill_Three);
     }
 
-    public void OnClick_skillCompanyFour(Skill_Four skillCompany)
+    public void OnClick_skillCompanyFour()
     {
-        SetSkillComapany(skillCompany);
+        SetSkillComapany(GameManager.Instance.skillManager.skill_Four);
     }
 
-    public void OnClick_skillCompanyFive(Skill_Five skillCompany)
+    public void OnClick_skillCompanyFive()
     {
-        SetSkillComapany(skillCompany);
+        SetSkillComapany(GameManager.Instance.skillManager.skill_Five);
     }
 
-
+    public void OnClick_ListBtn()
+    {
+        GameManager.Instance.UIManager.MakeCurrentSkillList();
+    }
 
 
     #endregion

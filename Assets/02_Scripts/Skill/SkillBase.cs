@@ -4,11 +4,22 @@ using UnityEngine;
 
 public abstract class SkillBase : MonoBehaviour
 {
+    //TODO 방생성 알고리즘 테스트용, 추후 삭제
     public string skillBaseString;
 
     protected PlayerModel player;
 
     protected SkillManager _skillManager;
+
+    /// <summary>
+    /// 현재 가지고 있는 스킬 개수
+    /// </summary>
+    protected int _skillNum;
+    public int skillNum { get { return _skillNum; } }
+    public virtual void SkillNumUp(SkillData skilldata, int num)
+    {
+        _skillNum+= num;
+    }
 
     /// <summary>
     /// Json파일로 부터 데이터를 저장할 리스트
@@ -46,11 +57,13 @@ public abstract class SkillBase : MonoBehaviour
     [SerializeField]
     private string _skillDataPath;
 
-    public void InitializeSkill(SkillManager skillManager)
+    public virtual void InitializeSkill(SkillManager skillManager)
     {
+        Debug.Log("skill Initialize");
         ReadJsonFile();
         player = GameManager.Instance.player;
         _skillManager = skillManager;
+        _skillNum = 0;
     }
 
     public void ReadJsonFile()
@@ -81,11 +94,22 @@ public abstract class SkillBase : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 스킬 처음 선택시
+    /// </summary>
+    /// <param name="skillData"></param>
     public void ChooseSkill(SkillData skillData)
     {
         if (_skillList.Remove(skillData))
         {
             _currentSkillData.Add(skillData);
+            SkillNumUp(skillData,1);
+            // MaxLevel이 1이 아니라면(업그레이드 가능하다면)
+            if (skillData.skillMaxLevel != 1)
+            {
+                //업그레이드 가능 리스트에 추가
+                _skillManager.upgradeSkillList.Add(skillData);
+            }
         }
         else
         {
@@ -103,84 +127,8 @@ public abstract class SkillBase : MonoBehaviour
 
 }
 
-public class SkillData
-{
-
-    /// <summary>
-    /// 스킬 인덱스
-    /// </summary>
-    private int _skillIdx;
-    public int skillIdx { get { return _skillIdx; } }
-
-    /// <summary>
-    /// 스킬 설명
-    /// </summary>
-    private string _skillScript;
-    public string skillScript { get { return _skillScript; } }
-
-    /// <summary>
-    /// 스킬 이미지 경로
-    /// </summary>
-    private string _skillImagePath;
-    public string skillImagePath { get { return _skillImagePath; } }
-
-
-    /// <summary>
-    /// 스킬 레벨
-    /// </summary>
-    private int _skillLevel;
-    public int skillLevel { get { return _skillLevel; } }
-
-    /// <summary>
-    /// 해당 스킬 소속 회사
-    /// </summary>
-    private SkillBase _skillCompany;
-    public SkillBase skillCompany { get { return _skillCompany; } }
-    /// <summary>
-    /// 초기화 용
-    /// </summary>
-    /// <param name="skillDataPath"></param>
-    public SkillData(skillJsonData data,SkillBase skillCompany)
-    {
-        _skillIdx = data.IDX;
-        _skillScript = data.SCRIPT;
-        _skillImagePath = data.IMAGE;
-
-        _skillLevel = 0;
-        _skillCompany = skillCompany;
-    }
-
-    public bool LevelUp()
-    {
-        _skillLevel++;
-        if (_skillLevel == 1)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-
-    }
-
-    public void RemoveList()
-    {
-        _skillLevel = 0;
-        _skillCompany.currentSkillData.Remove(this);
-        _skillCompany.skillList.Add(this);
-    }
-
-
-}
 
 
 
-public class skillJsonData
-{
-    public int IDX;
-    public string SCRIPT;
-    public string IMAGE;
-}
 
 

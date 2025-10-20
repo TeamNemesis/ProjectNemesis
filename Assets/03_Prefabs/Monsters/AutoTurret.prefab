@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 1811781650492687738}
   - component: {fileID: 2821671262608775679}
   - component: {fileID: 8993511308398464980}
+  - component: {fileID: 5590887593721408804}
   m_Layer: 0
   m_Name: AutoTurret
   m_TagString: Untagged
@@ -123,13 +124,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb4641a948f8e6647939a9df673dc2d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
-  currentHealth: 0
+  _maxHealth: 100
+  _currentHealth: 0
+  _moveSpeed: 5
+  isStunned: 0
+  isPushed: 0
+  isBindned: 0
+  isDead: 0
+  debuffHandler: {fileID: 0}
   attackDamage: 10
   attackRange: 20
-  attackDelay: 0.5
-  isDead: 0
   detectionRange: 20
+  attackDelay: 0.5
+  targetTag: Player
   agent: {fileID: 0}
   player: {fileID: 0}
   _isAttacking: 0
@@ -157,6 +164,18 @@ NavMeshAgent:
   m_BaseOffset: 0.5
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &5590887593721408804
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2999584611796180676}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 725c1c87d9a2e3346bd4c5a3c364f518, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5151867569829041139
 GameObject:
   m_ObjectHideFlags: 0

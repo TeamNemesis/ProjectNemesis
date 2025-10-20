@@ -44,7 +44,7 @@ public class SkillBtn : MonoBehaviour
 				}
 				if(_skillLevel !=null)
 				{
-						_skillLevel.text = choosedSkill.skillLevel.ToString();
+						_skillLevel.text = choosedSkill.skillLevel.ToString() + " / " + choosedSkill.skillMaxLevel.ToString();
 				}
 		}
 }

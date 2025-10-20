@@ -1,0 +1,100 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2259933608048587868
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2686334147114506230}
+  - component: {fileID: 8235591472848026062}
+  - component: {fileID: 7295376262813496824}
+  - component: {fileID: 5776918785121449733}
+  - component: {fileID: 417085957603644227}
+  m_Layer: 0
+  m_Name: MapController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2686334147114506230
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2259933608048587868}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8235591472848026062
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2259933608048587868}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7e94795e38465a46be4d4ed0bf56b71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _roomSpawner: {fileID: 7295376262813496824}
+  _doorSpawner: {fileID: 5776918785121449733}
+  _doorDecider: {fileID: 417085957603644227}
+  _currentRoom: {fileID: 0}
+  _currentDoors: []
+  _currentRoomCount: 11
+  _hasLabRoomAppeared: 0
+--- !u!114 &7295376262813496824
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2259933608048587868}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ffc97d4a82d6c743a104d74051fbae6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &5776918785121449733
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2259933608048587868}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d28994a85fe04df42be955bd6a1ed03e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &417085957603644227
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2259933608048587868}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f464700504db04c4caba6a57c9e1f566, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _oneDoorChance: 0.1
+  _twoDoorChance: 0.6
+  _threeDoorChance: 0.3
+  door_CreditChance: 0
+  door_HealChance: 0
+  door_UpgradeChance: 0
+  door_ChromeChance: 0
+  door_SkillPackChance: 0

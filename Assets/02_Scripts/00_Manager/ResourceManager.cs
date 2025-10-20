@@ -1,42 +1,33 @@
-﻿    using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 /// <summary>
-/// 프리팹 리소스를 관리하는 매니저 클래스
-/// 게임 시작시 필요한 리소스를 미리 로드하여 관리
+/// 최소 책임: Resources 폴더에서 에셋을 로드해서 보관만 한다.
+/// - 딕셔너리/매핑은 만들지 않음.
+/// - 나중에 Addressables로 교체할 수 있게 구현부만 수정하면 됨.
 /// </summary>
 public class ResourceManager : MonoBehaviour
 {
-    [Header("----- 플레이어 무기 세트 -----")]
-    [SerializeField] PlayerWeaponSet[] _playerWeaponSets; // 플레이어 컴포넌트 세트들
+    [Header("Editor Assignment (옵션)")]
+    [SerializeField] GameObject _doorPrefab;
 
-    Dictionary<WeaponType, PlayerWeaponSet> _playerWeaponSetMap = new Dictionary<WeaponType, PlayerWeaponSet>();
+    [Header("Runtime Loaded (Resources 폴더에서 로드)")]
+    public GameObject DoorPrefab { get; private set; }
 
-    public Dictionary<WeaponType, PlayerWeaponSet> PlayerWeaponSetMap => _playerWeaponSetMap;
+    public PlayerWeaponSet[] PlayerWeaponSets { get; private set; }
+    public RoomDataSO[] RoomDataSOs { get; private set; }
 
-
+    // 호출: 게임 시작 시 한 번만
     public void Initialize()
     {
-        _playerWeaponSets = Resources.LoadAll<PlayerWeaponSet>(Constants.RESOURCES_PATH_PLAYER_WEAPONSET);
-        Debug.Log("Resource.Load로 불러온 플레이어 무기 세트 개수: " + _playerWeaponSets.Length);
+        DoorPrefab = _doorPrefab != null
+            ? _doorPrefab
+            : Resources.Load<GameObject>(Constants.RESOURCES_PATH_DOOR_PREFAB); // 경로 규칙 예시
 
-        InitializePlayerWeaponSetMap();
-    }
+        PlayerWeaponSets = Resources.LoadAll<PlayerWeaponSet>(Constants.RESOURCES_PATH_PLAYER_WEAPONSET);
+        RoomDataSOs = Resources.LoadAll<RoomDataSO>(Constants.RESOURCES_PATH_ROOMDATASO);
 
-    void InitializePlayerWeaponSetMap()
-    {
-        _playerWeaponSetMap.Clear();
-
-        foreach (var set in _playerWeaponSets)
-        {
-            if (!_playerWeaponSetMap.ContainsKey(set.WeaponType))
-            {
-                _playerWeaponSetMap.Add(set.WeaponType, set);
-            }
-            else
-            {
-                Debug.LogWarning($"이미 {set.WeaponType} 타입의 무기 세트가 존재합니다.");
-            }
-        }
+        // (선택) 간단한 검증 로그
+        if (DoorPrefab == null)
+            Debug.LogWarning("ResourceManager: DoorPrefab이 비어있습니다.");
     }
 }
