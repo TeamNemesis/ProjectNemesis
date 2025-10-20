@@ -6,7 +6,8 @@
 public class Player : MonoBehaviour
 {
     [Header("----- 컴포넌트 참조 -----")]
-    [SerializeField] PlayerModel _model;                       // 플레이어 모델 컴포넌트
+    //[SerializeField] PlayerModel _model;                       // 플레이어 모델 컴포넌트
+    [SerializeField] CharacterController _characterController; // 플레이어 캐릭터 컨트롤러 컴포넌트
     [SerializeField] PlayerMover _mover;                       // 플레이어 이동 컴포넌트
     [SerializeField] PlayerDasher _dasher;                     // 플레이어 대시 컴포넌트
     [SerializeField] PlayerWeaponController _weaponController; // 플레이어 무기 관리 컴포넌트
@@ -42,6 +43,11 @@ public class Player : MonoBehaviour
         _interactableDetector.OnDetected += InteractableDetected;
         _interactableDetector.OnMissed += InteractableMissed;
 
+        _mover.Initialize(_characterController);
+        _dasher.Initialize(_characterController);
+        _weaponController.Initialize();
+
+        _interactionController.Initialize();
         _interactableGuideView.Initialize();
 
         //_model.Initialize();
@@ -86,7 +92,7 @@ public class Player : MonoBehaviour
     /// </summary>
     public void Dash()
     {
-        _dasher.Dash();
+        _dasher.Dash(transform.transform.forward, 5f, 0.2f);
     }
 
     /// <summary>

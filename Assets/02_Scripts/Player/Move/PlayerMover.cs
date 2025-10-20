@@ -5,10 +5,16 @@
 /// </summary>
 public class PlayerMover : MonoBehaviour
 {
+    [Header("----- 읽기 전용 -----")]
     [SerializeField] CharacterController _characterController;  // 캐릭터 컨트롤러 컴포넌트 참조
     [SerializeField] float _moveSpeed = 5f;                    // 이동 속도
 
     Vector3 _moveDir; // 이동 방향 벡터
+
+    public void Initialize(CharacterController characterController)
+    {
+        _characterController = characterController;
+    }
 
     /// <summary>
     /// 이동 입력을 받았을 때 호출되어 캐릭터 컨트롤러를 통해 플레이어를 움직이는 함수
