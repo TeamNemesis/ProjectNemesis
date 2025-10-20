@@ -46,6 +46,62 @@ public static class Constants
     /// 범위 증가 스킬을 위한 계수
     /// </summary>
     public static float SKILL_EXTENT = 1f;
+
+    /// <summary>
+    /// 기술 분류를 위한 태그
+    /// </summary>
+    public const string SKILL_TAG_ATTACK = "기본공격";
+
+    public const string SKILL_TAG_GEN = "유탄";
+
+    public const string SKILL_TAG_SP = "특수공격";
+
+    public const string SKILL_TAG_DASH = "대쉬";
+
+    #endregion
+
+    /// <summary>
+    /// 일반적인 폭발물 오브젝트 유지 시간
+    /// </summary>
+    public static float SKILL_REMAIN = 0.5f;
+
+
+    #region Skill_One
+
+    /// <summary>
+    /// 특수 공격 강화(포자 퍼뜨리기) 독 중첩 주기
+    /// </summary>
+    public static float SKILL_ONE_SPATTACK_STACKTIME = 1f;
+
+    /// <summary>
+    /// 장판 지속 시간
+    /// </summary>
+    public static float SKILL_ONE_SPATTACK_TIME = 3f;
+
+    /// <summary>
+    /// 피의 갈증 힐량
+    /// </summary>
+    public static int SKILL_ONE_SPATTACKHEAL = 2;
+
+    /// <summary>
+    /// 피격시 독 지속 시간
+    /// </summary>
+    public static float SKILL_ONE_HITPOISONSPREAD_TIME = 0.5f;
+
+    #endregion
+
+    #region Skill_Two
+
+
+    /// <summary>
+    /// 폭사 데미지
+    /// </summary>
+    public const float EXPLOSIONDEATH_DAMAGE = 40f;
+    /// <summary>
+    /// 폭사 범위
+    /// </summary>
+    public const float EXPLOSIONDEATH_EXTENT = 3f;
+
     #endregion
 
     #region tag

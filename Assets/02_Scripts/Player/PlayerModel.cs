@@ -19,6 +19,24 @@ public class PlayerModel : CharacterModelBase
     /// 테스트용 공격 적중시 이벤트
     /// </summary>
     public event Action<Transform> AttackHit;
+
+    /// <summary>
+    /// 테스트용 유탄 착탄 이벤트
+    /// </summary>
+    public event Action<Vector3> GrenadeBomb;
+
+    /// <summary>
+    /// 테스트용 특수 공격 실행 이벤트
+    /// </summary>
+    public event Action SPAttackTry;
+
+    /// <summary>
+    /// 테스트용 특수 공격 적중 이벤트
+    /// </summary>
+    public event Action<Transform> SPAttackHit;
+
+    public event Action PlayerHit;
+
     /// <summary>
     /// 플레이어 테스트용 공격력
     /// </summary>
@@ -29,9 +47,10 @@ public class PlayerModel : CharacterModelBase
     {
         if (Input.GetKeyDown(KeyCode.U))
         {
-            GameManager.Instance.skillManager.skill_One.SpreadPoison();
-            OnAttackHit();
-        }
+
+            OnPlayerHit();
+				}
+
     }
 
   
@@ -40,7 +59,20 @@ public class PlayerModel : CharacterModelBase
     {
         AttackHit?.Invoke(currentTarget);
     }
+
+    public void OnAttackGrenade()
+    {
+        Debug.Log("Grenade Event");
+        GrenadeBomb?.Invoke(new Vector3(1, 0, 0));
+    }
+
+    public void OnPlayerHit()
+    {
+        PlayerHit?.Invoke();
+    }
     #endregion
+
+
 
     public void Start()
     {

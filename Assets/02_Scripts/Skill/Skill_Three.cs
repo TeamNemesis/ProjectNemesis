@@ -20,10 +20,13 @@ public class Skill_Three : SkillBase
             // 중력자 무기
             case 30:
                 ActiveTech skillAttack = new Skill_Three_Attck(choosedSkill);
-                if (_skillManager.attachTech != null)
+                if (_skillManager.attackTech != null)
                 {
-                    _skillManager.attachTech.Deactivate(player);
-                }
+										if (_skillManager.attackTech.skillData.skillIdx != choosedSkill.skillIdx)
+										{
+												_skillManager.attackTech.Deactivate(player);
+										}
+								}
                 skillAttack.Activate(_skillManager, player);
                 break;
 
@@ -81,36 +84,35 @@ public class Skill_Three : SkillBase
 
 public class Skill_Three_Attck : ActiveTech
 {
-    public override TechTriggerType TriggerType => throw new NotImplementedException();
 
     public override event Action OnTechUsed;
     public override void Activate(SkillManager skillManager, PlayerModel player)
     {
         base.Activate(skillManager, player);
-        player.AttackHit += Use;
+        player.AttackHit += HitEnemy;
         Drone[] drones = player.transform.GetComponentsInChildren<Drone>();
         if (drones.Length > 0)
         {
             foreach (Drone drone in drones)
             {
-                drone.Attack += Use;
+                drone.Attack += HitEnemy;
             }
         }
     }
     public override void Deactivate(PlayerModel player)
     {
         base.Deactivate(player);
-        player.AttackHit -= Use;
+        player.AttackHit -= HitEnemy;
         Drone[] drones = player.transform.GetComponentsInChildren<Drone>();
         if (drones.Length > 0)
         {
             foreach (Drone drone in drones)
             {
-                drone.Attack -= Use;
+                drone.Attack -= HitEnemy;
             }
         }
     }
-    public override void Use(Transform transform)
+    public override void HitEnemy(Transform transform)
     {
         Debug.Log("Use " + _skillData.skillIdx);
 

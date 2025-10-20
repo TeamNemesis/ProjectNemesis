@@ -126,10 +126,8 @@ public class UIManager : MonoBehaviour
         foreach (Transform child in children)
         {
             IPoolable childPool = child.GetComponent<IPoolable>();
-            Debug.Log(childPool == null);
             if (childPool != null)
             {
-                Debug.Log("childPool");
                 ObjectPool.Instance.ReleaseToPoolByInterface(childPool);
             }
         }

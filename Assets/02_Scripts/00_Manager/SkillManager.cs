@@ -36,7 +36,7 @@ public class SkillManager : MonoBehaviour
     /// </summary>
     [SerializeField]
     private ActiveTech _attackTech;
-    public ActiveTech attachTech { get { return _attackTech; } }
+    public ActiveTech attackTech { get { return _attackTech; } }
     public void SetAttackTech(ActiveTech attackTech)
     { 
         _attackTech = attackTech;

@@ -17,10 +17,10 @@ public class PoisonSpread : AreaDamageBase,IPoolable
     }
 
 
-    public IEnumerator DestroyPoisonSpreadCoroutine(float time, IPoolable gameObject)
+    public IEnumerator DestroyPoisonSpreadCoroutine()
     {
-        yield return new WaitForSeconds(time);
-        ObjectPool.Instance.ReleaseToPoolByInterface(gameObject);
+        yield return new WaitForSeconds(Constants.SKILL_ONE_HITPOISONSPREAD_TIME);
+        ObjectPool.Instance.ReleaseToPoolByInterface(this);
     }
 
     public GameObject GetGameObject()
@@ -32,7 +32,7 @@ public class PoisonSpread : AreaDamageBase,IPoolable
     {
         transform.SetParent(GameManager.Instance.player.transform);
         CheckTarget();
-        StartCoroutine(DestroyPoisonSpreadCoroutine(0.5f, this));
+        StartCoroutine(DestroyPoisonSpreadCoroutine());
     }
 
     public void ReleaseObject()
