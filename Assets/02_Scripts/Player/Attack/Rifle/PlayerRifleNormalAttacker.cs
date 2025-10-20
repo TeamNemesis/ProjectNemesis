@@ -16,6 +16,6 @@ public class PlayerRifleNormalAttacker : PlayerNormalAttacker
     public override void Attack()
     {
         Debug.Log("라이플 일반공격 실행");
-        ObjectPool.Instance.GetFromPool(_bulletPrefab, _firePoint.position);
+        GameObject obj = ObjectPool.Instance.GetFromPool(_bulletPrefab, _firePoint.position, transform.rotation);
     }
 }
