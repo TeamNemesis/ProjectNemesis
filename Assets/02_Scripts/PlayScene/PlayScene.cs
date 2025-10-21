@@ -11,13 +11,23 @@ public class PlayScene : MonoBehaviour
 
     private void Awake()
     {
-        _inputHandler.OnMoveInput += _player.Move;
-        _inputHandler.OnDashInput += _player.Dash;
-        _inputHandler.OnNomralAttackInput += _player.NormalAttack;
-        // 여기에 모바일용 유탄공격 시작 이벤트를 추가하여 UI를 생성하는 메서드를 연결할 수 있습니다.
-        _inputHandler.OnGrenadeAttackInputEnded += _player.GrenadeAttack;
-        _inputHandler.OnSpecialAttackInput += _player.SpecialAttack;
+        //_inputHandler.OnMoveInput += _player.Move;
+        //_inputHandler.OnDashInput += _player.Dash;
+        //_inputHandler.OnNomralAttackInput += _player.NormalAttack;
+        //// 여기에 모바일용 유탄공격 시작 이벤트를 추가하여 UI를 생성하는 메서드를 연결할 수 있습니다.
+        //_inputHandler.OnGrenadeAttackInputEnded += _player.GrenadeAttack;
+        //_inputHandler.OnSpecialAttackInput += _player.SpecialAttack;
         _inputHandler.OnInteractInput += _player.ExecuteInteraction;
+
+        // PlayerInputHandler의 이벤트와 Player 메서드 연결
+        _inputHandler.OnMoveInput += _player.SetMoveInput;
+        _inputHandler.OnDashInput += () => _player.SetDashPressed(true);
+        _inputHandler.OnNomralAttackInput += () => _player.SetNormalAttackPressed(true);
+        _inputHandler.OnGrenadeAttackInputEnded += () => _player.SetGrenadeAttackPressed(false);
+        _inputHandler.OnSpecialAttackInput += () => _player.SetSpecialAttackPressed(true);
+        _inputHandler.OnInteractInput += _player.ExecuteInteraction;
+
+        // PlayScene.Awake
     }
 
     private void Start()
