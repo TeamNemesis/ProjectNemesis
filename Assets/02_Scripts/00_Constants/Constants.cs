@@ -124,40 +124,33 @@ public static class Constants
 
     #endregion
 
+
     #region Drone
 
     /// <summary>
-    ///  드론 공격력
+    /// 드론 기본 데미지
     /// </summary>
-    public static int DRONE_ATTACK = 2;
-
+    public const float DRONE_ATTACK = 2f;
 
     /// <summary>
     /// 드론 z 위치 보정
     /// </summary>
-    public static float DRONE_Z_POSITION = 0.3f;
+    public const float DRONE_Z_POSITION = 0.3f;
 
     /// <summary>
     /// 드론 회전 속도
     /// </summary>
-    public static float DRONE_ROTATION_SPEED = 5f;
+    public const float DRONE_ROTATION_SPEED = 5f;
 
-    /// <summary>
-    /// 드론 사정거리
-    /// </summary>
-    public static float DRONE_ATTACKRANGE = 10f;
-
-    /// <summary>
-    /// 드론 공격 주기
-    /// </summary>
-    public static float DRONE_ATTACKDELAY = 1.0f;
 
     /// <summary>
     /// 드론 콜라이더 탐색 숫자
     /// </summary>
-    public static int DRONE_SEARCHNUM = 10;
+    public const int DRONE_SEARCHNUM = 10;
 
     #endregion
+
+
     #region Bullet
     /// <summary>
     /// 드론 총알 속도

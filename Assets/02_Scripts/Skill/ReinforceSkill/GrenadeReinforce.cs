@@ -65,7 +65,7 @@ public class Skill_Two_Grenade : ActiveTech
 				#region Test
 
 				// 스킬 효과 적용 (플레이어 유탄 공격력에 접근하여 공격력 추가)
-				player.playerAttack = (int)(originalGrenadeAttack * ((float)_skillData.skillBaseValue_1 + (float)_skillData.skillLevelValue_1 * _skillData.skillLevel));
+				player.playerAttack = (originalGrenadeAttack * (_skillData.skillBaseValue_1 + _skillData.skillLevelValue_1 * _skillData.skillLevel));
 				// player.playerAttack = (일반 공격 증가 식)
 				// 공격 적중 시 이벤트에 추가
 

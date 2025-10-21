@@ -69,7 +69,7 @@ public class Skill_Two_SPAttack : ActiveTech
 
     public override event Action OnTechUsed;
 
-    private int originalSPAttack;
+    private float originalSPAttack;
 
 
     /// <summary> 

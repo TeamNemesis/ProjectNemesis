@@ -35,7 +35,7 @@ public class Bullet : PoolableObject, IInitializePoolable
         }
     }
 
-    public void Initialize()
+    public void Initialize(object data = null)
     {
         // 여기서 데이터 초기화 작업 수행 가능
         _lifeTimer = 0f;
