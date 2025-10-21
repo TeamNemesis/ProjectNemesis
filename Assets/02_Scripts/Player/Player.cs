@@ -207,7 +207,7 @@ public class Player : MonoBehaviour
 
     public void Dash(Vector3 dashDir)
     {
-        _dasher.Dash(dashDir);
+        //_dasher.Dash(dashDir);
         _animator.OnDash();
     }
     #endregion

@@ -154,8 +154,8 @@ public class PlayerStatManager : MonoBehaviour
 		/// 플레이어 이동 속도 계수
 		/// </summary>
 		private float _playerMoveSpeed;
-		private float playerMoveSpeed { get { return _playerMoveSpeed; } }
-		private void AddPlayerMoveSpeed(float plusMoveSpeed)
+		public  float playerMoveSpeed { get { return _playerMoveSpeed; } }
+		public  void AddPlayerMoveSpeed(float plusMoveSpeed)
 		{
 				_playerMoveSpeed += plusMoveSpeed;
 		}

@@ -10,6 +10,7 @@ public abstract class SkillBase : MonoBehaviour
     protected PlayerModel player;
 
     protected SkillManager _skillManager;
+    public SkillManager skillManager { get { return _skillManager; } }
 
     /// <summary>
     /// 현재 가지고 있는 스킬 개수
