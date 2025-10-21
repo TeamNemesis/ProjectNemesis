@@ -23,7 +23,7 @@ public class PlayerWeaponController : MonoBehaviour
     /// </summary>
     public void Initialize()
     {
-        Debug.Log("초기 무기 장착");
+        //Debug.Log("초기 무기 장착");
         EquipWeapon(WeaponType.Rifle);
         OnWeaponChanged?.Invoke(WeaponType.Rifle);
     }
@@ -66,9 +66,9 @@ public class PlayerWeaponController : MonoBehaviour
     /// </summary>
     public void EquipWeapon(WeaponType newWeaponType)
     {
-        Debug.Log("무기 장착");
+        //Debug.Log("무기 장착");
         // ResourceManager에서 무기 프리팹을 가져와서
-        GameObject weaponPrefab = GameManager.Instance.ResourceManager.PlayerWeaponSetMap[newWeaponType].WeaponPrefab;
+        GameObject weaponPrefab = GameManager.Instance.DataManager.WeaponSetMap[newWeaponType].WeaponPrefab;
         // 해당 무기 타입에 맞는 무기 장착 위치에 생성
         GameObject weaponObj = Instantiate(weaponPrefab, GetParentTransform(newWeaponType));
         // 현재 장착된 무기로 설정

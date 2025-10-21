@@ -119,6 +119,7 @@ public class SkillData
         _skillLevel++;
         if(_skillMaxLevel == _skillLevel)
         {
+            Debug.Log("스킬 최대 레벨 달성");
             GameManager.Instance.skillManager.upgradeSkillList.Remove(this);
         }
         return _skillLevel == 1;
@@ -127,8 +128,13 @@ public class SkillData
     /// <summary>
     /// 스킬을 현재 가지고 있는 스킬 리스트에서 삭제
     /// </summary>
-    public void RemoveList()
+    public void RemoveList(bool isSameSkill)
     {
+        if(isSameSkill)
+        {
+            // 같은 스킬이면 리턴
+            return;
+        }
         _skillLevel = 0;
         _skillCompany.currentSkillData.Remove(this);
         _skillCompany.SkillNumUp(this,-1);

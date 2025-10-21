@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class Drone : MonoBehaviour, IReinforce
+public class Drone : PoolableObject, IReinforce
 {
     [SerializeField]
     private enum State
@@ -75,7 +75,7 @@ public class Drone : MonoBehaviour, IReinforce
                 SearchEnemy();
                 break;
             case State.Attack:
-                if(currentTarget==null)
+                if (currentTarget == null)
                 {
                     return;
                 }
@@ -89,7 +89,7 @@ public class Drone : MonoBehaviour, IReinforce
                 break;
         }
 
-        if(Input.GetKeyDown(KeyCode.U))
+        if (Input.GetKeyDown(KeyCode.U))
         {
             Attack?.Invoke(_currentTarget.transform);
         }
@@ -97,9 +97,9 @@ public class Drone : MonoBehaviour, IReinforce
 
     public void InitializeDrone(PlayerModel player)
     {
-        if(GameManager.Instance.skillManager.attachTech!=null)
+        if (GameManager.Instance.skillManager.attackTech != null)
         {
-            Attack+=GameManager.Instance.skillManager.attachTech.Use;
+            Attack += GameManager.Instance.skillManager.attackTech.HitEnemy;
         }
     }
 
@@ -179,6 +179,19 @@ public class Drone : MonoBehaviour, IReinforce
         _currentState = State.Idle;
     }
 
-    
+    public void Initialize()
+    {
+        InitializeDrone(GameManager.Instance.player);
+    }
 
+    public GameObject GetGameObject()
+    {
+        return gameObject;
+    }
+
+    public void ReleaseObject()
+    {
+        Attack = null;
+        attackTry = null;
+    }
 }

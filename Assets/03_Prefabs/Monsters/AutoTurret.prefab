@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 5590887593721408804}
   m_Layer: 0
   m_Name: AutoTurret
-  m_TagString: Untagged
+  m_TagString: Monster
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -136,11 +136,12 @@ MonoBehaviour:
   attackRange: 20
   detectionRange: 20
   attackDelay: 0.5
+  originalSpeed: 10
   targetTag: Player
   agent: {fileID: 0}
-  player: {fileID: 0}
+  _target: {fileID: 0}
   _isAttacking: 0
-  turretBulletPrefab: {fileID: 4476522845791292034, guid: 32e7cbcd5d4ee5c498508d5492575fdb, type: 3}
+  turretbullet: {fileID: 433645739003782474, guid: 32e7cbcd5d4ee5c498508d5492575fdb, type: 3}
   currentState: 0
 --- !u!195 &8993511308398464980
 NavMeshAgent:

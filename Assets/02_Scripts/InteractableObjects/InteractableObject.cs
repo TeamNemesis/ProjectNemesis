@@ -9,7 +9,8 @@ public abstract class InteractableObject : MonoBehaviour, IInteractable
     public abstract Vector3 GuidePoint { get; }
 
     public virtual event Action<IInteractable> OnInteracted;
+    public virtual event Action<IInteractable> OnInteractionCompleted;
 
-    public abstract void Interact(Transform subject);
-    
+    public abstract void StartInteract(Transform subject);
+    protected void NotifyInteractionCompleted() => OnInteractionCompleted?.Invoke(this);
 }

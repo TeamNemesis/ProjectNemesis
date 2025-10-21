@@ -20,4 +20,6 @@ public class GrenadeDamageArea : AreaDamageBase
     {
         target.GetComponent<IDamageable>().TakeDamage(_grenadeDamage);
     }
+
+  
 }

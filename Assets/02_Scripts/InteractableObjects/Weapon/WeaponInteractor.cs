@@ -16,7 +16,7 @@ public class WeaponInteractor : InteractableObject
 
     public override event Action<IInteractable> OnInteracted;
 
-    public override void Interact(Transform subject)
+    public override void StartInteract(Transform subject)
     {
         Debug.Log("무기와 상호작용 함");
         OnInteracted?.Invoke(this);

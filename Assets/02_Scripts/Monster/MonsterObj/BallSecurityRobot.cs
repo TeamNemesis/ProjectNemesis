@@ -1,7 +1,5 @@
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.AI;
 
 public class BallSecurityRobot : MonsterBase
 {
@@ -27,7 +25,7 @@ public class BallSecurityRobot : MonsterBase
 
     private void Update()
     {
-        if (isDead || player == null) return;
+        if (isDead || _target == null) return;
         if (isStunned) return;
 
         switch (currentState)
@@ -53,7 +51,7 @@ public class BallSecurityRobot : MonsterBase
 
     private void HandleIdle()
     {
-        float distance = Vector3.Distance(transform.position, player.position);
+        float distance = Vector3.Distance(transform.position, _target.position);
 
         if (distance <= detectionRange)
         {
@@ -63,7 +61,7 @@ public class BallSecurityRobot : MonsterBase
 
     private void HandleMove()
     {
-        float distance = Vector3.Distance(transform.position, player.position);
+        float distance = Vector3.Distance(transform.position, _target.position);
 
         if (distance > detectionRange)
         {
@@ -72,7 +70,7 @@ public class BallSecurityRobot : MonsterBase
             return;
         }
 
-        agent.SetDestination(player.position);
+        agent.SetDestination(_target.position);
 
         if (distance <= attackRange && !_isFusing)
         {
@@ -82,7 +80,7 @@ public class BallSecurityRobot : MonsterBase
 
     private IEnumerator SelfDestructionAttack()
     {
-        if (player != null && !_isFusing)
+        if (_target != null && !_isFusing)
         {
             _isFusing = true;
 
@@ -100,25 +98,23 @@ public class BallSecurityRobot : MonsterBase
             // 자폭까지 딜레이
             yield return new WaitForSeconds(attackDelay);
 
-            // 폭발 판정
-            float finalPlayerDistance = Vector3.Distance(transform.position, player.position);
-            if (finalPlayerDistance <= _explosionRadius)
-            {
-                
-                IDamageable playerHealth = player.GetComponent<IDamageable>();
-                if (playerHealth != null)
-                {
-                    playerHealth.TakeDamage(attackDamage);
-                }
-            }
+            CheckTarget();
 
             currentState = State.Die;
         }
     }
 
-    protected override void Die()
+    public void CheckTarget()
     {
-        // 필요 시 폭발 이펙트, 사운드 추가 가능
-        base.Die();
+        // 콜라이더 탐색
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, _explosionRadius);
+
+        foreach (Collider collider in hitColliders)
+        {
+            if (collider.tag == targetTag)
+            {
+                collider.GetComponent<IDamageable>().TakeDamage(attackDamage);
+            }
+        }
     }
 }

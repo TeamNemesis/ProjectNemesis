@@ -5,7 +5,6 @@ public class PlayScene : MonoBehaviour
     [Header("----- 컴포넌트 참조 -----")]
     [SerializeField] Player _player;                               // 플레이어
     [SerializeField] PlayerInputHandler _inputHandler;             // 플레이어 입력 핸들러
-    [SerializeField] InteractionController _interactionController; // 상호작용 컨트롤러
     [SerializeField] MapController _mapController;                 // 맵 컨트롤러
 
     private void Awake()
@@ -17,14 +16,19 @@ public class PlayScene : MonoBehaviour
         _inputHandler.OnGrenadeAttackInputEnded += _player.GrenadeAttack;
         _inputHandler.OnSpecialAttackInput += _player.SpecialAttack;
         _inputHandler.OnInteractInput += _player.ExecuteInteraction;
-
-        _interactionController.OnWeaponInteract += _player.OnWeaponInteracted;
     }
 
     private void Start()
     {
         _player.Initialize();
-        _interactionController.Initialize();
         _mapController.Initialize();
+    }
+
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.F3))
+        {
+            GameManager.Instance.PoolManager.GetFromPool("Prefabs/Bullet/Bullet");
+        }
     }
 }

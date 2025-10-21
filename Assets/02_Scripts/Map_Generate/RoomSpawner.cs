@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
 /// 방을 스폰하는 역할을 하는 클래스
-/// 다음 방으로 넘어갈 때 RoomType에 따라 적절한 방을 생성
+/// RoomInfo(타입 + 옵션)를 받아서 SO 기반으로 인스턴스화 및 초기화를 수행한다.
 /// </summary>
 public class RoomSpawner : MonoBehaviour
 {
@@ -12,34 +11,83 @@ public class RoomSpawner : MonoBehaviour
 
     public void Initialize()
     {
-        // 시작 시 StartRoom 생성
-        SpawnRoom(RoomType.Start, null, null);
+        // 시작 시 StartRoom 생성 (예시)
+        var startInfo = new RoomInfo(RoomType.Start, null, null);
+        SpawnRoom(startInfo);
     }
 
-    
-    public void SpawnRoom(RoomType roomType, NormalRoomType? normalRoomType, TechSelectPackType? techSelectPackType)
+    /// <summary>
+    /// RoomInfo를 받아 해당 Room을 생성한다. position/parent를 지정하지 않으면 (0,0,0)과 씬 루트에 생성된다.
+    /// </summary>
+    public void SpawnRoom(RoomInfo roomInfo, Vector3 position = default, Transform parent = null)
     {
-        GameObject roomPrefab = GameManager.Instance.ResourceManager.RoomPrefabMap[roomType];
-        if (roomPrefab != null)
+        if (roomInfo == null)
         {
-            // Instantiate로 새 GameObject 생성
-            GameObject roomObj = Instantiate(roomPrefab, Vector3.zero, Quaternion.identity);
+            Debug.LogError("RoomSpawner.SpawnRoom: roomInfo is null.");
+            return;
+        }
 
-            // 생성된 오브젝트에서 Room 컴포넌트 가져오기
-            Room room = roomObj.GetComponent<Room>();
-            if (room != null)
-            {
-                room.Initialize(roomType, normalRoomType, techSelectPackType);
-                OnRoomSpawned?.Invoke(room); // 이벤트는 Initialize 이후로 옮기는게 더 안전
-            }
-            else
-            {
-                Debug.LogError($"RoomType {roomType}에 해당하는 프리팹에 Room 컴포넌트가 없습니다.");
-            }
-        }
-        else
+        var gm = GameManager.Instance;
+        if (gm == null)
         {
-            Debug.LogError($"RoomType {roomType}에 해당하는 프리팹이 없습니다.");
+            Debug.LogError("RoomSpawner: GameManager.Instance is null.");
+            return;
         }
+
+        var dataManager = gm.DataManager;
+        if (dataManager == null)
+        {
+            Debug.LogError("RoomSpawner: DataManager is null on GameManager.");
+            return;
+        }
+
+        if (!dataManager.TryGetRoomData(roomInfo.RoomType, out var roomData) || roomData == null)
+        {
+            Debug.LogError($"RoomSpawner: RoomData not found for RoomType {roomInfo.RoomType}.");
+            return;
+        }
+
+        var prefab = roomData.RoomPrefab;
+        if (prefab == null)
+        {
+            Debug.LogError($"RoomSpawner: RoomData '{roomData.name}' has no assigned RoomPrefab.");
+            return;
+        }
+
+        // Instantiate
+        GameObject roomObj = null;
+        try
+        {
+            roomObj = Instantiate(prefab, position, Quaternion.identity, parent);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"RoomSpawner: Failed to instantiate prefab '{prefab.name}': {ex}");
+            return;
+        }
+
+        // Room 컴포넌트 검사 및 초기화
+        var room = roomObj.GetComponent<Room>();
+        if (room == null)
+        {
+            Debug.LogError($"RoomSpawner: Instantiated prefab '{prefab.name}' has no Room component. Destroying instance.");
+            Destroy(roomObj);
+            return;
+        }
+
+        // SO 기반 초기화(정책: Room 내부에서 필요한 값들을 SO로부터 적용)
+        try
+        {
+            room.Initialize(roomInfo);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"RoomSpawner: Exception during InitializeFromRoomData: {ex}");
+            Destroy(roomObj);
+            return;
+        }
+
+        // 이벤트는 초기화 이후에 발생
+        OnRoomSpawned?.Invoke(room);
     }
 }
