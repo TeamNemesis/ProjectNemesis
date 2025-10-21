@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -17,6 +18,11 @@ public class Elite2 : MonsterBase
     [SerializeField] private float _poisonFieldRadius = 6f;   // 독성 구름 반경
     [SerializeField] private float _poisonFieldDelay = 2f;
     [SerializeField] private bool _isAttacking = false;
+
+    [SerializeField] private float poisonFieldAttackCoolTime = 0;
+    [SerializeField] private float poisonLaserAttackCoolTime = 0;
+    [SerializeField] private float bulletAttackCoolTime = 0;
+
 
     [Header("PoisonFieldPrefab"), SerializeField]
     private PoolableObject poisonFieldPrefab; // 독성 구름 프리팹
@@ -51,7 +57,7 @@ public class Elite2 : MonsterBase
             case State.Attack:
                 if (!_isAttacking)
                 {
-                    StartCoroutine(PoisonLaserAttack());
+
                 }
                 break;
             case State.Die:
@@ -165,6 +171,6 @@ public class Elite2 : MonsterBase
 
         _isAttacking = false;
         laserAttackCount = 0;
-        currentState = State.Die; // 공격 후 다시 추격 상태로 전환
+        currentState = State.Move; // 공격 후 다시 추격 상태로 전환
     }
 }
