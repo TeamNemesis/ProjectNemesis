@@ -40,7 +40,6 @@ public class PlayerWeaponController : MonoBehaviour
         if (_currentWeapon == null)
         {
             EquipWeapon(newWeaponType);
-            OnWeaponChanged?.Invoke(_currentWeapon);
             return;
         }
 
@@ -59,7 +58,6 @@ public class PlayerWeaponController : MonoBehaviour
             Destroy(_currentWeapon.gameObject);
             // 새로운 무기 장착
             EquipWeapon(newWeaponType);
-            OnWeaponChanged?.Invoke(_currentWeapon);
         }
     }
 
@@ -77,6 +75,8 @@ public class PlayerWeaponController : MonoBehaviour
         _currentWeapon = weaponObj.GetComponent<Weapon>();
         // 무기 초기화
         _currentWeapon.Initialize(newWeaponType);
+        // 무기 변경 이벤트 호출
+        OnWeaponChanged?.Invoke(_currentWeapon);
         // 장착된 무기 반환
         return _currentWeapon;
     }

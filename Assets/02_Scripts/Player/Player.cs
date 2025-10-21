@@ -17,7 +17,11 @@ public class Player : MonoBehaviour
     [SerializeField] PlayerDasher _dasher;                     // 플레이어 대시 컴포넌트
     [SerializeField] PlayerWeaponController _weaponController; // 플레이어 무기 관리 컴포넌트
     [SerializeField] PlayerAnimator _animator;                 // 플레이어 애니메이터 컴포넌트
+    [SerializeField] PlayerAnimationEventForwarder _forwarder; // 플레이어 애니메이션 이벤트 포워더 컴포넌트
     [SerializeField] PlayerGrenadeAttacker _grenadeAttacker;   // 플레이어 유탄 발사 컴포넌트
+
+    [SerializeField] PlayerNormalAttacker[] _normalAttackers;          // 플레이어 일반 공격 컴포넌트 배열 (무기별로 다름)
+    [SerializeField] PlayerSpecialAttacker[] _specialAttackers;      // 플레이어 특수 공격 컴포넌트 배열 (무기별로 다름)
 
     [Header("----- 상호작용 컴포넌트 -----")]
     [SerializeField] InteractionController _interactionController;      // 상호작용 컨트롤러
@@ -33,6 +37,7 @@ public class Player : MonoBehaviour
     [Header("----- 읽기 전용 -----")]
     [SerializeField] PlayerWeaponSet _currentWeaponSet;        // 현재 플레이어 무기 세트
     [SerializeField] PlayerStateType _currentStateType;        // 현재 플레이어 상태 타입
+    [SerializeField] PlayerStatManager _statManager;           // 플레이어 스탯 매니저
 
     [Header("----- 입력 상태 플래그 -----")]
     [SerializeField] Vector2 _moveInput;                  // 플레이어 이동 입력 벡터
@@ -42,23 +47,31 @@ public class Player : MonoBehaviour
     [SerializeField] bool _specialAttackPressed;           // 플레이어 특수 공격 입력 여부 (단발)
 
     [Header("----- 상태 플래그 (Player가 소유) -----")]
+    [SerializeField] bool _canMove;                        // 플레이어 이동 가능 여부
     [SerializeField] bool _isDashing;                      // 플레이어 대시 중 여부
     [SerializeField] bool _isNormalAttacking;              // 플레이어 일반공격 중 여부
     [SerializeField] bool _isSpecialAttacking;             // 플레이어 특수공격 중 여부
 
     // 읽기 전용 프로퍼티로 외부 접근 제공
+    public PlayerNormalAttacker NormalAttacker => _normalAttacker;
+    public PlayerAnimator Animator => _animator;
+
     public Vector2 MoveInput => _moveInput;
     public bool DashPressed => _dashPressed;
     public bool NormalAttackPressed => _normalAttackPressed;
     public bool GrenadeAttackPressed => _grenadeAttackPressed;
     public bool SpecialAttackPressed => _specialAttackPressed;
 
+    public bool CanMove => _canMove;
     public bool IsDashing => _isDashing;
     public bool IsNormalAttacking => _isNormalAttacking;
     public bool IsSpecialAttacking => _isSpecialAttacking;
 
     [Header("----- 상태 캐시 -----")]
     StateMachine _stateMachine;                              // 플레이어 상태 머신
+
+    Dictionary<WeaponType, PlayerNormalAttacker> _normalAttackerMap = new(); // 무기 타입별 일반 공격 컴포넌트 맵
+    Dictionary<WeaponType, PlayerSpecialAttacker> _specialAttackerMap = new(); // 무기 타입별 특수 공격 컴포넌트 맵
 
     private void Update()
     {
@@ -82,6 +95,8 @@ public class Player : MonoBehaviour
     /// </summary>
     public void Initialize()
     {
+        _statManager = GameManager.Instance.PlayerStatManager;
+
         _weaponController.OnWeaponChanged += OnWeaponChanged;
 
         _interactionController.OnWeaponInteract += OnWeaponInteracted;
@@ -89,8 +104,19 @@ public class Player : MonoBehaviour
         _interactableDetector.OnDetected += InteractableDetected;
         _interactableDetector.OnMissed += InteractableMissed;
 
+        // Attacker 타입별로 매핑
+        foreach (var attacker in _normalAttackers)
+        {
+            _normalAttackerMap[attacker.WeaponType] = attacker;
+        }
+        foreach (var attacker in _specialAttackers)
+        {
+            _specialAttackerMap[attacker.WeaponType] = attacker;
+        }
+
         _mover.Initialize(_characterController);
         _dasher.Initialize(_characterController);
+        _forwarder.Initialize(this);
         _weaponController.Initialize();
 
         _interactionController.Initialize();
@@ -110,6 +136,7 @@ public class Player : MonoBehaviour
 
     #region 상태 플래그 Setters (상태 Enter/Exit에서 호출)
     // 상태(Enter/Exit)에서 호출하여 Player가 소유한 플래그를 변경
+    public void SetCanMove(bool canMove) => _canMove = canMove;
     public void SetIsDashing(bool isDashing) => _isDashing = isDashing;
     public void SetIsNormalAttacking(bool isNormalAttacking) => _isNormalAttacking = isNormalAttacking;
     public void SetIsSpecialAttacking(bool isSpecialAttacking) => _isSpecialAttacking = isSpecialAttacking;
@@ -125,22 +152,26 @@ public class Player : MonoBehaviour
         // 1) 일반 공격 입력 처리(우선순위 최상)
         if (_normalAttackPressed && TryConsumeNormalAttack())
         {
+            Debug.Log("일반공격 입력 들어옴");
             if (_normalAttacker != null)
             {
-                // reflection 제거: RequestAttack()이 있으면 직접 호출
-                bool accepted = false;
-                try
-                {
-                    accepted = _normalAttacker.RequestAttack();
-                }
-                catch (Exception ex)
-                {
-                    Debug.LogWarning($"Player.EvaluateTransitions: RequestAttack 호출 중 예외: {ex}");
-                    accepted = false;
-                }
+                //// reflection 제거: RequestAttack()이 있으면 직접 호출
+                //bool accepted = false;
+                //try
+                //{
+                //    accepted = _normalAttacker.RequestAttack();
+                //}
+                //catch (Exception ex)
+                //{
+                //    Debug.LogWarning($"Player.EvaluateTransitions: RequestAttack 호출 중 예외: {ex}");
+                //    accepted = false;
+                //}
+
+                //Debug.Log("일반공격 시도: " + accepted);
 
                 // 공격 시작이 허용되고 Player가 바쁘지 않다면 상태 전환
-                if (accepted && !IsDashing && !IsNormalAttacking && !IsSpecialAttacking)
+                //if (accepted && !IsDashing && !IsNormalAttacking && !IsSpecialAttacking)
+                if(!_isDashing && !_isNormalAttacking && !_isSpecialAttacking)
                 {
                     // StateMachine을 이용한 전환
                     _stateMachine.ChangeState(PlayerStateType.NormalAttack);
@@ -193,21 +224,29 @@ public class Player : MonoBehaviour
     #endregion
 
     #region 이동 관련 공개 메서드 (기존 로직 유지)
-    public void Move(Vector3 moveDir)
+    /// <summary>
+    /// 각 상태가 끝났을 때 Idle 상태로 복귀할 때 호출
+    /// </summary>
+    public void SetToIdle()
+    {
+        _stateMachine.ChangeState(PlayerStateType.Idle);
+    }
+    
+    public void Move(Vector2 moveDir)
     {
         _mover.Move(moveDir);
         _animator.OnMove(moveDir.magnitude);
     }
-    
-    public void Stop()
+
+    public void StopMove()
     {
         _mover.Move(Vector2.zero);
         _animator.OnMove(0f);
     }
 
-    public void Dash(Vector3 dashDir)
+    public void Dash()
     {
-        _dasher.Dash(dashDir);
+        _dasher.Dash(transform.forward, _statManager.playerDashDistance, 0.5f);
         _animator.OnDash();
     }
     #endregion
@@ -223,6 +262,8 @@ public class Player : MonoBehaviour
     public void OnAttackFireEvent()
     {
         if (_normalAttacker == null) return;
+
+        Debug.Log(" OnAttackFireEvent 호출됨");
 
         // 라이플 계열은 FireNow() 호출
         if (_normalAttacker is PlayerRifleNormalAttacker rifle)
@@ -242,6 +283,8 @@ public class Player : MonoBehaviour
     public void OnAttackEndEvent()
     {
         if (_normalAttacker == null) return;
+
+        Debug.Log(" OnAttackEndEvent 호출됨");
 
         // 라이플일 경우 애니메이션 종료 콜백
         if (_normalAttacker is PlayerRifleNormalAttacker rifle)
@@ -317,16 +360,17 @@ public class Player : MonoBehaviour
     {
         _currentWeaponSet = GameManager.Instance.DataManager.WeaponSetMap[weapon.WeaponType];
 
-        _normalAttacker = _currentWeaponSet.NormalAttacker;
+        _normalAttacker = _normalAttackerMap[weapon.WeaponType];
+        _specialAttacker = _specialAttackerMap[weapon.WeaponType];
+
         if (weapon.WeaponType == WeaponType.Rifle)
         {
             PlayerRifleNormalAttacker playerRifleNormalAttacker = _normalAttacker as PlayerRifleNormalAttacker;
             RifleWeapon rifleWeapon = weapon as RifleWeapon;
 
-            playerRifleNormalAttacker.Initialize(rifleWeapon.FirePos);
+            playerRifleNormalAttacker.Initialize(this, rifleWeapon.FirePos);
         }
         //_grenadeAttacker = _currentWeaponSet.GrenadeAttacker;
-        _specialAttacker = _currentWeaponSet.SpecialAttacker;
 
         _animator.SetAnimator(_currentWeaponSet.AnimController);
         // 만약 이펙트가 바뀌거나 사운드 등 효과가 필요해서 이벤트가 필요하다면

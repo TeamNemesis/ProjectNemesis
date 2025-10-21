@@ -31,9 +31,10 @@ public class PlayerMover : MonoBehaviour
         // 플레이어가 이동 중이라면 회전 처리
         if (_moveDir != Vector3.zero)
         {
-            // 이동 방향으로 플레이어 회전 (부드럽게 회전)
-            Quaternion targetRotation = Quaternion.LookRotation(_moveDir);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 0.1f);
+            // 이동 방향으로 플레이어 회전(바로 회전)
+            //Quaternion targetRotation = Quaternion.LookRotation(_moveDir);
+            //transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 0.1f);
+            transform.rotation = Quaternion.LookRotation(_moveDir);
         }
     }
 
