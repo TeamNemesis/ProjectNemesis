@@ -1,17 +1,16 @@
 using UnityEngine;
 
-public class PlayerHealth : MonoBehaviour, IDamageable
+public class PlayerHealth : CharacterModelBase, IDamageable
 {
-    public int maxHealth;
-    public int currentHealth;
 
     float h; 
     float v;
 
-
-    void Start()
+    private void Start()
     {
-        currentHealth = maxHealth;
+        _currentHealth = maxHealth;
+        DebuffHandler handler = gameObject.GetComponent<DebuffHandler>();
+        handler.InitializePlayer();
     }
 
     private void Update()
@@ -19,15 +18,5 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         h = Input.GetAxis("Horizontal");
         v = Input.GetAxis("Vertical");
         transform.Translate(h * Time.deltaTime * 5, 0, v * Time.deltaTime * 5);
-    }
-
-    public void TakeDamage(float damage)
-    {
-        currentHealth -= (int)damage; 
-        Debug.Log("Player Health: " + currentHealth);
-        if (currentHealth <= 0)
-        {
-            Destroy(gameObject);
-        }
     }
 }

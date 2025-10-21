@@ -19,9 +19,9 @@ public class TurretBullet : PoolableObject
     {
         this.targetTag = targetTag;
     }
-    public void SetLifeTime(float duration)
+    public void SetLifeTime(float lifeTime)
     {
-        this.lifeTime = duration;
+        this.lifeTime = lifeTime;
     }
 
     public void Initialize(string targetTag, float damage, float lifeTime)
@@ -31,7 +31,6 @@ public class TurretBullet : PoolableObject
         SetLifeTime(lifeTime);
         this.owner = gameObject;
         StartLifeTime();
-
     }
 
 

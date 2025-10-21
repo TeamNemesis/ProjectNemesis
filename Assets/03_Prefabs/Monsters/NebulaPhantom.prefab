@@ -18,7 +18,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4995324153163134119
 Transform:
   m_ObjectHideFlags: 0
@@ -247,14 +247,14 @@ MonoBehaviour:
   attackDamage: 10
   attackRange: 30
   detectionRange: 50
-  attackDelay: 0.5
+  attackDelay: 3
   originalSpeed: 10
   targetTag: Player
   agent: {fileID: 0}
-  target: {fileID: 0}
+  _target: {fileID: 0}
   aimingDelay: 0
   _isAttacking: 0
-  laser: {fileID: 0}
+  SquareDecalPrefab: {fileID: 7619084252263834349, guid: e795736bd1fa44849baa7ed701aeb454, type: 3}
   currentState: 0
 --- !u!195 &3854052272450954835
 NavMeshAgent:
