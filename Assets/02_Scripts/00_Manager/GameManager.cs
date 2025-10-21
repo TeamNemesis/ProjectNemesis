@@ -32,13 +32,12 @@ public class GameManager : MonoBehaviour
                     _instance._interactableManager = obj.AddComponent<InteractableManager>();
                     _instance._dataManager = obj.AddComponent<DataManager>();
                     _instance._poolManager = obj.AddComponent<PoolManager>();
+                    _instance._playerStatManager = obj.AddComponent<PlayerStatManager>(); 
 
-                    //_instance._skillManger = obj.AddComponent<SkillManager>();
 
                     _instance._resourceManager.Initialize();
                     _instance._dataManager.Initialize(_instance._resourceManager);
                     _instance._poolManager.Initialze(_instance._resourceManager);
-                    //_instance._skillManger.InitializeSkillManager();
 
                     // 씬 전환시 파괴되지 않도록 설정
                     DontDestroyOnLoad(obj);
@@ -113,4 +112,11 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private PlayerModel _player;
     public PlayerModel player { get { return _player; } }
+
+    /// <summary>
+    /// 플레이어 스탯 매니저
+    /// </summary>
+    [SerializeField]
+    private PlayerStatManager _playerStatManager;
+    public PlayerStatManager playerStatManager { get {return _playerStatManager; } }    
 }

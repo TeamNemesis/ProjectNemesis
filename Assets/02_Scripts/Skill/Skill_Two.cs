@@ -126,7 +126,7 @@ public class Skill_Two : SkillBase
     /// <param name="skillData"></param>
     public void OnCombatEquipment(SkillData skillData)
     {
-        float totalDamageUp = (float)(skillData.skillLevel * skillData.skillLevelValue_1 + skillData.skillBaseValue_1);
+        float totalDamageUp = skillData.skillLevel * skillData.skillLevelValue_1 + skillData.skillBaseValue_1;
         CombatEquipment?.Invoke(skillData.skillIdx,totalDamageUp);
         
     }

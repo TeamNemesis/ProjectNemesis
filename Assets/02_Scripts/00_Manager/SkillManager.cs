@@ -27,10 +27,20 @@ public class SkillManager : MonoBehaviour
     public Skill_Mutant skill_Mutant { get { return _skill_Mutant; }}
     #endregion
 
-    Player _player;
+    //Player _player;
 
-    public Player Player => _player;
-     
+    //public Player Player => _player;
+
+    /// <summary>
+    /// 플레이어 스탯 매니저
+    /// </summary>
+    private PlayerStatManager _playerStatManager;
+    public PlayerStatManager playerStatManager { get { return _playerStatManager; }}
+
+    #region test
+    public PlayerModel Player;
+    #endregion
+
 
     #region reinforce
     /// <summary>
@@ -98,6 +108,9 @@ public class SkillManager : MonoBehaviour
         _skill_Five.InitializeSkill(this);
         _skill_Collab.InitializeSkill(this);
         _skill_Mutant.InitializeSkill(this);
+
+        Player = GameManager.Instance.player;
+        _playerStatManager = GameManager.Instance.playerStatManager;
     }
 
     /// <summary>

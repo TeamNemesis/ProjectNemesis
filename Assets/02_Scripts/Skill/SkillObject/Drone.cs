@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class Drone : PoolableObject, IReinforce
+public class Drone : PoolableObject, IInitializePoolable, IReleasePoolable
 {
     [SerializeField]
     private enum State
@@ -21,7 +21,6 @@ public class Drone : PoolableObject, IReinforce
     /// </summary>
     public event Action attackTry;
 
-    //TODO 플레이어 스탯 필드
 
     /// <summary>
     /// 현재 상태
@@ -30,22 +29,39 @@ public class Drone : PoolableObject, IReinforce
     private State _currentState = State.Idle;
 
     /// <summary>
+    /// 드론 공격력
+    /// </summary>
+    [SerializeField]
+    private float _attackDamage;
+
+    /// <summary>
+    /// 플레이어 모든 데미지 증가 배수
+    /// </summary>
+    private float _totalDamage;
+
+    /// <summary>
+    /// 드론 모든 데미지 증가 * 드론 공격력
+    /// </summary>
+    private float _finalDamage;
+
+
+    /// <summary>
     /// 공격 쿨타임
     /// </summary>
     [SerializeField]
-    private float _attackCoolTime = Constants.DRONE_ATTACKDELAY;
+    private float _attackCoolTime;
 
     /// <summary>
     /// 사정거리
     /// </summary>
     [SerializeField]
-    private float _attackRange = Constants.DRONE_ATTACKRANGE;
+    private float _attackRange;
 
     /// <summary>
     /// 탐색 콜라이더 리스트
     /// </summary>
     [SerializeField]
-    private Collider[] _results = new Collider[Constants.DRONE_SEARCHNUM];
+    private Collider[] _results;
 
 
     /// <summary>
@@ -66,9 +82,18 @@ public class Drone : PoolableObject, IReinforce
     /// </summary>
     public GameObject hitEffectPrefab;
 
+    /// <summary>
+    /// 이벤트 중복 연결 방지
+    /// </summary>
+    private bool isInit = false;
+
     private void Update()
     {
-        //TODO 플레이어 사망시 리턴
+        //if(GameManager.Instance.player.playerModel.isDead == true)
+        //{
+        //    return;
+        //}
+
         switch (_currentState)
         {
             case State.Idle:
@@ -95,13 +120,6 @@ public class Drone : PoolableObject, IReinforce
         }
     }
 
-    public void InitializeDrone(PlayerModel player)
-    {
-        if (GameManager.Instance.skillManager.attackTech != null)
-        {
-            Attack += GameManager.Instance.skillManager.attackTech.HitEnemy;
-        }
-    }
 
     /// <summary>
     /// 타겟 설정 
@@ -165,13 +183,12 @@ public class Drone : PoolableObject, IReinforce
         // 타겟이 존재하고 사정거리 안이라면
         if (_currentTarget != null && Vector3.Distance(transform.position, currentTarget.position) < _attackRange)
         {
-            // 이부분에서 IDamageable 인터페이스를 삭제하고 동훈이 만든 IDamageAble 인터페이스로 바꿈
+            attackTry?.Invoke();
             IDamageable target = _currentTarget.GetComponent<IDamageable>();
             if (target != null)
             {
                 Attack?.Invoke(currentTarget);
-                // 이부분에서 IDamageAble 인터페이스로 바꾸면서 TakeHit 함수대신 TakeDamage 함수로 바꿈
-                target.TakeDamage(Constants.DRONE_ATTACK);
+                target.TakeDamage(_finalDamage);
                 yield return new WaitForSeconds(_attackCoolTime);
             }
         }
@@ -179,19 +196,79 @@ public class Drone : PoolableObject, IReinforce
         _currentState = State.Idle;
     }
 
-    public void Initialize()
+    public void UpdateFinalDamage()
     {
-        InitializeDrone(GameManager.Instance.player);
+        _finalDamage = _attackDamage * _totalDamage;
+
     }
 
-    public GameObject GetGameObject()
-    {
-        return gameObject;
-    }
 
-    public void ReleaseObject()
+    public void Initialize(object data = null)
     {
+        if (GameManager.Instance.skillManager.attackTech != null)
+        {
+            Attack += GameManager.Instance.skillManager.attackTech.HitEnemy;
+        }
+        PlayerStatManager playerStatManager = GameManager.Instance.playerStatManager;
+
+        _results = new Collider[Constants.DRONE_SEARCHNUM];
+        _attackDamage = playerStatManager.droneAttack;
+        _attackRange = playerStatManager.droneAttackRange;
+        _attackCoolTime = playerStatManager.droneAttackTime;
+        _totalDamage = playerStatManager.totalMultiDamage;
+        UpdateFinalDamage();
+        if (!isInit)
+        {
+            playerStatManager.onDroneAttackChange += OnDroneAttackChange;
+            playerStatManager.onDroneAttackRangeChange += OnDroneAttackRangeChange;
+            playerStatManager.onDronAttackTimeChange += OnDroneAttackTimeChange;
+            playerStatManager.onTotalDamageChange += OnDroneTotalDamageChange;
+            isInit = true;
+        }
+
+
+    }
+    public void ReleaseObjectPool()
+    {
+        PlayerStatManager playerStatManager = GameManager.Instance.playerStatManager;
+
         Attack = null;
         attackTry = null;
+
+        if (isInit)
+        {
+            playerStatManager.onDroneAttackChange -= OnDroneAttackChange;
+            playerStatManager.onDroneAttackRangeChange -= OnDroneAttackRangeChange;
+            playerStatManager.onDronAttackTimeChange -= OnDroneAttackTimeChange;
+            playerStatManager.onTotalDamageChange -= OnDroneTotalDamageChange;
+            isInit = false;
+        }
     }
+
+    public void OnDroneAttackChange()
+    {
+        _attackDamage = GameManager.Instance.playerStatManager.droneAttack;
+        UpdateFinalDamage();
+
+
+    }
+
+    public void OnDroneAttackRangeChange()
+    {
+        _attackRange = GameManager.Instance.playerStatManager.droneAttackRange;
+    }
+
+    public void OnDroneAttackTimeChange()
+    {
+        _attackCoolTime = GameManager.Instance.playerStatManager.droneAttackTime;
+    }
+
+    public void OnDroneTotalDamageChange()
+    {
+        _totalDamage = GameManager.Instance.playerStatManager.totalMultiDamage;
+        UpdateFinalDamage();
+
+
+    }
+
 }
