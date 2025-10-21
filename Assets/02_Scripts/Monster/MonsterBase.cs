@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -10,6 +11,7 @@ public class MonsterBase : CharacterModelBase
     [SerializeField] protected float attackDelay = 0.5f;
     [SerializeField] protected float originalSpeed = 10f;
     [SerializeField] public string targetTag = Constants.TAG_PLAYER;
+    [SerializeField] private float _knockBackDamage;
 
     [SerializeField] protected Transform player;
 
@@ -86,4 +88,40 @@ public class MonsterBase : CharacterModelBase
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * 5f);
         }
     }
+
+
+
+		private void OnCollisionEnter(Collision collision)
+		{
+				if (isPushed)
+				{
+						if (collision.gameObject.layer == LayerMask.NameToLayer(Constants.LAYER_MASK_WALL))
+						{
+								Debug.Log("충돌");
+								TakeDamage(_knockBackDamage * GameManager.Instance.PlayerStatManager.knockBackDamage * GameManager.Instance.PlayerStatManager.totalMultiDamage);
+						}
+
+				}
+		}
+
+		/// <summary>
+		/// 넉백 코루틴
+		/// </summary>
+		/// <param name="pushDirection"></param>
+		/// <param name="damage"></param>
+		/// <returns></returns>
+		public IEnumerator KnockBackCoroutine(Vector3 pushDirection,float damage)
+    {
+        GetComponent<Collider>().isTrigger = false;
+        _knockBackDamage = damage;
+        isPushed = true;
+				GetComponent<Rigidbody>().isKinematic = false;
+				debuffHandler.ApplyDebuff(DebuffHandler.DebuffData.CreateStun(0.5f));
+        GetComponent<Rigidbody>().AddForce(pushDirection,ForceMode.VelocityChange);
+        yield return new WaitForSeconds(0.5f);
+				GetComponent<Rigidbody>().isKinematic = true;
+				isPushed = false;
+				GetComponent<Collider>().isTrigger = true;
+
+		}
 }

@@ -559,7 +559,7 @@ public class DebuffHandler : MonoBehaviour
     {
         while (debuffHandler.GetActiveDebuffCount() > 0)
         {
-            debuffHandler.character.TakeDamage(debuffHandler.GetActiveDebuffCount() * GameManager.Instance.playerStatManager.totalMultiDamage * 5f);
+            debuffHandler.character.TakeDamage(debuffHandler.GetActiveDebuffCount() * GameManager.Instance.PlayerStatManager.totalMultiDamage * 5f);
             yield return new WaitForSeconds(Constants.DEBUFF_TIME);
         }
         _increasePain = null;

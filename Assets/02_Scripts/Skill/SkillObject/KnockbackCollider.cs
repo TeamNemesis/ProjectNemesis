@@ -1,5 +1,4 @@
 using UnityEngine;
-using static UnityEngine.ParticleSystem;
 
 public struct KnockBackColliderData
 {
@@ -28,7 +27,7 @@ public class KnockbackCollider : PoolableObject,IInitializePoolable
     Transform testTransform;
     public void Start()
     {
-        KnockBackColliderData data = new KnockBackColliderData(Vector3.one,30f ,testTransform);
+        KnockBackColliderData data = new KnockBackColliderData(Vector3.one*2f,30f ,testTransform);
         Initialize(data);
     }
 
@@ -47,11 +46,6 @@ public class KnockbackCollider : PoolableObject,IInitializePoolable
 
     private void OnTriggerEnter(Collider other)
     {
-        
-        if(other.gameObject.layer == LayerMask.NameToLayer(Constants.LAYER_MASK_WALL))
-        {
-            Debug.Log("Ãæµ¹");
-            _parentTranform.GetComponent<MonsterBase>().TakeDamage(_knockBackDamage*GameManager.Instance.playerStatManager.knockBackDamage * GameManager.Instance.playerStatManager.totalMultiDamage);
-        }
-    }
+				
+		}
 }

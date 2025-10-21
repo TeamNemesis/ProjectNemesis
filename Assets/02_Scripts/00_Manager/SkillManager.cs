@@ -103,7 +103,7 @@ public class SkillManager : MonoBehaviour
         _skill_Mutant.InitializeSkill(this);
 
         _player = GameManager.Instance.player;
-        _playerStatManager = GameManager.Instance.playerStatManager;
+        _playerStatManager = GameManager.Instance.PlayerStatManager;
 
     }
 
