@@ -11,9 +11,12 @@ public class MonsterBase : CharacterModelBase
     [SerializeField] protected float attackDelay = 0.5f;
     [SerializeField] protected float originalSpeed = 10f;
     [SerializeField] public string targetTag = Constants.TAG_PLAYER;
-    [SerializeField] private float _knockBackDamage;
 
-    [SerializeField] protected Transform player;
+		#region ³Ë¹é
+		[SerializeField] private float _knockBackDamage;
+    [SerializeField] private Coroutine _knockBackCoroutine;
+		#endregion
+		[SerializeField] protected Transform player;
 
 
     [Header("Components")]
@@ -104,24 +107,44 @@ public class MonsterBase : CharacterModelBase
 				}
 		}
 
+		#region ³Ë¹é
+
+    /// <summary>
+    /// ³Ë¹é ½ÇÇà
+    /// </summary>
+    /// <param name="pushDirection"></param>
+    /// <param name="damage"></param>
+    public void KonckBackEnemy(Vector3 pushDirection, float damage)
+    {
+				GetComponent<Collider>().isTrigger = false;
+				_knockBackDamage = damage;
+				isPushed = true;
+				GetComponent<Rigidbody>().isKinematic = false;
+				debuffHandler.ApplyDebuff(DebuffHandler.DebuffData.CreateStun(0.5f));
+				GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
+				GetComponent<Rigidbody>().AddForce(pushDirection.normalized, ForceMode.VelocityChange);
+
+        if(_knockBackCoroutine !=null)
+        {
+            StopCoroutine(_knockBackCoroutine);
+        }
+        _knockBackCoroutine = StartCoroutine(KnockBackCoroutine());
+		}
+
+
 		/// <summary>
 		/// ³Ë¹é ÄÚ·çÆ¾
 		/// </summary>
 		/// <param name="pushDirection"></param>
 		/// <param name="damage"></param>
 		/// <returns></returns>
-		public IEnumerator KnockBackCoroutine(Vector3 pushDirection,float damage)
+		public IEnumerator KnockBackCoroutine()
     {
-        GetComponent<Collider>().isTrigger = false;
-        _knockBackDamage = damage;
-        isPushed = true;
-				GetComponent<Rigidbody>().isKinematic = false;
-				debuffHandler.ApplyDebuff(DebuffHandler.DebuffData.CreateStun(0.5f));
-        GetComponent<Rigidbody>().AddForce(pushDirection,ForceMode.VelocityChange);
         yield return new WaitForSeconds(0.5f);
 				GetComponent<Rigidbody>().isKinematic = true;
 				isPushed = false;
 				GetComponent<Collider>().isTrigger = true;
-
+        _knockBackCoroutine = null;
 		}
+		#endregion
 }
