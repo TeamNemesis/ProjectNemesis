@@ -68,7 +68,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 5477ee67e82ec974e852e7fe8228170d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -127,7 +127,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _maxHealth: 100
   _currentHealth: 0
-  _moveSpeed: 5
+  _moveSpeed: 30
   isStunned: 0
   isPushed: 0
   isBindned: 0
@@ -136,7 +136,8 @@ MonoBehaviour:
   attackDamage: 5
   attackRange: 3.5
   detectionRange: 20
-  attackDelay: 2
+  attackDelay: 0.2
+  originalSpeed: 10
   targetTag: Player
   agent: {fileID: 0}
   player: {fileID: 0}
@@ -145,6 +146,10 @@ MonoBehaviour:
   _box_Height: 3
   _box_Width: 3
   currentState: 0
+  _meshRenderer: {fileID: 0}
+  rangePrefab: {fileID: 5498369803362873499, guid: 0636baa617011a44999006788cf9e4cb, type: 3}
+  bladeWavePrefab: {fileID: 2049525802618513020, guid: dfd167a7bb5f25c43a878ad5e54fb8af, type: 3}
+  BulletPrefab: {fileID: 3236603345888462030, guid: 2a1acc53e1c6c654c88ff263a3ce3295, type: 3}
 --- !u!195 &3184096094195697757
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -155,8 +160,8 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5000001
-  m_Speed: 3.5
-  m_Acceleration: 8
+  m_Speed: 25
+  m_Acceleration: 100000
   avoidancePriority: 50
   m_AngularSpeed: 120
   m_StoppingDistance: 0

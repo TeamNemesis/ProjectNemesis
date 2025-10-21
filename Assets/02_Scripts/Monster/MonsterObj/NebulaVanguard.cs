@@ -22,9 +22,12 @@ public class NebulaVanguard : MonsterBase
     private State currentState = State.Idle;
 
     [SerializeField] private MeshRenderer _meshRenderer;
-    [SerializeField] private GameObject range;
-    [SerializeField] private GameObject bladeWave;
-    private bool isPattern1 = false;
+    [SerializeField] private GameObject rangePrefab;
+    [SerializeField] private GameObject bladeWavePrefab;
+    [SerializeField] private GameObject BulletPrefab;
+    private bool isPattern = false;
+    private int attackCount = 2;
+    private float attackDist = 1f; // 공격 시 전진 거리
 
     private void Update()
     {
@@ -37,7 +40,10 @@ public class NebulaVanguard : MonsterBase
         {
             LookAtPlayer();
         }
-
+        if(currentHealth <= 50f)
+        {
+            GetComponent<Renderer>().material.color = Color.red;
+        }
         switch (currentState)
         {
             case State.Idle:
@@ -49,7 +55,7 @@ public class NebulaVanguard : MonsterBase
             case State.Attack:
                 if (!_isAttacking)
                 {
-                    StartCoroutine(PerformAttack());
+                    //StartCoroutine(PerformAttackOnce());
                 }
                 break;
             case State.Die:
@@ -78,67 +84,67 @@ public class NebulaVanguard : MonsterBase
             currentState = State.Idle;
             return;
         }
-        //pattern1
-        if(!isPattern1)
+
+        if (!_isAttacking)//패턴 하나 끝나면
         {
-            Pattern1();
+            //랜덤 패턴 선택
+            int randomPattern = Random.Range(1, 3);
 
-            isPattern1 = true;
-        }
-        
-        
-
-
-
-        //agent.SetDestination(player.position);  //기존이동
-
-        if (distance <= attackRange && CanSeePlayer())
-        {
-            agent.ResetPath();
-            currentState = State.Attack;
-        }
-    }
-
-    private IEnumerator PerformAttack()
-    {
-        float distance = Vector3.Distance(transform.position, player.position);
-        _isAttacking = true;
-
-        if (player != null && distance <= attackRange)  //공격범위 내에 플레이어가 있을 때
-        {
-            // 몬스터 기준 중심 위치 설정
-            Vector3 center = transform.position + transform.forward * (_box_Length / 2f);
-
-            // 박스의 반 크기
-            Vector3 halfExtents = new Vector3(_box_Width / 2f, _box_Height / 2f, _box_Length / 2f);
-
-            // 박스의 회전 (몬스터 정면을 기준으로 정렬)
-            Quaternion orientation = Quaternion.LookRotation(transform.forward);
-
-            // 박스 영역 안의 적 탐색
-            Collider[] hitTarget = Physics.OverlapBox(center, halfExtents, orientation);
-
-
-            foreach (Collider target in hitTarget)
+            if (randomPattern == 1)
             {
-                if (target.TryGetComponent(out IDamageable playerHealth) && target.tag == targetTag)
-                {
-                    yield return new WaitForSeconds(0.5f);
-                    float finalPlayerDistance = Vector3.Distance(transform.position, player.position);
-                    if (finalPlayerDistance <= attackRange)
-                    {
-                        if (playerHealth != null)
-                        {
-                            playerHealth.TakeDamage(attackDamage);  //데미지 적용
-                        }
-                    }
-                }
+                Debug.Log("패턴1 시작");
+                Pattern1();
             }
-            yield return new WaitForSeconds(attackDelay);   //딜레이
+            else
+            {
+                Debug.Log("패턴2 시작");
+                Pattern2();
+            }     
         }
-        _isAttacking = false;
-        currentState = State.Move; // 공격 후 다시 추격 상태로 전환
     }
+
+    //private IEnumerator PerformAttack()
+    //{
+    //    float distance = Vector3.Distance(transform.position, player.position);
+    //    _isAttacking = true;
+
+    //    if (player != null && distance <= attackRange)  //공격범위 내에 플레이어가 있을 때
+    //    {
+    //        // 몬스터 기준 중심 위치 설정
+    //        Vector3 center = transform.position + transform.forward * (_box_Length / 2f);
+
+    //        // 박스의 반 크기
+    //        Vector3 halfExtents = new Vector3(_box_Width / 2f, _box_Height / 2f, _box_Length / 2f);
+
+    //        // 박스의 회전 (몬스터 정면을 기준으로 정렬)
+    //        Quaternion orientation = Quaternion.LookRotation(transform.forward);
+
+    //        // 박스 영역 안의 적 탐색
+    //        Collider[] hitTarget = Physics.OverlapBox(center, halfExtents, orientation);
+
+
+    //        foreach (Collider target in hitTarget)
+    //        {
+    //            if (target.TryGetComponent(out IDamageable playerHealth) && target.tag == targetTag)
+    //            {
+    //                yield return new WaitForSeconds(0.5f);
+    //                float finalPlayerDistance = Vector3.Distance(transform.position, player.position);
+    //                if (finalPlayerDistance <= attackRange)
+    //                {
+    //                    if (playerHealth != null)
+    //                    {
+
+    //                        playerHealth.TakeDamage(attackDamage);  //데미지 적용
+                            
+    //                    }
+    //                }
+    //            }
+    //        }
+    //        yield return new WaitForSeconds(attackDelay);   //딜레이
+    //    }
+    //    _isAttacking = false;
+    //    currentState = State.Move; // 공격 후 다시 추격 상태로 전환
+    //}
 
 
     void OnDrawGizmosSelected()
@@ -154,19 +160,12 @@ public class NebulaVanguard : MonsterBase
 
     void Pattern1()
     {
-        //_meshRenderer = GetComponent<MeshRenderer>();   //안보이게
-        //_meshRenderer.enabled = false;
-
-        //StartCoroutine(ScaleTime(new Vector3(5, 5, 5), 2f));    //범위 조절
-
-        ////range.transform.localScale = Vector3.one;   //범위 초기화
-        //transform.position = new Vector3(player.transform.position.x, 0.1f, player.transform.position.z); //플레이어 위치로 순간이동
-        //_meshRenderer.enabled = true;    //보이게
         StartCoroutine(Pattern1Routine());
     }
 
     private IEnumerator Pattern1Routine()
     {
+        _isAttacking = true;
         //사라지기
         _meshRenderer = GetComponent<MeshRenderer>();
         _meshRenderer.enabled = false;
@@ -180,8 +179,18 @@ public class NebulaVanguard : MonsterBase
         //블레이드 파동 3번
         transform.LookAt(player);
 
-        yield return StartCoroutine(BladeWave());
+        if(currentHealth  <= 50)
+        {
+            yield return StartCoroutine(BladeWave(5, 1f));
+        }
+        else
+        {
+            yield return StartCoroutine(BladeWave(3, 1f));
+        }
+        _isAttacking = false;
     }
+
+   
     private IEnumerator ScaleTime()
     {
         Vector3[] spawnPoints =
@@ -199,18 +208,15 @@ public class NebulaVanguard : MonsterBase
         Vector3 spawnPos = player.transform.position + spawnPoints[randomIndex];    //플레이어위치+동서남북
 
 
-        GameObject rangePrefab = Instantiate(range, spawnPos, range.transform.rotation);  //생성
+        GameObject range = Instantiate(rangePrefab, spawnPos, rangePrefab.transform.rotation);  //생성
         yield return new WaitForSeconds(1f);
         transform.position = new Vector3(spawnPos.x, 2f, spawnPos.z);   //range로 위치이동
-        Destroy(rangePrefab);
+        Destroy(range);
 
     }
-    private IEnumerator BladeWave()
+    private IEnumerator BladeWave(int count , float cool)
     {
-        int waveCount = 3;
-        float cool = 1f;
-
-        for (int i = 0; i < waveCount; i++)
+        for (int i = 0; i < count; i++)
         {
             // 프리팹 발사
             ShootBlade();
@@ -229,12 +235,120 @@ public class NebulaVanguard : MonsterBase
 
         // 생성
         Vector3 spawnPos = new Vector3(transform.position.x, 1f, transform.position.z) + transform.forward * 1f;
-        GameObject blade = Instantiate(bladeWave, spawnPos, transform.rotation);
+        GameObject blade = Instantiate(bladeWavePrefab, spawnPos, transform.rotation);
     }
-
 
     void Pattern2()
     {
-
+        StartCoroutine(Pattern2Routine());
     }
+    private IEnumerator Pattern2Routine()
+    {
+        _isAttacking = true;
+        // 플레이어 방향 계산
+        Vector3 dirToPlayer = (player.position - transform.position).normalized;
+
+        // 플레이어에서 일정 거리 떨어진
+        int stopDistance = 3;
+        Vector3 dashTarget = player.position - dirToPlayer * stopDistance;
+
+        // 대쉬 실행
+        yield return StartCoroutine(Dash(dashTarget));
+
+        // 짧은 대기
+        yield return new WaitForSeconds(0.5f);
+
+        // 공격 2회 반복
+        for (int i = 0; i < attackCount; i++)
+        {
+            yield return StartCoroutine(PerformAttackOnce());
+            Debug.Log($"공격 {i + 1}회 완료");
+        }
+
+        //yield return new WaitForSeconds(1f);
+
+        if(currentHealth <= 50)
+            yield return StartCoroutine(Shoot(5, 0.5f));
+        else
+        {
+            yield return StartCoroutine(Shoot(3, 0.5f));
+        }
+        //currentState = State.Attack;
+        _isAttacking = false;
+    }
+
+    private IEnumerator PerformAttackOnce()
+    {
+        // 공격 시작: 플레이어를 바라보고 앞으로 전진
+        transform.LookAt(player);
+        transform.position += transform.forward * attackDist;
+
+        // 공격 모션 타이밍 (애니메이션 타이밍 맞추는 용도)
+        yield return new WaitForSeconds(0.3f);
+
+        // 데미지 판정 (박스 안에 있을 때만)
+        Vector3 center = transform.position + transform.forward * (_box_Length / 2f);
+        Vector3 halfExtents = new Vector3(_box_Width / 2f, _box_Height / 2f, _box_Length / 2f);
+        Quaternion orientation = Quaternion.LookRotation(transform.forward);
+
+        Collider[] hitTargets = Physics.OverlapBox(center, halfExtents, orientation);
+
+        foreach (Collider target in hitTargets)
+        {
+            if (target.CompareTag(targetTag) && target.TryGetComponent(out IDamageable playerHealth))
+            {
+                playerHealth.TakeDamage(attackDamage);
+            }
+        }
+
+        // 공격 후 대기 (공격 쿨타임)
+        yield return new WaitForSeconds(attackDelay);
+
+        
+    }
+    private IEnumerator Dash(Vector3 destination)
+    {
+        agent.isStopped = false;    //활성화
+        agent.SetDestination(destination);
+
+        // 경로 계산 중일 때 기다림
+        while (agent.pathPending)
+            yield return null;
+        
+
+        // 도착할 때까지 대기
+        while (agent.remainingDistance > agent.stoppingDistance)//플레이어와의 거리가 멈춤거리보다 클 때까지
+            yield return null;
+        
+
+        // 도착 후 멈춤
+        agent.isStopped = true;
+        agent.ResetPath();
+        yield return null;
+    }
+
+    private IEnumerator Shoot(int count, float cool)
+    {
+        for (int i = 0; i < count; i++)
+        {
+            // 프리팹 발사
+            ShootBullet();
+
+            // 1초 대기
+            yield return new WaitForSeconds(cool);
+        }
+    }
+    void ShootBullet()
+    {
+        // 플레이어의 위치를 가져오되, 높이는 몬스터 높이와 동일하게 맞추기
+        Vector3 targetPos = new Vector3(player.position.x, transform.position.y, player.position.z);
+
+        // 수평 방향으로만 LookAt
+        transform.LookAt(targetPos);
+
+        // 생성
+        Vector3 spawnPos = new Vector3(transform.position.x, 1f, transform.position.z) + transform.forward * 1f;
+        GameObject bullet = Instantiate(BulletPrefab, spawnPos, transform.rotation);
+    }
+
 }
