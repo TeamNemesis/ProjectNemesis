@@ -25,6 +25,7 @@ public class NebulaVanguard : MonsterBase
     [SerializeField] private GameObject range;
     [SerializeField] private GameObject bladeWave;
     private bool isPattern1 = false;
+    Transform player;
 
     private void Update()
     {

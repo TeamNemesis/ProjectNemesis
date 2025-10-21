@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,6 +6,7 @@ using UnityEngine.AI;
 
 public class DebuffHandler : MonoBehaviour
 {
+    public static event Action<DebuffHandler> OnDebuff;
 
     [SerializeField]
     private Dictionary<string, ActiveDebuff> activeDebuffs = new Dictionary<string, ActiveDebuff>();
@@ -13,7 +15,11 @@ public class DebuffHandler : MonoBehaviour
     private float originalSpeed;
     private MonsterBase monster;
 
-
+    /// <summary>
+    /// 점진되는 고통
+    /// </summary>
+    private Coroutine _increasePain;
+    
 
     public void InitializeMonster(NavMeshAgent agent)
     {
@@ -143,7 +149,6 @@ public class DebuffHandler : MonoBehaviour
     {
         if (character == null || character.isDead)
             return;
-
         if (activeDebuffs.ContainsKey(newDebuff.debuffName))
         {
             ActiveDebuff existing = activeDebuffs[newDebuff.debuffName];
@@ -202,10 +207,14 @@ public class DebuffHandler : MonoBehaviour
                     existing.effectRoutine = StartCoroutine(BindCoroutine(newDebuff.debuffDuration));
                 }
             }
+            OnDebuff?.Invoke(this);
             return;
         }
         activeDebuffs.Add(newDebuff.debuffName, new ActiveDebuff(newDebuff));
         activeDebuffs[newDebuff.debuffName].routine = StartCoroutine(HandleDebuff(newDebuff));
+
+        OnDebuff?.Invoke(this);
+
     }
 
     private IEnumerator HandleDebuff(DebuffData debuff)
@@ -506,4 +515,38 @@ public class DebuffHandler : MonoBehaviour
             activeDebuffs.Remove(debuffName);
         }
     }
+
+
+    /// <summary>
+    /// 스킬 점진되는 고통 적용 함수
+    /// </summary>
+    public void IncreasePain(DebuffHandler debuffHandler)
+    {
+        if (debuffHandler.character.tag == Constants.TAG_PLAYER)
+        {
+            return;
+        }
+
+        // 점진되는 고통이 적용 중이 아니라면
+        if (debuffHandler._increasePain == null)
+        {
+            debuffHandler._increasePain = StartCoroutine(IncreasePainCoroutine(debuffHandler));
+        }
+    }
+
+    public IEnumerator IncreasePainCoroutine(DebuffHandler debuffHandler)
+    {
+        while (debuffHandler.GetActiveDebuffCount() > 0)
+        {
+            debuffHandler.character.TakeDamage(debuffHandler.GetActiveDebuffCount() * GameManager.Instance.playerStatManager.totalMultiDamage * 5f);
+            yield return new WaitForSeconds(Constants.DEBUFF_TIME);
+        }
+        _increasePain = null;
+
+    }
+
+    public void ConnectIncreasePain()
+    {
+        OnDebuff += IncreasePain;
+    }    
 }

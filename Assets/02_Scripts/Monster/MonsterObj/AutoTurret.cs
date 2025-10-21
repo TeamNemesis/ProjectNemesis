@@ -61,7 +61,7 @@ public class AutoTurret : MonsterBase
 
         if (_target != null && Vector3.Distance(transform.position, _target.position) <= attackRange)
         {
-            GameObject bullet = ObjectPool.Instance.GetFromPool(turretbullet, transform.position);
+            GameObject bullet = ObjectPool.Instance.GetFromPool(turretbullet, transform.position,transform.rotation);
             bullet.transform.rotation = transform.rotation;
             TurretBullet turretBullet = bullet.GetComponent<TurretBullet>();
             if (turretBullet != null)

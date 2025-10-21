@@ -64,7 +64,7 @@ public class Skill_Four : SkillBase
                 // 점진되는 고통
             case 45:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
-
+                player.GetDebuffHandler().ConnectIncreasePain();
                 break;
 
                 // 드론무리
@@ -77,7 +77,7 @@ public class Skill_Four : SkillBase
                 // 강화된 추진력
             case 47:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
-                Activatethrust(choosedSkill);
+                ActivateThrust(choosedSkill);
                 break;
 
 
@@ -134,7 +134,7 @@ public class Skill_Four : SkillBase
     #endregion
 
     #region 강화된 추진력
-    private void Activatethrust(SkillData choosedSkill)
+    private void ActivateThrust(SkillData choosedSkill)
     {
 
         // 대쉬 이동거리 value1 만큼 증가
@@ -156,7 +156,7 @@ public class Skill_Four : SkillBase
     IEnumerator  MinusMoveSpeedAfterDash()
     {
         yield return new WaitForSeconds(plusMoveSpeedTime);
-        skillManager.playerStatManager.AddPlayerMoveSpeed(plusMoveSpeed);
+        skillManager.playerStatManager.AddPlayerMoveSpeed(-plusMoveSpeed);
     }
     #endregion
 }

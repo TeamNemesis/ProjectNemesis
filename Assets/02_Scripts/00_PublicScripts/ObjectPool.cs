@@ -136,11 +136,9 @@ public class ObjectPool : MonoBehaviour
     /// <returns></returns>
     public GameObject GetFromPool(PoolableObject poolable, Vector3 position,Quaternion rotation, Transform parentTransform = null, Object data = null)
     {
-        Debug.Log("Get");
         GameObject prefabObject = poolable.gameObject;
         if (!availablePools.ContainsKey(prefabObject.name))
         {
-            Debug.Log("available");
             availablePools.Add(prefabObject.name, new List<GameObject>());
             if (!inUsePools.ContainsKey(prefabObject.name))
             {
