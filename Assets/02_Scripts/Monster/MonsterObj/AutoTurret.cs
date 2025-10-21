@@ -3,9 +3,6 @@ using UnityEngine;
 
 public class AutoTurret : MonsterBase
 {
-
-    [SerializeField] float bulletLifeTime = 8f;
-
     [SerializeField]
     private enum State
     {
@@ -17,7 +14,7 @@ public class AutoTurret : MonsterBase
     [SerializeField] private bool _isAttacking = false;
 
     [Header("TurretBulletPrefab"), SerializeField]
-    private PoolableObject turretbullet; // ÅÍ·¿ ÃÑ¾Ë ÇÁ¸®Æé
+    private GameObject turretBulletPrefab; // ÅÍ·¿ ÃÑ¾Ë ÇÁ¸®Æé
 
     [SerializeField]
     private State currentState = State.Idle;
@@ -61,12 +58,12 @@ public class AutoTurret : MonsterBase
 
         if (_target != null && Vector3.Distance(transform.position, _target.position) <= attackRange)
         {
-            GameObject bullet = ObjectPool.Instance.GetFromPool(turretbullet, transform.position,transform.rotation);
-            bullet.transform.rotation = transform.rotation;
+
+            GameObject bullet = Instantiate(turretBulletPrefab, transform.position + transform.forward, transform.rotation);
             TurretBullet turretBullet = bullet.GetComponent<TurretBullet>();
             if (turretBullet != null)
             {
-                turretBullet.Initialize(targetTag, attackDamage, bulletLifeTime);
+                turretBullet.SetDamage(attackDamage);
             }
             yield return new WaitForSeconds(attackDelay);
         }

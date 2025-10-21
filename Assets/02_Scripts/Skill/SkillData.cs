@@ -48,32 +48,32 @@ public class SkillData
     public string skillTag { get { return _skillTag; } }
 
     // JsonProperty("최대레벨")
-    private int _skillMaxLevel;
-    public int skillMaxLevel { get { return _skillMaxLevel; } }
+    private int? _skillMaxLevel;
+    public int? skillMaxLevel { get { return _skillMaxLevel; } }
 
     // JsonProperty("레벨당성장수치1")
-    private float _skillLevelValue_1;
-    public float skillLevelValue_1 { get { return _skillLevelValue_1; } }
+    private float? _skillLevelValue_1;
+    public float? skillLevelValue_1 { get { return _skillLevelValue_1; } }
 
     // JsonProperty("기본밸류1")
-    private float _skillBaseValue_1;
-    public float skillBaseValue_1 { get { return _skillBaseValue_1; } }
+    private float? _skillBaseValue_1;
+    public float? skillBaseValue_1 { get { return _skillBaseValue_1; } }
 
     // JsonProperty("레벨당성장수치2")
-    private float _skillLevelValue_2;
-    public float skillLevelValue_2 { get { return _skillLevelValue_2; } }
+    private float? _skillLevelValue_2;
+    public float? skillLevelValue_2 { get { return _skillLevelValue_2; } }
 
     // JsonProperty("기본밸류2")
-    private float _skillBaseValue_2;
-    public float skillBaseValue_2 { get { return _skillBaseValue_2; } }
+    private float? _skillBaseValue_2;
+    public float? skillBaseValue_2 { get { return _skillBaseValue_2; } }
 
     // JsonProperty("레벨당성징수치3")
-    private float _skillLevelValue_3;
-    public float skillLevelValue_3 { get { return _skillLevelValue_3; } }
+    private float? _skillLevelValue_3;
+    public float? skillLevelValue_3 { get { return _skillLevelValue_3; } }
 
     // JsonProperty("기본밸류3")
-    private float _skillBaseValue_3;
-    public float skillBaseValue_3 { get { return _skillBaseValue_3; } }
+    private float? _skillBaseValue_3;
+    public float? skillBaseValue_3 { get { return _skillBaseValue_3; } }
 
     // JsonProperty("포함키워드")
     private List<string> _keywords;
@@ -97,13 +97,13 @@ public class SkillData
         _skillImagePath = data.skillImagePath;
         _skillCompanyName = data.skillCompany;
         _skillTag = data.skillTag;
-        _skillMaxLevel = data.skillMaxLevel ?? 0;
-        _skillLevelValue_1 = data.skillLevelValue_1 ?? 0f; 
-        _skillBaseValue_1 = data.skillBaseValue_1 ?? 0f;
-        _skillLevelValue_2 = data.skillLevelValue_2 ?? 0f;
-        _skillBaseValue_2 = data.skillBaseValue_2 ?? 0f;
-        _skillLevelValue_3 = data.skillLevelValue_3 ?? 0f;
-        _skillBaseValue_3 = data.skillBaseValue_3 ?? 0f;
+        _skillMaxLevel = data.skillMaxLevel;
+        _skillLevelValue_1 = data.skillLevelValue_1;
+        _skillBaseValue_1 = data.skillBaseValue_1;
+        _skillLevelValue_2 = data.skillLevelValue_2;
+        _skillBaseValue_2 = data.skillBaseValue_2;
+        _skillLevelValue_3 = data.skillLevelValue_3;
+        _skillBaseValue_3 = data.skillBaseValue_3;
         _keywords = string.IsNullOrEmpty(data.Keywords) ? new List<string>() : new List<string>(data.Keywords.Split(';'));
 
         _skillLevel = 0;
@@ -206,6 +206,6 @@ public class skillJsonData
     public float? skillBaseValue_3;
 
     [JsonProperty("포함키워드")]
-    public string? Keywords;
+    public string Keywords;
 
 }
