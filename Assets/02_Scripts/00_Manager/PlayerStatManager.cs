@@ -9,7 +9,7 @@ public class PlayerStatManager : MonoBehaviour
 		/// 검 일반 공격력
 		/// </summary>
 		private float _bladeAttackDamage;
-		public float bladeAttackDamage;
+		public float bladeAttackDamage { get { return _bladeAttackDamage; } }
 		public void AddBladeAttackDamage(float plusBladeAttack)
 		{
 				_bladeAttackDamage += plusBladeAttack;
@@ -32,7 +32,7 @@ public class PlayerStatManager : MonoBehaviour
 		/// 원거리 일반 공격력
 		/// </summary>
 		private float _playerRifleAttackDamage;
-		public float playerRifleAttackDamage;
+		public float playerRifleAttackDamage { get { return _playerRifleAttackDamage; } }
 		public void AddPlayerRifleAttackDamage(float plusPlayerRifleAttack)
 		{
 				_playerRifleAttackDamage += plusPlayerRifleAttack;
@@ -42,7 +42,7 @@ public class PlayerStatManager : MonoBehaviour
 		/// 원거리 특수 공격력
 		/// </summary>
 		private float _playerRifleSPAttackDamage;
-		public float playerRifleSPAttackDamage;
+		public float playerRifleSPAttackDamage { get { return _playerRifleSPAttackDamage;} }
 		public void AddPlayerRifleSPAttackDamage(float plusPlayerRifleSPAttackDamage)
 		{
 				_playerRifleSPAttackDamage += plusPlayerRifleSPAttackDamage;
@@ -52,7 +52,7 @@ public class PlayerStatManager : MonoBehaviour
 		/// 플레이어 블렛 이동 속도
 		/// </summary>
 		private float _playerBulletMoveSpeed;
-		public float playerBulletMoveSpeed;
+		public float playerBulletMoveSpeed { get { return _playerBulletMoveSpeed; } }
 		public void AddPlayerBulletMoveSpeed(float plusPlayerBulletMoveSpeed)
 		{
 				_playerBulletMoveSpeed += plusPlayerBulletMoveSpeed;
@@ -62,7 +62,7 @@ public class PlayerStatManager : MonoBehaviour
 		/// 플레이어 블렛 지속 시간
 		/// </summary>
 		private float _playerBulletLifeTime;
-		public float playerBulletLifeTime;
+		public float playerBulletLifeTime { get { return _playerBulletLifeTime; } }
 		public void AddPlayerBulletLifeTime(float plusPlayerBulletLifeTime)
 		{
 				_playerBulletLifeTime += plusPlayerBulletLifeTime;
@@ -74,7 +74,7 @@ public class PlayerStatManager : MonoBehaviour
 		/// 특수장비 일반 공격력
 		/// </summary>
 		private float _playerHackAttackDamage;
-		public float playerHackAttackDamage;
+		public float playerHackAttackDamage { get { return _playerHackAttackDamage; } }
 		public void AddPlayerHackAttackDamage(float plusPlayerHackAttackDamage)
 		{
 				_playerHackAttackDamage += plusPlayerHackAttackDamage;
@@ -84,8 +84,8 @@ public class PlayerStatManager : MonoBehaviour
 		/// 특수장비 특수 공격력
 		/// </summary>
 		private float _playerHackSPAttackDamage;
-		public float playerHackSPAttackDamage;
-		public void AddPlayerHackSPAttackDamage(float plusPlayerHackSPAttackDamage)
+		public float playerHackSPAttackDamage { get { return _playerHackSPAttackDamage; } }
+    public void AddPlayerHackSPAttackDamage(float plusPlayerHackSPAttackDamage)
 		{
 				_playerHackSPAttackDamage += plusPlayerHackSPAttackDamage;
 		}
@@ -139,7 +139,7 @@ public class PlayerStatManager : MonoBehaviour
 		/// <summary>
 		/// 모든 데미지 증가 계수
 		/// </summary>
-		private float _totalMultiDamage;
+		private float _totalMultiDamage = 1f;
 		public float totalMultiDamage { get { return _totalMultiDamage; } }
 
 		/// <summary>
@@ -184,7 +184,7 @@ public class PlayerStatManager : MonoBehaviour
 		/// 플레이어 애니메이션 일반 공격 재생 속도
 		/// </summary>
 		private float _playerAttackAnimSpeed;
-		public float playerAttackAnimSpeed;
+		public float playerAttackAnimSpeed { get { return _playerAttackAnimSpeed; } }
 		public void AddPlayerAttackAnimSpeed(float plusAttackAnimSpeed)
 		{
 				_playerAttackAnimSpeed += plusAttackAnimSpeed;
@@ -244,8 +244,8 @@ public class PlayerStatManager : MonoBehaviour
 		/// <summary>
 		/// 넉백 충돌 데미지 계수 
 		/// </summary>
-		private float _knockBackDamage;
-		public float knockBackDamage;
+		private float _knockBackDamage =1f;
+		public float knockBackDamage { get { return _knockBackDamage; } }
 		public void AddKockBackDamage(float plusKnockBackDamage)
 		{
 				_knockBackDamage += plusKnockBackDamage;
@@ -255,7 +255,7 @@ public class PlayerStatManager : MonoBehaviour
 		/// 넉백 거리 계수
 		/// </summary>
 		private float _knockBackDistance;
-		public float knockBackDistance;
+		public float knockBackDistance { get { return _knockBackDistance; } }
 		public void AddKnockBackDistance(float plusKnockBackDistance)
 		{
 				_knockBackDistance += plusKnockBackDistance;
@@ -267,8 +267,8 @@ public class PlayerStatManager : MonoBehaviour
 		/// 취약, 디버프 있으면 추가 데미지 계수
 		/// </summary>
 		private float _debuffPlusDamage;
-		public float debuffPlusDamage;
-		public void AddDebuffPlusDamage(float plusDebuffPlusDamage)
+		public float debuffPlusDamage { get { return _debuffPlusDamage; } }
+    public void AddDebuffPlusDamage(float plusDebuffPlusDamage)
 		{
 				_debuffPlusDamage += plusDebuffPlusDamage;
 		}

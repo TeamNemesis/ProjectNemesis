@@ -19,7 +19,7 @@ public class DebuffHandler : MonoBehaviour
     /// 점진되는 고통
     /// </summary>
     private Coroutine _increasePain;
-    
+
 
     public void InitializeMonster(NavMeshAgent agent)
     {
@@ -167,6 +167,11 @@ public class DebuffHandler : MonoBehaviour
             // 그 외 디버프들 시간 갱신. 스턴, 혼란일 경우 기존 코루틴 중단 후 새 코루틴으로 다시 시작
             else
             {
+                if (existing.remainingTime > newDebuff.debuffDuration)
+                {
+                    Debug.Log("지속시간");
+                    return;
+                }
                 existing.remainingTime = newDebuff.debuffDuration;
                 existing.totalValue = newDebuff.debuffValue;
 
@@ -294,7 +299,18 @@ public class DebuffHandler : MonoBehaviour
     {
         character.isStunned = true;
 
+        if (agent != null)
+        {
+            agent.isStopped = true;
+        }
+
         yield return new WaitForSeconds(duration);
+
+
+        if (agent != null && !character.isDead)
+        {
+            agent.isStopped = false;
+        }
 
         character.isStunned = false;
     }
@@ -493,8 +509,13 @@ public class DebuffHandler : MonoBehaviour
                     break;
 
                 case Constants.DEBUFF_STUN:
+
                     if (!character.isDead)
                     {
+                        if (agent != null)
+                        {
+                            agent.isStopped = false;
+                        }
                         character.isStunned = false;
                     }
                     break;
@@ -548,5 +569,5 @@ public class DebuffHandler : MonoBehaviour
     public void ConnectIncreasePain()
     {
         OnDebuff += IncreasePain;
-    }    
+    }
 }

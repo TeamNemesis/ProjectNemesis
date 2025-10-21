@@ -9,7 +9,7 @@ public class BulletData
 /// <summary>
 /// 총기류의 탄환을 관리하는 클래스
 /// </summary>
-public class Bullet : PoolableObject, IInitializePoolable
+public class Bullet : PoolableObject
 {
     [Header("----- 데이터로 빼기 전 임시 -----")]
     [SerializeField] float _moveSpeed = 20f; // 탄환의 이동 속도

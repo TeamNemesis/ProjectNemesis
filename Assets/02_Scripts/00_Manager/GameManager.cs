@@ -32,7 +32,7 @@ public class GameManager : MonoBehaviour
                     _instance._interactableManager = obj.AddComponent<InteractableManager>();
                     _instance._dataManager = obj.AddComponent<DataManager>();
                     _instance._poolManager = obj.AddComponent<PoolManager>();
-                    _instance._playerStatManager = obj.AddComponent<PlayerStatManager>();
+                    _instance._playerStatManager = obj.AddComponent<PlayerStatManager>();   
                     //_instance._skillManger = obj.AddComponent<SkillManager>();
 
                     _instance._resourceManager.Initialize();
