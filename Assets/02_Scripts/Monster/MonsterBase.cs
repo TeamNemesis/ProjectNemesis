@@ -11,6 +11,7 @@ public class MonsterBase : CharacterModelBase
     [SerializeField] protected float originalSpeed = 10f;
     [SerializeField] public string targetTag = Constants.TAG_PLAYER;
 
+    [SerializeField] protected Transform player;
 
 
     [Header("Components")]
