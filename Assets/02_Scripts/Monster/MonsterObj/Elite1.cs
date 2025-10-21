@@ -31,18 +31,18 @@ public class Elite1 : MonsterBase
 
     private void Update()
     {
-        
-
-        if (isDead || player == null) return;
+        if (isDead || _target == null) return;
         if (isStunned) return;
 
         if (CanSeePlayer())
         {
             LookAtPlayer();
         }
-        if(currentHealth <= 50f)
+        if(currentHealth <= 50f)    // 2페이즈
         {
-            GetComponent<Renderer>().material.color = Color.red;
+            GetComponent<Renderer>().material.color = Color.red;    // 색깔 변경
+            _box_Length = 4f;   // 공격범위 변경
+            _box_Width = 4f;    // 공격범위 변경
         }
         switch (currentState)
         {
@@ -68,7 +68,7 @@ public class Elite1 : MonsterBase
     private void HandleIdle()
     {
         // 플레이어와 거리
-        float distance = Vector3.Distance(transform.position, player.position);
+        float distance = Vector3.Distance(transform.position, _target.position);
         if (distance <= detectionRange && CanSeePlayer())
         {
             currentState = State.Move;
@@ -76,8 +76,8 @@ public class Elite1 : MonsterBase
     }
     private void HandleMove()
     {
-        if (player == null) return;
-        float distance = Vector3.Distance(transform.position, player.position);
+        if (_target == null) return;
+        float distance = Vector3.Distance(transform.position, _target.position);
         if (distance > detectionRange || !CanSeePlayer())   //플레이어와의 거리 > 탐지거리 ->이때 패턴 시작
         {
             agent.ResetPath();
@@ -147,7 +147,7 @@ public class Elite1 : MonsterBase
     //}
 
 
-    void OnDrawGizmosSelected()
+    void OnDrawGizmosSelected() // 이게뭐지..
     {
         Vector3 center = transform.position + transform.forward * (_box_Length / 2f);
         Vector3 halfExtents = new Vector3(_box_Width / 2f, _box_Height / 2f, _box_Length / 2f);
@@ -162,23 +162,23 @@ public class Elite1 : MonsterBase
     {
         StartCoroutine(Pattern1Routine());
     }
-
-    private IEnumerator Pattern1Routine()
+    private IEnumerator Pattern1Routine()   // 패턴1 모든 루틴
     {
         _isAttacking = true;
-        //사라지기
+        // 사라지기
         _meshRenderer = GetComponent<MeshRenderer>();
         _meshRenderer.enabled = false;
 
-        //
+        // 생성 범위 크기 변경
         yield return StartCoroutine(ScaleTime());
 
         //보이기
         _meshRenderer.enabled = true;
 
-        //블레이드 파동 3번
-        transform.LookAt(player);
+        
+        transform.LookAt(_target);
 
+        //페이즈마다 파동 횟수 변경
         if(currentHealth  <= 50)
         {
             yield return StartCoroutine(BladeWave(5, 1f));
@@ -189,8 +189,6 @@ public class Elite1 : MonsterBase
         }
         _isAttacking = false;
     }
-
-   
     private IEnumerator ScaleTime()
     {
         Vector3[] spawnPoints =
@@ -205,7 +203,7 @@ public class Elite1 : MonsterBase
         int randomIndex = Random.Range(0, spawnPoints.Length);
 
         // 최종 위치 계산
-        Vector3 spawnPos = player.transform.position + spawnPoints[randomIndex];    //플레이어위치+동서남북
+        Vector3 spawnPos = _target.transform.position + spawnPoints[randomIndex];    //플레이어위치+동서남북
 
 
         GameObject range = Instantiate(rangePrefab, spawnPos, rangePrefab.transform.rotation);  //생성
@@ -221,14 +219,14 @@ public class Elite1 : MonsterBase
             // 프리팹 발사
             ShootBlade();
 
-            // 1초 대기
+            // 쿨타임
             yield return new WaitForSeconds(cool);
         }
     }
     void ShootBlade()
     {
         // 플레이어의 위치를 가져오되, 높이는 몬스터 높이와 동일하게 맞추기
-        Vector3 targetPos = new Vector3(player.position.x, transform.position.y, player.position.z);
+        Vector3 targetPos = new Vector3(_target.position.x, transform.position.y, _target.position.z);
 
         // 수평 방향으로만 LookAt
         transform.LookAt(targetPos);
@@ -242,45 +240,41 @@ public class Elite1 : MonsterBase
     {
         StartCoroutine(Pattern2Routine());
     }
-    private IEnumerator Pattern2Routine()
+    private IEnumerator Pattern2Routine()   // 패턴2 모든 루틴
     {
         _isAttacking = true;
         // 플레이어 방향 계산
-        Vector3 dirToPlayer = (player.position - transform.position).normalized;
+        Vector3 dirToPlayer = (_target.position - transform.position).normalized;
 
         // 플레이어에서 일정 거리 떨어진
         int stopDistance = 3;
-        Vector3 dashTarget = player.position - dirToPlayer * stopDistance;
+        Vector3 dashTarget = _target.position - dirToPlayer * stopDistance;
 
         // 대쉬 실행
         yield return StartCoroutine(Dash(dashTarget));
 
-        // 짧은 대기
+        // 짧은 대기(이거 없으니까 좀 어색함)
         yield return new WaitForSeconds(0.5f);
 
         // 공격 2회 반복
         for (int i = 0; i < attackCount; i++)
         {
             yield return StartCoroutine(PerformAttackOnce());
-            Debug.Log($"공격 {i + 1}회 완료");
         }
 
-        //yield return new WaitForSeconds(1f);
-
-        if(currentHealth <= 50)
+        // 페이즈마다 총알 발사 횟수 변경
+        if (currentHealth <= 50)
             yield return StartCoroutine(Shoot(5, 0.5f));
         else
         {
             yield return StartCoroutine(Shoot(3, 0.5f));
         }
-        //currentState = State.Attack;
         _isAttacking = false;
     }
-
     private IEnumerator PerformAttackOnce()
     {
         // 공격 시작: 플레이어를 바라보고 앞으로 전진
-        transform.LookAt(player);
+        transform.LookAt(_target);
         transform.position += transform.forward * attackDist;
 
         // 공격 모션 타이밍 (애니메이션 타이밍 맞추는 용도)
@@ -301,7 +295,7 @@ public class Elite1 : MonsterBase
             }
         }
 
-        // 공격 후 대기 (공격 쿨타임)
+        // TakeDamage 쿨타임
         yield return new WaitForSeconds(attackDelay);
 
         
@@ -326,7 +320,6 @@ public class Elite1 : MonsterBase
         agent.ResetPath();
         yield return null;
     }
-
     private IEnumerator Shoot(int count, float cool)
     {
         for (int i = 0; i < count; i++)
@@ -341,7 +334,7 @@ public class Elite1 : MonsterBase
     void ShootBullet()
     {
         // 플레이어의 위치를 가져오되, 높이는 몬스터 높이와 동일하게 맞추기
-        Vector3 targetPos = new Vector3(player.position.x, transform.position.y, player.position.z);
+        Vector3 targetPos = new Vector3(_target.position.x, transform.position.y, _target.position.z);
 
         // 수평 방향으로만 LookAt
         transform.LookAt(targetPos);

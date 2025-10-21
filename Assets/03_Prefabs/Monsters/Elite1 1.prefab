@@ -16,7 +16,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8252112449825942464
 Transform:
   m_ObjectHideFlags: 0
@@ -228,7 +228,7 @@ MonoBehaviour:
   originalSpeed: 10
   targetTag: Player
   agent: {fileID: 0}
-  player: {fileID: 0}
+  _target: {fileID: 0}
   _isAttacking: 0
   _box_Length: 3
   _box_Height: 3
