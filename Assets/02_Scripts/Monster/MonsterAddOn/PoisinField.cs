@@ -18,6 +18,7 @@ public class PoisinField : MonoBehaviour
 
     private void Start()
     {
+        //playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
         StartCoroutine(MoveFront());
         Destroy(gameObject, fieldDuration); // 지속 시간 후 오브젝트 제거
     }
@@ -31,13 +32,13 @@ public class PoisinField : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         // 혼란 
-        if (other.CompareTag(Constants.TAG_PLAYER))
+        if (other.CompareTag("Player"))
         {
-            IDamageable damagedTarget = other.GetComponent<IDamageable>();
-            if (damagedTarget != null && damageCoroutine == null)
+            PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
+            if (playerHealth != null && damageCoroutine == null)
             {
                 // 참조 코루틴 생성
-                damageCoroutine = StartCoroutine(DamageToPlayer(damagedTarget));
+                damageCoroutine = StartCoroutine(DamageToPlayer(playerHealth));
             }
         }
     }
@@ -56,12 +57,13 @@ public class PoisinField : MonoBehaviour
         }
     }
 
-    private IEnumerator DamageToPlayer(IDamageable damagedTarget)
+    private IEnumerator DamageToPlayer(PlayerHealth playerHealth)
     {
         while (true)
         {
-
-            damagedTarget.TakeDamage(3);
+            // 1초마다 3의 피해
+            playerHealth.TakeDamage(3);
+            Debug.Log("Player Health: " + playerHealth.currentHealth);
             yield return new WaitForSeconds(tickDuration);
         }
     }

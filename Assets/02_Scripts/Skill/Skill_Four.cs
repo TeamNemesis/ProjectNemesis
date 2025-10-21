@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,7 +7,7 @@ using UnityEngine;
 
 public class Skill_Four : SkillBase
 {
-    #region 드론
+
     [SerializeField]
     private Drone dronePrefab;
     private List<Drone> droneList = new List<Drone>();
@@ -21,12 +20,6 @@ public class Skill_Four : SkillBase
 
         }
     }
-    #endregion
-
-    #region 강화된 추진력
-    private float plusMoveSpeed;
-    private float plusMoveSpeedTime;
-    #endregion
     public override void ActivateSkill(SkillData choosedSkill)
     {
 
@@ -77,7 +70,7 @@ public class Skill_Four : SkillBase
                 // 강화된 추진력
             case 47:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
-                Activatethrust(choosedSkill);
+
                 break;
 
 
@@ -99,6 +92,7 @@ public class Skill_Four : SkillBase
     {
         Transform playerTransform = GameManager.Instance.player.transform;
         Drone drone = ObjectPool.Instance.GetFromPool(dronePrefab,Vector3.zero , playerTransform.rotation,playerTransform).GetComponent<Drone>();
+        drone.Initialize();
         droneList.Add(drone);
 
         float x = 0 - (float)(skillLevel - 1) / 2;
@@ -130,33 +124,6 @@ public class Skill_Four : SkillBase
             }
         }
 
-    }
-    #endregion
-
-    #region 강화된 추진력
-    private void Activatethrust(SkillData choosedSkill)
-    {
-
-        // 대쉬 이동거리 value1 만큼 증가
-        skillManager.playerStatManager.AddPlayerDashDistanceMulti(choosedSkill.skillBaseValue_1);
-        // 대쉬 후 value3초간 value2 만큼 이동속도 증가 이벤트 연결
-        plusMoveSpeed = choosedSkill.skillBaseValue_2;
-        plusMoveSpeedTime = choosedSkill.skillBaseValue_3;
-
-
-        //TODO 대쉬 끝 이벤트에 연결
-        //player.dashEnd += plusMoveSpeedAfterDash;
-    }
-
-    private void plusMoveSpeedAfterDash()
-    {
-        skillManager.playerStatManager.AddPlayerMoveSpeed(plusMoveSpeed);
-        StartCoroutine(MinusMoveSpeedAfterDash());
-    }
-    IEnumerator  MinusMoveSpeedAfterDash()
-    {
-        yield return new WaitForSeconds(plusMoveSpeedTime);
-        skillManager.playerStatManager.AddPlayerMoveSpeed(plusMoveSpeed);
     }
     #endregion
 }

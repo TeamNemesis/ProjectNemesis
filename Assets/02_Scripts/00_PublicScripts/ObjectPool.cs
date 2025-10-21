@@ -126,15 +126,9 @@ public class ObjectPool : MonoBehaviour
 
     #region 오브젝트풀 임시 생성
     /// <summary>
-    /// 오브젝트풀에서 GameObject 가져오기
+    /// 풀에서 오브젝트 가져오기
     /// </summary>
-    /// <param name="poolable">가져올 게임오브젝트</param>
-    /// <param name="position">위치시킬 포지션</param>
-    /// <param name="rotation">오브젝트 회전값</param>
-    /// <param name="parentTransform">오브젝트 부모 객체</param>
-    /// <param name="data">오브젝트 초기화시 필요한 데이터</param>
-    /// <returns></returns>
-    public GameObject GetFromPool(PoolableObject poolable, Vector3 position,Quaternion rotation, Transform parentTransform = null, Object data = null)
+    public GameObject GetFromPool(PoolableObject poolable, Vector3 position,Quaternion rotation, Transform parentTransform = null)
     {
         Debug.Log("Get");
         GameObject prefabObject = poolable.gameObject;
@@ -166,7 +160,7 @@ public class ObjectPool : MonoBehaviour
         if (poolable is IInitializePoolable)
         {
             IInitializePoolable initializePoolable = obj.GetComponent<PoolableObject>() as IInitializePoolable;
-            initializePoolable.Initialize(data);
+            initializePoolable.Initialize();
         } 
                 
         obj.SetActive(true);

@@ -40,7 +40,7 @@ public class PlayerModel : CharacterModelBase
     /// <summary>
     /// 플레이어 테스트용 공격력
     /// </summary>
-    public float playerAttack;
+    public int playerAttack;
     public Transform currentTarget;
 
     public void Update()

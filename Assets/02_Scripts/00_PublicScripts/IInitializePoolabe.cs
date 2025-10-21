@@ -4,7 +4,7 @@
 /// </summary>
 public interface IInitializePoolable
 {
-    void Initialize(object data = null);
+    void Initialize();
 }
 
 /// <summary>
