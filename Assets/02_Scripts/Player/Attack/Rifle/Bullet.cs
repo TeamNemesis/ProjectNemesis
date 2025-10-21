@@ -16,8 +16,9 @@ public class Bullet : PoolableObject
     [SerializeField] float _lifeTime = 2f;   // 탄환의 생존 시간
     [SerializeField] float _damage = 10f;    // 탄환의 데미지 값
 
-    float _lifeTimer;              // 생존 시간 타이머
-    Vector3 _moveDir;
+    [Header("----- 읽기 전용 -----")]
+    [SerializeField] float _lifeTimer;              // 생존 시간 타이머
+    [SerializeField] Vector3 _moveDir;
 
     public event Action OnLifeTimeExpired; // 생존 시간 만료 이벤트
 
@@ -40,6 +41,11 @@ public class Bullet : PoolableObject
         // 여기서 데이터 초기화 작업 수행 가능
         _lifeTimer = 0f;
         _lifeTime = 2f;
+    }
+
+    public void SetMoveDir(Vector3 moveDir)
+    {
+        _moveDir = moveDir.normalized;
     }
 
     public void Move(Vector3 moveDir)

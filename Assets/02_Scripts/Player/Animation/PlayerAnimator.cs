@@ -26,6 +26,7 @@ public class PlayerAnimator : MonoBehaviour
     public void OnNormalAttack()
     {
         _animator.SetTrigger(Constants.ANIPARAM_ONNORMALATTACK);
+        Debug.Log("PlayerAnimator: OnNormalAttack triggered.");
     }
 
     public void OnDash()

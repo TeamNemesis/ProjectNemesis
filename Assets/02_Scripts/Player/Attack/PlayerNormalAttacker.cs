@@ -8,7 +8,8 @@ using UnityEngine;
 /// </summary>
 public abstract class PlayerNormalAttacker : MonoBehaviour
 {
-    // 공격 생명주기 알림(선택)
+    public abstract WeaponType WeaponType { get; }
+
     public event Action OnAttackStarted;
     public event Action OnAttackEnded;
 
@@ -36,7 +37,7 @@ public abstract class PlayerNormalAttacker : MonoBehaviour
     }
 
     // 파생 클래스가 구현: 애니메이션 트리거, 발사, 콤보 로직 등
-    protected abstract void Attack();
+    public abstract void Attack();
 
     /// <summary>
     /// 공격을 강제 종료(예: 피격/스턴)할 때 호출

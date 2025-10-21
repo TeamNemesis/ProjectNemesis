@@ -1,3 +1,4 @@
+using UnityEditor.U2D.Aseprite;
 using UnityEngine;
 
 /// <summary>
@@ -32,7 +33,8 @@ public class GameManager : MonoBehaviour
                     _instance._interactableManager = obj.AddComponent<InteractableManager>();
                     _instance._dataManager = obj.AddComponent<DataManager>();
                     _instance._poolManager = obj.AddComponent<PoolManager>();
-                    _instance._playerStatManager = obj.AddComponent<PlayerStatManager>();   
+                    _instance._playerStatManager = obj.AddComponent<PlayerStatManager>();
+
                     //_instance._skillManger = obj.AddComponent<SkillManager>();
 
                     _instance._resourceManager.Initialize();
@@ -91,9 +93,8 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] PoolManager _poolManager;                 // 풀 매니저
     public PoolManager PoolManager => _poolManager;
-
-    [SerializeField] PlayerStatManager _playerStatManager;
-    public PlayerStatManager playerStatManager=> _playerStatManager;
+    [SerializeField] PlayerStatManager _playerStatManager; // 플레이어 스탯 매니저
+    public PlayerStatManager PlayerStatManager => _playerStatManager;
 
     /// <summary>
     /// 스킬 매니저

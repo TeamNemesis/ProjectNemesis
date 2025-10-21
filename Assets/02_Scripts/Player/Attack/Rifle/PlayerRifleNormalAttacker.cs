@@ -7,6 +7,7 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public class PlayerRifleNormalAttacker : PlayerNormalAttacker
 {
+    public override WeaponType WeaponType => WeaponType.Rifle;
     [Header("Rifle Settings")]
     [SerializeField] float fallbackEnd = 0.2f;
 
@@ -14,11 +15,13 @@ public class PlayerRifleNormalAttacker : PlayerNormalAttacker
     [SerializeField] Transform _firePoint;
     [SerializeField] PoolableObject _bulletPrefab;
 
+    Player _player;
     Coroutine _endRoutine;
 
     // Initialize로 firePoint, prefab 주입 가능
-    public void Initialize(Transform firePoint, PoolableObject bulletPrefab = null)
+    public void Initialize(Player player, Transform firePoint, PoolableObject bulletPrefab = null)
     {
+        _player = player;
         if (firePoint != null) _firePoint = firePoint;
         if (bulletPrefab != null) _bulletPrefab = bulletPrefab;
     }
@@ -26,14 +29,19 @@ public class PlayerRifleNormalAttacker : PlayerNormalAttacker
     // 이제 Attack()은 애니메이션 트리거를 직접 날리지 않습니다.
     // Player(또는 PlayerAnimator)가 애니메이션을 트리거하고
     // 애니메이션 이벤트에서 FireNow()와 OnAnimationAttackEnd()를 호출합니다.
-    protected override void Attack()
+    public override void Attack()
     {
-        // 여기서는 발사 자체는 하지 않고 fallback 종료 타이머만 설정
-        if (_endRoutine != null) StopCoroutine(_endRoutine);
-        _endRoutine = StartCoroutine(EndAfterDelay());
+        if (_endRoutine != null)
+        {
+            // StopCoroutine을 호출할 때는 코루틴을 시작한 객체에서 멈춰야 함.
+            _player.StopCoroutine(_endRoutine);
+            _endRoutine = null;
+        }
+        // 코루틴은 항상 활성화가 보장되는 _owner에서 시작
+        _endRoutine = _player.StartCoroutine(EndAfterDelayCoroutine());
     }
 
-    IEnumerator EndAfterDelay()
+    IEnumerator EndAfterDelayCoroutine()
     {
         yield return new WaitForSeconds(fallbackEnd);
         EndNow();
@@ -52,7 +60,7 @@ public class PlayerRifleNormalAttacker : PlayerNormalAttacker
         var bullet = obj.GetComponent<Bullet>();
         if (bullet != null)
         {
-            bullet.Move(_firePoint.forward);
+            bullet.SetMoveDir(_firePoint.forward);
         }
     }
 
@@ -69,7 +77,7 @@ public class PlayerRifleNormalAttacker : PlayerNormalAttacker
 
     void EndNow()
     {
-        if (_endRoutine != null) { StopCoroutine(_endRoutine); _endRoutine = null; }
+        if (_endRoutine != null) { _player.StopCoroutine(_endRoutine); _endRoutine = null; }
         base.EndAttack();
     }
 }

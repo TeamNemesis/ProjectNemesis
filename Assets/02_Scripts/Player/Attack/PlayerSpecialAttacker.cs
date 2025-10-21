@@ -6,5 +6,6 @@
 /// </summary>
 public abstract class PlayerSpecialAttacker : MonoBehaviour
 {
+    public abstract WeaponType WeaponType { get; }
     public abstract void SpecialAttack();
 }

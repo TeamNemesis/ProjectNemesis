@@ -48,6 +48,9 @@ public class StateMachine
             return false;
         }
 
+        if( _currentType == nextType)
+            return false; // 이미 해당 상태인 경우 무시
+
         // 전환 가능 여부 검사(있으면)
         if (TransitionGuard != null && !TransitionGuard(_currentType, nextType))
             return false;

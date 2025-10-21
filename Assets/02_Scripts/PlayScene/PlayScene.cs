@@ -11,7 +11,6 @@ public class PlayScene : MonoBehaviour
 
     private void Awake()
     {
-        //_inputHandler.OnMoveInput += _player.Move;
         //_inputHandler.OnDashInput += _player.Dash;
         //_inputHandler.OnNomralAttackInput += _player.NormalAttack;
         //// 여기에 모바일용 유탄공격 시작 이벤트를 추가하여 UI를 생성하는 메서드를 연결할 수 있습니다.

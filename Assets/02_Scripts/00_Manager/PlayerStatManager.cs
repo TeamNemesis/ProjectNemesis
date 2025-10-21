@@ -163,7 +163,7 @@ public class PlayerStatManager : MonoBehaviour
 		/// <summary>
 		/// 플레이어 대쉬 거리
 		/// </summary>
-		private float _playerDashDistance;
+		private float _playerDashDistance = 5f;
 		public float playerDashDistance { get { return _playerDashDistance; } }
 		public void AddPlayerDashDistance(float plusDashDistance)
 		{

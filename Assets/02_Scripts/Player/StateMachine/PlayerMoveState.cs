@@ -5,6 +5,11 @@ public class PlayerMoveState : PlayerStateBase
     {
     }
 
+    public override void Enter()
+    {
+
+    }
+
     public override void Update()
     {
         _player.Move(_player.MoveInput);
@@ -12,6 +17,6 @@ public class PlayerMoveState : PlayerStateBase
 
     public override void Exit()
     {
-        _player.Stop();
+        _player.StopMove();
     }
 }
