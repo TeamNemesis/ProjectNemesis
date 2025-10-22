@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -85,7 +86,7 @@ public class Skill_Two_Attack : ActiveTech
         Drone[] drones = player.transform.GetComponentsInChildren<Drone>();
         if (drones.Length > 0)
         {
-            Constants.DRONE_ATTACK = (int)(originalDroneAttack * (1+plusDamage));
+            Constants.DRONE_ATTACK = (originalDroneAttack * (1+plusDamage));
         }
     }
     public override void Deactivate(Player player, bool isSameSkill)
@@ -119,18 +120,23 @@ public class Skill_Two_Attack : ActiveTech
 /// </summary>
 public class Skill_Three_Attack : ActiveTech
 {
-    public override void Activate(SkillManager skillManager, Player player)
+    private Action<Transform> knockbackAction;
+    private Dictionary<Drone, Action<Transform>> droneHandlers = new();
+
+
+		public override void Activate(SkillManager skillManager, Player player)
     {
         // 공격 적중 시 이벤트에 추가
         base.Activate(skillManager, player);
-        //player.AttackHit += HitEnemy;
+        knockbackAction = (enemy)=>KnockBackEnemy(enemy,player.transform);
+        //player.AttackHit += HitEnemy; 
         Drone[] drones = player.transform.GetComponentsInChildren<Drone>();
         if (drones.Length > 0)
         {
             foreach (Drone drone in drones)
             {
-                drone.Attack += HitEnemy;
-            }
+								DroneEventConnect(drone);
+						}
         }
     }
     public override void Deactivate(Player player, bool isSameSkill)
@@ -140,21 +146,40 @@ public class Skill_Three_Attack : ActiveTech
         // 이벤트 해제
         //player.AttackHit -= HitEnemy;
         Drone[] drones = player.transform.GetComponentsInChildren<Drone>();
-        if (drones.Length > 0)
+				foreach (Drone drone in drones)
+				{
+						if (droneHandlers.TryGetValue(drone, out var handler))
+						{
+								drone.Attack -= handler;
+						}
+				}
+
+				droneHandlers.Clear();
+    }
+
+    public void KnockBackEnemy(Transform enemyTransform,Transform attackerTransform)
+    {
+        Vector3 direction = enemyTransform.position - attackerTransform.position;
+        direction.Normalize();
+        MonsterBase monster = enemyTransform.GetComponent<MonsterBase>();
+        if(monster != null)
         {
-            foreach (Drone drone in drones)
-            {
-                drone.Attack -= HitEnemy;
-            }
+            monster.KnockBackEnemy(direction, 0f, 6f);
         }
 
-    }
-
-    public override void HitEnemy(Transform transform)
+		}
+    
+    /// <summary>
+    /// 드론에 이벤트 등록
+    /// </summary>
+    /// <param name="drone"></param>
+    public void DroneEventConnect(Drone drone)
     {
-
-    }
-    public Skill_Three_Attack(SkillData skillData) : base(skillData)
+				Action<Transform> handler = (enemy) => KnockBackEnemy(enemy, drone.transform);
+				drone.Attack += handler;
+				droneHandlers[drone] = handler;
+		}
+		public Skill_Three_Attack(SkillData skillData) : base(skillData)
     {
     }
 }
@@ -188,8 +213,8 @@ public class Skill_Four_Attack : ActiveTech
         {
             foreach (Drone drone in drones)
             {
-                drone.Attack += _DroneAttack;
-            }
+								DroneEventConnect(drone);
+						}
         }
     }
     public override void Deactivate(Player player, bool isSameSkill)
@@ -206,16 +231,22 @@ public class Skill_Four_Attack : ActiveTech
         {
             foreach (Drone drone in drones)
             {
-                drone.Attack -= _DroneAttack;
 
+                drone.Attack -= _DroneAttack;
             }
         }
 
     }
 
+    public void DroneEventConnect(Drone drone)
+    {
+        // ActiveTry 연결
+				drone.Attack += _DroneAttack;
+		} 
 
 
-    public override void ActiveTry(Player player)
+
+		public override void ActiveTry(Player player)
     {
         stack++;
         // 최대 스택 체한

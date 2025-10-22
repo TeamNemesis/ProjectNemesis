@@ -129,7 +129,7 @@ public static class Constants
     /// <summary>
     ///  드론 공격력
     /// </summary>
-    public static int DRONE_ATTACK = 2;
+    public static float DRONE_ATTACK = 2;
 
 
     /// <summary>
