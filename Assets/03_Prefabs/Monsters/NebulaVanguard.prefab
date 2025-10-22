@@ -139,8 +139,11 @@ MonoBehaviour:
   attackDelay: 2
   originalSpeed: 10
   targetTag: Player
+  monsterSize: 1
+  _knockBackDamage: 0
+  player: {fileID: 0}
   agent: {fileID: 0}
-  target: {fileID: 0}
+  _target: {fileID: 0}
   _isAttacking: 0
   _box_Length: 3
   _box_Height: 3

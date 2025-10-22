@@ -64,8 +64,6 @@ public class MonsterBase : CharacterModelBase
         debuffHandler.InitializeMonster(agent);
     }
 
-
-
     protected bool CanSeePlayer()
     {
         if (_target == null) return false;

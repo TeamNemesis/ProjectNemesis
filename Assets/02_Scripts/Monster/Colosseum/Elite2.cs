@@ -14,29 +14,29 @@ public class Elite2 : MonsterBase
     }
     [Header("Local Stats")]
     [SerializeField] private int laserAttackCount = 0; // 연속 공격 횟수
+
+    [Header("PoisonField")]
     [SerializeField] private float _poisonFieldDuration = 999f; // 독성 구름 지속 시간
     [SerializeField] private float _poisonFieldRadius = 6f;   // 독성 구름 반경
     [SerializeField] private float _poisonFieldDelay = 2f;
-    [SerializeField] private bool _isAttacking = false;
-
     [SerializeField] private float poisonFieldAttackCoolTime = 0;
+
+    [Header("PoisonLaser")]
     [SerializeField] private float poisonLaserAttackCoolTime = 0;
+
+    [Header("Bullet")]
+    [SerializeField] float bulletLifeTime = 8f;
     [SerializeField] private float bulletAttackCoolTime = 0;
 
+    [SerializeField] private bool _isAttacking = false;
 
-    [Header("PoisonFieldPrefab"), SerializeField]
-    private PoolableObject poisonFieldPrefab; // 독성 구름 프리팹
+    [Header("Prefabs")]
+    [SerializeField] private PoolableObject squareDecalPrefab;
+    [SerializeField] private PoolableObject attackDecalPrefab;
+    [SerializeField] private PoolableObject poisonFieldPrefab;
+    [SerializeField] private PoolableObject eliteBulletPrefab;
 
-    [Header("AttackDecalPrefab"), SerializeField]
-    private PoolableObject attackDecalPrefab; // 공격 장판 프리팹
-
-    [Header("SquareDecalPrefab"), SerializeField]
-    private PoolableObject squareDecalPrefab;
-
-    [Header("EliteBullet"),SerializeField]
-    private PoolableObject eliteBulletPrefab; // 엘리트 총알 프리팹
-
-    [SerializeField] private State currentState = State.Idle;
+    [Header("STATE"),SerializeField] private State currentState = State.Idle;
 
     private void Update()
     {
@@ -182,7 +182,13 @@ public class Elite2 : MonsterBase
                _isAttacking = true;
         if (_target != null && Vector3.Distance(transform.position, _target.position) <= attackRange)
         {
-            
+            GameObject bullet = ObjectPool.Instance.GetFromPool(eliteBulletPrefab, transform.position, transform.rotation);
+            bullet.transform.rotation = transform.rotation;
+            TurretBullet turretBullet = bullet.GetComponent<TurretBullet>();
+            if (turretBullet != null)
+            {
+                turretBullet.Initialize(targetTag, attackDamage, bulletLifeTime);
+            }
             yield return new WaitForSeconds(attackDelay);
         }
         _isAttacking = false;
