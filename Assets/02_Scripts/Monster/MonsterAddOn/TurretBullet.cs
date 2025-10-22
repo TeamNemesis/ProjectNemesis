@@ -15,10 +15,21 @@ public class TurretBullet : MonoBehaviour
     {
         this.targetTag = targetTag;
     }
-    private void Start()
+    public void SetLifeTime(float lifeTime)
     {
-        Destroy(gameObject, lifeTime); // 일정 시간 후 총알 제거
+        this.lifeTime = lifeTime;
     }
+
+    public void Initialize(string targetTag, float damage, float lifeTime)
+    {
+        SetTarget(targetTag);
+        SetDamage(damage);
+        SetLifeTime(lifeTime);
+        this.owner = gameObject;
+        StartLifeTime();
+    }
+
+
     private void Update()
     {
         transform.Translate(Vector3.forward * speed * Time.deltaTime); // 총알 이동
