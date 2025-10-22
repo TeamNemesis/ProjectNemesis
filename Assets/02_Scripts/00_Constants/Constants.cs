@@ -198,6 +198,7 @@ public static class Constants
     public static string ANIPARAM_MOVESPEED = "MoveSpeed";
     public static string ANIPARAM_ONNORMALATTACK = "OnNormalAttack";
     public static string ANIPARAM_ONSPECIALATTACK = "OnSpecialAttack";
+    public static string ANIPARAM_ONSPECIALATTACKEND = "OnSpecialAttackEnd";
     public static string ANIPARAM_ONGRENADEATTACK = "OnGrenadeAttack";
     public static string ANIPARAM_ONDASH = "OnDash";
     #endregion
