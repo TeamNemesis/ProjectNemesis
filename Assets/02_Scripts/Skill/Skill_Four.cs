@@ -35,7 +35,12 @@ public class Skill_Four : SkillBase
             // 찌릿찌릿
             case 40:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
-
+                ActiveTech skillAttack = new Skill_Four_Attack(choosedSkill);
+                if (_skillManager.attackTech != null)
+                {
+                    _skillManager.attackTech.Deactivate(player, _skillManager.attackTech.skillData.skillIdx != choosedSkill.skillIdx);
+                }
+                skillAttack.Activate(_skillManager, player);
                 break;
 
                 // EMP
@@ -136,7 +141,7 @@ public class Skill_Four : SkillBase
     #region 강화된 추진력
     private void ActivateThrust(SkillData choosedSkill)
     {
-
+        Debug.Log(skillManager.playerStatManager == null);
         // 대쉬 이동거리 value1 만큼 증가
         skillManager.playerStatManager.AddPlayerDashDistanceMulti(choosedSkill.skillBaseValue_1);
         // 대쉬 후 value3초간 value2 만큼 이동속도 증가 이벤트 연결

@@ -25,6 +25,7 @@ public class GameManager : MonoBehaviour
                 // 그래도 없다면
                 if (_instance == null)
                 {
+                    Debug.Log("GameManager  instance");
                     // 게임오브젝트를 GameManager라는 이름으로 새로 만들고
                     GameObject obj = new GameObject("GameManager");
                     // GameManager 컴포넌트를 추가 후 _instance에 할당
@@ -33,14 +34,14 @@ public class GameManager : MonoBehaviour
                     _instance._interactableManager = obj.AddComponent<InteractableManager>();
                     _instance._dataManager = obj.AddComponent<DataManager>();
                     _instance._poolManager = obj.AddComponent<PoolManager>();
+
+                    Debug.Log("StatManager");
                     _instance._playerStatManager = obj.AddComponent<PlayerStatManager>();
 
-                    //_instance._skillManger = obj.AddComponent<SkillManager>();
 
                     _instance._resourceManager.Initialize();
                     _instance._dataManager.Initialize(_instance._resourceManager);
                     _instance._poolManager.Initialze(_instance._resourceManager);
-                    //_instance._skillManger.InitializeSkillManager();
 
                     // 씬 전환시 파괴되지 않도록 설정
                     DontDestroyOnLoad(obj);
@@ -53,6 +54,7 @@ public class GameManager : MonoBehaviour
 
     public void Awake()
     {
+        Debug.Log("GameManager  awake");
         if (_instance != null && _instance != this)
         {
             Destroy(gameObject);
@@ -62,14 +64,22 @@ public class GameManager : MonoBehaviour
             _instance = this;
             DontDestroyOnLoad(gameObject);
         }
-        
+
         //_resourceManager.Initialize();
-        
-        if(_skillManger==null)
+
+        if (_player == null)
         {
-            _skillManger = Resources.Load<SkillManager>("Prefabs/Skill/SkillManager");
+            _player = FindAnyObjectByType<Player>();
         }
-        _skillManger.InitializeSkillManager();
+
+        if (_skillManger==null)
+        {
+            Debug.Log("SkillManager)");
+            _skillManger = Resources.Load<SkillManager>("Prefabs/Skill/SkillManager");
+            _skillManger = Instantiate(_skillManger,transform);
+            _skillManger.name = "SkillManager";
+        }
+        _skillManger.InitializeSkillManager();  
 
         if(_uiManager==null)
         {
@@ -79,6 +89,8 @@ public class GameManager : MonoBehaviour
             
         }
         _uiManager.InitializeManager();
+
+        
     }
 
     [SerializeField] ResourceManager _resourceManager;      // 리소스 매니저
@@ -94,7 +106,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] PoolManager _poolManager;                 // 풀 매니저
     public PoolManager PoolManager => _poolManager;
     [SerializeField] PlayerStatManager _playerStatManager; // 플레이어 스탯 매니저
-    public PlayerStatManager PlayerStatManager => _playerStatManager;
+    public PlayerStatManager PlayerStatManager =>_playerStatManager;
 
     /// <summary>
     /// 스킬 매니저
