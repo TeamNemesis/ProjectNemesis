@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using System;
 using UnityEngine;
 
@@ -6,6 +7,8 @@ using UnityEngine;
 /// </summary>
 public class Skill_Three : SkillBase
 {
+    
+
 
     public override void ActivateSkill(SkillData choosedSkill)
     {
@@ -56,7 +59,7 @@ public class Skill_Three : SkillBase
             // 적색 편이
             case 35:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
-                //TODO 적이 발사하는 발사체에 적 정보 필요
+                
                 break;
 
             // 중력 증폭
