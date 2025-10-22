@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 
 /// <summary>
@@ -14,6 +15,8 @@ public class PlayerRifleNormalAttacker : PlayerNormalAttacker
     [Header("Bullet")]
     [SerializeField] Transform _firePoint;
     [SerializeField] PoolableObject _bulletPrefab;
+
+    public override event Action OnAttackStarted;
 
     Player _player;
     Coroutine _endRoutine;
@@ -31,6 +34,9 @@ public class PlayerRifleNormalAttacker : PlayerNormalAttacker
     // 애니메이션 이벤트에서 FireNow()와 OnAnimationAttackEnd()를 호출합니다.
     public override void Attack()
     {
+        IsAttacking = true;
+        OnAttackStarted?.Invoke();
+
         if (_endRoutine != null)
         {
             // StopCoroutine을 호출할 때는 코루틴을 시작한 객체에서 멈춰야 함.
@@ -53,7 +59,6 @@ public class PlayerRifleNormalAttacker : PlayerNormalAttacker
         if (_bulletPrefab == null || _firePoint == null)
         {
             Debug.LogWarning("PlayerRifleNormalAttacker.FireNow: firePoint or bulletPrefab is null.");
-            return;
         }
 
         GameObject obj = ObjectPool.Instance.GetFromPool(_bulletPrefab, _firePoint.position, _firePoint.rotation);
@@ -68,6 +73,7 @@ public class PlayerRifleNormalAttacker : PlayerNormalAttacker
     public void OnAnimationAttackEnd()
     {
         EndNow();
+        Debug.Log("PlayerRifleNormalAttacker: OnAnimationAttackEnd called.");
     }
 
     public override void EndAttack()
@@ -77,7 +83,12 @@ public class PlayerRifleNormalAttacker : PlayerNormalAttacker
 
     void EndNow()
     {
-        if (_endRoutine != null) { _player.StopCoroutine(_endRoutine); _endRoutine = null; }
+        if (_endRoutine != null)
+        {
+            _player.StopCoroutine(_endRoutine); _endRoutine = null;
+        }
+        Debug.Log("PlayerRifleNormalAttacker: EndNow called.");
         base.EndAttack();
+        Debug.Log("PlayerRifleNormalAttacker: Attack ended.");
     }
 }

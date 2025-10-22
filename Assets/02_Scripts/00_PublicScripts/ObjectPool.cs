@@ -109,6 +109,7 @@ public class ObjectPool : MonoBehaviour
     /// </summary>
     private GameObject CreateNewObject(string poolName)
     {
+
         // 기존 풀에서 프리팹 정보를 찾아 새로운 오브젝트 생성
         foreach (GameObject prefab in poolObjects)
         {
