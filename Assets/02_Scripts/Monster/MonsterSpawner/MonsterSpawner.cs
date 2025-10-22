@@ -9,6 +9,7 @@ public class MonsterSpanwer : MonoBehaviour
     {
         // 오브젝트 풀링
         Instantiate(monster, spawnPos, Quaternion.identity);
+        monster.Initialize();
         OnMonsterSpawned?.Invoke(monster);
     }
 

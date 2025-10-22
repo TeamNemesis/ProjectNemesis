@@ -12,14 +12,14 @@ public class RoomController : MonoBehaviour
 
     List<MonsterBase> _allNormalMonsters;      // 소환 가능한 모든 몬스터들 (A B C D E)
     List<MonsterBase> _allBossMonster;  // 
-    List<MonsterBase> _monsterToSpawn;   // 이번 웨이브에 소환해야할 몬스터(AAABC), (ABBCD)
+    [SerializeField] List<MonsterBase> _monsterToSpawn;   // 이번 웨이브에 소환해야할 몬스터(AAABC), (ABBCD)
     // 
 
-    public void Initialize(List<MonsterBase> allMonsterList)
-    {
-        // 소환가능한 모든 몬스터 리스트 받아오기
-        _allNormalMonsters = allMonsterList;
-    }
+    //public void Initialize(List<MonsterBase> allMonsterList)
+    //{
+    //    // 소환가능한 모든 몬스터 리스트 받아오기
+    //    _allNormalMonsters = allMonsterList;
+    //}
 
     /// <summary>
     /// 보스 소환
@@ -31,13 +31,23 @@ public class RoomController : MonoBehaviour
         // 연출 추가
     }
 
+    public void UpdateMonsterSpawnPoints(Transform[] newSpawnPoints)
+    {
+        if(newSpawnPoints == null || newSpawnPoints.Length == 0)
+        {
+            Debug.LogWarning("New spawn points are null or empty.");
+            return;
+        }
+        _spawnPoints = newSpawnPoints;
+    }
+
     /// <summary>
     /// 일반 잡몹 소환
     /// </summary>
     public void SpawnMonster()
     {
         // 이번 웨이브에 소환할 몬스터 결정
-        _monsterToSpawn = DecideMonstersToSpawn();
+        //_monsterToSpawn = DecideMonstersToSpawn();
 
         //// 소환해야할 위치가 모자라면 경고 출력
         //if (_monsterToSpawn.Count > _spawnPoints.Length)
@@ -48,6 +58,11 @@ public class RoomController : MonoBehaviour
 
         // _spawnPoints 중 _monsterToSpawn.Count 개 만큼 랜덤으로 골라서 몬스터 소환
         List<int> usedIndices = new List<int>();
+        if(_monsterToSpawn == null || _monsterToSpawn.Count == 0)
+        {
+            Debug.LogWarning("No monsters to spawn for this wave.");
+            return;
+        }
         for (int i = 0; i < _monsterToSpawn.Count; i++)
         {
             int randIndex;

@@ -30,7 +30,6 @@ public interface IInteractable
     InteractableType InteractableType { get; }
 
     event Action<IInteractable> OnInteracted;
-    event Action<IInteractable> OnInteractionCompleted;
 
     /// <summary>
     /// 상호작용을 실행하는 함수

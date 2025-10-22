@@ -30,7 +30,7 @@ public class InteractionController : MonoBehaviour
 
         // 구독: 상호작용 시작/완료
         interactable.OnInteracted += PublishInteractableEventByType;
-        interactable.OnInteractionCompleted += OnInteractableCompleted;
+        //interactable.OnInteractionCompleted += OnInteractableCompleted;
 
     }
 
@@ -44,7 +44,7 @@ public class InteractionController : MonoBehaviour
 
         // 구독 해제
         interactable.OnInteracted -= PublishInteractableEventByType;
-        interactable.OnInteractionCompleted -= OnInteractableCompleted;
+        //interactable.OnInteractionCompleted -= OnInteractableCompleted;
     }
 
     /// <summary>

@@ -690,6 +690,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7e94795e38465a46be4d4ed0bf56b71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _roomController: {fileID: 1983618172}
   _roomSpawner: {fileID: 1992756415}
   _doorSpawner: {fileID: 1704002337}
   _doorDecider: {fileID: 1449672882}
@@ -790,6 +791,13 @@ MonoBehaviour:
   _waveCost: 0
   _spawnPoints: []
   _bossSpawnPoint: {fileID: 0}
+  _monsterToSpawn:
+  - {fileID: 7131538502737706710, guid: 05af92cfe0add3d408a6e51234dd8b5e, type: 3}
+  - {fileID: 163027234455247028, guid: 40a8aa3c618df0149a684f4b8b70e277, type: 3}
+  - {fileID: 4113899957910836829, guid: f9c64bc444e17ac44aca1f5087f6229f, type: 3}
+  - {fileID: 5430880455391894325, guid: c54b7b7beacbd9846bf93fdb765128ba, type: 3}
+  - {fileID: 3823149093494956183, guid: 592992e98e94c464b8cf94cf8beefbb3, type: 3}
+  - {fileID: 412706925956391160, guid: dd74f587fe3832e468f6885ccc4ee1ba, type: 3}
 --- !u!1 &1992756413
 GameObject:
   m_ObjectHideFlags: 0
@@ -1106,6 +1114,10 @@ PrefabInstance:
     - target: {fileID: 7270792034495344502, guid: 8fb7464f2132e3543ac3eafe0c4e1fcb, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7904901309948857973, guid: 8fb7464f2132e3543ac3eafe0c4e1fcb, type: 3}
+      propertyPath: _moveSpeed
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 8951883238645882597, guid: 8fb7464f2132e3543ac3eafe0c4e1fcb, type: 3}
       propertyPath: m_Name
