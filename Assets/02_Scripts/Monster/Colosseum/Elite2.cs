@@ -33,8 +33,10 @@ public class Elite2 : MonsterBase
     [Header("SquareDecalPrefab"), SerializeField]
     private PoolableObject squareDecalPrefab;
 
-    [SerializeField]
-    private State currentState = State.Idle;
+    [Header("EliteBullet"),SerializeField]
+    private PoolableObject eliteBulletPrefab; // 엘리트 총알 프리팹
+
+    [SerializeField] private State currentState = State.Idle;
 
     private void Update()
     {
@@ -171,6 +173,19 @@ public class Elite2 : MonsterBase
 
         _isAttacking = false;
         laserAttackCount = 0;
+        currentState = State.Move; // 공격 후 다시 추격 상태로 전환
+    }
+
+
+    private IEnumerator BulletAttack()
+    {
+               _isAttacking = true;
+        if (_target != null && Vector3.Distance(transform.position, _target.position) <= attackRange)
+        {
+            
+            yield return new WaitForSeconds(attackDelay);
+        }
+        _isAttacking = false;
         currentState = State.Move; // 공격 후 다시 추격 상태로 전환
     }
 }
