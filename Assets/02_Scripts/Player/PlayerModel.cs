@@ -48,8 +48,8 @@ public class PlayerModel : CharacterModelBase
         if (Input.GetKeyDown(KeyCode.U))
         {
 
-            StartCoroutine(currentTarget.GetComponent<MonsterBase>().KnockBackCoroutine(Vector3.forward * 10f, 20f));
-				}
+            currentTarget.GetComponent<MonsterBase>().KnockBackEnemy(Vector3.forward*10f,20,5f);
+        }
 
     }
 

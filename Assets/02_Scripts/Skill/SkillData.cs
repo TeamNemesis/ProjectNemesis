@@ -36,8 +36,8 @@ public class SkillData
     public string skillValueScriptEn { get { return _skillValueScriptEn; } }
 
     // JsonProperty("이미지경로")
-    private string _skillImagePath;
-    public string skillImagePath { get { return _skillImagePath; } }
+    private Sprite _skillImage;
+    public Sprite skillImagePath { get { return _skillImage; } }
 
     // JsonProperty("기업분류")
     private string _skillCompanyName;
@@ -87,6 +87,11 @@ public class SkillData
 
     public SkillData(skillJsonData data, SkillBase skillCompany)
     {
+        var allSprites = Resources.LoadAll<Sprite>("whtjdgh1931/SkillImage");
+        foreach (var sprite in allSprites)
+        {
+            Debug.Log(sprite.name);
+        }
         _skillIdx = data.index;
         _skillName = data.skillName;
         _skillNameEn = data.skillNameEn;
@@ -94,7 +99,12 @@ public class SkillData
         _skillScriptEn = data.skillScriptEn;
         _skillValueScript = data.skillValueScript;
         _skillValueScriptEn = data.skillValueScriptEn;
-        _skillImagePath = data.skillImagePath;
+        _skillImage = Resources.Load<Sprite>($"whtjdgh1931/SkillImage/TechImage{_skillIdx}");
+        Debug.Log(_skillIdx);
+        if(_skillImage !=null)
+        { 
+            Debug.Log("이미지 로딩됨");
+        }
         _skillCompanyName = data.skillCompany;
         _skillTag = data.skillTag;
         _skillMaxLevel = data.skillMaxLevel ?? 0;

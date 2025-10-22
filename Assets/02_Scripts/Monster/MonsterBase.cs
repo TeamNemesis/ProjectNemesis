@@ -114,7 +114,7 @@ public class MonsterBase : CharacterModelBase
     /// </summary>
     /// <param name="pushDirection"></param>
     /// <param name="damage"></param>
-    public void KonckBackEnemy(Vector3 pushDirection, float damage)
+    public void KnockBackEnemy(Vector3 pushDirection, float damage,float knockBackDistance)
     {
 				GetComponent<Collider>().isTrigger = false;
 				_knockBackDamage = damage;
@@ -122,13 +122,13 @@ public class MonsterBase : CharacterModelBase
 				GetComponent<Rigidbody>().isKinematic = false;
 				debuffHandler.ApplyDebuff(DebuffHandler.DebuffData.CreateStun(0.5f));
 				GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
-				GetComponent<Rigidbody>().AddForce(pushDirection.normalized, ForceMode.VelocityChange);
+				GetComponent<Rigidbody>().AddForce(pushDirection, ForceMode.VelocityChange);
 
         if(_knockBackCoroutine !=null)
         {
             StopCoroutine(_knockBackCoroutine);
         }
-        _knockBackCoroutine = StartCoroutine(KnockBackCoroutine());
+        _knockBackCoroutine = StartCoroutine(KnockBackCoroutine(knockBackDistance));
 		}
 
 
@@ -138,9 +138,13 @@ public class MonsterBase : CharacterModelBase
 		/// <param name="pushDirection"></param>
 		/// <param name="damage"></param>
 		/// <returns></returns>
-		public IEnumerator KnockBackCoroutine()
+		public IEnumerator KnockBackCoroutine(float knockBackDistance)
     {
-        yield return new WaitForSeconds(0.5f);
+        Vector3 startPosition = transform.position;
+        while(Vector3.Distance(transform.position, startPosition) < knockBackDistance)
+        {
+            yield return null;
+        }
 				GetComponent<Rigidbody>().isKinematic = true;
 				isPushed = false;
 				GetComponent<Collider>().isTrigger = true;

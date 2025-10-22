@@ -15,7 +15,7 @@ public class SkillBtn : PoolableObject
 		}
 
 		[SerializeField]
-		private Text _skillImage;
+		private Image _skillImage;
 		[SerializeField]
 		private Text _skillScirpt;
 		[SerializeField]
@@ -36,7 +36,7 @@ public class SkillBtn : PoolableObject
 				}
 				if (_skillImage != null)
 				{
-						_skillImage.text = choosedSkill.skillImagePath;
+						_skillImage.sprite = choosedSkill.skillImagePath;
 				}
 				if (_skillIDX != null)
 				{
@@ -66,7 +66,7 @@ public class SkillBtn : PoolableObject
         }
         if (_skillImage != null)
         {
-            _skillImage.text = null;
+            _skillImage.sprite = null;
         }
         if (_skillIDX != null)
         {

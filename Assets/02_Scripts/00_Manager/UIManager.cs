@@ -11,7 +11,7 @@ public class UIManager : MonoBehaviour
     #region 현재 보유 스킬 리스트
 
     [SerializeField]
-    private Text _skillImageText;
+    private Image _skillImage;
     [SerializeField]
     private Text _skillScriptText;
     [SerializeField]
@@ -74,7 +74,7 @@ public class UIManager : MonoBehaviour
 
     public void OnClick_SkillListBtn(SkillBtn skillBtn)
     {
-        _skillImageText.text = skillBtn.skillData.skillImagePath;
+        _skillImage.sprite = skillBtn.skillData.skillImagePath;
         _skillScriptText.text = skillBtn.skillData.skillIdx.ToString() + "\n" + skillBtn.skillData.skillScript;
         _skillLevelText.text = skillBtn.skillData.skillLevel.ToString() + " / " + skillBtn.skillData.skillMaxLevel.ToString();
     }
