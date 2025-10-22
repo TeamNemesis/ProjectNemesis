@@ -96,13 +96,13 @@ public class NebulaChemicalDisease : MonsterBase
 
             Vector3 attackPos = _target.position;
 
-            GameObject decalObj = ObjectPool.Instance.GetFromPool(attackDecalPrefab, attackPos);
+            GameObject decalObj = ObjectPool.Instance.GetFromPool(attackDecalPrefab, attackPos, attackDecalPrefab.transform.rotation);
             decalObj.GetComponent<AttackDecalEffect>().Play(_poisonFieldDelay, _poisonFieldRadius / 2);
 
             // 장판 생성 후 딜레이동안 대기
             yield return new WaitForSeconds(_poisonFieldDelay);
 
-            GameObject poisonObj = ObjectPool.Instance.GetFromPool(poisonFieldPrefab, attackPos);// 플레이어에게 독성 구름 발사
+            GameObject poisonObj = ObjectPool.Instance.GetFromPool(poisonFieldPrefab, attackPos, poisonFieldPrefab.transform.rotation);// 플레이어에게 독성 구름 발사
             PoisonField poisonField =  poisonObj.GetComponent<PoisonField>();
             poisonField.Initialize(targetTag, _poisonFieldDuration, _poisonFieldRadius);
 

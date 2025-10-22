@@ -92,7 +92,7 @@ public class NebulaPhantom : MonsterBase
         {
             Vector3 spawnPos = transform.position + transform.forward * 40;
             spawnPos.y = 0;
-            GameObject decalobj = ObjectPool.Instance.GetFromPool(SquareDecalPrefab, spawnPos);
+            GameObject decalobj = ObjectPool.Instance.GetFromPool(SquareDecalPrefab, spawnPos, SquareDecalPrefab.transform.rotation);
 
             decalobj.GetComponent<SquareDecalEffect>().Play(attackDelay, transform, new Vector3(90, 0, 0));
             yield return new WaitForSeconds(attackDelay);

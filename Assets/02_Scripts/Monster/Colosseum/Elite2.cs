@@ -59,7 +59,7 @@ public class Elite2 : MonsterBase
             case State.Attack:
                 if (!_isAttacking)
                 {
-
+                    StartCoroutine(PoisonLaserAttack());
                 }
                 break;
             case State.Die:
@@ -111,13 +111,13 @@ public class Elite2 : MonsterBase
 
             Vector3 attackPos = _target.position;
 
-            GameObject decalObj = ObjectPool.Instance.GetFromPool(attackDecalPrefab, attackPos);
+            GameObject decalObj = ObjectPool.Instance.GetFromPool(attackDecalPrefab, attackPos,attackDecalPrefab.transform.rotation);
             decalObj.GetComponent<AttackDecalEffect>().Play(_poisonFieldDelay, _poisonFieldRadius / 2);
 
             // 장판 생성 후 딜레이동안 대기
             yield return new WaitForSeconds(_poisonFieldDelay);
 
-            GameObject poisonObj = ObjectPool.Instance.GetFromPool(poisonFieldPrefab, attackPos);// 플레이어에게 독성 구름 발사
+            GameObject poisonObj = ObjectPool.Instance.GetFromPool(poisonFieldPrefab, attackPos, poisonFieldPrefab.transform.rotation);// 플레이어에게 독성 구름 발사
             PoisonField poisonField = poisonObj.GetComponent<PoisonField>();
             poisonField.Initialize(targetTag, _poisonFieldDuration, _poisonFieldRadius);
 
@@ -139,7 +139,7 @@ public class Elite2 : MonsterBase
             {
                 Vector3 spawnPos = transform.position + transform.forward * 40;
                 spawnPos.y = 0;
-                GameObject decalobj = ObjectPool.Instance.GetFromPool(squareDecalPrefab, spawnPos);
+                GameObject decalobj = ObjectPool.Instance.GetFromPool(squareDecalPrefab, spawnPos, squareDecalPrefab.transform.rotation);
 
                 decalobj.GetComponent<SquareDecalEffect>().Play(attackDelay, transform, new Vector3(90, 0, 0));
                 yield return new WaitForSeconds(attackDelay);
