@@ -25,7 +25,6 @@ public class GameManager : MonoBehaviour
                 // 그래도 없다면
                 if (_instance == null)
                 {
-                    Debug.Log("GameManager  instance");
                     // 게임오브젝트를 GameManager라는 이름으로 새로 만들고
                     GameObject obj = new GameObject("GameManager");
                     // GameManager 컴포넌트를 추가 후 _instance에 할당
@@ -35,7 +34,6 @@ public class GameManager : MonoBehaviour
                     _instance._dataManager = obj.AddComponent<DataManager>();
                     _instance._poolManager = obj.AddComponent<PoolManager>();
 
-                    Debug.Log("StatManager");
                     _instance._playerStatManager = obj.AddComponent<PlayerStatManager>();
 
 
@@ -54,7 +52,6 @@ public class GameManager : MonoBehaviour
 
     public void Awake()
     {
-        Debug.Log("GameManager  awake");
         if (_instance != null && _instance != this)
         {
             Destroy(gameObject);
@@ -74,12 +71,9 @@ public class GameManager : MonoBehaviour
 
         if (_skillManger==null)
         {
-            Debug.Log("SkillManager)");
             _skillManger = Resources.Load<SkillManager>("Prefabs/Skill/SkillManager");
-            _skillManger = Instantiate(_skillManger,transform);
-            _skillManger.name = "SkillManager";
+        
         }
-        _skillManger.InitializeSkillManager();  
 
         if(_uiManager==null)
         {
@@ -88,7 +82,6 @@ public class GameManager : MonoBehaviour
             _uiManager.name = "UIManager";
             
         }
-        _uiManager.InitializeManager();
 
         
     }
@@ -103,6 +96,9 @@ public class GameManager : MonoBehaviour
         _instance._resourceManager.Initialize();
         _instance._dataManager.Initialize(_instance._resourceManager);
         _instance._poolManager.Initialze(_instance._resourceManager);
+        _skillManger.InitializeSkillManager();
+        _uiManager.InitializeManager();
+
     }
 
     [SerializeField] ResourceManager _resourceManager;      // 리소스 매니저

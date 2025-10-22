@@ -62,7 +62,7 @@ public class Skill_Two_Attack : ActiveTech
     /// <summary>
     /// 파이로 하트 일반공격 강화 스킬 발동시 발행할 이벤트, 스킬 인덱스, 강화 계수
     /// </summary>
-    public static event Action<int,float> ActiveSkillEvent;
+    public static event Action<int, float> ActiveSkillEvent;
 
     /// <summary>
     /// 파이로 하트 일반공격 강화 해제 이벤트, 스킬 인덱스
@@ -80,7 +80,7 @@ public class Skill_Two_Attack : ActiveTech
         // 스킬 효과 적용 (플레이어 일반 공격력에 접근하여 공격력 추가)
         float plusAttack = (float)_skillData.skillBaseValue_1 + (float)_skillData.skillLevelValue_1 * _skillData.skillLevel;
         GameManager.Instance.PlayerStatManager.AddPlayerAttackDamage(plusAttack);
-        ActiveSkillEvent?.Invoke(_skillData.skillIdx,plusAttack);
+        ActiveSkillEvent?.Invoke(_skillData.skillIdx, plusAttack);
         // 공격 적중 시 이벤트에 추가
         Drone[] drones = player.transform.GetComponentsInChildren<Drone>();
         if (drones.Length > 0)
@@ -180,6 +180,7 @@ public class Skill_Four_Attack : ActiveTech
 
     public override void Activate(SkillManager skillManager, Player player)
     {
+
         // 공격 시도 시 이벤트에 추가
         base.Activate(skillManager, player);
         _AttackTry = () => ActiveTry(player);
@@ -196,7 +197,8 @@ public class Skill_Four_Attack : ActiveTech
     }
     public override void Deactivate(Player player, bool isSameSkill)
     {
-        // 리스트 제거s
+        Debug.Log("40번 스킬 해제");
+        // 리스트 제거
         base.Deactivate(player, isSameSkill);
         // 이벤트 해제
         player.OnAttackStarted -= _AttackTry;
@@ -222,8 +224,8 @@ public class Skill_Four_Attack : ActiveTech
         if (stack > 10)
         {
             stack = 10;
-            Debug.Log("stack : " + stack);
         }
+        Debug.Log("stack : " + stack);
     }
 
     public override void HitEnemy(Transform transform)

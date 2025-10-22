@@ -64,7 +64,7 @@ public class Skill_Two : SkillBase
             case 23:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 ActiveTech skillDashAttack = new Skill_Two_Dash(choosedSkill);
-                if (_skillManager.attackTech != null)
+                if (_skillManager.dashTech!= null)
                 {
 
                     _skillManager.dashTech.Deactivate(player, _skillManager.dashTech.skillData.skillIdx != choosedSkill.skillIdx);

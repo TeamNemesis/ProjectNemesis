@@ -77,15 +77,17 @@ public class Skill_Two_Dash : ActiveTech
 
         _DashTry = () => ActiveTry(player);
         //TODO 대쉬 시작 이벤트에 연결
-
+        player.OnDashStarted += _DashTry;
     }
     public override void Deactivate(Player player, bool isSameSkill)
     {
         // 리스트 제거
         base.Deactivate(player, isSameSkill);
-        // 이벤트 해제
 
+        // 이벤트 해제
         //TODO 대쉬 시작시 이벤트에서 해제 
+        player.OnDashStarted -= _DashTry;
+
     }
 
     public override void ActiveTry(Player player)
