@@ -82,6 +82,7 @@ public class Drone : PoolableObject, IReinforce
                 LookTarget();
                 if (!_bIsAttacking)
                 {
+                    attackTry?.Invoke();
                     StartCoroutine(AttackTarget());
                 }
                 break;

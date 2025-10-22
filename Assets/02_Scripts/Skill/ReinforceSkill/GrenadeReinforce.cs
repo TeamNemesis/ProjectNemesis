@@ -7,7 +7,6 @@ using UnityEngine;
 public class Skill_One_Grenade : ActiveTech
 {
 
-    public override event Action OnTechUsed;
 
     /// <summary>
     /// ÂøÅº ÁöÁ¡ µ¶ ÇÁ¸®ÆÕ
@@ -56,7 +55,6 @@ public class Skill_One_Grenade : ActiveTech
 public class Skill_Two_Grenade : ActiveTech
 {
 
-    public override event Action OnTechUsed;
 
     private int originalGrenadeAttack = 100;
     public override void Activate(SkillManager skillManager, Player player)

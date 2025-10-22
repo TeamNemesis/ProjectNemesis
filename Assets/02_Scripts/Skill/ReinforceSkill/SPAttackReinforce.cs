@@ -8,7 +8,6 @@ using UnityEngine;
 public class Skill_One_SPAttack : ActiveTech
 {
 
-    public override event Action OnTechUsed;
 
     private Action _AttackTry;
     /// <summary>   
@@ -67,7 +66,6 @@ public class Skill_One_SPAttack : ActiveTech
 public class Skill_Two_SPAttack : ActiveTech
 {
 
-    public override event Action OnTechUsed;
 
 
 

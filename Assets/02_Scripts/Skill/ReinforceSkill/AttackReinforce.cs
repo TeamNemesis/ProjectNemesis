@@ -7,7 +7,6 @@ using UnityEngine;
 public class Skill_One_Attack : ActiveTech
 {
 
-    public override event Action OnTechUsed;
 
 
 
@@ -68,9 +67,7 @@ public class Skill_Two_Attack : ActiveTech
     /// 파이로 하트 일반공격 강화 해제 이벤트, 스킬 인덱스
     /// </summary>
     public static event Action<int> DeactiveSkillEvent;
-    public override event Action OnTechUsed;
 
-    private int originalAttack = 100;
     private int originalDroneAttack = 2;
     public override void Activate(SkillManager skillManager, Player player)
     {
@@ -120,7 +117,6 @@ public class Skill_Three_Attack : ActiveTech
 {
 
 
-    public override event Action OnTechUsed;
 
     public override void Activate(SkillManager skillManager, Player player)
     {
@@ -176,7 +172,6 @@ public class Skill_Four_Attack : ActiveTech
     /// </summary>
     private Action _AttackTry;
 
-    public override event Action OnTechUsed;
 
     public override void Activate(SkillManager skillManager, Player player)
     {
@@ -251,7 +246,6 @@ public class Skill_Five_Attack : ActiveTech
 {
 
 
-    public override event Action OnTechUsed;
 
     public override void Activate(SkillManager skillManager, Player player)
     {

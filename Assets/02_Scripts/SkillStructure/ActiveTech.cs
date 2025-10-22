@@ -18,8 +18,6 @@ public abstract class ActiveTech
     public int TechLevel => _skillData.skillLevel; // 기술의 레벨을 반환하는 속성
 
 
-    public abstract event Action OnTechUsed;  // 기술이 사용될 때 발생하는 이벤트
-
     /// <summary>
     /// 기술이 추가될 때 호출되는 메서드
     /// </summary>

@@ -7,7 +7,6 @@ using UnityEngine;
 public class Skill_One_Dash : ActiveTech
 {
 
-    public override event Action OnTechUsed;
 
     /// <summary>
     /// ¥ÎΩ¨ Ω√¿€ µ∂ «¡∏Æ∆’
@@ -62,7 +61,6 @@ public class Skill_Two_Dash : ActiveTech
     /// </summary>
     public Action _DashTry;
 
-    public override event Action OnTechUsed;
 
     /// <summary>
     /// ¬¯≈∫ ¡ˆ¡° µ∂ «¡∏Æ∆’

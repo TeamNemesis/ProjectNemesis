@@ -12,11 +12,7 @@ public class Skill_Three : SkillBase
 
     public override void ActivateSkill(SkillData choosedSkill)
     {
-        switch (choosedSkill.skillIdx)
-        {
-
-        }
-
+    
 
         switch (choosedSkill.skillIdx)
         {
@@ -87,7 +83,6 @@ public class Skill_Three : SkillBase
 public class Skill_Three_Attck : ActiveTech
 {
 
-    public override event Action OnTechUsed;
     public override void Activate(SkillManager skillManager, Player player)
     {
         base.Activate(skillManager, player);
