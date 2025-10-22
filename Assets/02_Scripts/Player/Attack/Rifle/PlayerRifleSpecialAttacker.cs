@@ -26,27 +26,24 @@ public class PlayerRifleSpecialAttacker : PlayerSpecialAttacker
     Coroutine _chargeRoutine;
     float _chargeTimer;
 
-    public override event Action<float> OnSpecialChargeUpdated;
-    public override event Action OnSpecialFired;
-
     public override WeaponType WeaponType => WeaponType.Rifle; // 예시
 
-    public override void Initialize(Player owner)
+    public override void Initialize(Player player)
     {
-        base.Initialize(owner);
+        base.Initialize(player);
     }
 
     public override void StartCharge()
     {
         base.StartCharge();
         // owner에서 코루틴을 시작하여 차지 업데이트
-        if (_chargeRoutine != null) _owner.StopCoroutine(_chargeRoutine);
-        _chargeRoutine = _owner.StartCoroutine(ChargeRoutine());
+        if (_chargeRoutine != null) _player.StopCoroutine(_chargeRoutine);
+        _chargeRoutine = _player.StartCoroutine(ChargeRoutine());
     }
 
     public override void StopChargeAndFire()
     {
-        if (_chargeRoutine != null) { _owner.StopCoroutine(_chargeRoutine); _chargeRoutine = null; }
+        if (_chargeRoutine != null) { _player.StopCoroutine(_chargeRoutine); _chargeRoutine = null; }
         float ratio = Mathf.Clamp01(_chargeTimer / maxChargeTime);
         _chargeTimer = 0f;
         // 실제 발사
@@ -56,7 +53,7 @@ public class PlayerRifleSpecialAttacker : PlayerSpecialAttacker
 
     public override void CancelCharge()
     {
-        if (_chargeRoutine != null) { _owner.StopCoroutine(_chargeRoutine); _chargeRoutine = null; }
+        if (_chargeRoutine != null) { _player.StopCoroutine(_chargeRoutine); _chargeRoutine = null; }
         _chargeTimer = 0f;
         base.CancelCharge();
     }
@@ -68,14 +65,14 @@ public class PlayerRifleSpecialAttacker : PlayerSpecialAttacker
         {
             _chargeTimer += Time.deltaTime;
             float ratio = Mathf.Clamp01(_chargeTimer / maxChargeTime);
-            OnSpecialChargeUpdated?.Invoke(ratio);
+            RaiseChargeUpdated(ratio);
             yield return null;
         }
         // 자동 풀차지 시 자동 발사(선택)
         _chargeRoutine = null;
         float fullRatio = 1f;
         FireWithCharge(fullRatio);
-        OnSpecialFired?.Invoke();
+        base.StopChargeAndFire(); 
         EndSpecial();
     }
 
@@ -90,14 +87,14 @@ public class PlayerRifleSpecialAttacker : PlayerSpecialAttacker
         float damage = Mathf.Lerp(minDamage, maxDamage, ratio);
         float width = Mathf.Lerp(minWidth, maxWidth, ratio);
 
-        Vector3 origin = _owner.transform.position + Vector3.up * 1.0f; // 보정
-        Vector3 dir = _owner.transform.forward;
+        Vector3 origin = _player.transform.position + Vector3.up * 1.0f; // 보정
+        Vector3 dir = _player.transform.forward;
 
         if (laserPrefab != null)
         {
             GameObject go = Instantiate(laserPrefab);
             var laser = go.GetComponent<LaserBeam>();
-            laser.Initialize(origin, dir, maxDistance, damage, width, wallMask, enemyMask, _owner.gameObject);
+            laser.Initialize(origin, dir, maxDistance, damage, width, wallMask, enemyMask, _player.gameObject);
             laser.lifeTime = visualLifetime;
             laser.Fire();
         }

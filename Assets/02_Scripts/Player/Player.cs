@@ -55,6 +55,7 @@ public class Player : MonoBehaviour
 
     // 읽기 전용 프로퍼티로 외부 접근 제공
     public PlayerNormalAttacker NormalAttacker => _normalAttacker;
+    public PlayerSpecialAttacker SpecialAttacker => _specialAttacker;
     public PlayerAnimator Animator => _animator;
     public PlayerModel playerModel => _playerModel;
 
@@ -185,21 +186,7 @@ public class Player : MonoBehaviour
             }
         }
 
-        // 2) 특수공격 처리 (대시보다 우선하거나 순서를 조정하세요)
-        if (_specialAttackPressed && TryConsumeSpecialAttack())
-        {
-            Debug.Log("특수공격 입력 들어옴");
-            if (_specialAttacker != null && !_isDashing && !_isNormalAttacking && !_isSpecialAttacking)
-            {
-                if (_specialAttacker.RequestSpecial())
-                {
-                    _stateMachine.ChangeState(PlayerStateType.SpecialAttack);
-                    return;
-                }
-            }
-        }
-
-        // 3) 대시
+        // 2) 대시
         if (_dashPressed && TryConsumeDash())
         {
             if (!IsNormalAttacking && !IsSpecialAttacking && !IsDashing)
@@ -209,7 +196,7 @@ public class Player : MonoBehaviour
             }
         }
 
-        // 4) 이동
+        // 3) 이동
         if (_moveInput.sqrMagnitude > 0.01f && !IsNormalAttacking && !IsSpecialAttacking && !IsDashing)
         {
             if (_stateMachine.CurrentType != PlayerStateType.Move)
@@ -219,7 +206,7 @@ public class Player : MonoBehaviour
             return;
         }
 
-        // 5) 기본 Idle
+        // 4) 기본 Idle
         if (_stateMachine.CurrentType != PlayerStateType.Idle && !IsNormalAttacking && !IsDashing && !IsSpecialAttacking)
         {
             _stateMachine.ChangeState(PlayerStateType.Idle);
@@ -235,11 +222,11 @@ public class Player : MonoBehaviour
     }
 
     bool TryConsumeSpecialAttack()
-    {
-        if (!_specialAttackPressed) return false;
-        _specialAttackPressed = false;
-        return true;
-    }
+{
+    if (!_specialAttackPressed) return false;
+    _specialAttackPressed = false;
+    return true;
+}
 
     bool TryConsumeDash()
     {
@@ -327,7 +314,30 @@ public class Player : MonoBehaviour
     }
     #endregion
 
-    
+    #region 특수공격 처리
+    public void HandleSpecialStarted()
+    {
+        // 우선권/상태 검사: 이미 다른 동작 중이면 무시
+        if (_isDashing || _isNormalAttacking || _isSpecialAttacking) return;
+
+        if (_specialAttacker != null && _specialAttacker.RequestSpecial())
+        {
+            // StateMachine으로 전환하면 State에서 StartCharge를 호출하도록 하는 방식(권장)
+            _stateMachine.ChangeState(PlayerStateType.SpecialAttack);
+        }
+    }
+
+    public void HandleSpecialCanceled()
+    {
+        // 만약 StateMachine에서 취급한다면 State에 전달하거나 직접 호출
+        if (_specialAttacker != null && _specialAttacker.IsCharging)
+        {
+            _specialAttacker.StopChargeAndFire();
+        }
+
+        // State 전환(Idle 등)은 _specialAttacker 이벤트 또는 State에서 하도록 설계
+    }
+    #endregion
 
     #region 상호작용 처리 (기존 로직)
     public void OnWeaponInteracted(WeaponType newWeaponType)
@@ -395,9 +405,11 @@ public class Player : MonoBehaviour
         if (weapon.WeaponType == WeaponType.Rifle)
         {
             PlayerRifleNormalAttacker playerRifleNormalAttacker = _normalAttacker as PlayerRifleNormalAttacker;
+            PlayerRifleSpecialAttacker playerRifleSpecialAttacker = _specialAttacker as PlayerRifleSpecialAttacker;
             RifleWeapon rifleWeapon = weapon as RifleWeapon;
 
             playerRifleNormalAttacker.Initialize(this, rifleWeapon.FirePos);
+            playerRifleSpecialAttacker.Initialize(this);
         }
         //_grenadeAttacker = _currentWeaponSet.GrenadeAttacker;
 
