@@ -3,8 +3,9 @@ using UnityEngine;
 public class PlayerBladeSpecialAttacker : PlayerSpecialAttacker
 {
     public override WeaponType WeaponType => WeaponType.Blade;
-    public override void SpecialAttack()
+
+    protected override void Fire()
     {
-        Debug.Log("블레이드 스페셜 공격!");
+        throw new System.NotImplementedException();
     }
 }

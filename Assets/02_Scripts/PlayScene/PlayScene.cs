@@ -24,6 +24,7 @@ public class PlayScene : MonoBehaviour
         _inputHandler.OnNomralAttackInput += () => _player.SetNormalAttackPressed(true);
         _inputHandler.OnGrenadeAttackInputEnded += () => _player.SetGrenadeAttackPressed(false);
         _inputHandler.OnSpecialAttackInput += () => _player.SetSpecialAttackPressed(true);
+        _inputHandler.OnGrenadeAttackInputEnded += () => _player.SetSpecialAttackPressed(false);
         _inputHandler.OnInteractInput += _player.ExecuteInteraction;
 
         // PlayScene.Awake

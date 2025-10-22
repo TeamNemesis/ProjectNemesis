@@ -39,9 +39,9 @@ public class GameManager : MonoBehaviour
                     _instance._playerStatManager = obj.AddComponent<PlayerStatManager>();
 
 
-                    _instance._resourceManager.Initialize();
-                    _instance._dataManager.Initialize(_instance._resourceManager);
-                    _instance._poolManager.Initialze(_instance._resourceManager);
+                    _instance.Initialize();
+                    
+                    //_instance._skillManger.InitializeSkillManager();
 
                     // 씬 전환시 파괴되지 않도록 설정
                     DontDestroyOnLoad(obj);
@@ -91,6 +91,18 @@ public class GameManager : MonoBehaviour
         _uiManager.InitializeManager();
 
         
+    }
+
+    private void Start()
+    {
+        Initialize();
+    }
+
+    void Initialize()
+    {
+        _instance._resourceManager.Initialize();
+        _instance._dataManager.Initialize(_instance._resourceManager);
+        _instance._poolManager.Initialze(_instance._resourceManager);
     }
 
     [SerializeField] ResourceManager _resourceManager;      // 리소스 매니저

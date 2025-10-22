@@ -185,7 +185,21 @@ public class Player : MonoBehaviour
             }
         }
 
-        // 2) 대시
+        // 2) 특수공격 처리 (대시보다 우선하거나 순서를 조정하세요)
+        if (_specialAttackPressed && TryConsumeSpecialAttack())
+        {
+            Debug.Log("특수공격 입력 들어옴");
+            if (_specialAttacker != null && !_isDashing && !_isNormalAttacking && !_isSpecialAttacking)
+            {
+                if (_specialAttacker.RequestSpecial())
+                {
+                    _stateMachine.ChangeState(PlayerStateType.SpecialAttack);
+                    return;
+                }
+            }
+        }
+
+        // 3) 대시
         if (_dashPressed && TryConsumeDash())
         {
             if (!IsNormalAttacking && !IsSpecialAttacking && !IsDashing)
@@ -195,7 +209,7 @@ public class Player : MonoBehaviour
             }
         }
 
-        // 3) 이동
+        // 4) 이동
         if (_moveInput.sqrMagnitude > 0.01f && !IsNormalAttacking && !IsSpecialAttacking && !IsDashing)
         {
             if (_stateMachine.CurrentType != PlayerStateType.Move)
@@ -205,7 +219,7 @@ public class Player : MonoBehaviour
             return;
         }
 
-        // 4) 기본 Idle
+        // 5) 기본 Idle
         if (_stateMachine.CurrentType != PlayerStateType.Idle && !IsNormalAttacking && !IsDashing && !IsSpecialAttacking)
         {
             _stateMachine.ChangeState(PlayerStateType.Idle);
@@ -217,6 +231,13 @@ public class Player : MonoBehaviour
     {
         if (!_normalAttackPressed) return false;
         _normalAttackPressed = false;
+        return true;
+    }
+
+    bool TryConsumeSpecialAttack()
+    {
+        if (!_specialAttackPressed) return false;
+        _specialAttackPressed = false;
         return true;
     }
 

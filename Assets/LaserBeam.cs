@@ -11,84 +11,97 @@ using UnityEngine;
 public class LaserBeam : MonoBehaviour
 {
     LineRenderer _lr;
+
     Vector3 _origin;
     Vector3 _dir;
-    float _maxDist;
-    float _width;
+    float _maxDistance;
     float _damage;
-    float _duration;
-    LayerMask _hitMask;
+    float _width;
+    LayerMask _wallMask;
+    LayerMask _enemyMask;
     GameObject _owner;
-    float _tickInterval = 0.1f;
-    float _elapsed = 0f;
-    bool _isFiring = false;
 
-    public void Initialize(Vector3 origin, Vector3 dir, float maxDist, float width, float damage, float duration, LayerMask mask, GameObject owner)
+    public float lifeTime = 0.25f; // 비주얼 지속 시간
+    public GameObject impactEffectPrefab; // 벽 충돌 이펙트(선택)
+
+    void Awake()
     {
         _lr = GetComponent<LineRenderer>();
+        // 기본 세팅(필요하면 Inspector에서 덮어쓰기)
+        _lr.positionCount = 2;
+        _lr.useWorldSpace = true;
+    }
+
+    public void Initialize(Vector3 origin, Vector3 dir, float maxDist, float damage, float width,
+                           LayerMask wallMask, LayerMask enemyMask, GameObject owner)
+    {
         _origin = origin;
         _dir = dir.normalized;
-        _maxDist = maxDist;
-        _width = width;
+        _maxDistance = maxDist;
         _damage = damage;
-        _duration = duration;
-        _hitMask = mask;
+        _width = width;
+        _wallMask = wallMask;
+        _enemyMask = enemyMask;
         _owner = owner;
 
-        _lr.positionCount = 2;
         _lr.startWidth = _width;
         _lr.endWidth = _width;
-        // set material properties (예: intensity) if shader supports it
     }
 
     public void Fire()
     {
-        _isFiring = true;
-        StartCoroutine(FireRoutine());
-    }
-
-    IEnumerator FireRoutine()
-    {
-        _elapsed = 0f;
-        while (_elapsed < _duration)
+        // 1) wallMask로 가장 가까운 wall 충돌 지점 찾기 (없으면 maxDistance)
+        float endDist = _maxDistance;
+        RaycastHit wallHit;
+        if (Physics.Raycast(_origin, _dir, out wallHit, _maxDistance, _wallMask, QueryTriggerInteraction.Ignore))
         {
-            float len = _maxDist;
-            // 장애물에 의해 멈춰야 하면 Raycast to hit first obstacle:
-            RaycastHit hit;
-            if (Physics.Raycast(_origin, _dir, out hit, _maxDist, ~0, QueryTriggerInteraction.Ignore))
+            endDist = wallHit.distance;
+            // 임팩트 이펙트 생성 (선택)
+            if (impactEffectPrefab != null)
             {
-                // 예: 벽 레이어를 무시하려면 mask 조정
-                // hit가 enemy면 관통까지 진행(계속 RaycastAll). 여기선 시각만 줄이려면 len = hit.distance;
-                len = hit.distance;
+                Instantiate(impactEffectPrefab, wallHit.point, Quaternion.LookRotation(wallHit.normal));
             }
-
-            Vector3 end = _origin + _dir * len;
-            _lr.SetPosition(0, _origin);
-            _lr.SetPosition(1, end);
-
-            // 피격처리: BoxCast 또는 RaycastAll 사용(두께 고려)
-            ApplyDamageAlongBeam(_origin, _dir, len);
-
-            _elapsed += _tickInterval;
-            yield return new WaitForSeconds(_tickInterval);
         }
 
-        // (옵션) 풀에 반환
-        Destroy(gameObject);
-    }
+        Vector3 endPos = _origin + _dir * endDist;
 
-    void ApplyDamageAlongBeam(Vector3 origin, Vector3 dir, float length)
-    {
-        // 간단: RaycastAll
-        RaycastHit[] hits = Physics.RaycastAll(origin, dir, length, _hitMask, QueryTriggerInteraction.Ignore);
+        // 2) LineRenderer로 시각화
+        _lr.SetPosition(0, _origin);
+        _lr.SetPosition(1, endPos);
+
+        // 3) 적에게 단타 데미지 적용: enemyMask로 RaycastAll(범위: endDist)
+        //    적들이 관통되길 원하므로 여기서는 All hits을 탐색
+        RaycastHit[] hits = Physics.RaycastAll(_origin, _dir, endDist, _enemyMask, QueryTriggerInteraction.Collide);
+        // Optional: 정렬 (거리에 따라) - 보통 필요없음
+        // System.Array.Sort(hits, (a,b) => a.distance.CompareTo(b.distance));
         foreach (var h in hits)
         {
-            if (h.collider.gameObject == _owner) continue; // 자기자신 무시
-            var dmg = h.collider.GetComponent<IDamageable>();
+            if (h.collider == null) continue;
+            // 자기 자신 무시
+            if (h.collider.gameObject == _owner) continue;
+
+            // IDamageable 인터페이스 사용 권장
+            var dmg = h.collider.GetComponentInParent<IDamageable>();
             if (dmg != null)
             {
-                dmg.TakeDamage(_damage * _tickInterval); // 지속시간 배분 데미지
+                dmg.TakeDamage(_damage);
+            }
+            else
+            {
+                // 디버그용: 다른 방법으로 처리할 수 있음
+                var rb = h.collider.attachedRigidbody;
+                if (rb != null) rb.AddForce(_dir * 50f, ForceMode.Impulse);
             }
         }
+
+        // 4) 자동 제거(또는 풀에 반환)
+        StartCoroutine(DestroyAfterSeconds(lifeTime));
+    }
+
+    IEnumerator DestroyAfterSeconds(float t)
+    {
+        yield return new WaitForSeconds(t);
+        // 풀 사용 시에는 반환 로직으로 대체
+        Destroy(gameObject);
     }
 }
