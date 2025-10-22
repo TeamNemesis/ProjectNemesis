@@ -68,6 +68,7 @@ public class Skill_Two_Attack : ActiveTech
     /// </summary>
     public static event Action<int> DeactiveSkillEvent;
 
+    private float plusDamage;
     private int originalDroneAttack = 2;
     public override void Activate(SkillManager skillManager, Player player)
     {
@@ -75,14 +76,16 @@ public class Skill_Two_Attack : ActiveTech
         #region Test
 
         // 스킬 효과 적용 (플레이어 일반 공격력에 접근하여 공격력 추가)
-        float plusAttack = (float)_skillData.skillBaseValue_1 + (float)_skillData.skillLevelValue_1 * _skillData.skillLevel;
-        GameManager.Instance.PlayerStatManager.AddPlayerAttackDamage(plusAttack);
-        ActiveSkillEvent?.Invoke(_skillData.skillIdx, plusAttack);
+        plusDamage = _skillData.skillBaseValue_1 + _skillData.skillLevelValue_1 * _skillData.skillLevel;
+        GameManager.Instance.PlayerStatManager.AddPlayerAttackDamage(plusDamage);
+        Debug.Log(GameManager.Instance.PlayerStatManager.playerAttackDamage);
+
+        ActiveSkillEvent?.Invoke(_skillData.skillIdx, plusDamage);
         // 공격 적중 시 이벤트에 추가
         Drone[] drones = player.transform.GetComponentsInChildren<Drone>();
         if (drones.Length > 0)
         {
-            Constants.DRONE_ATTACK = (int)(originalDroneAttack * (1f + plusAttack));
+            Constants.DRONE_ATTACK = (int)(originalDroneAttack * (1+plusDamage));
         }
     }
     public override void Deactivate(Player player, bool isSameSkill)
@@ -91,7 +94,8 @@ public class Skill_Two_Attack : ActiveTech
         base.Deactivate(player, isSameSkill);
 
         // 공격력 복귀
-        GameManager.Instance.PlayerStatManager.AddPlayerAttackDamage(_skillData.skillBaseValue_1 + _skillData.skillLevelValue_1 * (_skillData.skillLevel - 1));
+        GameManager.Instance.PlayerStatManager.AddPlayerAttackDamage(-plusDamage);
+        Debug.Log(GameManager.Instance.PlayerStatManager.playerAttackDamage);
         DeactiveSkillEvent?.Invoke(_skillData.skillIdx);
         Drone[] drones = player.transform.GetComponentsInChildren<Drone>();
         if (drones.Length > 0)
@@ -115,9 +119,6 @@ public class Skill_Two_Attack : ActiveTech
 /// </summary>
 public class Skill_Three_Attack : ActiveTech
 {
-
-
-
     public override void Activate(SkillManager skillManager, Player player)
     {
         // 공격 적중 시 이벤트에 추가

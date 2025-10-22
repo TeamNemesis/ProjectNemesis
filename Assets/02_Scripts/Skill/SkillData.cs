@@ -128,9 +128,9 @@ public class SkillData
     /// <summary>
     /// 스킬을 현재 가지고 있는 스킬 리스트에서 삭제
     /// </summary>
-    public void RemoveList(bool isSameSkill)
+    public void RemoveList(bool isAnotherSkill)
     {
-        if (isSameSkill)
+        if (!isAnotherSkill)
         {
             // 같은 스킬이면 리턴
             return;

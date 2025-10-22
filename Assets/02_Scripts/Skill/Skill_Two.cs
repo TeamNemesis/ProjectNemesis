@@ -99,7 +99,7 @@ public class Skill_Two : SkillBase
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 //TODO 범위 스킬 구현에 대한 계수 회의 필요
                 // 범위 증가
-                Constants.SKILL_EXTENT = 1.1f;
+                skillManager.playerStatManager.AddPlayerAreaExtent(choosedSkill.skillBaseValue_1 + choosedSkill.skillLevelValue_1 * choosedSkill.skillLevel);
                 break;
 
             default:
