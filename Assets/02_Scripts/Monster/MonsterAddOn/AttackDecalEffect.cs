@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class AttackDecalEffect : MonoBehaviour
+public class AttackDecalEffect : PoolableObject
 {
     [Header("Components")]
     public GameObject countCircle;  // 자식 CountCircle 오브젝트
@@ -9,7 +9,8 @@ public class AttackDecalEffect : MonoBehaviour
     private Vector3 targetScale;    // 목표 스케일
     private Coroutine growRoutine;  // 코루틴 중복 방지용
 
-    private void Awake()
+
+    public void Initialize()
     {
         if (countCircle == null)
         {
@@ -25,6 +26,7 @@ public class AttackDecalEffect : MonoBehaviour
     /// </summary>
     public void Play(float duration, float radius)
     {
+        Initialize();
         if (countCircle == null) return;
 
         // 최종 스케일을 반지름 기준으로 설정 (x,y,z 동일)
@@ -41,10 +43,10 @@ public class AttackDecalEffect : MonoBehaviour
         countCircle.SetActive(true);
 
         // 코루틴 시작
-        growRoutine = StartCoroutine(GrowAndDestroy(duration));
+        growRoutine = StartCoroutine(GrowAndRelease(duration));
     }
 
-    private IEnumerator GrowAndDestroy(float duration)
+    private IEnumerator GrowAndRelease(float duration)
     {
         float elapsed = 0f;
 
@@ -60,7 +62,7 @@ public class AttackDecalEffect : MonoBehaviour
 
         countCircle.transform.localScale = Vector3.one;
 
-        // BaseCircle 프리팹 파괴
-        Destroy(gameObject);
+        // BaseCircle 프리팹 반환
+        ObjectPool.Instance.ReleaseToPool(gameObject);
     }
 }
