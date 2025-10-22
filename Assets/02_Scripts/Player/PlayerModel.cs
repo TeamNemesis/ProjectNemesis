@@ -40,21 +40,21 @@ public class PlayerModel : CharacterModelBase
     /// </summary>
     public event Action PlayerHit;
 
-    ///// <summary>
-    ///// 플레이어 테스트용 공격력
-    ///// </summary>
-    //public int playerAttack;
-    //public Transform currentTarget;
+    /// <summary>
+    /// 플레이어 테스트용 공격력
+    /// </summary>
+    public int playerAttack;
+    public Transform currentTarget;
 
-    //public void Update()
-    //{
-    //    if (Input.GetKeyDown(KeyCode.U))
-    //    {
+    public void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.U))
+        {
 
-    //        currentTarget.GetComponent<MonsterBase>().KnockBackEnemy(Vector3.forward * 10f, 20, 5f);
-    //    }
+            currentTarget.GetComponent<MonsterBase>().KnockBackEnemy(Vector3.forward * 10f, 20, 5f);
+        }
 
-    //}
+    }
 
 
 

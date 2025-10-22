@@ -301,7 +301,11 @@ public class DebuffHandler : MonoBehaviour
 
         if (agent != null)
         {
-            agent.isStopped = true;
+            if (agent.isOnNavMesh)
+            {
+                agent.isStopped = true;
+
+            }
         }
 
         yield return new WaitForSeconds(duration);

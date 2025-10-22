@@ -171,7 +171,7 @@ public class Skill_Four_Attack : ActiveTech
     /// 공격 시도시 실행할 액션
     /// </summary>
     private Action _AttackTry;
-
+    private Action<Transform> _DroneAttack;
 
     public override void Activate(SkillManager skillManager, Player player)
     {
@@ -179,6 +179,7 @@ public class Skill_Four_Attack : ActiveTech
         // 공격 시도 시 이벤트에 추가
         base.Activate(skillManager, player);
         _AttackTry = () => ActiveTry(player);
+        _DroneAttack = (transform) => ActiveTry(player);
         player.OnAttackStarted += _AttackTry;
         //player.AttackHit += HitEnemy;
         Drone[] drones = player.transform.GetComponentsInChildren<Drone>();
@@ -186,7 +187,7 @@ public class Skill_Four_Attack : ActiveTech
         {
             foreach (Drone drone in drones)
             {
-                drone.attackTry += _AttackTry;
+                drone.Attack += _DroneAttack;
             }
         }
     }
@@ -204,7 +205,8 @@ public class Skill_Four_Attack : ActiveTech
         {
             foreach (Drone drone in drones)
             {
-                drone.attackTry -= _AttackTry;
+                drone.Attack -= _DroneAttack;
+
             }
         }
 

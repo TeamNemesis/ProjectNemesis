@@ -2,6 +2,14 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
+public enum MonsterSize
+{
+    SMALL,
+    MIDDLE,
+    BIG
+}
+
+
 public class MonsterBase : CharacterModelBase
 {
     [Header("Base Stats")]
@@ -11,6 +19,8 @@ public class MonsterBase : CharacterModelBase
     [SerializeField] protected float attackDelay = 0.5f;
     [SerializeField] protected float originalSpeed = 10f;
     [SerializeField] public string targetTag = Constants.TAG_PLAYER;
+    [SerializeField] protected MonsterSize monsterSize = MonsterSize.SMALL;
+
 
     #region ³Ë¹é
     [SerializeField] private float _knockBackDamage;
@@ -93,6 +103,7 @@ public class MonsterBase : CharacterModelBase
     }
 
 
+    #region ³Ë¹é
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -107,7 +118,6 @@ public class MonsterBase : CharacterModelBase
         }
     }
 
-    #region ³Ë¹é
 
     /// <summary>
     /// ³Ë¹é ½ÇÇà
@@ -116,11 +126,15 @@ public class MonsterBase : CharacterModelBase
     /// <param name="damage"></param>
     public void KnockBackEnemy(Vector3 pushDirection, float damage, float knockBackDistance)
     {
-        GetComponent<Collider>().isTrigger = false;
         TakeDamage(damage * GameManager.Instance.PlayerStatManager.totalMultiDamage);
+        if(monsterSize == MonsterSize.BIG)
+        {
+            return;
+        }
+        GetComponent<Collider>().isTrigger = false;
         isPushed = true;
-        GetComponent<Rigidbody>().isKinematic = false;
         debuffHandler.ApplyDebuff(DebuffHandler.DebuffData.CreateStun(0.5f));
+        GetComponent<Rigidbody>().isKinematic = false;
         GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
         GetComponent<Rigidbody>().AddForce(pushDirection, ForceMode.VelocityChange);
 
