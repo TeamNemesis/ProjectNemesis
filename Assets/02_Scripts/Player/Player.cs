@@ -70,8 +70,11 @@ public class Player : MonoBehaviour
     public bool IsNormalAttacking => _isNormalAttacking;
     public bool IsSpecialAttacking => _isSpecialAttacking;
 
-    public event Action OnAttackStarted;
+    #region 이벤트
+    public event Action OnNormalAttackStarted;
+    public event Action OnSpecialAttackStarted;
     public event Action OnDashStarted;
+    #endregion
 
     [Header("----- 상태 캐시 -----")]
     StateMachine _stateMachine;                              // 플레이어 상태 머신
@@ -283,7 +286,7 @@ public class Player : MonoBehaviour
         if (_normalAttacker is PlayerRifleNormalAttacker rifle)
         {
             rifle.FireNow();
-            OnAttackStarted?.Invoke();
+            OnNormalAttackStarted?.Invoke();
             return;
         }
 
@@ -324,6 +327,7 @@ public class Player : MonoBehaviour
         {
             // StateMachine으로 전환하면 State에서 StartCharge를 호출하도록 하는 방식(권장)
             _stateMachine.ChangeState(PlayerStateType.SpecialAttack);
+            OnSpecialAttackStarted?.Invoke();
         }
     }
 

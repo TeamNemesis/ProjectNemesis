@@ -180,7 +180,7 @@ public class Skill_Four_Attack : ActiveTech
         base.Activate(skillManager, player);
         _AttackTry = () => ActiveTry(player);
         _DroneAttack = (transform) => ActiveTry(player);
-        player.OnAttackStarted += _AttackTry;
+        player.OnNormalAttackStarted += _AttackTry;
         //player.AttackHit += HitEnemy;
         Drone[] drones = player.transform.GetComponentsInChildren<Drone>();
         if (drones.Length > 0)
@@ -197,7 +197,7 @@ public class Skill_Four_Attack : ActiveTech
         // 리스트 제거
         base.Deactivate(player, isSameSkill);
         // 이벤트 해제
-        player.OnAttackStarted -= _AttackTry;
+        player.OnNormalAttackStarted -= _AttackTry;
         //player.AttackHit -= HitEnemy;
 
         Drone[] drones = player.transform.GetComponentsInChildren<Drone>();
