@@ -4,6 +4,7 @@ using UnityEngine;
 /// <summary>
 /// 몬스터와 플레이어 부모 클래스
 /// </summary>
+[RequireComponent(typeof(DebuffHandler))]
 public abstract class CharacterModelBase : MonoBehaviour, IDamageable
 {
     [SerializeField]
@@ -85,7 +86,7 @@ public abstract class CharacterModelBase : MonoBehaviour, IDamageable
         OnHpChanged?.Invoke(_currentHealth);
     }
 
-    public void TakeDamage(float damage)
+    public virtual void TakeDamage(float damage)
     {
         if (isDead) return;
 

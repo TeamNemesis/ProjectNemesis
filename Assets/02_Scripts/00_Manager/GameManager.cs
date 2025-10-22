@@ -115,6 +115,6 @@ public class GameManager : MonoBehaviour
     /// 플레이어(Test용)
     /// </summary>
     [SerializeField]
-    private PlayerModel _player;
-    public PlayerModel player { get { return _player; } }
+    private Player _player;
+    public Player player { get { return _player; } }
 }

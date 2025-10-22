@@ -7,7 +7,7 @@ public abstract class SkillBase : MonoBehaviour
     //TODO 방생성 알고리즘 테스트용, 추후 삭제
     public string skillBaseString;
 
-    protected PlayerModel player;
+    protected Player player;
 
     protected SkillManager _skillManager;
     public SkillManager skillManager { get { return _skillManager; } }

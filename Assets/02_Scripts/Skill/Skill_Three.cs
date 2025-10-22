@@ -88,10 +88,10 @@ public class Skill_Three_Attck : ActiveTech
 {
 
     public override event Action OnTechUsed;
-    public override void Activate(SkillManager skillManager, PlayerModel player)
+    public override void Activate(SkillManager skillManager, Player player)
     {
         base.Activate(skillManager, player);
-        player.AttackHit += HitEnemy;
+        //player.AttackHit += HitEnemy;
         Drone[] drones = player.transform.GetComponentsInChildren<Drone>();
         if (drones.Length > 0)
         {
@@ -101,10 +101,10 @@ public class Skill_Three_Attck : ActiveTech
             }
         }
     }
-    public override void Deactivate(PlayerModel player, bool isSameSkill)
+    public override void Deactivate(Player player, bool isSameSkill)
     {
         base.Deactivate(player, isSameSkill);
-        player.AttackHit -= HitEnemy;
+        //player.AttackHit -= HitEnemy;
         Drone[] drones = player.transform.GetComponentsInChildren<Drone>();
         if (drones.Length > 0)
         {

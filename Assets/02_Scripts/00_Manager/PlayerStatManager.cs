@@ -109,8 +109,9 @@ public class PlayerStatManager : MonoBehaviour
     public float playerGrenadeDamage { get { return _playerGrenadeDamage; } }
     public void AddPlayerGrenadeDamage(float plusGrenadeDamage)
     {
-        _playerAttackDamage += plusGrenadeDamage;
+        _playerGrenadeDamage += plusGrenadeDamage;
     }
+  
 
     /// <summary>
     /// 플레이어 특수 공격 데미지 계수

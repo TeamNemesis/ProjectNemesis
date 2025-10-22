@@ -80,7 +80,7 @@ public class Skill_One : SkillBase
             // 넘치는 활력
             case 14:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
-                player.SetMaxHp((int)choosedSkill.skillLevelValue_1);
+                player.playerModel.SetMaxHp((int)choosedSkill.skillLevelValue_1);
                 break;
 
             // 초재생
@@ -96,7 +96,7 @@ public class Skill_One : SkillBase
                 //TODO 플레이어 모델에 받는데미지 감소 계수를 추가하여 10퍼센트 
 
                 //TODO 피격시 이벤트에 함수 추가 SpreadPoison
-                player.PlayerHit += () => SpreadPoison(player);
+                player.playerModel.PlayerHit += () => SpreadPoison(player);
                 break;
 
             // 진화
@@ -122,7 +122,7 @@ public class Skill_One : SkillBase
         while (stack < 20)
         {
             yield return new WaitForSeconds(Constants.HEAL_SECOND);
-            player.Heal(Constants.HEAL_AMOUNT);
+            player.playerModel.Heal(Constants.HEAL_AMOUNT);
             stack++;
         }
     }
@@ -148,7 +148,7 @@ public class Skill_One : SkillBase
 
     #region 독성혈액
 
-    public void SpreadPoison(PlayerModel player)
+    public void SpreadPoison(Player player)
     {
         Vector3 position = player.transform.position;
         position.y = 0;

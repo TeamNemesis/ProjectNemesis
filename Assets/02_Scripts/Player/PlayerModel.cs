@@ -11,74 +11,76 @@ public class PlayerModel : CharacterModelBase
 
 
     #region Test
-    /// <summary>
-    /// 테스트용 공격 실행 이벤트
-    /// </summary>
-    public event Action AttackTry;
-    /// <summary>
-    /// 테스트용 공격 적중시 이벤트
-    /// </summary>
-    public event Action<Transform> AttackHit;
+    ///// <summary>
+    ///// 테스트용 공격 실행 이벤트
+    ///// </summary>
+    //public event Action AttackTry;
+    ///// <summary>
+    ///// 테스트용 공격 적중시 이벤트
+    ///// </summary>
+    //public event Action<Transform> AttackHit;
+
+    ///// <summary>
+    ///// 테스트용 유탄 착탄 이벤트
+    ///// </summary>
+    //public event Action<Vector3> GrenadeBomb;
+
+    ///// <summary>
+    ///// 테스트용 특수 공격 실행 이벤트
+    ///// </summary>
+    //public event Action SPAttackTry;
+
+    ///// <summary>
+    ///// 테스트용 특수 공격 적중 이벤트
+    ///// </summary>
+    //public event Action<Transform> SPAttackHit;
 
     /// <summary>
-    /// 테스트용 유탄 착탄 이벤트
+    /// 플레이어 피격시
     /// </summary>
-    public event Action<Vector3> GrenadeBomb;
-
-    /// <summary>
-    /// 테스트용 특수 공격 실행 이벤트
-    /// </summary>
-    public event Action SPAttackTry;
-
-    /// <summary>
-    /// 테스트용 특수 공격 적중 이벤트
-    /// </summary>
-    public event Action<Transform> SPAttackHit;
-
     public event Action PlayerHit;
 
-    /// <summary>
-    /// 플레이어 테스트용 공격력
-    /// </summary>
-    public int playerAttack;
-    public Transform currentTarget;
+    ///// <summary>
+    ///// 플레이어 테스트용 공격력
+    ///// </summary>
+    //public int playerAttack;
+    //public Transform currentTarget;
 
-    public void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.U))
-        {
+    //public void Update()
+    //{
+    //    if (Input.GetKeyDown(KeyCode.U))
+    //    {
 
-            currentTarget.GetComponent<MonsterBase>().KnockBackEnemy(Vector3.forward*10f,20,5f);
-        }
+    //        currentTarget.GetComponent<MonsterBase>().KnockBackEnemy(Vector3.forward * 10f, 20, 5f);
+    //    }
 
-    }
+    //}
 
-  
 
-    public void OnAttackHit()
-    {
-        AttackHit?.Invoke(currentTarget);
-    }
 
-    public void OnAttackGrenade()
-    {
-        Debug.Log("Grenade Event");
-        GrenadeBomb?.Invoke(new Vector3(1, 0, 0));
-    }
+    //public void OnAttackHit()
+    //{
+    //    AttackHit?.Invoke(currentTarget);
+    //}
 
-    public void OnPlayerHit()
-    {
-        PlayerHit?.Invoke();
-    }
+    //public void OnAttackGrenade()
+    //{
+    //    Debug.Log("Grenade Event");
+    //    GrenadeBomb?.Invoke(new Vector3(1, 0, 0));
+    //}
+
+    //public void OnPlayerHit()
+    //{
+    //    PlayerHit?.Invoke();
+    //}
     #endregion
 
 
-
-    public void Start()
+    public override void TakeDamage(float damage)
     {
-        Initialize();
+        base.TakeDamage(damage);
+        PlayerHit?.Invoke();
     }
-
     public override void Initialize()
     {
         base.Initialize();

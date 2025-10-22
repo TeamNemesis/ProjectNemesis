@@ -27,9 +27,9 @@ public class SkillManager : MonoBehaviour
     public Skill_Mutant skill_Mutant { get { return _skill_Mutant; }}
     #endregion
 
-    PlayerModel _player;
+    Player _player;
 
-    public PlayerModel Player => _player;
+    public Player Player => _player;
 
     private PlayerStatManager _playerStatManager;
     public PlayerStatManager playerStatManager { get { return _playerStatManager; } }

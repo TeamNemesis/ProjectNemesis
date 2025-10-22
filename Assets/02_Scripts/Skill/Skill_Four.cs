@@ -64,7 +64,7 @@ public class Skill_Four : SkillBase
                 // 점진되는 고통
             case 45:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
-                player.GetDebuffHandler().ConnectIncreasePain();
+                player.playerModel.GetDebuffHandler().ConnectIncreasePain();
                 break;
 
                 // 드론무리

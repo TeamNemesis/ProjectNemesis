@@ -95,7 +95,7 @@ public class Drone : PoolableObject, IReinforce
         }
     }
 
-    public void InitializeDrone(PlayerModel player)
+    public void InitializeDrone(Player player)
     {
         if (GameManager.Instance.skillManager.attackTech != null)
         {
