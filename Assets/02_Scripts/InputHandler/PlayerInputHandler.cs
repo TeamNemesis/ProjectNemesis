@@ -22,6 +22,7 @@ public class PlayerInputHandler : MonoBehaviour
     public event Action OnGrenadeAttackInput;        // 유탄공격 입력 이벤트
     public event Action OnGrenadeAttackInputEnded;   // 유탄공격 입력 종료 이벤트
     public event Action OnSpecialAttackInput;        // 특수공격 입력 이벤트
+    public event Action OnSpecialAttackInputEnded;   // 특수공격 입력 종료 이벤트
 
     Vector2 _moveDir;  // 이동 입력을 저장할 변수
     Coroutine _holdAttackRoutine; // 일반공격 입력 코루틴 참조
@@ -42,7 +43,8 @@ public class PlayerInputHandler : MonoBehaviour
         normal.canceled += OnNormalAttackCanceled;
         actionMap["GrenadeAttack"].started += OnGrenadeAttack;
         actionMap["GrenadeAttack"].canceled += OnGrenadeAttack;
-        actionMap["SpecialAttack"].started += OnSpecialAttack;
+        special.started += OnSpecialAttack;
+        special.canceled += OnSpecialAttack;
     }
 
     private void OnDestroy()
@@ -167,6 +169,11 @@ public class PlayerInputHandler : MonoBehaviour
         {
             Debug.Log("특수공격 입력받음");
             OnSpecialAttackInput?.Invoke();
+        }
+        if(value.canceled)
+        {
+            Debug.Log("특수공격 입력끝남");
+            OnSpecialAttackInputEnded?.Invoke();
         }
     }
 }

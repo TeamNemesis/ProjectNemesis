@@ -4,8 +4,8 @@ public class PlayerHackingDeviceSpecailAttacker : PlayerSpecialAttacker
 {
     public override WeaponType WeaponType => WeaponType.HackingDevice;
 
-    public override void SpecialAttack()
+    protected override void Fire()
     {
-        Debug.Log("해킹 디바이스 특수 공격!");
+        throw new System.NotImplementedException();
     }
 }
