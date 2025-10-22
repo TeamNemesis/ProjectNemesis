@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -8,6 +9,8 @@ using UnityEngine.InputSystem;
 /// </summary>
 public class PlayerInputHandler : MonoBehaviour
 {
+    [SerializeField] float _normalAttackInterval = 0.2f; // 일반공격 입력 반복 간격
+
     [SerializeField] PlayerInput _playerInput;       // PlayerInput 컴포넌트 참조
 
     public event Action<Vector2> OnMoveInput;        // 이동 입력 이벤트
@@ -21,21 +24,41 @@ public class PlayerInputHandler : MonoBehaviour
     public event Action OnSpecialAttackInput;        // 특수공격 입력 이벤트
 
     Vector2 _moveDir;  // 이동 입력을 저장할 변수
+    Coroutine _holdAttackRoutine; // 일반공격 입력 코루틴 참조
 
     private void Awake()
     {
         // 현재 액션 맵 가져오기
         var actionMap = _playerInput.actions.FindActionMap("Player");
+        var normal = actionMap["NormalAttack"];
+        var special = actionMap["SpecialAttack"];
 
         // 각 액션에 대한 콜백 함수 등록
         actionMap["Move"].performed += OnMove;
         actionMap["Move"].canceled += OnMove;
         actionMap["Dash"].started += OnDash;
         actionMap["Interact"].started += OnInteract;
-        actionMap["NormalAttack"].started += OnNormalAttack;
+        normal.started += OnNormalAttackStarted;
+        normal.canceled += OnNormalAttackCanceled;
         actionMap["GrenadeAttack"].started += OnGrenadeAttack;
         actionMap["GrenadeAttack"].canceled += OnGrenadeAttack;
         actionMap["SpecialAttack"].started += OnSpecialAttack;
+    }
+
+    private void OnDestroy()
+    {
+        // 콜백 함수 해제
+        var actionMap = _playerInput.actions.FindActionMap("Player");
+        var normal = actionMap["NormalAttack"];
+        actionMap["Move"].performed -= OnMove;
+        actionMap["Move"].canceled -= OnMove;
+        actionMap["Dash"].started -= OnDash;
+        actionMap["Interact"].started -= OnInteract;
+        normal.started -= OnNormalAttackStarted;
+        normal.canceled -= OnNormalAttackCanceled;
+        actionMap["GrenadeAttack"].started -= OnGrenadeAttack;
+        actionMap["GrenadeAttack"].canceled -= OnGrenadeAttack;
+        actionMap["SpecialAttack"].started -= OnSpecialAttack;
     }
 
     private void Update()
@@ -61,15 +84,31 @@ public class PlayerInputHandler : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 일반 공격 입력을 받아오는 함수
-    /// </summary>
-    /// <param name="value"></param>
-    public void OnNormalAttack(InputAction.CallbackContext value)
+    void OnNormalAttackStarted(InputAction.CallbackContext ctx)
     {
-        if (value.started)
+        // 누르기 시작: 코루틴 시작
+        if (_holdAttackRoutine == null)
+            _holdAttackRoutine = StartCoroutine(HoldAttackRoutine());
+    }
+
+    void OnNormalAttackCanceled(InputAction.CallbackContext ctx)
+    {
+        // 누름 끝: 코루틴 중지
+        if (_holdAttackRoutine != null)
         {
-            Debug.Log("일반공격 입력받음");
+            StopCoroutine(_holdAttackRoutine);
+            _holdAttackRoutine = null;
+        }
+    }
+
+    IEnumerator HoldAttackRoutine()
+    {
+        // 즉시 한 번 공격 실행하고, interval마다 반복
+        OnNomralAttackInput?.Invoke();
+
+        while (true)
+        {
+            yield return new WaitForSeconds(_normalAttackInterval);
             OnNomralAttackInput?.Invoke();
         }
     }

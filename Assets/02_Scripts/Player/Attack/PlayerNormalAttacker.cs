@@ -10,8 +10,8 @@ public abstract class PlayerNormalAttacker : MonoBehaviour
 {
     public abstract WeaponType WeaponType { get; }
 
-    public event Action OnAttackStarted;
-    public event Action OnAttackEnded;
+    public virtual event Action OnAttackStarted;
+    public virtual event Action OnAttackEnded;
 
     // 공격 중인지 표시 (파생 클래스에서 보호 수준으로 변경 가능)
     public bool IsAttacking { get; protected set; }
@@ -46,6 +46,7 @@ public abstract class PlayerNormalAttacker : MonoBehaviour
     {
         if (!IsAttacking) return;
         IsAttacking = false;
+        Debug.Log("PlayerNormalAttacker.EndAttack: Attack ended.");
         OnAttackEnded?.Invoke();
     }
 

@@ -67,6 +67,9 @@ public class Player : MonoBehaviour
     public bool IsNormalAttacking => _isNormalAttacking;
     public bool IsSpecialAttacking => _isSpecialAttacking;
 
+    public event Action OnAttackStarted;
+    public event Action OnDashStarted;
+
     [Header("----- 상태 캐시 -----")]
     StateMachine _stateMachine;                              // 플레이어 상태 머신
 
@@ -247,6 +250,7 @@ public class Player : MonoBehaviour
     public void Dash()
     {
         _dasher.Dash(transform.forward, _statManager.playerDashDistance, 0.5f);
+        OnDashStarted?.Invoke();
         _animator.OnDash();
     }
     #endregion
@@ -269,6 +273,7 @@ public class Player : MonoBehaviour
         if (_normalAttacker is PlayerRifleNormalAttacker rifle)
         {
             rifle.FireNow();
+            OnAttackStarted?.Invoke();
             return;
         }
 
@@ -289,6 +294,7 @@ public class Player : MonoBehaviour
         // 라이플일 경우 애니메이션 종료 콜백
         if (_normalAttacker is PlayerRifleNormalAttacker rifle)
         {
+            Debug.Log(" Rifle OnAnimationAttackEnd 호출됨");
             rifle.OnAnimationAttackEnd();
             return;
         }
