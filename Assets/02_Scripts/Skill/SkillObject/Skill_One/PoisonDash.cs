@@ -27,7 +27,7 @@ public class PoisonDash : AreaDamageBase
 
     public override void ActiveSkill(Transform target)
     {
-        GameManager.Instance.player.Heal(1);
+        GameManager.Instance.player.playerModel.Heal(1);
         target.GetComponent<CharacterModelBase>().TakeDamage(dashDamage);
     }
 

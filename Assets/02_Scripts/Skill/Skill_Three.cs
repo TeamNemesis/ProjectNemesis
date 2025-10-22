@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using System;
 using UnityEngine;
 
@@ -6,14 +7,12 @@ using UnityEngine;
 /// </summary>
 public class Skill_Three : SkillBase
 {
+    
+
 
     public override void ActivateSkill(SkillData choosedSkill)
     {
-        switch (choosedSkill.skillIdx)
-        {
-
-        }
-
+    
 
         switch (choosedSkill.skillIdx)
         {
@@ -56,7 +55,7 @@ public class Skill_Three : SkillBase
             // 적색 편이
             case 35:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
-                //TODO 적이 발사하는 발사체에 적 정보 필요
+                
                 break;
 
             // 중력 증폭
@@ -84,11 +83,10 @@ public class Skill_Three : SkillBase
 public class Skill_Three_Attck : ActiveTech
 {
 
-    public override event Action OnTechUsed;
-    public override void Activate(SkillManager skillManager, PlayerModel player)
+    public override void Activate(SkillManager skillManager, Player player)
     {
         base.Activate(skillManager, player);
-        player.AttackHit += HitEnemy;
+        //player.AttackHit += HitEnemy;
         Drone[] drones = player.transform.GetComponentsInChildren<Drone>();
         if (drones.Length > 0)
         {
@@ -98,10 +96,10 @@ public class Skill_Three_Attck : ActiveTech
             }
         }
     }
-    public override void Deactivate(PlayerModel player, bool isSameSkill)
+    public override void Deactivate(Player player, bool isSameSkill)
     {
         base.Deactivate(player, isSameSkill);
-        player.AttackHit -= HitEnemy;
+        //player.AttackHit -= HitEnemy;
         Drone[] drones = player.transform.GetComponentsInChildren<Drone>();
         if (drones.Length > 0)
         {

@@ -129,13 +129,11 @@ public class ObjectPool : MonoBehaviour
     /// <summary>
     /// 풀에서 오브젝트 가져오기
     /// </summary>
-    public GameObject GetFromPool(PoolableObject poolable, Vector3 position,Quaternion rotation, Transform parentTransform = null)
+    public GameObject GetFromPool(PoolableObject poolable, Vector3 position,Quaternion rotation, Transform parentTransform = null, Object data = null)
     {
-        Debug.Log("Get");
         GameObject prefabObject = poolable.gameObject;
         if (!availablePools.ContainsKey(prefabObject.name))
         {
-            Debug.Log("available");
             availablePools.Add(prefabObject.name, new List<GameObject>());
             if (!inUsePools.ContainsKey(prefabObject.name))
             {
@@ -161,7 +159,7 @@ public class ObjectPool : MonoBehaviour
         if (poolable is IInitializePoolable)
         {
             IInitializePoolable initializePoolable = obj.GetComponent<PoolableObject>() as IInitializePoolable;
-            initializePoolable.Initialize();
+            initializePoolable.Initialize(data);
         } 
                 
         obj.SetActive(true);

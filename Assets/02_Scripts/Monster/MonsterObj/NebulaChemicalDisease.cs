@@ -12,12 +12,16 @@ public class NebulaChemicalDisease : MonsterBase
         Die     // 죽음
     }
     [Header("Local Stats")]
-    [SerializeField] private float _poisinFieldDuration = 5f; // 독성 구름 지속 시간
-    [SerializeField] private float _poisinFieldRadius = 3f;   // 독성 구름 반경
+    [SerializeField] private float _poisonFieldDuration = 5f; // 독성 구름 지속 시간
+    [SerializeField] private float _poisonFieldRadius = 3f;   // 독성 구름 반경
+    [SerializeField] private float _poisonFieldDelay = 2f;
     [SerializeField] private bool _isAttacking = false;
 
     [Header("PoisonFieldPrefab"),SerializeField]
-    private GameObject poisonFieldPrefab; // 독성 구름 프리팹
+    private PoolableObject poisonFieldPrefab; // 독성 구름 프리팹
+
+    [Header("AttackDecalPrefab"),SerializeField]
+    private PoolableObject attackDecalPrefab; // 공격 장판 프리팹
 
     [SerializeField]
     private State currentState = State.Idle;
@@ -88,9 +92,20 @@ public class NebulaChemicalDisease : MonsterBase
         _isAttacking = true;
         if (_target != null && Vector3.Distance(transform.position, _target.position) <= attackRange)
         {
-            poisonFieldPrefab.gameObject.transform.localScale = new Vector3(_poisinFieldRadius, 1, _poisinFieldRadius);
-            poisonFieldPrefab.GetComponent<PoisinField>().SetDuration(_poisinFieldDuration); // 독성 구름 지속 시간 설정
-            Instantiate(poisonFieldPrefab, transform.position, transform.rotation); // 플레이어에게 독성 구름 발사
+            poisonFieldPrefab.GetComponent<PoisonField>().SetLifeTime(_poisonFieldDuration); // 독성 구름 지속 시간 설정
+
+            Vector3 attackPos = _target.position;
+
+            GameObject decalObj = ObjectPool.Instance.GetFromPool(attackDecalPrefab, attackPos, attackDecalPrefab.transform.rotation);
+            decalObj.GetComponent<AttackDecalEffect>().Play(_poisonFieldDelay, _poisonFieldRadius / 2);
+
+            // 장판 생성 후 딜레이동안 대기
+            yield return new WaitForSeconds(_poisonFieldDelay);
+
+            GameObject poisonObj = ObjectPool.Instance.GetFromPool(poisonFieldPrefab, attackPos, poisonFieldPrefab.transform.rotation);// 플레이어에게 독성 구름 발사
+            PoisonField poisonField =  poisonObj.GetComponent<PoisonField>();
+            poisonField.Initialize(targetTag, _poisonFieldDuration, _poisonFieldRadius);
+
             // 독성 구름을 발사한 후 일정 시간 대기
             yield return new WaitForSeconds(attackDelay);
         }

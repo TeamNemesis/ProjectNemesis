@@ -16,7 +16,7 @@ public class NebulaPhantom : MonsterBase
     [SerializeField] private bool _isAttacking = false;
 
     [Header("Laser")]
-    [SerializeField] private GameObject laser;
+    [SerializeField] private PoolableObject SquareDecalPrefab;
 
     [SerializeField]
     private State currentState = State.Idle;
@@ -90,7 +90,11 @@ public class NebulaPhantom : MonsterBase
 
         if (_target != null && Vector3.Distance(transform.position, _target.position) <= attackRange)
         {
-            laser.SetActive(true);
+            Vector3 spawnPos = transform.position + transform.forward * 40;
+            spawnPos.y = 0;
+            GameObject decalobj = ObjectPool.Instance.GetFromPool(SquareDecalPrefab, spawnPos, SquareDecalPrefab.transform.rotation);
+
+            decalobj.GetComponent<SquareDecalEffect>().Play(attackDelay, transform, new Vector3(90, 0, 0));
             yield return new WaitForSeconds(attackDelay);
 
             float laserLength = 40f; // »ç°Å¸®
@@ -119,8 +123,6 @@ public class NebulaPhantom : MonsterBase
                     Debug.Log($"ÃÑÀÌ {hit.collider.name} ¿¡ ¸·Èû");
                 }
             }
-
-            laser.SetActive(false);
             yield return new WaitForSeconds(attackDelay / 2);
         }
 

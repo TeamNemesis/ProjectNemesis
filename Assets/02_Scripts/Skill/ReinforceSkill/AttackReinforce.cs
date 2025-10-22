@@ -7,15 +7,14 @@ using UnityEngine;
 public class Skill_One_Attack : ActiveTech
 {
 
-    public override event Action OnTechUsed;
 
 
 
-    public override void Activate(SkillManager skillManager, PlayerModel player)
+    public override void Activate(SkillManager skillManager, Player player)
     {
         // 공격 적중 시 이벤트에 추가
         base.Activate(skillManager, player);
-        player.AttackHit += HitEnemy;
+        //player.AttackHit += HitEnemy;
         Drone[] drones = player.transform.GetComponentsInChildren<Drone>();
         if (drones.Length > 0)
         {
@@ -25,12 +24,12 @@ public class Skill_One_Attack : ActiveTech
             }
         }
     }
-    public override void Deactivate(PlayerModel player, bool isSameSkill)
+    public override void Deactivate(Player player, bool isSameSkill)
     {
         // 리스트 제거
         base.Deactivate(player, isSameSkill);
         // 이벤트 해제
-        player.AttackHit -= HitEnemy;
+        //player.AttackHit -= HitEnemy;
         Drone[] drones = player.transform.GetComponentsInChildren<Drone>();
         if (drones.Length > 0)
         {
@@ -62,46 +61,37 @@ public class Skill_Two_Attack : ActiveTech
     /// <summary>
     /// 파이로 하트 일반공격 강화 스킬 발동시 발행할 이벤트, 스킬 인덱스, 강화 계수
     /// </summary>
-    public static event Action<int,float> ActiveSkillEvent;
+    public static event Action<int, float> ActiveSkillEvent;
 
     /// <summary>
     /// 파이로 하트 일반공격 강화 해제 이벤트, 스킬 인덱스
     /// </summary>
     public static event Action<int> DeactiveSkillEvent;
-    public override event Action OnTechUsed;
 
-    private int originalAttack = 100;
     private int originalDroneAttack = 2;
-    public override void Activate(SkillManager skillManager, PlayerModel player)
+    public override void Activate(SkillManager skillManager, Player player)
     {
         base.Activate(skillManager, player);
         #region Test
 
         // 스킬 효과 적용 (플레이어 일반 공격력에 접근하여 공격력 추가)
-        Debug.Log($"{_skillData.skillBaseValue_1},{_skillData.skillLevelValue_1}");
-        Debug.Log($"{((float)_skillData.skillBaseValue_1 + (float)_skillData.skillLevelValue_1 * _skillData.skillLevel)}");
-        Debug.Log($"{originalAttack * ((float)_skillData.skillBaseValue_1 + (float)_skillData.skillLevelValue_1 * _skillData.skillLevel)}");
-        Debug.Log($"{(int)(originalAttack * ((float)_skillData.skillBaseValue_1 + (float)_skillData.skillLevelValue_1 * _skillData.skillLevel))}");
-        player.playerAttack = (int)(originalAttack * ((float)_skillData.skillBaseValue_1 + (float)_skillData.skillLevelValue_1 * _skillData.skillLevel));
         float plusAttack = (float)_skillData.skillBaseValue_1 + (float)_skillData.skillLevelValue_1 * _skillData.skillLevel;
-        // player.playerAttack = (일반 공격 증가 식)
-        ActiveSkillEvent?.Invoke(_skillData.skillIdx,plusAttack);
+        GameManager.Instance.PlayerStatManager.AddPlayerAttackDamage(plusAttack);
+        ActiveSkillEvent?.Invoke(_skillData.skillIdx, plusAttack);
         // 공격 적중 시 이벤트에 추가
         Drone[] drones = player.transform.GetComponentsInChildren<Drone>();
         if (drones.Length > 0)
         {
             Constants.DRONE_ATTACK = (int)(originalDroneAttack * (1f + plusAttack));
-
         }
-        Debug.Log(player.playerAttack);
     }
-    public override void Deactivate(PlayerModel player, bool isSameSkill)
+    public override void Deactivate(Player player, bool isSameSkill)
     {
         // 리스트 제거
         base.Deactivate(player, isSameSkill);
 
         // 공격력 복귀
-        //player.playerAttack = originalAttack;
+        GameManager.Instance.PlayerStatManager.AddPlayerAttackDamage(_skillData.skillBaseValue_1 + _skillData.skillLevelValue_1 * (_skillData.skillLevel - 1));
         DeactiveSkillEvent?.Invoke(_skillData.skillIdx);
         Drone[] drones = player.transform.GetComponentsInChildren<Drone>();
         if (drones.Length > 0)
@@ -127,13 +117,12 @@ public class Skill_Three_Attack : ActiveTech
 {
 
 
-    public override event Action OnTechUsed;
 
-    public override void Activate(SkillManager skillManager, PlayerModel player)
+    public override void Activate(SkillManager skillManager, Player player)
     {
         // 공격 적중 시 이벤트에 추가
         base.Activate(skillManager, player);
-        player.AttackHit += HitEnemy;
+        //player.AttackHit += HitEnemy;
         Drone[] drones = player.transform.GetComponentsInChildren<Drone>();
         if (drones.Length > 0)
         {
@@ -143,12 +132,12 @@ public class Skill_Three_Attack : ActiveTech
             }
         }
     }
-    public override void Deactivate(PlayerModel player, bool isSameSkill)
+    public override void Deactivate(Player player, bool isSameSkill)
     {
         // 리스트 제거
         base.Deactivate(player, isSameSkill);
         // 이벤트 해제
-        player.AttackHit -= HitEnemy;
+        //player.AttackHit -= HitEnemy;
         Drone[] drones = player.transform.GetComponentsInChildren<Drone>();
         if (drones.Length > 0)
         {
@@ -182,39 +171,42 @@ public class Skill_Four_Attack : ActiveTech
     /// 공격 시도시 실행할 액션
     /// </summary>
     private Action _AttackTry;
+    private Action<Transform> _DroneAttack;
 
-    public override event Action OnTechUsed;
-
-    public override void Activate(SkillManager skillManager, PlayerModel player)
+    public override void Activate(SkillManager skillManager, Player player)
     {
+
         // 공격 시도 시 이벤트에 추가
         base.Activate(skillManager, player);
         _AttackTry = () => ActiveTry(player);
-        player.AttackTry += _AttackTry;
-        player.AttackHit += HitEnemy;
+        _DroneAttack = (transform) => ActiveTry(player);
+        player.OnAttackStarted += _AttackTry;
+        //player.AttackHit += HitEnemy;
         Drone[] drones = player.transform.GetComponentsInChildren<Drone>();
         if (drones.Length > 0)
         {
             foreach (Drone drone in drones)
             {
-                drone.attackTry += _AttackTry;
+                drone.Attack += _DroneAttack;
             }
         }
     }
-    public override void Deactivate(PlayerModel player, bool isSameSkill)
+    public override void Deactivate(Player player, bool isSameSkill)
     {
-        // 리스트 제거s
+        Debug.Log("40번 스킬 해제");
+        // 리스트 제거
         base.Deactivate(player, isSameSkill);
         // 이벤트 해제
-        player.AttackTry -= _AttackTry;
-        player.AttackHit -= HitEnemy;
+        player.OnAttackStarted -= _AttackTry;
+        //player.AttackHit -= HitEnemy;
 
         Drone[] drones = player.transform.GetComponentsInChildren<Drone>();
         if (drones.Length > 0)
         {
             foreach (Drone drone in drones)
             {
-                drone.attackTry -= _AttackTry;
+                drone.Attack -= _DroneAttack;
+
             }
         }
 
@@ -222,7 +214,7 @@ public class Skill_Four_Attack : ActiveTech
 
 
 
-    public override void ActiveTry(PlayerModel player)
+    public override void ActiveTry(Player player)
     {
         stack++;
         // 최대 스택 체한
@@ -230,6 +222,7 @@ public class Skill_Four_Attack : ActiveTech
         {
             stack = 10;
         }
+        Debug.Log("stack : " + stack);
     }
 
     public override void HitEnemy(Transform transform)
@@ -255,12 +248,11 @@ public class Skill_Five_Attack : ActiveTech
 {
 
 
-    public override event Action OnTechUsed;
 
-    public override void Activate(SkillManager skillManager, PlayerModel player)
+    public override void Activate(SkillManager skillManager, Player player)
     {
         base.Activate(skillManager, player);
-        player.AttackHit += HitEnemy;
+        //player.AttackHit += HitEnemy;
         Drone[] drones = player.transform.GetComponentsInChildren<Drone>();
         if (drones.Length > 0)
         {
@@ -271,11 +263,11 @@ public class Skill_Five_Attack : ActiveTech
         }
     }
 
-    public override void Deactivate(PlayerModel player, bool isSameSkill)
+    public override void Deactivate(Player player, bool isSameSkill)
     {
         base.Deactivate(player, isSameSkill);
         // 이벤트 해제
-        player.AttackHit -= HitEnemy;
+        //player.AttackHit -= HitEnemy;
 
         Drone[] drones = player.transform.GetComponentsInChildren<Drone>();
         if (drones.Length > 0)

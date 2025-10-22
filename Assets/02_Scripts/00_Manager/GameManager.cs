@@ -33,9 +33,9 @@ public class GameManager : MonoBehaviour
                     _instance._interactableManager = obj.AddComponent<InteractableManager>();
                     _instance._dataManager = obj.AddComponent<DataManager>();
                     _instance._poolManager = obj.AddComponent<PoolManager>();
+
                     _instance._playerStatManager = obj.AddComponent<PlayerStatManager>();
 
-                    //_instance._skillManger = obj.AddComponent<SkillManager>();
 
                     _instance.Initialize();
                     
@@ -61,14 +61,19 @@ public class GameManager : MonoBehaviour
             _instance = this;
             DontDestroyOnLoad(gameObject);
         }
-        
+
         //_resourceManager.Initialize();
-        
-        if(_skillManger==null)
+
+        if (_player == null)
+        {
+            _player = FindAnyObjectByType<Player>();
+        }
+
+        if (_skillManger==null)
         {
             _skillManger = Resources.Load<SkillManager>("Prefabs/Skill/SkillManager");
+        
         }
-        _skillManger.InitializeSkillManager();
 
         if(_uiManager==null)
         {
@@ -77,7 +82,8 @@ public class GameManager : MonoBehaviour
             _uiManager.name = "UIManager";
             
         }
-        _uiManager.InitializeManager();
+
+        
     }
 
     private void Start()
@@ -90,6 +96,9 @@ public class GameManager : MonoBehaviour
         _instance._resourceManager.Initialize();
         _instance._dataManager.Initialize(_instance._resourceManager);
         _instance._poolManager.Initialze(_instance._resourceManager);
+        _skillManger.InitializeSkillManager();
+        _uiManager.InitializeManager();
+
     }
 
     [SerializeField] ResourceManager _resourceManager;      // 리소스 매니저
@@ -105,7 +114,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] PoolManager _poolManager;                 // 풀 매니저
     public PoolManager PoolManager => _poolManager;
     [SerializeField] PlayerStatManager _playerStatManager; // 플레이어 스탯 매니저
-    public PlayerStatManager PlayerStatManager => _playerStatManager;
+    public PlayerStatManager PlayerStatManager =>_playerStatManager;
 
     /// <summary>
     /// 스킬 매니저
@@ -126,6 +135,6 @@ public class GameManager : MonoBehaviour
     /// 플레이어(Test용)
     /// </summary>
     [SerializeField]
-    private PlayerModel _player;
-    public PlayerModel player { get { return _player; } }
+    private Player _player;
+    public Player player { get { return _player; } }
 }

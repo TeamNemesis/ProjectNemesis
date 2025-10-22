@@ -248,12 +248,17 @@ MonoBehaviour:
   attackDelay: 3
   originalSpeed: 10
   targetTag: Player
+  monsterSize: 0
+  _knockBackDamage: 0
+  player: {fileID: 0}
   agent: {fileID: 0}
-  target: {fileID: 0}
-  _poisinFieldDuration: 5
-  _poisinFieldRadius: 3
+  _target: {fileID: 0}
+  _poisonFieldDuration: 5
+  _poisonFieldRadius: 3
+  _poisonFieldDelay: 2
   _isAttacking: 0
-  poisonFieldPrefab: {fileID: 3233531667001878511, guid: c6fc3eaefac9ff8438430d7b62ef1a5e, type: 3}
+  poisonFieldPrefab: {fileID: 294633856658633526, guid: c6fc3eaefac9ff8438430d7b62ef1a5e, type: 3}
+  attackDecalPrefab: {fileID: 4171473842588414540, guid: e1cdcf7ba7eac0445a237bf39c1ee586, type: 3}
   currentState: 0
 --- !u!195 &6429540665350499895
 NavMeshAgent:

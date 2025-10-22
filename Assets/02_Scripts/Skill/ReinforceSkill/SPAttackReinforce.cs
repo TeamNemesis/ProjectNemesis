@@ -1,5 +1,5 @@
-using UnityEngine;
 using System;
+using UnityEngine;
 
 
 /// <summary>
@@ -8,38 +8,37 @@ using System;
 public class Skill_One_SPAttack : ActiveTech
 {
 
-    public override event Action OnTechUsed;
 
     private Action _AttackTry;
-    /// <summary> 
+    /// <summary>   
     /// 공격 한 번 당 한 번만 적용하도록 하기 위한 필드값
     /// </summary>
     public bool isHit;
 
-    public override void Activate(SkillManager skillManager, PlayerModel player)
+    public override void Activate(SkillManager skillManager, Player player)
     {
         // 공격 적중 시 이벤트에 추가
         base.Activate(skillManager, player);
         _AttackTry = () => ActiveTry(player);
-        player.SPAttackTry += _AttackTry;
-        player.SPAttackHit += HitEnemy;
-       
+        //player.SPAttackTry += _AttackTry;
+        //player.SPAttackHit += HitEnemy;
+
     }
-    public override void Deactivate(PlayerModel player,bool isSameSkill)
+    public override void Deactivate(Player player, bool isSameSkill)
     {
         // 리스트 제거
         base.Deactivate(player, isSameSkill);
         // 이벤트 해제
-        player.SPAttackTry -= _AttackTry;
-				player.SPAttackHit -= HitEnemy;
-        
+       // player.SPAttackTry -= _AttackTry;
+       // player.SPAttackHit -= HitEnemy;
+
 
     }
 
     /// <summary>
     /// 공격 시도 시 변수 초기화
     /// </summary>
-    public override void ActiveTry(PlayerModel player)
+    public override void ActiveTry(Player player)
     {
         isHit = false;
     }
@@ -50,10 +49,10 @@ public class Skill_One_SPAttack : ActiveTech
         if (isHit) return;
 
         isHit = true;
-        GameManager.Instance.player.Heal(Constants.SKILL_ONE_SPATTACKHEAL);
+        GameManager.Instance.player.playerModel.Heal(Constants.SKILL_ONE_SPATTACKHEAL);
     }
 
-    
+
     public Skill_One_SPAttack(SkillData choosedSkill) : base(choosedSkill)
     {
 
@@ -67,9 +66,7 @@ public class Skill_One_SPAttack : ActiveTech
 public class Skill_Two_SPAttack : ActiveTech
 {
 
-    public override event Action OnTechUsed;
 
-    private int originalSPAttack;
 
 
     /// <summary> 
@@ -77,27 +74,21 @@ public class Skill_Two_SPAttack : ActiveTech
     /// </summary>
     public bool isHit;
 
-    public  void Activate(SkillManager skillManager, PlayerModel player, int skillLevel)
+    public void Activate(SkillManager skillManager, Player player, int skillLevel)
     {
         // 공격 적중 시 이벤트에 추가
         base.Activate(skillManager, player);
 
-        // 기본 특수공격력 저장
-        if (skillLevel == 1)
-        {
-            originalSPAttack = player.playerAttack;
-        }
-
         // 스킬 효과 적용 (플레이어 특수공격력에 접근하여 공격력 추가)
         // player.playerSPAttack = (특수 공격 증가 식)
-        
+
     }
-    public override void Deactivate(PlayerModel player, bool isSameSkill)
+    public override void Deactivate(Player player, bool isSameSkill)
     {
         // 리스트 제거
-        base.Deactivate(player,isSameSkill);
+        base.Deactivate(player, isSameSkill);
         // 이벤트 해제
-        player.playerAttack = originalSPAttack;
+
 
     }
 

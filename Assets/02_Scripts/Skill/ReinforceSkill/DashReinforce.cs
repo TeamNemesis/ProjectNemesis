@@ -7,7 +7,6 @@ using UnityEngine;
 public class Skill_One_Dash : ActiveTech
 {
 
-    public override event Action OnTechUsed;
 
     /// <summary>
     /// 대쉬 시작 독 프리팹
@@ -15,7 +14,7 @@ public class Skill_One_Dash : ActiveTech
     [SerializeField]
     private PoisonDash _poisonDashPrefab;
 
-    public override void Activate(SkillManager skillManager, PlayerModel player)
+    public override void Activate(SkillManager skillManager, Player player)
     {
         if(_poisonDashPrefab == null)
         {
@@ -28,7 +27,7 @@ public class Skill_One_Dash : ActiveTech
         //TODO 대쉬 입력 시 이벤트에 연결
 
     }
-    public override void Deactivate(PlayerModel player, bool isSameSkill)
+    public override void Deactivate(Player player, bool isSameSkill)
     {
         // 리스트 제거
         base.Deactivate(player, isSameSkill);
@@ -37,7 +36,7 @@ public class Skill_One_Dash : ActiveTech
 
     }
 
-    public override void ActiveTry(PlayerModel player)
+    public override void ActiveTry(Player player)
     {
         Vector3 position = player.transform.position;
         position.y = 0;
@@ -62,14 +61,13 @@ public class Skill_Two_Dash : ActiveTech
     /// </summary>
     public Action _DashTry;
 
-    public override event Action OnTechUsed;
 
     /// <summary>
     /// 착탄 지점 독 프리팹
     /// </summary>
     [SerializeField]
 
-    public override void Activate(SkillManager skillManager, PlayerModel player)
+    public override void Activate(SkillManager skillManager, Player player)
     {
         // 공격 적중 시 이벤트에 추가
         base.Activate(skillManager, player);
@@ -77,18 +75,20 @@ public class Skill_Two_Dash : ActiveTech
 
         _DashTry = () => ActiveTry(player);
         //TODO 대쉬 시작 이벤트에 연결
-
+        player.OnDashStarted += _DashTry;
     }
-    public override void Deactivate(PlayerModel player, bool isSameSkill)
+    public override void Deactivate(Player player, bool isSameSkill)
     {
         // 리스트 제거
         base.Deactivate(player, isSameSkill);
-        // 이벤트 해제
 
+        // 이벤트 해제
         //TODO 대쉬 시작시 이벤트에서 해제 
+        player.OnDashStarted -= _DashTry;
+
     }
 
-    public override void ActiveTry(PlayerModel player)
+    public override void ActiveTry(Player player)
     {
         Vector3 position = player.transform.position;
         position.y = 0;

@@ -12,6 +12,7 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     [Header("----- 컴포넌트 참조 -----")]
+    [SerializeField] PlayerModel _playerModel;
     [SerializeField] CharacterController _characterController; // 플레이어 캐릭터 컨트롤러 컴포넌트
     [SerializeField] PlayerMover _mover;                       // 플레이어 이동 컴포넌트
     [SerializeField] PlayerDasher _dasher;                     // 플레이어 대시 컴포넌트
@@ -56,6 +57,7 @@ public class Player : MonoBehaviour
     public PlayerNormalAttacker NormalAttacker => _normalAttacker;
     public PlayerSpecialAttacker SpecialAttacker => _specialAttacker;
     public PlayerAnimator Animator => _animator;
+    public PlayerModel playerModel => _playerModel;
 
     public Vector2 MoveInput => _moveInput;
     public bool DashPressed => _dashPressed;
@@ -117,7 +119,7 @@ public class Player : MonoBehaviour
         {
             _specialAttackerMap[attacker.WeaponType] = attacker;
         }
-
+        _playerModel.Initialize();
         _mover.Initialize(_characterController);
         _dasher.Initialize(_characterController);
         _forwarder.Initialize(this);

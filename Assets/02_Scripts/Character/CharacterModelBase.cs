@@ -1,13 +1,13 @@
 using System;
-using System.Security.Cryptography;
 using UnityEngine;
 
 /// <summary>
 /// 몬스터와 플레이어 부모 클래스
 /// </summary>
+[RequireComponent(typeof(DebuffHandler))]
 public abstract class CharacterModelBase : MonoBehaviour, IDamageable
 {
-    [SerializeField] 
+    [SerializeField]
     protected int _maxHealth = 100;
     public int maxHealth { get { return _maxHealth; } } // 최대 체력을 반환하는 속성
     public void SetMaxHp(int plusMaxHp)
@@ -18,7 +18,7 @@ public abstract class CharacterModelBase : MonoBehaviour, IDamageable
     }
 
 
-    [SerializeField] 
+    [SerializeField]
     protected int _currentHealth;
     public int currentHealth { get { return _currentHealth; } } // 현재 체력을 반환하는 속성
 
@@ -31,7 +31,7 @@ public abstract class CharacterModelBase : MonoBehaviour, IDamageable
         _currentHealth = currentHp;
     }
 
-    [SerializeField] 
+    [SerializeField]
     protected float _moveSpeed = 5; // 이동 속도
     public float moveSpeed { get { return _moveSpeed; } }
     public void SetMoveSpeed(float speed)
@@ -41,7 +41,7 @@ public abstract class CharacterModelBase : MonoBehaviour, IDamageable
     }
 
 
-   
+
     [Header("상태이상")]
     [SerializeField] public bool isStunned = false;    // 스턴
     [SerializeField] public bool isPushed = false;     // 밀림
@@ -55,7 +55,10 @@ public abstract class CharacterModelBase : MonoBehaviour, IDamageable
     public event Action OnDieEvent;
 
     [SerializeField] protected DebuffHandler debuffHandler;
-
+    public DebuffHandler GetDebuffHandler()
+    {
+        return debuffHandler;
+    }
     public void OnHpChangedEventPlay(int currentHp)
     {
         OnHpChanged?.Invoke(currentHp);
@@ -76,14 +79,14 @@ public abstract class CharacterModelBase : MonoBehaviour, IDamageable
     public void Heal(int plusHp)
     {
         _currentHealth += plusHp;
-        if(_currentHealth > maxHealth)
+        if (_currentHealth > maxHealth)
         {
             _currentHealth = maxHealth;
         }
         OnHpChanged?.Invoke(_currentHealth);
     }
 
-    public void TakeDamage(float damage)
+    public virtual void TakeDamage(float damage)
     {
         if (isDead) return;
 
@@ -102,7 +105,7 @@ public abstract class CharacterModelBase : MonoBehaviour, IDamageable
             debuffHandler.RemoveDebuff(Constants.DEBUFF_BURN);
         }
 
-       
+
 
         _currentHealth -= (int)damage;
         if (currentHealth <= 0)

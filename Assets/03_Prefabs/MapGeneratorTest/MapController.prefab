@@ -52,7 +52,7 @@ MonoBehaviour:
   _doorDecider: {fileID: 417085957603644227}
   _currentRoom: {fileID: 0}
   _currentDoors: []
-  _currentRoomCount: 11
+  _currentRoomCount: -1
   _hasLabRoomAppeared: 0
 --- !u!114 &7295376262813496824
 MonoBehaviour:
@@ -93,8 +93,8 @@ MonoBehaviour:
   _oneDoorChance: 0.1
   _twoDoorChance: 0.6
   _threeDoorChance: 0.3
-  door_CreditChance: 0
-  door_HealChance: 0
-  door_UpgradeChance: 0
-  door_ChromeChance: 0
-  door_SkillPackChance: 0
+  door_CreditChance: 0.1
+  door_HealChance: 0.1
+  door_UpgradeChance: 0.2
+  door_ChromeChance: 0.1
+  door_SkillPackChance: 0.5

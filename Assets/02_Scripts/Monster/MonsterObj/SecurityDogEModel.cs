@@ -105,7 +105,7 @@ public class SecurityDogEModel : MonsterBase
 
             agent.enabled = false;
 
-            while (jumpTimer < jumpDuration && _isAttacking)
+            while (jumpTimer < jumpDuration && _isAttacking&& !isStunned && !isBindned)
             {
                 jumpTimer += Time.deltaTime;
                 transform.position += jumpDirection * jumpSpeed * Time.deltaTime;

@@ -1,5 +1,14 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
+
+public enum MonsterSize
+{
+    SMALL,
+    MIDDLE,
+    BIG
+}
+
 
 public class MonsterBase : CharacterModelBase
 {
@@ -10,7 +19,13 @@ public class MonsterBase : CharacterModelBase
     [SerializeField] protected float attackDelay = 0.5f;
     [SerializeField] protected float originalSpeed = 10f;
     [SerializeField] public string targetTag = Constants.TAG_PLAYER;
+    [SerializeField] protected MonsterSize monsterSize = MonsterSize.SMALL;
 
+
+    #region ³Ë¹é
+    [SerializeField] private float _knockBackDamage;
+    [SerializeField] private Coroutine _knockBackCoroutine;
+    #endregion
     [SerializeField] protected Transform player;
 
 
@@ -86,4 +101,68 @@ public class MonsterBase : CharacterModelBase
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * 5f);
         }
     }
+
+
+    #region ³Ë¹é
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (isPushed)
+        {
+            if (collision.gameObject.layer == LayerMask.NameToLayer(Constants.LAYER_MASK_WALL))
+            {
+                Debug.Log("Ãæµ¹");
+                TakeDamage(GameManager.Instance.PlayerStatManager.knockBackDamage * GameManager.Instance.PlayerStatManager.knockBackDamageMulti * GameManager.Instance.PlayerStatManager.totalMultiDamage);
+            }
+
+        }
+    }
+
+
+    /// <summary>
+    /// ³Ë¹é ½ÇÇà
+    /// </summary>
+    /// <param name="pushDirection"></param>
+    /// <param name="damage"></param>
+    public void KnockBackEnemy(Vector3 pushDirection, float damage, float knockBackDistance)
+    {
+        TakeDamage(damage * GameManager.Instance.PlayerStatManager.totalMultiDamage);
+        if(monsterSize == MonsterSize.BIG)
+        {
+            return;
+        }
+        GetComponent<Collider>().isTrigger = false;
+        isPushed = true;
+        debuffHandler.ApplyDebuff(DebuffHandler.DebuffData.CreateStun(0.5f));
+        GetComponent<Rigidbody>().isKinematic = false;
+        GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
+        GetComponent<Rigidbody>().AddForce(pushDirection, ForceMode.VelocityChange);
+
+        if (_knockBackCoroutine != null)
+        {
+            StopCoroutine(_knockBackCoroutine);
+        }
+        _knockBackCoroutine = StartCoroutine(KnockBackCoroutine(knockBackDistance));
+    }
+
+
+    /// <summary>
+    /// ³Ë¹é ÄÚ·çÆ¾
+    /// </summary>
+    /// <param name="pushDirection"></param>
+    /// <param name="damage"></param>
+    /// <returns></returns>
+    public IEnumerator KnockBackCoroutine(float knockBackDistance)
+    {
+        Vector3 startPosition = transform.position;
+        while (Vector3.Distance(transform.position, startPosition) < knockBackDistance)
+        {
+            yield return null;
+        }
+        GetComponent<Rigidbody>().isKinematic = true;
+        isPushed = false;
+        GetComponent<Collider>().isTrigger = true;
+        _knockBackCoroutine = null;
+    }
+    #endregion
 }
