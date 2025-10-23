@@ -940,7 +940,6 @@ GameObject:
   - component: {fileID: 5608991504329141503}
   - component: {fileID: 8904582775015166923}
   - component: {fileID: 996684939468416506}
-  - component: {fileID: 1871915940769177694}
   m_Layer: 26
   m_Name: Oxy_agregate (1)
   m_TagString: Untagged
@@ -1037,33 +1036,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 4.322195, y: 1.5857888, z: 1.7645218}
   m_Center: {x: -0.000014662743, y: 0, z: 0.0000078082085}
---- !u!54 &1871915940769177694
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 935106463738955931}
-  serializedVersion: 4
-  m_Mass: 0.2
-  m_Drag: 0.2
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!1 &1154764566214526671
 GameObject:
   m_ObjectHideFlags: 0
@@ -1247,6 +1219,7 @@ MonoBehaviour:
   - {fileID: 4873035669684106144}
   - {fileID: 816930294060526143}
   - {fileID: 1589635906952179651}
+<<<<<<< Updated upstream
 --- !u!114 &-6505241670301615281
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1279,6 +1252,8 @@ MonoBehaviour:
   m_MinRegionArea: 2
   m_NavMeshData: {fileID: 23800000, guid: e9773db474d71784cb44ef24c34a8042, type: 2}
   m_BuildHeightMesh: 0
+=======
+>>>>>>> Stashed changes
 --- !u!1 &1527830589730246351
 GameObject:
   m_ObjectHideFlags: 0

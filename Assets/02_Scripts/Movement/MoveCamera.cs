@@ -1,17 +1,18 @@
+using Mono.Cecil.Cil;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class MoveCamera : MonoBehaviour
 {
     private Transform target;
-    private Vector3 offset = new Vector3(0, 15,-15);
+    private Vector3 offset = new Vector3(0, 25,-25);
     private float cameraSpeed = 5f;
 
     [Header("카메라 제한 영역")]
-    public float minX;
-    public float maxX;
-    public float minZ;
-    public float maxZ;
+    [SerializeField] private float minX;
+    [SerializeField] private float maxX;
+    [SerializeField] private float minZ;
+    [SerializeField] private float maxZ;
 
     //
     private float transparentAlpha = 0.3f;
@@ -57,6 +58,7 @@ public class MoveCamera : MonoBehaviour
             MeshRenderer rend = hit.collider.GetComponent<MeshRenderer>();
             if (rend != null)
             {
+                Debug.Log(hit.collider.gameObject.name);
                 SetAlpha(rend, transparentAlpha);
                 lastRenderer = rend; // 이번 프레임의 투명화 대상 저장
             }
