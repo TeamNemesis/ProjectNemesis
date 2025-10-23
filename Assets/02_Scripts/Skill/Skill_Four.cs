@@ -11,14 +11,21 @@ public class Skill_Four : SkillBase
     #region µå·Ð
     [SerializeField]
     private Drone dronePrefab;
-    private List<Drone> droneList = new List<Drone>();
+    private List<Drone> droneList;
     public override void InitializeSkill(SkillManager skillManager)
     {
         base.InitializeSkill(skillManager);
         if (dronePrefab == null)
         {
             dronePrefab = Resources.Load<Drone>("Prefabs/Drone/DronePrefab");
-
+        }
+        if(droneList == null)
+        {
+            droneList = new List<Drone>();
+        }
+        else
+        {
+            droneList.Clear();
         }
     }
     #endregion
@@ -105,7 +112,7 @@ public class Skill_Four : SkillBase
         Transform playerTransform = GameManager.Instance.player.transform;
         Drone drone = ObjectPool.Instance.GetFromPool(dronePrefab,Vector3.zero , playerTransform.rotation,playerTransform).GetComponent<Drone>();
         droneList.Add(drone);
-
+        Debug.Log(droneList.Count);
         float x = 0 - (float)(skillLevel - 1) / 2;
 
         for (int i = 0; i < skillLevel; i++)
