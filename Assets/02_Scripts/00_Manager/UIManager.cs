@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -19,6 +20,11 @@ public class UIManager : MonoBehaviour
 
     [SerializeField]
     private Transform _parentContent;
+
+    /// <summary>
+    /// 보상 선택 이벤트
+    /// </summary>
+    public event Action onRewardSelect;
 
     public void InitializeManager()
     {
@@ -66,7 +72,6 @@ public class UIManager : MonoBehaviour
 
 
         SkillBtn skillBtn = ObjectPool.Instance.GetFromPool(_skillBtnPrefab, _skillBtnPrefab.transform.position, _skillBtnPrefab.transform.rotation, parentContent).GetComponent<SkillBtn>();
-        skillBtn.Initialize();
         skillBtn.SetSkillInfo(skillData);
         skillBtn.GetComponent<Button>().onClick.AddListener(() => OnClick_SkillListBtn(skillBtn));
 
@@ -109,15 +114,26 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private SkillBtn _skillChooseBtnPrefab;
 
+    /// <summary>
+    /// 보상창 활성화/비활성화
+    /// </summary>
+    /// <param name="isActive"></param>
     public void SetActiveSkillBtnPanel(bool isActive)
     {
+        // 보상창 활성화 상태
         _skillBtnPanel.SetActive(isActive);
+
+        //보상창이 꺼지면 보상 선택 이벤트 발동
+        if(isActive == false)
+        {
+            onRewardSelect?.Invoke();
+        }
     }
 
     public SkillBtn MakeSkillBtn()
     {
         SkillBtn skillBtn = ObjectPool.Instance.GetFromPool(_skillChooseBtnPrefab, Vector3.zero, _skillChooseBtnPrefab.transform.rotation, _parentPanel.transform).GetComponent<SkillBtn>();
-        skillBtn.Initialize();
+        
         return skillBtn;
     }
 

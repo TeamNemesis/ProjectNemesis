@@ -48,10 +48,6 @@ public class SkillBtn : PoolableObject
 				}
 		}
 
-    public void Initialize()
-    {
-		
-    }
 
     public GameObject GetGameObject()
     {
