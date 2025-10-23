@@ -7,7 +7,6 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     private static GameManager _instance;
-
     /// <summary>
     /// 어디에서나 접근 가능한 싱글톤 인스턴스
     /// Instance로 접근시 GameManager가 씬에 없으면 자동으로 생성
@@ -39,7 +38,6 @@ public class GameManager : MonoBehaviour
 
                     _instance.Initialize();
                     
-                    //_instance._skillManger.InitializeSkillManager();
 
                     // 씬 전환시 파괴되지 않도록 설정
                     DontDestroyOnLoad(obj);
@@ -62,7 +60,6 @@ public class GameManager : MonoBehaviour
             DontDestroyOnLoad(gameObject);
         }
 
-        //_resourceManager.Initialize();
 
         if (_player == null)
         {
@@ -86,10 +83,6 @@ public class GameManager : MonoBehaviour
         
     }
 
-    private void Start()
-    {
-        Initialize();
-    }
 
     void Initialize()
     {

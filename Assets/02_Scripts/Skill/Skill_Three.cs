@@ -1,5 +1,3 @@
-using JetBrains.Annotations;
-using System;
 using UnityEngine;
 
 /// <summary>
@@ -7,12 +5,21 @@ using UnityEngine;
 /// </summary>
 public class Skill_Three : SkillBase
 {
-    
+    [SerializeField]
+    private RedShift _redshiftPrefab;
 
+    public override void InitializeSkill(SkillManager skillManager)
+    {
+        base.InitializeSkill(skillManager);
+        if(_redshiftPrefab == null)
+        {
+            _redshiftPrefab = Resources.Load<RedShift>("Prefabs/Skill/SkillObject/Skill_Three/RedShift");
+        }
+    }
 
     public override void ActivateSkill(SkillData choosedSkill)
     {
-    
+
 
         switch (choosedSkill.skillIdx)
         {
@@ -43,19 +50,27 @@ public class Skill_Three : SkillBase
             // 절대영역
             case 33:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
+                ActiveTech skillDashAttack = new Skill_Three_Dash(choosedSkill);
+                if (_skillManager.dashTech != null)
+                {
+
+                    _skillManager.dashTech.Deactivate(player, _skillManager.dashTech.skillData.skillIdx != choosedSkill.skillIdx);
+
+                }
+                skillDashAttack.Activate(_skillManager, player);
                 break;
 
 
             // 불운
             case 34:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
-
+                ActivateMisfortune(choosedSkill);
                 break;
 
             // 적색 편이
             case 35:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
-                
+                ActivateRedShift(choosedSkill);
                 break;
 
             // 중력 증폭
@@ -77,6 +92,31 @@ public class Skill_Three : SkillBase
 
     }
 
+    #region 불운
+    private void ActivateMisfortune(SkillData skill)
+    {
+        //처음 습득시
+        if (skill.skillLevel == 1)
+        {
+            skillManager.playerStatManager.AddKockBackDamageMulti(skill.skillBaseValue_1 + skill.skillLevelValue_1);
+        }
+        // 그 이후는 레벨 계수만 추가
+        else
+        {
+            skillManager.playerStatManager.AddKockBackDamageMulti(skill.skillLevelValue_1);
+
+        }
+    }
+
+    private void ActivateRedShift(SkillData skill)
+    {
+        skillManager.Player.playerModel.PlayerHit += MakeRedshift;
+    }
+    private void MakeRedshift(Transform monsterTransform)
+    {
+
+    }
+    #endregion
 
 }
 
