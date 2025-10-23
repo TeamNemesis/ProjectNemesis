@@ -12,7 +12,6 @@ public class PoisonField : PoolableObject
     [SerializeField] private Coroutine debuffCoroutine; // 디버프 코루틴 참조
     [SerializeField] private float lifeTime = 999f; // 독성 장판 지속 시간
     [SerializeField] private float poisonFieldRadius;
-    [SerializeField] private float moveSpeed = 5f; // 이동 속도
     [SerializeField] private string targetTag; // 타겟 태그
     [SerializeField] private Coroutine lifeTimeCoroutine;
 

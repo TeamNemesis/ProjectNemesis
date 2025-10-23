@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 
@@ -19,14 +18,10 @@ public class Elite2 : MonsterBase
     [SerializeField] private float _poisonFieldDuration = 999f; // 독성 구름 지속 시간
     [SerializeField] private float _poisonFieldRadius = 6f;   // 독성 구름 반경
     [SerializeField] private float _poisonFieldDelay = 2f;
-    [SerializeField] private float poisonFieldAttackCoolTime = 0;
-
-    [Header("PoisonLaser")]
-    [SerializeField] private float poisonLaserAttackCoolTime = 0;
 
     [Header("Bullet")]
     [SerializeField] float bulletLifeTime = 8f;
-    [SerializeField] private float bulletAttackCoolTime = 0;
+    [SerializeField] int maxBulletAttackCounter = 0;
 
     [SerializeField] private bool _isAttacking = false;
 
@@ -36,10 +31,16 @@ public class Elite2 : MonsterBase
     [SerializeField] private PoolableObject poisonFieldPrefab;
     [SerializeField] private PoolableObject eliteBulletPrefab;
 
-    [Header("STATE"),SerializeField] private State currentState = State.Idle;
+    [Header("CoolTimes")]
+    [SerializeField] private float bulletAttackCoolTime = 5f;
+    [SerializeField] private float poisonLaserAttackCoolTime = 5f;
+    [SerializeField] private float poisonFieldAttackCoolTime = 10f;
+
+    [Header("STATE"), SerializeField] private State currentState = State.Idle;
 
     private void Update()
     {
+        CoolTimeController();
         if (isDead || _target == null) return;
         if (isStunned) return;
 
@@ -59,7 +60,7 @@ public class Elite2 : MonsterBase
             case State.Attack:
                 if (!_isAttacking)
                 {
-                    StartCoroutine(PoisonLaserAttack());
+                    TryUseSkill();
                 }
                 break;
             case State.Die:
@@ -105,13 +106,15 @@ public class Elite2 : MonsterBase
     private IEnumerator PoisonFieldAttack()
     {
         _isAttacking = true;
+        poisonFieldAttackCoolTime = 10f; // 독성 장판 공격 쿨타임 초기화
+
         if (_target != null && Vector3.Distance(transform.position, _target.position) <= attackRange)
         {
             poisonFieldPrefab.GetComponent<PoisonField>().SetLifeTime(_poisonFieldDuration); // 독성 구름 지속 시간 설정
 
             Vector3 attackPos = _target.position;
 
-            GameObject decalObj = ObjectPool.Instance.GetFromPool(attackDecalPrefab, attackPos,attackDecalPrefab.transform.rotation);
+            GameObject decalObj = ObjectPool.Instance.GetFromPool(attackDecalPrefab, attackPos, attackDecalPrefab.transform.rotation);
             decalObj.GetComponent<AttackDecalEffect>().Play(_poisonFieldDelay, _poisonFieldRadius / 2);
 
             // 장판 생성 후 딜레이동안 대기
@@ -134,7 +137,10 @@ public class Elite2 : MonsterBase
     private IEnumerator PoisonLaserAttack()
     {
         _isAttacking = true;
-        while (laserAttackCount < 5) {
+        poisonFieldAttackCoolTime = 5f; // 독성 레이저 공격 쿨타임 초기화
+
+        while (laserAttackCount < 5)
+        {
             if (_target != null && Vector3.Distance(transform.position, _target.position) <= attackRange)
             {
                 Vector3 spawnPos = transform.position + transform.forward * 40;
@@ -179,19 +185,72 @@ public class Elite2 : MonsterBase
 
     private IEnumerator BulletAttack()
     {
-               _isAttacking = true;
+        _isAttacking = true;
+        bulletAttackCoolTime = 5f; // 총알 공격 쿨타임 초기화
+
         if (_target != null && Vector3.Distance(transform.position, _target.position) <= attackRange)
         {
-            GameObject bullet = ObjectPool.Instance.GetFromPool(eliteBulletPrefab, transform.position, transform.rotation);
-            bullet.transform.rotation = transform.rotation;
-            TurretBullet turretBullet = bullet.GetComponent<TurretBullet>();
-            if (turretBullet != null)
+            while (maxBulletAttackCounter < 2)
             {
-                turretBullet.Initialize(targetTag, attackDamage, bulletLifeTime);
+                for (int i = 0; i < 8; i++)
+                {
+                    float angle = i * 45f;
+                    Quaternion rotation = Quaternion.Euler(0, angle, 0);
+
+                    GameObject bullet = ObjectPool.Instance.GetFromPool(eliteBulletPrefab, transform.position, rotation);
+                    TurretBullet turretBullet = bullet.GetComponent<TurretBullet>();
+                    if (turretBullet != null)
+                    {
+                        turretBullet.Initialize(targetTag, attackDamage, bulletLifeTime);
+                    }
+                }
+                maxBulletAttackCounter++;
+                yield return new WaitForSeconds(attackDelay);
             }
-            yield return new WaitForSeconds(attackDelay);
         }
         _isAttacking = false;
+        maxBulletAttackCounter = 0;
         currentState = State.Move; // 공격 후 다시 추격 상태로 전환
+    }
+
+    private void CoolTimeController()
+    {
+        if (bulletAttackCoolTime > 0)
+            bulletAttackCoolTime -= Time.deltaTime;
+        if (poisonLaserAttackCoolTime > 0)
+            poisonLaserAttackCoolTime -= Time.deltaTime;
+        if (poisonFieldAttackCoolTime > 0)
+            poisonFieldAttackCoolTime -= Time.deltaTime;
+    }
+
+    private void TryUseSkill()
+    {
+        // 사용 가능한 스킬 리스트
+        System.Collections.Generic.List<System.Action> availableSkills = new System.Collections.Generic.List<System.Action>();
+
+        if (bulletAttackCoolTime <= 0)
+        {
+            availableSkills.Add(() => StartCoroutine(BulletAttack()));
+        }
+        if (poisonLaserAttackCoolTime <= 0)
+        {
+            availableSkills.Add(() => StartCoroutine(PoisonLaserAttack()));
+        }
+        if (poisonFieldAttackCoolTime <= 0)
+        {
+            availableSkills.Add(() => StartCoroutine(PoisonFieldAttack()));
+        }
+
+        // 사용 가능한 스킬이 있으면 랜덤으로 선택
+        if (availableSkills.Count > 0)
+        {
+            int randomIndex = Random.Range(0, availableSkills.Count);
+            availableSkills[randomIndex].Invoke();
+        }
+        else
+        {
+            // 모든 스킬이 쿨타임이면 다시 추격
+            currentState = State.Move;
+        }
     }
 }

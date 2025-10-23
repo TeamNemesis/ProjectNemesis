@@ -69,7 +69,6 @@ public class TurretBullet : PoolableObject
             if (damageable != null)
             {
                 damageable.TakeDamage(damage);
-                Debug.Log("Player Hit! Damage: " + damage);
             }
 
            

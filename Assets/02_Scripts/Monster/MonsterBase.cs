@@ -13,13 +13,14 @@ public enum MonsterSize
 public class MonsterBase : CharacterModelBase
 {
     [Header("Base Stats")]
-    [SerializeField] protected int attackDamage = 10;
+    [SerializeField] protected float attackDamage = 10;
     [SerializeField] protected float attackRange = 2f;
     [SerializeField] protected float detectionRange = 10f;
     [SerializeField] protected float attackDelay = 0.5f;
     [SerializeField] protected float originalSpeed = 10f;
     [SerializeField] public string targetTag = Constants.TAG_PLAYER;
     [SerializeField] protected MonsterSize monsterSize = MonsterSize.SMALL;
+    [SerializeField] protected int cost;
 
 
     #region ³Ë¹é
