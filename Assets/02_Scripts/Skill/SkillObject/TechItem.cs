@@ -13,14 +13,14 @@ public class TechItem : MonoBehaviour
   
     #region 스킬 습득
 
-    private SkillBase _TechCompany;
+    private TechSelectPackType _TechCompany;
     /// <summary>
     /// 스킬 습득
     /// </summary>
     public void GetSkill()
     {
         SkillChoose skillchoose = GetComponent<SkillChoose>();
-        _TechCompany = GameManager.Instance.skillManager.skill_Four;
+        _TechCompany = TechSelectPackType.Company4;
         // 회사 지정
         skillchoose.SetSkillCompany(_TechCompany);
         skillchoose.SetBtn();

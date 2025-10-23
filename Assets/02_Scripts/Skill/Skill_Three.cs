@@ -18,7 +18,7 @@ public class Skill_Three : SkillBase
         {
             // 중력자 무기
             case 30:
-                ActiveTech skillAttack = new Skill_Three_Attck(choosedSkill);
+                ActiveTech skillAttack = new Skill_Three_Attack(choosedSkill);
                 if (_skillManager.attackTech != null)
                 {
 
@@ -80,43 +80,5 @@ public class Skill_Three : SkillBase
 
 }
 
-public class Skill_Three_Attck : ActiveTech
-{
 
-    public override void Activate(SkillManager skillManager, Player player)
-    {
-        base.Activate(skillManager, player);
-        //player.AttackHit += HitEnemy;
-        Drone[] drones = player.transform.GetComponentsInChildren<Drone>();
-        if (drones.Length > 0)
-        {
-            foreach (Drone drone in drones)
-            {
-                drone.Attack += HitEnemy;
-            }
-        }
-    }
-    public override void Deactivate(Player player, bool isSameSkill)
-    {
-        base.Deactivate(player, isSameSkill);
-        //player.AttackHit -= HitEnemy;
-        Drone[] drones = player.transform.GetComponentsInChildren<Drone>();
-        if (drones.Length > 0)
-        {
-            foreach (Drone drone in drones)
-            {
-                drone.Attack -= HitEnemy;
-            }
-        }
-    }
-    public override void HitEnemy(Transform transform)
-    {
-        Debug.Log("Use " + _skillData.skillIdx);
 
-    }
-
-    public Skill_Three_Attck(SkillData choosedSkill) : base(choosedSkill)
-    {
-
-    }
-}

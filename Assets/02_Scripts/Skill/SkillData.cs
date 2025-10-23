@@ -94,7 +94,7 @@ public class SkillData
         _skillScriptEn = data.skillScriptEn;
         _skillValueScript = data.skillValueScript;
         _skillValueScriptEn = data.skillValueScriptEn;
-        _skillImage = Resources.Load<Sprite>($"whtjdgh1931/SkillImage/TechImage{_skillIdx}");
+        _skillImage = Resources.Load<Sprite>($"SkillImage/TechImage_{skillIdx}");
         _skillCompanyName = data.skillCompany;
         _skillTag = data.skillTag;
         _skillMaxLevel = data.skillMaxLevel ?? 0;
@@ -128,9 +128,9 @@ public class SkillData
     /// <summary>
     /// 스킬을 현재 가지고 있는 스킬 리스트에서 삭제
     /// </summary>
-    public void RemoveList(bool isSameSkill)
+    public void RemoveList(bool isAnotherSkill)
     {
-        if (isSameSkill)
+        if (!isAnotherSkill)
         {
             // 같은 스킬이면 리턴
             return;
@@ -174,9 +174,6 @@ public class skillJsonData
 
     [JsonProperty("영문 적용수치 설명텍스트")]
     public string skillValueScriptEn;
-
-    [JsonProperty("이미지경로")]
-    public string skillImagePath;
 
     [JsonProperty("기업분류")]
     public string skillCompany;
