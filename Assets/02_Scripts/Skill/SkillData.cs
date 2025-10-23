@@ -94,7 +94,7 @@ public class SkillData
         _skillScriptEn = data.skillScriptEn;
         _skillValueScript = data.skillValueScript;
         _skillValueScriptEn = data.skillValueScriptEn;
-        _skillImage = Resources.Load<Sprite>($"whtjdgh1931/SkillImage/TechImage{_skillIdx}");
+        _skillImage = Resources.Load<Sprite>($"SkillImage/TechImage_{skillIdx}");
         _skillCompanyName = data.skillCompany;
         _skillTag = data.skillTag;
         _skillMaxLevel = data.skillMaxLevel ?? 0;
@@ -174,9 +174,6 @@ public class skillJsonData
 
     [JsonProperty("영문 적용수치 설명텍스트")]
     public string skillValueScriptEn;
-
-    [JsonProperty("이미지경로")]
-    public string skillImagePath;
 
     [JsonProperty("기업분류")]
     public string skillCompany;
