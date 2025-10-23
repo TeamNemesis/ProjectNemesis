@@ -30,5 +30,6 @@ public class TechSelectPack : InteractableObject
     public override void StartInteract(Transform subject)
     {
         _techItem.GetSkill(_packType);
+        OnInteracted?.Invoke(this);
     }
 }

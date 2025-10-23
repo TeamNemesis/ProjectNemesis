@@ -126,6 +126,6 @@ public abstract class CharacterModelBase : PoolableObject, IDamageable
         OnDieEvent?.Invoke();
 
         isDead = true;
-        ObjectPool.Instance.ReleaseToPool(gameObject);
+        GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
     }
 }

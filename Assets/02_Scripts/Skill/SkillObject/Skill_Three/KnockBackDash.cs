@@ -56,6 +56,6 @@ public class KnockBackDash : AreaDamageBase,IInitializePoolable
     IEnumerator ReleaseObjectCoroutine()
     {
         yield return new WaitForSeconds(Constants.SKILL_REMAIN);
-        ObjectPool.Instance.ReleaseToPoolByInterface(this);
+        GameManager.Instance.PoolManager.ReleaseToPoolByInterface(this);
     }
 }

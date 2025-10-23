@@ -63,6 +63,6 @@ public class AttackDecalEffect : PoolableObject
         countCircle.transform.localScale = Vector3.one;
 
         // BaseCircle ÇÁ¸®ÆÕ ¹ÝÈ¯
-        ObjectPool.Instance.ReleaseToPool(gameObject);
+        GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
     }
 }

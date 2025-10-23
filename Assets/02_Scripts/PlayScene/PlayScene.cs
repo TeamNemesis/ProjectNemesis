@@ -33,7 +33,10 @@ public class PlayScene : MonoBehaviour
     private void Start()
     {
         _player.Initialize();
-        if(MapController != null) 
+        if (MapController == null)
+        {
+            return;
+        }
         _mapController.Initialize();
     }
 

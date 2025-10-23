@@ -25,7 +25,7 @@ public class ExplosionDeath : AreaDamageBase
     public IEnumerator DestroyExplosionCoroutine(float time, PoolableObject gameObject)
     {
         yield return new WaitForSeconds(time);
-        ObjectPool.Instance.ReleaseToPoolByInterface(gameObject);
+        GameManager.Instance.PoolManager.ReleaseToPoolByInterface(gameObject);
     }
 
 }

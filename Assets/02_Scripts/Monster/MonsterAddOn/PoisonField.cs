@@ -89,7 +89,7 @@ public class PoisonField : PoolableObject
     private IEnumerator LifeTimeCoroutine()
     {
         yield return new WaitForSeconds(lifeTime);
-        ObjectPool.Instance.ReleaseToPool(gameObject);
+        GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
     }
 
     private void SetScale ()

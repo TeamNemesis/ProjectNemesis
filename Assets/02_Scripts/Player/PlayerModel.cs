@@ -66,4 +66,9 @@ public class PlayerModel : CharacterModelBase
         OnHpChangedEventPlay(currentHealth); // 초기 체력 이벤트 발행
         debuffHandler.InitializePlayer();
     }
+
+    public void OnPlayerHit(Transform monsterTransform)
+    {
+        PlayerHit?.Invoke(monsterTransform);
+    }
 }

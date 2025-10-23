@@ -52,7 +52,7 @@ public class RedShift : AreaDamageBase, IInitializePoolable
         if (other.gameObject.layer == LayerMask.NameToLayer(Constants.LAYER_MASK_WALL))
         {
             // 벽에 닿으면 파동 종료
-            ObjectPool.Instance.ReleaseToPoolByInterface(this);
+            GameManager.Instance.PoolManager.ReleaseToPoolByInterface(this);
         }
 
 

@@ -53,7 +53,7 @@ public class EliteBullet : PoolableObject
     private IEnumerator LifeTimeCoroutine()
     {
         yield return new WaitForSeconds(lifeTime);
-        ObjectPool.Instance.ReleaseToPool(gameObject);
+        GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
     }
 
 
@@ -78,7 +78,7 @@ public class EliteBullet : PoolableObject
                 StopCoroutine(lifeTimeCoroutine);
                 lifeTimeCoroutine = null;
             }
-            ObjectPool.Instance.ReleaseToPool(gameObject);
+            GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
         }
         else
         {
@@ -87,7 +87,7 @@ public class EliteBullet : PoolableObject
                 StopCoroutine(lifeTimeCoroutine);
                 lifeTimeCoroutine = null;
             }
-            ObjectPool.Instance.ReleaseToPool(gameObject);
+            GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
         }
     }
 }

@@ -58,6 +58,6 @@ public class SquareDecalEffect : PoolableObject
         countSquare.transform.localScale = Vector3.one;
 
         // ÇÁ¸®ÆÕ ¹ÝÈ¯
-        ObjectPool.Instance.ReleaseToPool(gameObject);
+        GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
     }
 }
