@@ -9,7 +9,8 @@ public class asdasda : MonoBehaviour
     void Start()
     {
         Transform objectPoint = cube.transform.Find("Point");
-        Instantiate(cube,new Vector3(spawnPoint.position.x-objectPoint.position.x, spawnPoint.position.y-objectPoint.position.y, spawnPoint.position.z- objectPoint.position.z), spawnPoint.rotation);
+        Instantiate(cube,new Vector3(spawnPoint.position.x-objectPoint.position.x, spawnPoint.position.y-objectPoint.position.y, spawnPoint.position.z- objectPoint.position.z), spawnPoint.rotation,spawnPoint);
+        spawnPoint.Rotate(0, 45, 0);
     }
 
     // Update is called once per frame
