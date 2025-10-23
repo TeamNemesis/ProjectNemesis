@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class RoomController : MonoBehaviour
+public class MonsterController : MonoBehaviour
 {
     [SerializeField] MonsterSpanwer _monsterSpawner;    // 몬스터 소환기
 

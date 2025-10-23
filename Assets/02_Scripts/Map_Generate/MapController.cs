@@ -10,7 +10,7 @@ using UnityEngine;
 /// </summary>
 public class MapController : MonoBehaviour
 {
-    [SerializeField] RoomController _roomController;
+    [SerializeField] MonsterController _roomController;
     [SerializeField] RoomSpawner _roomSpawner;
     [SerializeField] DoorSpawner _doorSpawner;
     [SerializeField] DoorDecider _doorDecider;

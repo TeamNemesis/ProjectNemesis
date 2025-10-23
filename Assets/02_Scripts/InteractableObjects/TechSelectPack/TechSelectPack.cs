@@ -11,5 +11,11 @@ public enum TechSelectPackType
 
 public class TechSelectPack : MonoBehaviour
 {
-    
+    [SerializeField] TechSelectPackInteractor _interactor;
+    [SerializeField] TechSelectPackType _packType;
+
+    public void Initialize(TechSelectPackType packType)
+    {
+        _packType = packType;
+    }
 }

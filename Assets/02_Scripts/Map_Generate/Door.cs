@@ -31,7 +31,7 @@ public class Door : MonoBehaviour
     //IInteractableManager _interactableManager;
     //IResourceManager _resourceManager; // ResourceManager 인터페이스(게임의 ResourceManager 래퍼)
 
-    bool _isInitialized = false;
+    //bool _isInitialized = false;
 
     /// <summary>
     /// 초기화: 반드시 RoomInfo를 주입해야 함.
@@ -62,7 +62,7 @@ public class Door : MonoBehaviour
         // 시각 적용: RoomInfo(ID) -> ResourceManager -> DoorView
         //ApplyVisualsForRoomInfo(_roomInfo);
 
-        _isInitialized = true;
+        //_isInitialized = true;
     }
 
     /// <summary>
@@ -134,6 +134,6 @@ public class Door : MonoBehaviour
 
         //_doorView?.ClearPreview();
         _roomInfo = null;
-        _isInitialized = false;
+        //_isInitialized = false;
     }
 }
