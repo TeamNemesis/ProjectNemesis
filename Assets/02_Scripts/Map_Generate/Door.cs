@@ -33,6 +33,15 @@ public class Door : MonoBehaviour
 
     //bool _isInitialized = false;
 
+    // 임시
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.F3))
+        {
+            OnRewardSelectionCompleted();
+        }
+    }
+
     /// <summary>
     /// 초기화: 반드시 RoomInfo를 주입해야 함.
     /// 의존성 매니저는 주입하지 않으면 GameManager.Instance에서 가져옵니다(기존 호환성 유지).
@@ -49,8 +58,9 @@ public class Door : MonoBehaviour
         // 상태 주입
         _roomInfo = info;
 
-        // DoorInteractor와 안전하게 구독/등록
-        _doorInteractor.SetRoomInfo(_roomInfo);
+        // 방에 정보 넘겨주고 상호작용 비활성화(초기 상태)
+        _doorInteractor.SetRoomInfo(info);
+        _doorInteractor.ToggleInteraction(false);
 
         // 방지: 중복 구독
         _doorInteractor.OnInteracted -= OnDoorInteracted;
@@ -59,8 +69,9 @@ public class Door : MonoBehaviour
         // 등록
         //_interactableManager?.Register(_doorInteractor);
 
-        // 시각 적용: RoomInfo(ID) -> ResourceManager -> DoorView
-        //ApplyVisualsForRoomInfo(_roomInfo);
+        // 뷰에 정보 넘겨주고 뷰 비활성화(초기 상태)
+        _doorView.SetReward(info);
+        _doorView.ToggleReward(false);
 
         //_isInitialized = true;
     }
@@ -101,5 +112,17 @@ public class Door : MonoBehaviour
         //_doorView?.ClearPreview();
         _roomInfo = null;
         //_isInitialized = false;
+    }
+
+    /// <summary>
+    /// 방에서 보상 선택이 완료되었을 때 호출하여
+    /// 상호작용을 다시 활성화하고 보상을 뷰에 표시합니다.
+    /// </summary>
+    public void OnRewardSelectionCompleted()
+    {
+        // 상호작용 활성화
+        _doorInteractor.ToggleInteraction(true);
+        // 뷰에서 보상 보여주기
+        _doorView.ToggleReward(true);
     }
 }

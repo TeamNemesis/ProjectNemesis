@@ -10,6 +10,7 @@ public class DoorInteractor : InteractableObject
     [SerializeField] InteractableType _interactableType = InteractableType.Door;
 
     [SerializeField] RoomInfo _roomInfo;
+    [SerializeField] bool _canInteract = true;
 
     public override Vector3 GuidePoint
     {
@@ -37,6 +38,11 @@ public class DoorInteractor : InteractableObject
             Debug.LogError($"DoorInteractor.StartInteract: RoomInfo가 null입니다. Door가 올바르게 Initialize 되었는지 확인하세요. (object={name})");
             return;
         }
+        if (!_canInteract)
+        {
+            Debug.Log($"{name} 문은 현재 상호작용할 수 없습니다.");
+            return;
+        }
 
         Debug.Log("문과 상호작용 함: " + name);
         OnInteracted?.Invoke(this);
@@ -52,5 +58,10 @@ public class DoorInteractor : InteractableObject
         }
         _roomInfo = roomInfo;
         Debug.Log($"{name}: {_roomInfo.RoomType} 방 정보로 문 설정됨");
+    }
+
+    public void ToggleInteraction(bool canInteract)
+    {
+        _canInteract = canInteract;
     }
 }
