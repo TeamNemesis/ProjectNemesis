@@ -74,10 +74,10 @@ public class InteractionController : MonoBehaviour
                 }
                 break;
             case InteractableType.TechSelectPack:
-                if(interactable is TechSelectPackInteractor tsp)
+                if(interactable is TechSelectPack tsp)
                 {
-                    // 이 부분은 스킬 선택을 담당한 팀원의 방식대로 상호작용하는 쪽인 (TechSelectPackInteractor)에서 구현함
-                    Debug.Log("기술 선택 팩과 상호작용함(구현은 TechSelectPackInteractor에서 처리)");
+                    // 이 부분은 스킬 선택을 담당한 팀원의 방식대로 상호작용하는 쪽인 (TechSelectPack)에서 구현함
+                    Debug.Log("기술 선택 팩과 상호작용함(구현은 TechSelectPack에서 처리)");
                 }
                 break;
 

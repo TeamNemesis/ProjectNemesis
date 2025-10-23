@@ -65,40 +65,6 @@ public class Door : MonoBehaviour
         //_isInitialized = true;
     }
 
-    /// <summary>
-    /// RoomInfo에 따라 DoorView에 미리보기/아이콘/텍스트 등을 적용한다.
-    /// 실제 asset lookup은 ResourceManager가 담당.
-    /// </summary>
-    //void ApplyVisualsForRoomInfo(RoomInfo info)
-    //{
-    //    if (_doorView == null) return;
-    //    if (_resourceManager == null)
-    //    {
-    //        Debug.LogWarning("Door.ApplyVisualsForRoomInfo: ResourceManager not provided.");
-    //        return;
-    //    }
-
-    //    // 기본 룸 데이터 적용
-    //    var roomData = _resourceManager.GetRoomData(info.RoomType);
-    //    if (roomData != null)
-    //    {
-    //        _doorView.ApplyRoomDataPreview(roomData);
-    //    }
-    //    else
-    //    {
-    //        _doorView.ClearPreview();
-    //    }
-
-    //    // Normal + TechSelect이면 회사별 테크팩 미리보기 적용(예시)
-    //    if (info.RoomType == RoomType.Normal && info.NormalRoomType == NormalRoomType.TechSelect)
-    //    {
-    //        string companyId = GameManager.Instance?.CompanyManager?.CurrentCompanyId;
-    //        var techCfg = _resourceManager.GetTechPackConfig(companyId) ?? _resourceManager.GetDefaultTechPackConfig();
-    //        if (techCfg != null)
-    //            _doorView.ApplyTechPackPreview(techCfg);
-    //    }
-    //}
-
     // OnInteracted 중계
     void OnDoorInteracted(IInteractable interactable)
     {
