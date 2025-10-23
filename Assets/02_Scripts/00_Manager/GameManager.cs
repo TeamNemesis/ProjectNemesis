@@ -38,7 +38,6 @@ public class GameManager : MonoBehaviour
 
                     _instance.Initialize();
                     
-                    //_instance._skillManger.InitializeSkillManager();
 
                     // 씬 전환시 파괴되지 않도록 설정
                     DontDestroyOnLoad(obj);
@@ -61,7 +60,6 @@ public class GameManager : MonoBehaviour
             DontDestroyOnLoad(gameObject);
         }
 
-        //_resourceManager.Initialize();
 
         if (_player == null)
         {
@@ -85,10 +83,6 @@ public class GameManager : MonoBehaviour
         
     }
 
-    private void Start()
-    {
-        Initialize();
-    }
 
     void Initialize()
     {

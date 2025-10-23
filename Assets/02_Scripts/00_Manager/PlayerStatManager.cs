@@ -229,7 +229,7 @@ public class PlayerStatManager : MonoBehaviour
     {
         _playerHitPercent += plusHitPercent;
     }
-
+    
     /// <summary>
     /// 플레이어 회피율
     /// </summary>
