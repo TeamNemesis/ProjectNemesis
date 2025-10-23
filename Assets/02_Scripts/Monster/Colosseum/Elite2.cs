@@ -114,13 +114,13 @@ public class Elite2 : MonsterBase
 
             Vector3 attackPos = _target.position;
 
-            GameObject decalObj = ObjectPool.Instance.GetFromPool(attackDecalPrefab, attackPos, attackDecalPrefab.transform.rotation);
+            GameObject decalObj = GameManager.Instance.PoolManager.GetFromPool(attackDecalPrefab, attackPos, attackDecalPrefab.transform.rotation);
             decalObj.GetComponent<AttackDecalEffect>().Play(_poisonFieldDelay, _poisonFieldRadius / 2);
 
             // 장판 생성 후 딜레이동안 대기
             yield return new WaitForSeconds(_poisonFieldDelay);
 
-            GameObject poisonObj = ObjectPool.Instance.GetFromPool(poisonFieldPrefab, attackPos, poisonFieldPrefab.transform.rotation);// 플레이어에게 독성 구름 발사
+            GameObject poisonObj = GameManager.Instance.PoolManager.GetFromPool(poisonFieldPrefab, attackPos, poisonFieldPrefab.transform.rotation);// 플레이어에게 독성 구름 발사
             PoisonField poisonField = poisonObj.GetComponent<PoisonField>();
             poisonField.Initialize(targetTag, _poisonFieldDuration, _poisonFieldRadius);
 
@@ -145,7 +145,7 @@ public class Elite2 : MonsterBase
             {
                 Vector3 spawnPos = transform.position + transform.forward * 40;
                 spawnPos.y = 0;
-                GameObject decalobj = ObjectPool.Instance.GetFromPool(squareDecalPrefab, spawnPos, squareDecalPrefab.transform.rotation);
+                GameObject decalobj = GameManager.Instance.PoolManager.GetFromPool(squareDecalPrefab, spawnPos, squareDecalPrefab.transform.rotation);
 
                 decalobj.GetComponent<SquareDecalEffect>().Play(attackDelay, transform, new Vector3(90, 0, 0));
                 yield return new WaitForSeconds(attackDelay);
@@ -197,7 +197,7 @@ public class Elite2 : MonsterBase
                     float angle = i * 45f;
                     Quaternion rotation = Quaternion.Euler(0, angle, 0);
 
-                    GameObject bullet = ObjectPool.Instance.GetFromPool(eliteBulletPrefab, transform.position, rotation);
+                    GameObject bullet = GameManager.Instance.PoolManager.GetFromPool(eliteBulletPrefab, transform.position, rotation);
                     TurretBullet turretBullet = bullet.GetComponent<TurretBullet>();
                     if (turretBullet != null)
                     {

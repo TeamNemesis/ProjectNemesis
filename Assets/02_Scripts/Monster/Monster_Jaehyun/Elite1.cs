@@ -25,7 +25,7 @@ public class Elite1 : MonsterBase
     [SerializeField] private GameObject rangePrefab;
     [SerializeField] private GameObject bladeWavePrefab;
     [SerializeField] private GameObject BulletPrefab;
-    private bool isPattern = false;
+    //private bool isPattern = false;
     private int attackCount = 2;
     private float attackDist = 1f; // 공격 시 전진 거리
 

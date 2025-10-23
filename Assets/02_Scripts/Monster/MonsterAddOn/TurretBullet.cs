@@ -53,7 +53,7 @@ public class TurretBullet : PoolableObject
     private IEnumerator LifeTimeCoroutine()
     {
         yield return new WaitForSeconds(lifeTime);
-        ObjectPool.Instance.ReleaseToPool(gameObject);
+        GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
     }
 
 
@@ -77,7 +77,7 @@ public class TurretBullet : PoolableObject
                 StopCoroutine(lifeTimeCoroutine);
                 lifeTimeCoroutine = null;
             }
-            ObjectPool.Instance.ReleaseToPool(gameObject);
+            GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
         }
         else
         {
@@ -86,7 +86,7 @@ public class TurretBullet : PoolableObject
                 StopCoroutine(lifeTimeCoroutine);
                 lifeTimeCoroutine = null;
             }
-            ObjectPool.Instance.ReleaseToPool(gameObject);
+            GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
         }
     }
 }

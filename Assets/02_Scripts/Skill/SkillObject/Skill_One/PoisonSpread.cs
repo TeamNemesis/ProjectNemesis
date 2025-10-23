@@ -20,7 +20,7 @@ public class PoisonSpread : AreaDamageBase
     public IEnumerator DestroyPoisonSpreadCoroutine()
     {
         yield return new WaitForSeconds(Constants.SKILL_ONE_HITPOISONSPREAD_TIME);
-        ObjectPool.Instance.ReleaseToPoolByInterface(this);
+        GameManager.Instance.PoolManager.ReleaseToPoolByInterface(this);
     }
 
     public GameObject GetGameObject()

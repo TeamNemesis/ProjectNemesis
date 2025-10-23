@@ -31,9 +31,8 @@ public class GameManager : MonoBehaviour
                     _instance._resourceManager = obj.AddComponent<ResourceManager>();
                     _instance._interactableManager = obj.AddComponent<InteractableManager>();
                     _instance._dataManager = obj.AddComponent<DataManager>();
-
                     _instance._playerStatManager = obj.AddComponent<PlayerStatManager>();
-
+                    _instance._poolManager = obj.AddComponent<PoolManager>();
 
                     _instance.Initialize();
                     
@@ -104,6 +103,9 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] PlayerStatManager _playerStatManager; // 플레이어 스탯 매니저
     public PlayerStatManager PlayerStatManager =>_playerStatManager;
+
+    [SerializeField] PoolManager _poolManager;                     // 풀 매니저
+    public PoolManager PoolManager => _poolManager;
 
     /// <summary>
     /// 스킬 매니저

@@ -32,7 +32,7 @@ public class Bullet : PoolableObject
             OnLifeTimeExpired?.Invoke();
         _lifeTimer = 0f;
 
-            ObjectPool.Instance.ReleaseToPool(gameObject);
+            GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
         }
     }
 
@@ -57,13 +57,13 @@ public class Bullet : PoolableObject
     {
         if(other.CompareTag(Constants.TAG_MONSTER))
         {
-            ObjectPool.Instance.ReleaseToPool(gameObject);
+            GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
             MonsterBase monsterBase= other.GetComponent<MonsterBase>();
             monsterBase.TakeDamage(_damage); // 예시로 10의 데미지를 입힘
         }
         else if(other.CompareTag("Environment"))
         {
-            ObjectPool.Instance.ReleaseToPool(gameObject);
+            GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
         }
     }
 }

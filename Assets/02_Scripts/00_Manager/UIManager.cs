@@ -88,7 +88,7 @@ public class UIManager : MonoBehaviour
     {
 
 
-        SkillBtn skillBtn = ObjectPool.Instance.GetFromPool(_skillBtnPrefab, _skillBtnPrefab.transform.position, _skillBtnPrefab.transform.rotation, parentContent).GetComponent<SkillBtn>();
+        SkillBtn skillBtn = GameManager.Instance.PoolManager.GetFromPool(_skillBtnPrefab, _skillBtnPrefab.transform.position, _skillBtnPrefab.transform.rotation, parentContent).GetComponent<SkillBtn>();
         skillBtn.SetSkillInfo(skillData);
         skillBtn.GetComponent<Button>().onClick.AddListener(() => OnClick_SkillListBtn(skillBtn));
 
@@ -117,7 +117,7 @@ public class UIManager : MonoBehaviour
                 {
                     skillBtn.ReleaseObject();
                 }
-                ObjectPool.Instance.ReleaseToPoolByInterface(childPool);
+                GameManager.Instance.PoolManager.ReleaseToPoolByInterface(childPool);
             }
         }
     }
@@ -150,7 +150,7 @@ public class UIManager : MonoBehaviour
 
     public SkillBtn MakeSkillBtn()
     {
-        SkillBtn skillBtn = ObjectPool.Instance.GetFromPool(_skillChooseBtnPrefab, Vector3.zero, _skillChooseBtnPrefab.transform.rotation, _parentPanel.transform).GetComponent<SkillBtn>();
+        SkillBtn skillBtn = GameManager.Instance.PoolManager.GetFromPool(_skillChooseBtnPrefab, Vector3.zero, _skillChooseBtnPrefab.transform.rotation, _parentPanel.transform).GetComponent<SkillBtn>();
         
         return skillBtn;
     }
@@ -175,7 +175,7 @@ public class UIManager : MonoBehaviour
                 {
                     skillBtn.ReleaseObject();
                 }
-                ObjectPool.Instance.ReleaseToPoolByInterface(childPool);
+                GameManager.Instance.PoolManager.ReleaseToPoolByInterface(childPool);
             }
         }
 
@@ -199,7 +199,7 @@ public class UIManager : MonoBehaviour
                 {
                     skillBtn.ReleaseObject();
                 }
-                ObjectPool.Instance.ReleaseToPoolByInterface(childPool);
+                GameManager.Instance.PoolManager.ReleaseToPoolByInterface(childPool);
             }
         }
 

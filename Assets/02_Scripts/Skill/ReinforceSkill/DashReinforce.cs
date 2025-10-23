@@ -45,7 +45,7 @@ public class Skill_One_Dash : ActiveTech
         position.y = 0;
 
 
-        ObjectPool.Instance.GetFromPool(_poisonDashPrefab,position, _poisonDashPrefab.transform.rotation).GetComponent<PoisonDash>().Initialize();
+        GameManager.Instance.PoolManager.GetFromPool(_poisonDashPrefab,position, _poisonDashPrefab.transform.rotation).GetComponent<PoisonDash>().Initialize();
     }
 
 
@@ -94,7 +94,7 @@ public class Skill_Two_Dash : ActiveTech
     {
         Vector3 position = player.transform.position;
         position.y = 0;
-        ObjectPool.Instance.GetFromPool(_dashReinforcePrefab, position, _dashReinforcePrefab.transform.rotation).GetComponent<DashReinforcePrefab>().Initialize();
+        GameManager.Instance.PoolManager.GetFromPool(_dashReinforcePrefab, position, _dashReinforcePrefab.transform.rotation).GetComponent<DashReinforcePrefab>().Initialize();
     }
 
     public Skill_Two_Dash(SkillData skillData) : base(skillData)
@@ -147,7 +147,7 @@ public class Skill_Three_Dash : ActiveTech
             _skillData.skillBaseValue_1 + _skillData.skillLevelValue_1 * _skillData.skillLevel, // 데미지
             _skillData.skillBaseValue_2 + _skillData.skillLevelValue_2 * _skillData.skillLevel); // 넉백 거리
 
-        ObjectPool.Instance.GetFromPool(_knockBackDashPrefab, position, _knockBackDashPrefab.transform.rotation,null, dashData).GetComponent<KnockBackDash>().Initialize();
+        GameManager.Instance.PoolManager.GetFromPool(_knockBackDashPrefab, position, _knockBackDashPrefab.transform.rotation,null, dashData).GetComponent<KnockBackDash>().Initialize();
     }
 
 

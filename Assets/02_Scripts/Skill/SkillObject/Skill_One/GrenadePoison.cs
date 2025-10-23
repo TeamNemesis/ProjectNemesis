@@ -80,6 +80,6 @@ public class GrenadePoison : AreaDotBase
 		{
 				yield return new WaitForSeconds(Constants.SKILL_ONE_SPATTACK_TIME);
 		ReleaseObject();
-				ObjectPool.Instance.ReleaseToPoolByInterface(this);
+				GameManager.Instance.PoolManager.ReleaseToPoolByInterface(this);
 		}
 }

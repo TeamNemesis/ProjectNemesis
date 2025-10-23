@@ -34,7 +34,7 @@ public class PoisonDash : AreaDamageBase
     IEnumerator ReleaseCoroutine()
     {
         yield return new WaitForSeconds(Constants.SKILL_REMAIN);
-        ObjectPool.Instance.ReleaseToPoolByInterface(this);
+        GameManager.Instance.PoolManager.ReleaseToPoolByInterface(this);
     }
 
 
