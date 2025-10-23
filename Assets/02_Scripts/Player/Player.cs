@@ -58,6 +58,7 @@ public class Player : MonoBehaviour
     public PlayerSpecialAttacker SpecialAttacker => _specialAttacker;
     public PlayerAnimator Animator => _animator;
     public PlayerModel playerModel => _playerModel;
+    public PlayerWeaponSet CurrentWeaponSet => _currentWeaponSet;
 
     public Vector2 MoveInput => _moveInput;
     public bool DashPressed => _dashPressed;
