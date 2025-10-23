@@ -85,6 +85,7 @@ public class ObjectPool : MonoBehaviour
     }
 
     /// <summary>
+    /// <summary>
     /// 풀에서 오브젝트 가져오기
     /// </summary>
     public GameObject GetFromPool(string poolName)
@@ -129,7 +130,7 @@ public class ObjectPool : MonoBehaviour
     /// <summary>
     /// 풀에서 오브젝트 가져오기
     /// </summary>
-    public GameObject GetFromPool(PoolableObject poolable, Vector3 position,Quaternion rotation, Transform parentTransform = null, Object data = null)
+    public GameObject GetFromPool(PoolableObject poolable, Vector3 position,Quaternion rotation, Transform parentTransform = null, object data = null)
     {
         GameObject prefabObject = poolable.gameObject;
         if (!availablePools.ContainsKey(prefabObject.name))

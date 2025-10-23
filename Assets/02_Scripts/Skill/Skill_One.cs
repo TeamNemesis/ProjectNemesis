@@ -97,7 +97,7 @@ public class Skill_One : SkillBase
                 //TODO 플레이어 모델에 받는데미지 감소 계수를 추가하여 10퍼센트 
 
                 //TODO 피격시 이벤트에 함수 추가 SpreadPoison
-                player.playerModel.PlayerHit += () => SpreadPoison(player);
+                player.playerModel.PlayerHit += (transform) => SpreadPoison(player);
                 break;
 
             // 진화

@@ -38,13 +38,8 @@ public class PlayerModel : CharacterModelBase
     /// <summary>
     /// 플레이어 피격시
     /// </summary>
-    public event Action PlayerHit;
+    public event Action<Transform> PlayerHit;
 
-    ///// <summary>
-    ///// 플레이어 테스트용 공격력
-    ///// </summary>
-    //public int playerAttack;
-    //public Transform currentTarget;
 
     //public void Update()
     //{
@@ -57,29 +52,12 @@ public class PlayerModel : CharacterModelBase
     //}
 
 
-
-    //public void OnAttackHit()
-    //{
-    //    AttackHit?.Invoke(currentTarget);
-    //}
-
-    //public void OnAttackGrenade()
-    //{
-    //    Debug.Log("Grenade Event");
-    //    GrenadeBomb?.Invoke(new Vector3(1, 0, 0));
-    //}
-
-    public void OnPlayerHit()
-    {
-        PlayerHit?.Invoke();
-    }
     #endregion
 
 
     public override void TakeDamage(float damage)
     {
         base.TakeDamage(damage);
-        PlayerHit?.Invoke();
     }
     public override void Initialize()
     {

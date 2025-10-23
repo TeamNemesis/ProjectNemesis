@@ -1,7 +1,7 @@
 using UnityEngine;
 
 
-public struct RedShiftData
+public class RedShiftData
 {
     public Vector3 moveDir;
     public float moveSpeed;

@@ -8,6 +8,15 @@ public class Skill_Three : SkillBase
     [SerializeField]
     private RedShift _redshiftPrefab;
 
+    public override void InitializeSkill(SkillManager skillManager)
+    {
+        base.InitializeSkill(skillManager);
+        if(_redshiftPrefab == null)
+        {
+            _redshiftPrefab = Resources.Load<RedShift>("Prefabs/Skill/SkillObject/Skill_Three/RedShift");
+        }
+    }
+
     public override void ActivateSkill(SkillData choosedSkill)
     {
 
@@ -41,6 +50,14 @@ public class Skill_Three : SkillBase
             // 절대영역
             case 33:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
+                ActiveTech skillDashAttack = new Skill_Three_Dash(choosedSkill);
+                if (_skillManager.dashTech != null)
+                {
+
+                    _skillManager.dashTech.Deactivate(player, _skillManager.dashTech.skillData.skillIdx != choosedSkill.skillIdx);
+
+                }
+                skillDashAttack.Activate(_skillManager, player);
                 break;
 
 
@@ -95,7 +112,7 @@ public class Skill_Three : SkillBase
     {
         skillManager.Player.playerModel.PlayerHit += MakeRedshift;
     }
-    private void MakeRedshift()
+    private void MakeRedshift(Transform monsterTransform)
     {
 
     }
