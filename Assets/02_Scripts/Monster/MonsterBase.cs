@@ -101,7 +101,6 @@ public class MonsterBase : CharacterModelBase
         }
     }
 
-
     #region ³Ë¹é
 
     private void OnCollisionEnter(Collision collision)

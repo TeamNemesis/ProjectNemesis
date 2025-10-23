@@ -3160,6 +3160,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c6e8c783a2fe7744682b0e87d671e469, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxChargeTime: 3
+  minDamage: 20
+  maxDamage: 150
+  minWidth: 0.05
+  maxWidth: 0.6
+  laserPrefab: {fileID: 4218594688661822969, guid: 6d1137ed252299f41b0dcf9d3e2a4e5c, type: 3}
+  maxDistance: 100
+  wallMask:
+    serializedVersion: 2
+    m_Bits: 256
+  enemyMask:
+    serializedVersion: 2
+    m_Bits: 1024
+  visualLifetime: 0.25
 --- !u!1 &1666556754587289400
 GameObject:
   m_ObjectHideFlags: 0
@@ -15494,6 +15508,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35e16c282bc0ff04184a5747b0cabfe8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  lifeTime: 0.25
+  impactEffectPrefab: {fileID: 0}
 --- !u!120 &7771938446659077545
 LineRenderer:
   serializedVersion: 2
@@ -17127,7 +17143,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _characterController: {fileID: 8109413294957839125}
-  _moveSpeed: 5
+  _moveSpeed: 30
 --- !u!114 &1484459335462496411
 MonoBehaviour:
   m_ObjectHideFlags: 0

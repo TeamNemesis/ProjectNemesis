@@ -19,17 +19,39 @@ public class SkillChoose : MonoBehaviour
     /// </summary>
     private SkillBase _skillCompany;
     public SkillBase skillCompany { get { return _skillCompany; } }
-    public void SetSkillCompany(SkillBase skill)
+    public void SetSkillCompany(TechSelectPackType techCompany)
     {
-        _skillCompany = skill;
-    }
+				switch (techCompany)
+				{
+						case TechSelectPackType.Company1:
+								_skillCompany =  GameManager.Instance.skillManager.skill_One;
+								break;
+						case TechSelectPackType.Company2:
+								_skillCompany = GameManager.Instance.skillManager.skill_Two;
 
-    #region chooseSkill
+								break;
+						case TechSelectPackType.Company3:
+								_skillCompany = GameManager.Instance.skillManager.skill_Three;
 
-    /// <summary>
-    /// 초기 스킬 선택 버튼 생성
-    /// </summary>
-    public void SetBtn()
+								break;
+						case TechSelectPackType.Company4:
+								_skillCompany = GameManager.Instance.skillManager.skill_Four;
+
+								break;
+						case TechSelectPackType.Company5:
+								_skillCompany = GameManager.Instance.skillManager.skill_Five;
+
+								break;
+				}
+
+		}
+
+		#region chooseSkill
+
+		/// <summary>
+		/// 초기 스킬 선택 버튼 생성
+		/// </summary>
+		public void SetBtn()
     {
         // 콜라보 스킬에서 복원을 위한 임시 보관
         SkillBase tempSkillCompany = _skillCompany;
@@ -182,32 +204,32 @@ public class SkillChoose : MonoBehaviour
     #region testBtn
     public void OnClick_DrawSkillCompany()
     {
-        SetSkillCompany(GameManager.Instance.skillManager.DrawSkillCompany());
+        SetSkillCompany(GameManager.Instance.skillManager.GetSkillPackTypes(1)[0]);
     }
 
     public void OnClick_skillCompanyOne()
     {
-        SetSkillCompany(GameManager.Instance.skillManager.skill_One);
+        SetSkillCompany(TechSelectPackType.Company1);
     }
 
     public void OnClick_skillCompanyTwo()
     {
-        SetSkillCompany(GameManager.Instance.skillManager.skill_Two);
+        SetSkillCompany(TechSelectPackType.Company2);
     }
 
     public void OnClick_skillCompanyThree()
     {
-        SetSkillCompany(GameManager.Instance.skillManager.skill_Three);
+        SetSkillCompany(TechSelectPackType.Company3);
     }
 
     public void OnClick_skillCompanyFour()
     {
-        SetSkillCompany(GameManager.Instance.skillManager.skill_Four);
+        SetSkillCompany(TechSelectPackType.Company4);
     }
 
     public void OnClick_skillCompanyFive()
     {
-        SetSkillCompany(GameManager.Instance.skillManager.skill_Five);
+        SetSkillCompany(TechSelectPackType.Company5);
     }
 
     public void OnClick_ListBtn()
@@ -216,5 +238,5 @@ public class SkillChoose : MonoBehaviour
     }
 
 
-    #endregion
+		#endregion
 }

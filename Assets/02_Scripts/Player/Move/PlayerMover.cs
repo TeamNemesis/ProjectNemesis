@@ -27,6 +27,10 @@ public class PlayerMover : MonoBehaviour
 
         // 이동 방향에 속도를 곱하여 최종 이동 벡터 계산
         _characterController.Move(_moveDir * _moveSpeed * Time.deltaTime);
+        // 캐릭터의 y값이 변경되면 안되므로 고정
+        Vector3 fixedPosition = transform.position;
+        fixedPosition.y = 0f;
+        transform.position = fixedPosition;
 
         // 플레이어가 이동 중이라면 회전 처리
         if (_moveDir != Vector3.zero)

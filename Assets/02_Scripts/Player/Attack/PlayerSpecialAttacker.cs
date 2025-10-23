@@ -12,22 +12,34 @@ public abstract class PlayerSpecialAttacker : MonoBehaviour
     public abstract WeaponType WeaponType { get; }
 
     // 생명주기/상태 이벤트
-    public virtual event Action OnSpecialStarted;
-    public virtual event Action<float> OnSpecialChargeUpdated; // ratio 0..1
-    public virtual event Action OnSpecialFired;
+    public event Action OnSpecialStarted;
+    public event Action<float> OnSpecialChargeUpdated; // ratio 0..1
+    public event Action OnSpecialFired;
     public virtual event Action OnSpecialEnded;
     public virtual event Action OnSpecialCancelled;
 
-    protected Player _owner;
+    // 이벤트 레이즈 함수
+    protected virtual void RaiseChargeUpdated(float ratio)
+    {
+        OnSpecialChargeUpdated?.Invoke(ratio);
+    }
+
+    protected virtual void OnSpecialFiredInvoke()
+    {
+        OnSpecialFired?.Invoke();
+        Debug.Log("OnSpecialFired invoked in OnSpecialFiredInvoke.");
+    }
+
+    protected Player _player;
 
     // 상태 플래그
     public bool IsCharging { get; protected set; }
     public bool IsActive { get; protected set; } // 공격 활성(발사중 등)
 
     // owner 주입 (반드시 호출)
-    public virtual void Initialize(Player owner)
+    public virtual void Initialize(Player player)
     {
-        _owner = owner;
+        _player = player;
     }
 
     // 외부에서 호출하는 진입점: 큐잉/쿨타임 로직을 파생클래스에서 구현 가능
@@ -41,7 +53,7 @@ public abstract class PlayerSpecialAttacker : MonoBehaviour
     // 차지 시작 (Input started에서 호출)
     public virtual void StartCharge()
     {
-        if (_owner == null) Debug.LogWarning("PlayerSpecialAttacker: owner is null. Call Initialize first.");
+        if (_player == null) Debug.LogWarning("PlayerSpecialAttacker: owner is null. Call Initialize first.");
         if (IsCharging || IsActive) return;
         IsCharging = true;
         OnSpecialStarted?.Invoke();
@@ -54,6 +66,7 @@ public abstract class PlayerSpecialAttacker : MonoBehaviour
         IsCharging = false;
         Fire();
         OnSpecialFired?.Invoke();
+        Debug.Log("OnSpecialFired invoked in StopChargeAndFire.");
         EndSpecial(); // 기본적으로 발사 후 종료
     }
 

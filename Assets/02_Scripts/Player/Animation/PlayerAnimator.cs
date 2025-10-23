@@ -20,17 +20,26 @@ public class PlayerAnimator : MonoBehaviour
         _animator.SetFloat(Constants.ANIPARAM_MOVESPEED, speed);
     }
 
+    public void OnDash()
+    {
+        _animator.SetTrigger(Constants.ANIPARAM_ONDASH);
+    }
+
     /// <summary>
     /// 플레이어의 일반공격 입력을 받아 공격 애니메이션을 실행하는 함수
     /// </summary>
     public void OnNormalAttack()
     {
         _animator.SetTrigger(Constants.ANIPARAM_ONNORMALATTACK);
-        Debug.Log("PlayerAnimator: OnNormalAttack triggered.");
     }
 
-    public void OnDash()
+    public void OnSpecialAttack()
     {
-        _animator.SetTrigger(Constants.ANIPARAM_ONDASH);
+        _animator.SetTrigger(Constants.ANIPARAM_ONSPECIALATTACK);
+    }
+
+    public void OnSpecialAttackEnd()
+    {
+        _animator.SetTrigger(Constants.ANIPARAM_ONSPECIALATTACKEND);
     }
 }

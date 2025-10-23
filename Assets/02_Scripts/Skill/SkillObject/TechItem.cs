@@ -5,24 +5,17 @@ using UnityEngine;
 [RequireComponent(typeof(SkillChoose))]
 public class TechItem : MonoBehaviour
 { 
-    public void OnTriggerEnter(Collider other)
-    {
-        GetSkill();
-    }
-
-  
     #region 스킬 습득
 
-    private SkillBase _TechCompany;
+    private TechSelectPackType _TechCompany;
     /// <summary>
     /// 스킬 습득
     /// </summary>
-    public void GetSkill()
+    public void GetSkill(TechSelectPackType packType)
     {
         SkillChoose skillchoose = GetComponent<SkillChoose>();
-        _TechCompany = GameManager.Instance.skillManager.skill_Four;
         // 회사 지정
-        skillchoose.SetSkillCompany(_TechCompany);
+        skillchoose.SetSkillCompany(packType);
         skillchoose.SetBtn();
     }
     #endregion

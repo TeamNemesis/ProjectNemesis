@@ -55,29 +55,24 @@ public class Skill_One_Grenade : ActiveTech
 public class Skill_Two_Grenade : ActiveTech
 {
 
-
-    private int originalGrenadeAttack = 100;
+    private float plusDamage;
     public override void Activate(SkillManager skillManager, Player player)
     {
         base.Activate(skillManager, player);
-        #region Test
 
-        // 스킬 효과 적용 (플레이어 유탄 공격력에 접근하여 공격력 추가)
-        GameManager.Instance.PlayerStatManager.AddPlayerGrenadeDamage(originalGrenadeAttack * ((float)_skillData.skillBaseValue_1 + (float)_skillData.skillLevelValue_1 * _skillData.skillLevel));
-        // player.playerAttack = (일반 공격 증가 식)
-        // 공격 적중 시 이벤트에 추가
-
+        // 스킬 효과 적용 (플레이어 일반 공격력에 접근하여 공격력 추가)
+        plusDamage = _skillData.skillBaseValue_1 + _skillData.skillLevelValue_1 * _skillData.skillLevel;
+        GameManager.Instance.PlayerStatManager.AddPlayerGrenadeDamage(plusDamage);
     }
     public override void Deactivate(Player player, bool isSameSkill)
     {
         // 리스트 제거
         base.Deactivate(player, isSameSkill);
-        // 유탄공격력 복귀
-        GameManager.Instance.PlayerStatManager.AddPlayerGrenadeDamage(originalGrenadeAttack * ((float)_skillData.skillBaseValue_1 + (float)_skillData.skillLevelValue_1 * (_skillData.skillLevel - 1)));
 
+        // 공격력 복귀
+        GameManager.Instance.PlayerStatManager.AddPlayerGrenadeDamage(-plusDamage);
 
     }
-    #endregion
 
 
     public Skill_Two_Grenade(SkillData skillData) : base(skillData)

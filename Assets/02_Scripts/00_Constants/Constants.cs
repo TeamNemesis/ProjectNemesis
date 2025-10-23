@@ -129,7 +129,7 @@ public static class Constants
     /// <summary>
     ///  드론 공격력
     /// </summary>
-    public static int DRONE_ATTACK = 2;
+    public static float DRONE_ATTACK = 2;
 
 
     /// <summary>
@@ -198,6 +198,7 @@ public static class Constants
     public static string ANIPARAM_MOVESPEED = "MoveSpeed";
     public static string ANIPARAM_ONNORMALATTACK = "OnNormalAttack";
     public static string ANIPARAM_ONSPECIALATTACK = "OnSpecialAttack";
+    public static string ANIPARAM_ONSPECIALATTACKEND = "OnSpecialAttackEnd";
     public static string ANIPARAM_ONGRENADEATTACK = "OnGrenadeAttack";
     public static string ANIPARAM_ONDASH = "OnDash";
     #endregion

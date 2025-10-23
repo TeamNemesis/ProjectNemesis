@@ -119,7 +119,7 @@ GameObject:
   - component: {fileID: 960190891410523277}
   - component: {fileID: 1068608086915361988}
   m_Layer: 5
-  m_Name: ImageBG
+  m_Name: ValueScriptBg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -502,9 +502,9 @@ GameObject:
   m_Component:
   - component: {fileID: 8443465402625941601}
   - component: {fileID: 7040890571914248361}
-  - component: {fileID: 6760284403962772458}
+  - component: {fileID: 3017384485633890481}
   m_Layer: 5
-  m_Name: Image
+  m_Name: ValueScript
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -537,7 +537,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2824703808427197986}
   m_CullTransparentMesh: 1
---- !u!114 &6760284403962772458
+--- !u!114 &3017384485633890481
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -550,7 +550,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1509,6 +1509,7 @@ MonoBehaviour:
   _listPanel: {fileID: 6590944227003047992}
   _skillImage: {fileID: 2344642068205062086}
   _skillScriptText: {fileID: 82416561226726590}
+  _skillValueScriptText: {fileID: 3017384485633890481}
   _skillLevelText: {fileID: 8309648595576700197}
   _parentContent: {fileID: 6172900564164755599}
   _skillBtnPanel: {fileID: 2131672189545265708}
