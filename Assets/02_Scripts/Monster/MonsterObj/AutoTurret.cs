@@ -3,6 +3,9 @@ using UnityEngine;
 
 public class AutoTurret : MonsterBase
 {
+
+    [SerializeField] float bulletLifeTime = 8f;
+
     [SerializeField]
     private enum State
     {
@@ -14,14 +17,14 @@ public class AutoTurret : MonsterBase
     [SerializeField] private bool _isAttacking = false;
 
     [Header("TurretBulletPrefab"), SerializeField]
-    private GameObject turretBulletPrefab; // ÅÍ·¿ ÃÑ¾Ë ÇÁ¸®Æé
+    private PoolableObject turretbullet; // ÅÍ·¿ ÃÑ¾Ë ÇÁ¸®Æé
 
     [SerializeField]
     private State currentState = State.Idle;
 
     private void Update()
     {
-        if (isDead || player == null) return;
+        if (isDead || _target == null) return;
         if (isStunned) return;
 
         switch (currentState)
@@ -45,7 +48,7 @@ public class AutoTurret : MonsterBase
     private void HandleIdle()
     {
         // ÇÃ·¹ÀÌ¾î¿Í °Å¸®
-        float distance = Vector3.Distance(transform.position, player.position);
+        float distance = Vector3.Distance(transform.position, _target.position);
         if (distance <= attackRange && CanSeePlayer())
         {
             currentState = State.Attack;
@@ -56,14 +59,13 @@ public class AutoTurret : MonsterBase
     {
         _isAttacking = true;
 
-        if (player != null && Vector3.Distance(transform.position, player.position) <= attackRange)
+        if (_target != null && Vector3.Distance(transform.position, _target.position) <= attackRange)
         {
-
-            GameObject bullet = Instantiate(turretBulletPrefab, transform.position + transform.forward, transform.rotation);
+            GameObject bullet = GameManager.Instance.PoolManager.GetFromPool(turretbullet, transform.position, transform.rotation);
             TurretBullet turretBullet = bullet.GetComponent<TurretBullet>();
             if (turretBullet != null)
             {
-                turretBullet.SetDamage(attackDamage);
+                turretBullet.Initialize(targetTag, attackDamage, bulletLifeTime);
             }
             yield return new WaitForSeconds(attackDelay);
         }

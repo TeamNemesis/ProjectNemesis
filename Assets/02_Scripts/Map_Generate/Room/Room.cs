@@ -26,9 +26,10 @@ public enum NormalRoomType
 /// 타입/메타는 RoomDataSO에서 주입받아 InitializeFromRoomData로 설정한다.
 /// 초기화 진입점은 Initialize(RoomInfo) 로 통일된다.
 /// </summary>
-[RequireComponent(typeof(Collider))]
 public class Room : MonoBehaviour
 {
+    [SerializeField] Transform[] _monsterSpawnPoints;
+
     [Header("Door spawn points (setup on prefab)")]
     [SerializeField] protected Transform[] _doorSpawnPointsLeft;
     [SerializeField] protected Transform[] _doorSpawnPointsRight;
@@ -37,6 +38,7 @@ public class Room : MonoBehaviour
     RoomDataSO _roomData; // 런타임에 주입되는 SO 참조
 
     // 구조적 데이터는 프리팹에 보관 (인스펙터에서 볼 수 있음)
+    public Transform[] MonsterSpawnPoints => _monsterSpawnPoints;
     public Transform[] DoorSpawnPointsLeft => _doorSpawnPointsLeft;
     public Transform[] DoorSpawnPointsRight => _doorSpawnPointsRight;
 

@@ -1,26 +1,49 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
-    #region 현재 보유 스킬 리스트
+    [SerializeField]
     private SkillBtn _skillBtnPrefab;
-
     [SerializeField]
     private GameObject _listPanel;
+    #region 현재 보유 스킬 리스트
 
+    /// <summary>
+    /// 스킬 이미지
+    /// </summary>
     [SerializeField]
-    private Text _skillImageText;
+    private Image _skillImage;
+
+    /// <summary>
+    /// 스킬 설명
+    /// </summary>
     [SerializeField]
     private Text _skillScriptText;
+
+    /// <summary>
+    /// 스킬 적용 수치 설명
+    /// </summary>
+    [SerializeField]
+    private Text _skillValueScriptText;
+    
+    /// <summary>
+    /// 스킬 레벨
+    /// </summary>
     [SerializeField]
     private Text _skillLevelText;
 
     [SerializeField]
     private Transform _parentContent;
 
-    public void InitializeManger()
+    /// <summary>
+    /// 보상 선택 이벤트
+    /// </summary>
+    public event Action onRewardSelect;
+
+    public void InitializeManager()
     {
         if (_skillBtnPrefab == null)
         {
@@ -63,7 +86,9 @@ public class UIManager : MonoBehaviour
     /// <param name="parentContent"></param>
     public void MakeSkillBtn(SkillData skillData, Transform parentContent)
     {
-        SkillBtn skillBtn = Instantiate(_skillBtnPrefab, parentContent);
+
+
+        SkillBtn skillBtn = GameManager.Instance.PoolManager.GetFromPool(_skillBtnPrefab, _skillBtnPrefab.transform.position, _skillBtnPrefab.transform.rotation, parentContent).GetComponent<SkillBtn>();
         skillBtn.SetSkillInfo(skillData);
         skillBtn.GetComponent<Button>().onClick.AddListener(() => OnClick_SkillListBtn(skillBtn));
 
@@ -71,8 +96,9 @@ public class UIManager : MonoBehaviour
 
     public void OnClick_SkillListBtn(SkillBtn skillBtn)
     {
-        _skillImageText.text = skillBtn.skillData.skillImagePath;
+        _skillImage.sprite = skillBtn.skillData.skillImagePath;
         _skillScriptText.text = skillBtn.skillData.skillIdx.ToString() + "\n" + skillBtn.skillData.skillScript;
+        _skillValueScriptText.text = skillBtn.skillData.skillValueScript;
         _skillLevelText.text = skillBtn.skillData.skillLevel.ToString() + " / " + skillBtn.skillData.skillMaxLevel.ToString();
     }
 
@@ -83,7 +109,16 @@ public class UIManager : MonoBehaviour
     {
         foreach (Transform child in _parentContent.transform)
         {
-            Destroy(child.gameObject);
+            PoolableObject childPool = child.GetComponent<PoolableObject>();
+            if (childPool != null)
+            {
+                SkillBtn skillBtn = childPool.GetComponent<SkillBtn>();
+                if (skillBtn != null)
+                {
+                    skillBtn.ReleaseObject();
+                }
+                GameManager.Instance.PoolManager.ReleaseToPoolByInterface(childPool);
+            }
         }
     }
     #endregion
@@ -97,31 +132,78 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private SkillBtn _skillChooseBtnPrefab;
 
+    /// <summary>
+    /// 보상창 활성화/비활성화
+    /// </summary>
+    /// <param name="isActive"></param>
     public void SetActiveSkillBtnPanel(bool isActive)
     {
+        // 보상창 활성화 상태
         _skillBtnPanel.SetActive(isActive);
+
+        //보상창이 꺼지면 보상 선택 이벤트 발동
+        if(isActive == false)
+        {
+            onRewardSelect?.Invoke();
+        }
     }
 
     public SkillBtn MakeSkillBtn()
     {
-        return Instantiate(_skillChooseBtnPrefab, _parentPanel.transform);
+        SkillBtn skillBtn = GameManager.Instance.PoolManager.GetFromPool(_skillChooseBtnPrefab, Vector3.zero, _skillChooseBtnPrefab.transform.rotation, _parentPanel.transform).GetComponent<SkillBtn>();
+        
+        return skillBtn;
     }
 
 
     #endregion
-    public void DestroyChildObject(Transform childObject)
+    public void DestroyChildObject(Transform parentObject)
     {
-        foreach (Transform child in childObject.parent)
+        Transform[] children = new Transform[parentObject.childCount];
+        for (int i = 0; i < parentObject.childCount; i++)
         {
-            Destroy(child.gameObject);
+            children[i] = parentObject.GetChild(i);
         }
+
+        foreach (Transform child in children)
+        {
+            PoolableObject childPool = child.GetComponent<PoolableObject>();
+            if (childPool != null)
+            {
+                SkillBtn skillBtn = childPool.GetComponent<SkillBtn>();
+                if (skillBtn != null)
+                {
+                    skillBtn.ReleaseObject();
+                }
+                GameManager.Instance.PoolManager.ReleaseToPoolByInterface(childPool);
+            }
+        }
+
     }
 
-    public void DestroyParentChildObject(Transform parentObject)
+    public void OnClickListExitBtn(Transform content)
     {
-        foreach (Transform child in parentObject)
+        Transform[] children = new Transform[content.childCount];
+        for (int i = 0; i < content.childCount; i++)
         {
-            Destroy(child.gameObject);
+            children[i] = content.GetChild(i);
         }
+        foreach (Transform child in children)
+        {
+            PoolableObject childPool = child.GetComponent<PoolableObject>();
+            Debug.Log(childPool == null);
+            if (childPool != null)
+            {
+                SkillBtn skillBtn = childPool.GetComponent<SkillBtn>();
+                if(skillBtn != null)
+                {
+                    skillBtn.ReleaseObject();
+                }
+                GameManager.Instance.PoolManager.ReleaseToPoolByInterface(childPool);
+            }
+        }
+
+    _listPanel.SetActive(false);
     }
+
 }

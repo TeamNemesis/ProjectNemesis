@@ -2,8 +2,10 @@ using UnityEngine;
 
 public class PlayerHackingDeviceSpecailAttacker : PlayerSpecialAttacker
 {
-    public override void SpecialAttack()
+    public override WeaponType WeaponType => WeaponType.HackingDevice;
+
+    protected override void Fire()
     {
-        Debug.Log("해킹 디바이스 특수 공격!");
+        throw new System.NotImplementedException();
     }
 }

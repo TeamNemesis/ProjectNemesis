@@ -10,6 +10,7 @@ using UnityEngine;
 /// </summary>
 public class MapController : MonoBehaviour
 {
+    [SerializeField] MonsterController _roomController;
     [SerializeField] RoomSpawner _roomSpawner;
     [SerializeField] DoorSpawner _doorSpawner;
     [SerializeField] DoorDecider _doorDecider;
@@ -18,6 +19,11 @@ public class MapController : MonoBehaviour
     [SerializeField] Door[] _currentDoors;
     [SerializeField] int _currentRoomCount = -1;
     [SerializeField] bool _hasLabRoomAppeared = false;
+
+    public Room CurrentRoom => _currentRoom;
+    public Door[] CurrentDoors => _currentDoors;
+    public int CurrentRoomCount => _currentRoomCount;
+    public bool HasLabRoomAppeared => _hasLabRoomAppeared;
 
     public void Initialize()
     {
@@ -58,6 +64,19 @@ public class MapController : MonoBehaviour
 
         // 문 생성 처리
         CreateDoorsForCurrentRoom();
+
+        // 여기서 방 타입별로 스폰할 몬스터 정해주고
+        // 스폰위치 업데이트 해주고 몬스터 스폰해야함.
+        // 지금은 테스트용으로 노말 방에서만 생성
+        
+        if (room.RoomInfo.RoomType == RoomType.Normal)
+        {
+            // 몬스터 스폰위치 갱신
+            _roomController.UpdateMonsterSpawnPoints(room.MonsterSpawnPoints);
+
+            // 몬스터 스폰
+            _roomController.SpawnMonster();
+        }
     }
 
     void UpdateCurrentRoomState(Room room)

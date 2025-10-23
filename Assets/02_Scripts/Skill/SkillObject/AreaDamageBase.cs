@@ -3,8 +3,10 @@ using UnityEngine;
 
 /// <summary>
 /// 영역내에 한번에 효과를 주는 스킬
+/// CheckTarget 구현됨, CheckTarget이 Target에게 ActiveSkill 실행
+/// ActiveSkill 구현 필요
 /// </summary>
-public class AreaDamageBase : MonoBehaviour
+public class AreaDamageBase : PoolableObject
 {
     /// <summary>
     /// 데미지 범위 넓이
@@ -12,9 +14,13 @@ public class AreaDamageBase : MonoBehaviour
     [SerializeField]
     protected float _areaExtent;
     public float areaExtent { get { return _areaExtent; } }
+    public void SetAreaExtent(float areaExtent)
+    {
+        _areaExtent = areaExtent;
+    }
 
     [SerializeField]
-    protected string _checkTargetTag;
+    protected string _checkTargetTag = Constants.TAG_MONSTER;
     public string checkTargetTag { get { return _checkTargetTag; } }
 
     /// <summary>
@@ -33,7 +39,7 @@ public class AreaDamageBase : MonoBehaviour
     {
         
         // 콜라이더 탐색 (필요하다면 레이어마스크 설정)
-        int hitColliders = Physics.OverlapSphereNonAlloc(transform.position, _areaExtent * Constants.SKILL_EXTENT, _results);
+        int hitColliders = Physics.OverlapSphereNonAlloc(transform.position, _areaExtent/2 * Constants.SKILL_EXTENT, _results);
 
 
         for (int i = 0; i < hitColliders; i++)

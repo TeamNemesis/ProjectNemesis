@@ -1,3 +1,4 @@
+using UnityEditor.U2D.Aseprite;
 using UnityEngine;
 
 /// <summary>
@@ -6,7 +7,6 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     private static GameManager _instance;
-
     /// <summary>
     /// 어디에서나 접근 가능한 싱글톤 인스턴스
     /// Instance로 접근시 GameManager가 씬에 없으면 자동으로 생성
@@ -31,11 +31,11 @@ public class GameManager : MonoBehaviour
                     _instance._resourceManager = obj.AddComponent<ResourceManager>();
                     _instance._interactableManager = obj.AddComponent<InteractableManager>();
                     _instance._dataManager = obj.AddComponent<DataManager>();
-                    //_instance._skillManger = obj.AddComponent<SkillManager>();
+                    _instance._playerStatManager = obj.AddComponent<PlayerStatManager>();
+                    _instance._poolManager = obj.AddComponent<PoolManager>();
 
-                    _instance._resourceManager.Initialize();
-                    _instance._dataManager.Initialize(_instance._resourceManager);
-                    //_instance._skillManger.InitializeSkillManager();
+                    _instance.Initialize();
+                    
 
                     // 씬 전환시 파괴되지 않도록 설정
                     DontDestroyOnLoad(obj);
@@ -57,14 +57,18 @@ public class GameManager : MonoBehaviour
             _instance = this;
             DontDestroyOnLoad(gameObject);
         }
-        
-        //_resourceManager.Initialize();
-        
-        if(_skillManger==null)
+
+
+        if (_player == null)
+        {
+            _player = FindAnyObjectByType<Player>();
+        }
+
+        if (_skillManger==null)
         {
             _skillManger = Resources.Load<SkillManager>("Prefabs/Skill/SkillManager");
+        
         }
-        _skillManger.InitializeSkillManager();
 
         if(_uiManager==null)
         {
@@ -73,7 +77,18 @@ public class GameManager : MonoBehaviour
             _uiManager.name = "UIManager";
             
         }
-        _uiManager.InitializeManger();
+
+        
+    }
+
+
+    void Initialize()
+    {
+        _instance._resourceManager.Initialize();
+        _instance._dataManager.Initialize(_instance._resourceManager);
+        _skillManger.InitializeSkillManager();
+        _uiManager.InitializeManager();
+
     }
 
     [SerializeField] ResourceManager _resourceManager;      // 리소스 매니저
@@ -85,6 +100,12 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] DataManager _dataManager;             // 데이터 매니저
     public DataManager DataManager => _dataManager;
+
+    [SerializeField] PlayerStatManager _playerStatManager; // 플레이어 스탯 매니저
+    public PlayerStatManager PlayerStatManager =>_playerStatManager;
+
+    [SerializeField] PoolManager _poolManager;                     // 풀 매니저
+    public PoolManager PoolManager => _poolManager;
 
     /// <summary>
     /// 스킬 매니저
@@ -105,6 +126,6 @@ public class GameManager : MonoBehaviour
     /// 플레이어(Test용)
     /// </summary>
     [SerializeField]
-    private PlayerModel _player;
-    public PlayerModel player { get { return _player; } }
+    private Player _player;
+    public Player player { get { return _player; } }
 }
