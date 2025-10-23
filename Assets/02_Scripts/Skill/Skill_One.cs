@@ -75,6 +75,7 @@ public class Skill_One : SkillBase
                         _skillManager.dashTech.Deactivate(player, _skillManager.dashTech.skillData.skillIdx != choosedSkill.skillIdx);
                     }
                 }
+                skillDash.Activate(_skillManager, player);
                 break;
 
             // 넘치는 활력

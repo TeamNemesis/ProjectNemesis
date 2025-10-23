@@ -14,9 +14,13 @@ public class AreaDamageBase : PoolableObject
     [SerializeField]
     protected float _areaExtent;
     public float areaExtent { get { return _areaExtent; } }
+    public void SetAreaExtent(float areaExtent)
+    {
+        _areaExtent = areaExtent;
+    }
 
     [SerializeField]
-    protected string _checkTargetTag;
+    protected string _checkTargetTag = Constants.TAG_MONSTER;
     public string checkTargetTag { get { return _checkTargetTag; } }
 
     /// <summary>

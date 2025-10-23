@@ -7,7 +7,6 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     private static GameManager _instance;
-
     /// <summary>
     /// 어디에서나 접근 가능한 싱글톤 인스턴스
     /// Instance로 접근시 GameManager가 씬에 없으면 자동으로 생성
