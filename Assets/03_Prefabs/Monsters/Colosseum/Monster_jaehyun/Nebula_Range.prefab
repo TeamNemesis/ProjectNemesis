@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4135230202131502490}
   - component: {fileID: 2549349633549196899}
-  - component: {fileID: -1411698976914003086}
   m_Layer: 0
   m_Name: Nebula_Range
   m_TagString: Untagged
@@ -88,15 +87,3 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &-1411698976914003086
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5498369803362873499}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8ca8ad88e1d211a418812671cc26c43e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
