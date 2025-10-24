@@ -7,7 +7,7 @@ public class TechUpgradePackInteractor : InteractableObject
 
     public override Vector3 GuidePoint => _guidePoint.position;
 
-    public override InteractableType InteractableType => InteractableType.TechUpgradePack;
+    public override InteractableType InteractableType => InteractableType.Reward;
 
     public override event Action<IInteractable> OnInteracted;
 

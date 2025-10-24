@@ -3,14 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum InteractableType
-{
-    Door,
-    TechSelectPack,
-    TechUpgradePack,
-    Weapon,
-}
-
 /// <summary>
 /// 상호작용 가능한 인터페이스
 /// 이 인터페이스를 구현하는 오브젝트는 플레이어와 상호작용할 수 있습니다.
