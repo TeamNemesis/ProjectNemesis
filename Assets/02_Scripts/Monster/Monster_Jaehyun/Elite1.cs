@@ -65,7 +65,7 @@ public class Elite1 : MonsterBase
             case State.Attack:
                 if (!_isAttacking)
                 {
-                    StartCoroutine(Pattern1Routine());
+                    TryUseSkill();
                 }
                 break;
             case State.Die:
@@ -119,6 +119,8 @@ public class Elite1 : MonsterBase
     /// </summary>
     private IEnumerator Pattern1Routine()
     {
+
+        Pattern1CoolTime = 7f;
         _isAttacking = true;
 
         _meshRenderer = GetComponent<MeshRenderer>();
@@ -210,6 +212,8 @@ public class Elite1 : MonsterBase
 
     private IEnumerator Pattern2Routine()   // 패턴2 모든 루틴
     {
+
+        Pattern2CoolTime = 7f;
         _isAttacking = true;
         // 플레이어 방향 계산
         Vector3 dirToPlayer = (_target.position - transform.position).normalized;
@@ -340,6 +344,7 @@ public class Elite1 : MonsterBase
         if (Pattern1CoolTime <= 0)
         {
             availableSkills.Add(Pattern1Routine());
+
         }
         if (Pattern2CoolTime <= 0)
         {
