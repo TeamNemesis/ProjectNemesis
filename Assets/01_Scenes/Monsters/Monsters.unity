@@ -170,6 +170,59 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &616897380 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4937689450907890533, guid: a67148d98238ea146aac255bda110338, type: 3}
+  m_PrefabInstance: {fileID: 1719423337}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &616897388
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 616897380}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cfdf5bbd811ee845918ddf5a2fe2adf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _maxHealth: 100
+  _currentHealth: 0
+  _moveSpeed: 5
+  isStunned: 0
+  isPushed: 0
+  isBindned: 0
+  isDead: 0
+  debuffHandler: {fileID: 0}
+  maxEliteHealth: 0
+  attackDamage: 10
+  attackRange: 2
+  detectionRange: 1000
+  attackDelay: 0.5
+  originalSpeed: 10
+  targetTag: Player
+  monsterSize: 2
+  cost: 0
+  _knockBackDamage: 0
+  player: {fileID: 0}
+  agent: {fileID: 0}
+  _target: {fileID: 0}
+  _isAttacking: 0
+  _box_Length: 3
+  _box_Height: 3
+  _box_Width: 3
+  teleportAttackRange: 3
+  teleportAttackDelay: 1
+  bladeAttackkDelay: 1
+  currentState: 0
+  _meshRenderer: {fileID: 0}
+  attackDecal: {fileID: 4171473842588414540, guid: e1cdcf7ba7eac0445a237bf39c1ee586, type: 3}
+  bladeWavePrefab: {fileID: 433645739003782474, guid: 32e7cbcd5d4ee5c498508d5492575fdb, type: 3}
+  BulletPrefab: {fileID: 433645739003782474, guid: 32e7cbcd5d4ee5c498508d5492575fdb, type: 3}
+  Pattern1CoolTime: 7
+  Pattern2CoolTime: 7
+  isPhase2: 0
 --- !u!1 &696697994
 GameObject:
   m_ObjectHideFlags: 0
@@ -626,10 +679,14 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: c113175f3177d714ea32d3acc1f5fd6a, type: 2}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 449800753681612904, guid: a67148d98238ea146aac255bda110338, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4937689450907890533, guid: a67148d98238ea146aac255bda110338, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 616897388}
   m_SourcePrefab: {fileID: 100100000, guid: a67148d98238ea146aac255bda110338, type: 3}
 --- !u!1 &1831675209
 GameObject:
