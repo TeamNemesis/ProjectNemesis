@@ -2800,6 +2800,7 @@ GameObject:
   - component: {fileID: 5520305485140868107}
   - component: {fileID: 1860472316525542710}
   - component: {fileID: 6361144909577431792}
+  - component: {fileID: 6870660061997548358}
   m_Layer: 8
   m_Name: New Sci fi Barrel (4)
   m_TagString: Untagged
@@ -2875,6 +2876,29 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!136 &6870660061997548358
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4218992027092256930}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.30677706
+  m_Height: 1.2
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.4, z: 0}
 --- !u!1 &4298995338005117873
 GameObject:
   m_ObjectHideFlags: 0
@@ -4065,6 +4089,7 @@ GameObject:
   - component: {fileID: 6303192646164146299}
   - component: {fileID: 9209981560427881664}
   - component: {fileID: 6761230454075861175}
+  - component: {fileID: 4554854027835967039}
   m_Layer: 8
   m_Name: New Sci fi Barrel (2)
   m_TagString: Untagged
@@ -4140,6 +4165,29 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!136 &4554854027835967039
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5870996384123450207}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.306777
+  m_Height: 1.2
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.4, z: 0}
 --- !u!1 &5958610295589683994
 GameObject:
   m_ObjectHideFlags: 0
@@ -4151,6 +4199,7 @@ GameObject:
   - component: {fileID: 4316674276009790046}
   - component: {fileID: 8874572830412529556}
   - component: {fileID: 5094146551373843070}
+  - component: {fileID: 5656304336005057268}
   m_Layer: 8
   m_Name: New Sci fi Barrel
   m_TagString: Untagged
@@ -4226,6 +4275,29 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!136 &5656304336005057268
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5958610295589683994}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.306777
+  m_Height: 1.2
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.4, z: 0}
 --- !u!1 &6070558717216977961
 GameObject:
   m_ObjectHideFlags: 0
@@ -6926,6 +6998,7 @@ GameObject:
   - component: {fileID: 6568022454775299420}
   - component: {fileID: 1878180113552994518}
   - component: {fileID: 6135196184787390153}
+  - component: {fileID: 4320514256746066867}
   m_Layer: 8
   m_Name: New Sci fi Barrel (3)
   m_TagString: Untagged
@@ -7001,3 +7074,26 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!136 &4320514256746066867
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9185406671884693560}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.30677703
+  m_Height: 1.2
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.4, z: 0}
