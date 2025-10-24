@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 public class TechSelectPackInteractor : RewardInteractableObject
@@ -14,6 +15,7 @@ public class TechSelectPackInteractor : RewardInteractableObject
     public override Vector3 GuidePoint => _guidePoint.position;
 
     public override event Action<IInteractable> OnInteracted;
+    public override event Action OnRewardGiven;
 
     public void Initialize(TechSelectPackType packType)
     {
@@ -24,5 +26,10 @@ public class TechSelectPackInteractor : RewardInteractableObject
     {
         _techItem.GetSkill(_packType);
         OnInteracted?.Invoke(this);
+    }
+
+    protected override IEnumerator RewardCoroutine()
+    {
+        throw new NotImplementedException();
     }
 }

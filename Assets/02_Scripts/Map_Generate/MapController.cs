@@ -37,6 +37,7 @@ public class MapController : MonoBehaviour
 
         _roomSpawner.Initialize();
         _doorDecider.Initialize();
+        _monsterController.Initialize();
     }
 
     void OnDoorInteracted(IInteractable interactable)
