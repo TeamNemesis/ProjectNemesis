@@ -38,6 +38,10 @@ public class MonsterBase : CharacterModelBase
     {
         return _target;
     }
+    public int GetCost()
+    {
+        return cost;
+    }
     public void SetTarget(Transform target)
     {
         _target = target;
@@ -125,7 +129,7 @@ public class MonsterBase : CharacterModelBase
     public void KnockBackEnemy(Vector3 pushDirection, float damage, float knockBackDistance)
     {
         TakeDamage(damage * GameManager.Instance.PlayerStatManager.totalMultiDamage);
-        if(monsterSize == MonsterSize.BIG)
+        if (monsterSize == MonsterSize.BIG)
         {
             return;
         }
