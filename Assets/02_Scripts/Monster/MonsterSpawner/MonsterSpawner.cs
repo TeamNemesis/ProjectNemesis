@@ -51,7 +51,7 @@ public class MonsterSpawner : MonoBehaviour
     }
 
     /// <summary>
-    /// 몬스터 스폰 시작 (외부에서 호출)
+    /// 몬스터 스폰 시작
     /// </summary>
     public void StartSpawn()
     {
@@ -60,18 +60,14 @@ public class MonsterSpawner : MonoBehaviour
             return;
         }
 
-        // 랜덤 몬스터 생성
         List<MonsterSpawnInfo> monsters = GenerateRandomMonsters();
 
-        // 웨이브로 분할
         List<List<MonsterSpawnInfo>> waves = DivideIntoWaves(monsters);
 
-        // 웨이브 리스트 초기화 및 추가
         waitingWaves.Clear();
         currentWaveIndex = 0;
         waitingWaves = waves;
 
-        // 첫 번째 웨이브 시작
         StartNextWave();
     }
 
@@ -83,7 +79,6 @@ public class MonsterSpawner : MonoBehaviour
         List<MonsterSpawnInfo> monsters = new List<MonsterSpawnInfo>();
         int currentTotalCost = 0;
 
-        // 몬스터 프리팹에서 코스트 정보 미리 추출
         List<MonsterSpawnInfo> availableMonsters = new List<MonsterSpawnInfo>();
         foreach (var prefab in monsterPrefabs)
         {
@@ -195,7 +190,7 @@ public class MonsterSpawner : MonoBehaviour
             // 랜덤 스폰 위치 선택
             Transform spawnPos = spawnPositions[Random.Range(0, spawnPositions.Count)];
 
-            GameObject spawnedMonster = GameManager.Instance.PoolManager.GetFromPool( monsterInfo.prefab, spawnPos.position, spawnPos.rotation);
+            GameObject spawnedMonster = GameManager.Instance.PoolManager.GetFromPool(monsterInfo.prefab, spawnPos.position, spawnPos.rotation);
 
             activeMonsters.Add(spawnedMonster);
 
