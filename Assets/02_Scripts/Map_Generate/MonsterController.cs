@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class MonsterController : MonoBehaviour
 {
-    [SerializeField] MonsterSpanwer _monsterSpawner;    // 몬스터 소환기
+    //[SerializeField] MonsterSpanwer _monsterSpawner;    // 몬스터 소환기
 
     [SerializeField] int _roomCost;     // 이번 방에 소환 가능한 몬스터 코스트
     [SerializeField] int _waveCost;     // 이번 웨이브에 소환 가능한 몬스터 코스트
@@ -71,7 +71,7 @@ public class MonsterController : MonoBehaviour
               randIndex = Random.Range(0, _spawnPoints.Length);
             } while (usedIndices.Contains(randIndex));
             usedIndices.Add(randIndex);
-            _monsterSpawner.SpawnMonster(_monsterToSpawn[i], _spawnPoints[randIndex].position);
+            //_monsterSpawner.SpawnMonster(_monsterToSpawn[i], _spawnPoints[randIndex].position);
         }
     }
 

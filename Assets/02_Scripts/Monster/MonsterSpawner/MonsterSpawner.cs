@@ -1,32 +1,234 @@
-using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class MonsterSpanwer : MonoBehaviour
+public class MonsterSpawner : MonoBehaviour
 {
-    public event Action<MonsterBase> OnMonsterSpawned;
-    public event Action OnMonsterDied;
+    [Header("Monster Prefabs"), SerializeField]
+    private List<PoolableObject> monsterPrefabs = new List<PoolableObject>(6);
 
-    public void SpawnMonster(MonsterBase monster, Vector3 spawnPos)
+    [Header("Spawn Settings")]
+    // 방의 최대 스폰 포인트
+    private int maxSpawnPoint;
+
+    int consecutiveFailures = 10; // 연속 실패 횟수
+
+    private List<Transform> spawnPositions;
+    private const int MAX_WAVE_POINTS = 30;
+    private List<GameObject> activeMonsters = new List<GameObject>(); // 현재 필드에 있는 몬스터 리스트
+    private List<List<MonsterSpawnInfo>> waitingWaves = new List<List<MonsterSpawnInfo>>(); // 대기 중인 웨이브 리스트
+    private int currentWaveIndex = 0; // 현재 웨이브 인덱스
+    private bool isWaveActive = false; // 현재 웨이브 진행 중인지 체크
+    
+    private class MonsterSpawnInfo
     {
-        // 오브젝트 풀링
-        Instantiate(monster, spawnPos, Quaternion.identity);
-        monster.Initialize();
-        // 확인용 이벤트 해제 한번
-        // monster.OndDieEvent가 있는지 확인 후 해제
-        monster.OnDieEvent -= RaiseMonsterDie;
-        monster.OnDieEvent += RaiseMonsterDie;
-        OnMonsterSpawned?.Invoke(monster);
+        public PoolableObject prefab;
+        public int cost;
+
+        public MonsterSpawnInfo(PoolableObject prefab, int cost)
+        {
+            this.prefab = prefab;
+            this.cost = cost;
+        }
     }
 
-    public void SpawnBoss(MonsterBase bossMonster, Vector3 spawnPos)
+    /// <summary>
+    /// 설정 후 즉시 스폰 시작
+    /// </summary>
+    public void InitializeAndSpawn(int maxPoint, List<Transform> positions)
     {
-        // Instantiate
-        Instantiate(bossMonster, spawnPos, Quaternion.identity);
-        OnMonsterSpawned?.Invoke(bossMonster);
+        SpawnerSetting(maxPoint, positions);
+        StartSpawn();
     }
 
-    void RaiseMonsterDie()
+    /// <summary>
+    /// 외부에서 최대 스폰 포인트와 스폰 위치를 설정하는 메서드
+    /// </summary>
+    public void SpawnerSetting(int maxPoint, List<Transform> positions)
     {
-        OnMonsterDied?.Invoke();
+        maxSpawnPoint = maxPoint;
+        spawnPositions = positions;
+    }
+
+    /// <summary>
+    /// 몬스터 스폰 시작
+    /// </summary>
+    public void StartSpawn()
+    {
+        if (monsterPrefabs == null)
+        {
+            return;
+        }
+
+        List<MonsterSpawnInfo> monsters = GenerateRandomMonsters();
+
+        List<List<MonsterSpawnInfo>> waves = DivideIntoWaves(monsters);
+
+        waitingWaves.Clear();
+        currentWaveIndex = 0;
+        waitingWaves = waves;
+
+        StartNextWave();
+    }
+
+    /// <summary>
+    /// 최대 스폰 포인트를 채울 때까지 랜덤 몬스터 생성
+    /// </summary>
+    private List<MonsterSpawnInfo> GenerateRandomMonsters()
+    {
+        List<MonsterSpawnInfo> monsters = new List<MonsterSpawnInfo>();
+        int currentTotalCost = 0;
+
+        List<MonsterSpawnInfo> availableMonsters = new List<MonsterSpawnInfo>();
+        foreach (var prefab in monsterPrefabs)
+        {
+            MonsterBase monsterBase = prefab.GetComponent<MonsterBase>();
+            if (monsterBase != null)
+            {
+                availableMonsters.Add(new MonsterSpawnInfo(prefab, monsterBase.GetCost()));
+            }
+        }
+
+        if (availableMonsters.Count == 0)
+        {
+            return monsters;
+        }
+
+        // 최대 스폰 포인트를 채울 때까지 랜덤 선택
+        while (currentTotalCost < maxSpawnPoint)
+        {
+            MonsterSpawnInfo randomMonster = availableMonsters[Random.Range(0, availableMonsters.Count)];
+
+            if (currentTotalCost + randomMonster.cost <= maxSpawnPoint)
+            {
+                monsters.Add(randomMonster);
+                currentTotalCost += randomMonster.cost;
+                consecutiveFailures = 0; // 성공 시 리셋
+            }
+            else
+            {
+                consecutiveFailures++;
+                // 10번 연속 실패하면 포기
+                if (consecutiveFailures >= 10)
+                {
+                    break;
+                }
+            }
+        }
+        return monsters;
+    }
+
+    /// <summary>
+    /// 몬스터 리스트를 30포인트 단위의 웨이브로 분할
+    /// </summary>
+    private List<List<MonsterSpawnInfo>> DivideIntoWaves(List<MonsterSpawnInfo> monsters)
+    {
+        // 대기 웨이브 리스트
+        List<List<MonsterSpawnInfo>> waves = new List<List<MonsterSpawnInfo>>();
+
+        // 현재 웨이브 정보들
+        List<MonsterSpawnInfo> currentWave = new List<MonsterSpawnInfo>();
+        int currentWavePoint = 0;
+
+        foreach (var monster in monsters)
+        {
+            // 현재 웨이브에 추가했을 때 30을 초과하면 새 웨이브 시작
+            if (currentWavePoint + monster.cost > MAX_WAVE_POINTS && currentWave.Count > 0)
+            {
+                waves.Add(currentWave);
+                currentWave = new List<MonsterSpawnInfo>();
+                currentWavePoint = 0;
+            }
+
+            currentWave.Add(monster);
+            currentWavePoint += monster.cost;
+        }
+
+        // 마지막 웨이브 추가
+        if (currentWave.Count > 0)
+        {
+            waves.Add(currentWave);
+        }
+
+        Debug.Log($"총 {waves.Count}개의 웨이브로 분할됨.");
+        return waves;
+    }
+
+    /// <summary>
+    /// 다음 웨이브 시작
+    /// </summary>
+    private void StartNextWave()
+    {
+        // 모든 웨이브 완료시
+        if (currentWaveIndex >= waitingWaves.Count)
+        {
+            Debug.Log("모든 웨이브 완료");
+            return;
+        }
+
+        List<MonsterSpawnInfo> currentWave = waitingWaves[currentWaveIndex];
+        currentWaveIndex++;
+        isWaveActive = true;
+
+        Debug.Log($"웨이브 {currentWaveIndex} 시작 남은 웨이브: {waitingWaves.Count - currentWaveIndex}");
+        SpawnWave(currentWave);
+    }
+
+    /// <summary>
+    /// 웨이브의 몬스터들을 스폰
+    /// </summary>
+    private void SpawnWave(List<MonsterSpawnInfo> wave)
+    {
+        if (spawnPositions == null || spawnPositions.Count == 0)
+        {
+            Debug.LogError("스폰 위치가 설정 요망");
+            return;
+        }
+
+        foreach (var monsterInfo in wave)
+        {
+            // 랜덤 스폰 위치 선택
+            Transform spawnPos = spawnPositions[Random.Range(0, spawnPositions.Count)];
+
+            GameObject spawnedMonster = GameManager.Instance.PoolManager.GetFromPool(monsterInfo.prefab, spawnPos.position, spawnPos.rotation);
+
+            activeMonsters.Add(spawnedMonster);
+
+            // 몬스터에 Die 이벤트 연결
+            CharacterModelBase characterModel = spawnedMonster.GetComponent<CharacterModelBase>();
+            if (characterModel != null)
+            {
+                characterModel.OnDieEvent += () => OnMonsterDeath(spawnedMonster);
+            }
+        }
+    }
+
+    /// <summary>
+    /// 몬스터 사망 시 호출
+    /// </summary>
+    private void OnMonsterDeath(GameObject monster)
+    {
+        if (activeMonsters.Contains(monster))
+        {
+            activeMonsters.Remove(monster);
+        }
+
+        // 모든 몬스터가 죽었는지 체크
+        if (activeMonsters.Count == 0 && isWaveActive)
+        {
+            isWaveActive = false;
+
+            // 다음 웨이브 시작
+            StartCoroutine(StartNextWaveWithDelay(2f));
+        }
+    }
+
+    /// <summary>
+    /// 딜레이 후 다음 웨이브 시작
+    /// </summary>
+    private IEnumerator StartNextWaveWithDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        StartNextWave();
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 /// 몬스터와 플레이어 부모 클래스
 /// </summary>
 [RequireComponent(typeof(DebuffHandler))]
-public abstract class CharacterModelBase : MonoBehaviour, IDamageable
+public abstract class CharacterModelBase : PoolableObject, IDamageable
 {
     [SerializeField]
     protected int _maxHealth = 100;
@@ -127,5 +127,6 @@ public abstract class CharacterModelBase : MonoBehaviour, IDamageable
 
         isDead = true;
         GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
+        OnDieEvent = null;
     }
 }
