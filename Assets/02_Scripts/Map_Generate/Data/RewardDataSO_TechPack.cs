@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "RewardDataSO", menuName = "ScriptableObjects/Reward/RewardDataSO_TechPack")]
+[CreateAssetMenu(fileName = "TechSelectPack", menuName = "ScriptableObjects/Reward/RewardDataSO_TechPack")]
 public class RewardDataSO_TechPack : RewardDataSO
 {
     [SerializeField] TechSelectPackType _techPackType;

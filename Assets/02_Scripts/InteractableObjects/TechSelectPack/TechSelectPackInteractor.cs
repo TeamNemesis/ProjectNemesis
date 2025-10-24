@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class TechSelectPack : RewardInteractableObject
+public class TechSelectPackInteractor : RewardInteractableObject
 {
     [SerializeField] Transform _guidePoint;
     [SerializeField] TechItem _techItem;
