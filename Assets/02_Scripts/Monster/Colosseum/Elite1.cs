@@ -19,9 +19,10 @@ public class Elite1 : MonsterBase
     [SerializeField] private float _box_Width = 3;
 
     [Header("Elite Stats")]
-    [SerializeField] private float teleportAttackRange = 3f; // 텔포 공격 범위   
+    [SerializeField] private float teleportAttackRange = 4.5f; // 텔포 공격 범위   
     [SerializeField] private float teleportAttackDelay = 1f; // 텔포 공격 딜레이
     [SerializeField] private float bladeAttackkDelay = 1f;
+    [SerializeField] int stopDistance = 1;
 
     [SerializeField]
     private State currentState = State.Idle;
@@ -32,7 +33,7 @@ public class Elite1 : MonsterBase
     [SerializeField] private PoolableObject BulletPrefab;
 
     private int attackCount = 2;
-    private float attackDist = 1f; // 공격 시 전진 거리
+    private float attackDist = 2f; // 공격 시 전진 거리
 
     [Header("CoolTimes")]
     [SerializeField] private float Pattern1CoolTime = 7f;
@@ -219,7 +220,6 @@ public class Elite1 : MonsterBase
         Vector3 dirToPlayer = (_target.position - transform.position).normalized;
 
         // 플레이어에서 일정 거리 떨어진 곳 까지 대쉬
-        int stopDistance = 3;
         Vector3 dashTarget = _target.position - dirToPlayer * stopDistance;
 
         // 대쉬 실행
