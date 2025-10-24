@@ -6,6 +6,7 @@ public class PlayScene : MonoBehaviour
     [SerializeField] Player _player;                               // 플레이어
     [SerializeField] PlayerInputHandler _inputHandler;             // 플레이어 입력 핸들러
     [SerializeField] MapController _mapController;                 // 맵 컨트롤러
+    [SerializeField] PlaySceneView _playSceneView;                 // 플레이 씬 뷰
 
     public MapController MapController => _mapController;
 
@@ -27,19 +28,35 @@ public class PlayScene : MonoBehaviour
         _inputHandler.OnSpecialAttackInputCanceled += _player.HandleSpecialCanceled;
         _inputHandler.OnInteractInput += _player.ExecuteInteraction;
 
-        // PlayScene.Awake
+        // PlaySceneView
+        GameManager.Instance.CurrencyManager.OnGoldChanged += _playSceneView.UpdateGoldText;
+        GameManager.Instance.CurrencyManager.OnChromeChanged += _playSceneView.UpdateChromeText;
     }
 
     private void Start()
     {
+        if (_player == null)
+        {
+            Debug.LogError("플레이어가 할당되지 않았습니다!");
+            return;
+        }
         _player.Initialize();
         Debug.Log("플레이어 할당");
         GameManager.Instance.skillManager.SetPlayer(_player);
+
         if (MapController == null)
         {
+            Debug.LogError("맵 컨트롤러가 할당되지 않았습니다!");
             return;
         }
         _mapController.Initialize();
+
+        if( _playSceneView == null)
+        {
+            Debug.LogError("PlaySceneView가 할당되지 않았습니다!");
+            return;
+        }
+        _playSceneView.Initialize();
     }
 
     private void Update()

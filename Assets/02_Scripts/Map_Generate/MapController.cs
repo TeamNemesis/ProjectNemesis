@@ -10,7 +10,7 @@ using UnityEngine;
 /// </summary>
 public class MapController : MonoBehaviour
 {
-    [SerializeField] MonsterController _monsterController;
+    [SerializeField] MonsterController _roomController;
     [SerializeField] RoomSpawner _roomSpawner;
     [SerializeField] DoorSpawner _doorSpawner;
     [SerializeField] DoorDecider _doorDecider;
@@ -71,11 +71,16 @@ public class MapController : MonoBehaviour
         
         if (room.RoomInfo.RoomType == RoomType.Normal)
         {
-            // 몬스터 스폰위치 갱신
-            _monsterController.UpdateMonsterSpawnPoints(room.MonsterSpawnPoints);
-
+            int roomCost = _currentRoomCount * 10; // 예시: 방 번호에 비례하는 비용
             // 몬스터 스폰
-            _monsterController.SpawnMonster();
+            NormalRoom normalRoom = room as NormalRoom;
+            if (normalRoom == null)
+            {
+                Debug.LogError("OnRoomSpawned: Current room is not a NormalRoom");
+                return;
+            }
+            Transform[] spawnPoints = normalRoom.MonsterSpawnPoints;
+            _roomController.SpawnMonster(roomCost, spawnPoints);
         }
     }
 

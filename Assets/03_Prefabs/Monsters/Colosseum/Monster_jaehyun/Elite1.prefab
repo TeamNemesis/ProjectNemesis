@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8252112449825942464}
   - component: {fileID: 5224870231659672871}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Square
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -102,9 +102,9 @@ GameObject:
   - component: {fileID: 449800753681612904}
   - component: {fileID: 4796715043323606666}
   - component: {fileID: 18153062945425533}
-  m_Layer: 0
-  m_Name: Elite1 1
-  m_TagString: Untagged
+  m_Layer: 10
+  m_Name: Elite1
+  m_TagString: Monster
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -156,7 +156,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 5477ee67e82ec974e852e7fe8228170d, type: 2}
+  - {fileID: 2100000, guid: 82c1ad15f2112894e9635578246de46a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -227,6 +227,10 @@ MonoBehaviour:
   attackDelay: 0.2
   originalSpeed: 10
   targetTag: Player
+  monsterSize: 2
+  cost: 0
+  _knockBackDamage: 0
+  player: {fileID: 0}
   agent: {fileID: 0}
   _target: {fileID: 0}
   _isAttacking: 0
@@ -234,10 +238,6 @@ MonoBehaviour:
   _box_Height: 3
   _box_Width: 3
   currentState: 0
-  _meshRenderer: {fileID: 0}
-  rangePrefab: {fileID: 5498369803362873499, guid: 0636baa617011a44999006788cf9e4cb, type: 3}
-  bladeWavePrefab: {fileID: 2049525802618513020, guid: dfd167a7bb5f25c43a878ad5e54fb8af, type: 3}
-  BulletPrefab: {fileID: 3236603345888462030, guid: 2a1acc53e1c6c654c88ff263a3ce3295, type: 3}
 --- !u!195 &4796715043323606666
 NavMeshAgent:
   m_ObjectHideFlags: 0

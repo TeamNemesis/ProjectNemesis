@@ -19,7 +19,9 @@ public class MonsterSpawner : MonoBehaviour
     private List<List<MonsterSpawnInfo>> waitingWaves = new List<List<MonsterSpawnInfo>>(); // 대기 중인 웨이브 리스트
     private int currentWaveIndex = 0; // 현재 웨이브 인덱스
     private bool isWaveActive = false; // 현재 웨이브 진행 중인지 체크
-    
+
+    public List<GameObject> ActiveMonsters => activeMonsters;
+
     private class MonsterSpawnInfo
     {
         public PoolableObject prefab;
