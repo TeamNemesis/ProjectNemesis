@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class MonsterController : MonoBehaviour
@@ -7,6 +8,13 @@ public class MonsterController : MonoBehaviour
 
     [SerializeField] int _spawnPointsCount = 15;      // 소환 위치 개수
 
+    public event Action OnAllMonsterDefeated;
+
+    public void Initialize()
+    {
+        _monsterSpawner.OnAllWavesCompleted += AllMonsterDefeated;
+    }
+
     /// <summary>
     /// 일반 잡몹 소환
     /// </summary>
@@ -14,5 +22,10 @@ public class MonsterController : MonoBehaviour
     {
         List<Transform> tempList = new List<Transform>(monsterSpawnPoints);
         _monsterSpawner.InitializeAndSpawn(roomCost, tempList);
+    }
+
+    public void AllMonsterDefeated()
+    {
+        OnAllMonsterDefeated?.Invoke();
     }
 }

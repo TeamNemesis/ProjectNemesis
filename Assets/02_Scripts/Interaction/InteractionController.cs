@@ -73,11 +73,10 @@ public class InteractionController : MonoBehaviour
                     Debug.Log(d.RoomInfo.RoomType + " 방으로 가는 문과 상호작용 이벤트 발행됨");
                 }
                 break;
-            case InteractableType.TechSelectPack:
-                if(interactable is TechSelectPack tsp)
+            case InteractableType.Reward:
+                if(interactable is RewardInteractableObject rewardObj)
                 {
-                    // 이 부분은 스킬 선택을 담당한 팀원의 방식대로 상호작용하는 쪽인 (TechSelectPack)에서 구현함
-                    Debug.Log("기술 선택 팩과 상호작용함(구현은 TechSelectPack에서 처리)");
+                    Debug.Log("보상 상호작용 오브젝트와 상호작용함");
                 }
                 break;
 
@@ -105,9 +104,7 @@ public class InteractionController : MonoBehaviour
                     else Debug.LogWarning("Interactable is not a UnityEngine.Object, cannot Destroy it directly.");
                 }
                 break;
-            case InteractableType.TechSelectPack:
-                break;
-            case InteractableType.TechUpgradePack:
+            case InteractableType.Reward:
                 break;
             case InteractableType.Weapon:
                 break;

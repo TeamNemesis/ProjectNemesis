@@ -214,3 +214,48 @@ public static class Constants
 
     #endregion
 }
+
+public enum TechSelectPackType
+{
+    Company1,
+    Company2,
+    Company3,
+    Company4,
+    Company5,
+}
+
+public enum RoomType
+{
+    Start,
+    Normal,
+    Lab,
+    Colosseum,
+    Shop,
+    Boss,
+}
+
+public enum NormalRoomType
+{
+    Credit,
+    Heal,
+    Chrome,
+    TechSelect,
+    TechUpgrade,
+}
+
+public enum RewardType
+{
+    Credit,
+    HealPack,
+    Chrome,
+    TechSelectPack,
+    TechUpgradePack,
+    MutantPack,
+}
+
+public enum InteractableType
+{
+    Door,
+    Reward,
+    Weapon,
+}
