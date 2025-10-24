@@ -33,6 +33,8 @@ public class PlayScene : MonoBehaviour
     private void Start()
     {
         _player.Initialize();
+        Debug.Log("플레이어 할당");
+        GameManager.Instance.skillManager.SetPlayer(_player);
         if (MapController == null)
         {
             return;

@@ -65,9 +65,13 @@ public abstract class SkillBase : MonoBehaviour
         }
         Debug.Log("skill Initialize");
         ReadJsonFile();
-        player = GameManager.Instance.player;
         _skillManager = skillManager;
         _skillNum = 0;
+    }
+
+    public virtual void SetPlayer(Player player)
+    {
+        this.player = _skillManager.player;
     }
 
     public void ReadJsonFile()

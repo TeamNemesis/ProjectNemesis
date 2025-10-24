@@ -13,6 +13,7 @@ public class DebuffHandler : MonoBehaviour
     private CharacterModelBase character;
     private NavMeshAgent agent;
     private float originalSpeed;
+    private float originalDamage;
     private MonsterBase monster;
 
     /// <summary>
@@ -28,6 +29,7 @@ public class DebuffHandler : MonoBehaviour
         this.agent = agent;
         originalSpeed = agent.speed;
         monster = character.GetComponent<MonsterBase>();
+        originalDamage = monster.GetAttackDamage();
 
     }
     public void InitializePlayer()
@@ -67,6 +69,16 @@ public class DebuffHandler : MonoBehaviour
             return new DebuffData(Constants.DEBUFF_SLOW, duration, 1 - slowValue / 100);
         }
 
+        /// <summary>
+        /// 약화 제작 함수
+        /// </summary>
+        /// <param name="duration">약화 지속시간</param>
+        /// <param name="weakValue">약화 수치%</param>
+        /// <returns></returns>
+        public static DebuffData CreateWeaken(float duration = 5f, float weakValue = 30f)
+        {
+            return new DebuffData(Constants.DEBUFF_WEAKEN, duration, 1 - weakValue / 100);
+        }
 
         /// <summary>
         /// 독 제작 함수
@@ -211,6 +223,8 @@ public class DebuffHandler : MonoBehaviour
                     }
                     existing.effectRoutine = StartCoroutine(BindCoroutine(newDebuff.debuffDuration));
                 }
+
+
             }
             OnDebuff?.Invoke(this);
             return;
@@ -237,6 +251,14 @@ public class DebuffHandler : MonoBehaviour
                 if (agent != null)
                 {
                     agent.speed = originalSpeed * active.totalValue;
+                }
+                break;
+
+            // 약화
+            case Constants.DEBUFF_WEAKEN:
+                if (monster != null)
+                {
+                    monster.SetAttackDamage(originalDamage * active.totalValue);
                 }
                 break;
 
@@ -282,6 +304,13 @@ public class DebuffHandler : MonoBehaviour
                 if (agent != null)
                 {
                     agent.speed = originalSpeed;
+                }
+                break;
+            // 약화
+            case Constants.DEBUFF_WEAKEN:
+                if (monster != null)
+                {
+                    monster.SetAttackDamage(originalDamage);
                 }
                 break;
             default:
@@ -509,6 +538,13 @@ public class DebuffHandler : MonoBehaviour
                     if (agent != null)
                     {
                         agent.speed = originalSpeed;
+                    }
+                    break;
+
+                case Constants.DEBUFF_WEAKEN:
+                    if (monster != null)
+                    {
+                        monster.SetAttackDamage(originalDamage);
                     }
                     break;
 

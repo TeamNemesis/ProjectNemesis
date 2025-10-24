@@ -6,8 +6,6 @@ using UnityEngine;
 /// </summary>
 public class Skill_One_Grenade : ActiveTech
 {
-
-
     /// <summary>
     /// ÂøÅº ÁöÁ¡ µ¶ ÇÁ¸®ÆÕ
     /// </summary>
@@ -76,6 +74,66 @@ public class Skill_Two_Grenade : ActiveTech
 
 
     public Skill_Two_Grenade(SkillData skillData) : base(skillData)
+    {
+    }
+}
+
+/// <summary>
+/// Gear À¯Åº °­È­
+/// </summary>
+public class Skill_Three_Grenade: ActiveTech
+{
+    public override void Activate(SkillManager skillManager, Player player)
+    {
+        base.Activate(skillManager, player);
+    }
+
+    public override void Deactivate(Player player, bool isAnotherSkill)
+    {
+        base.Deactivate(player, isAnotherSkill);
+    }
+
+    public Skill_Three_Grenade(SkillData skillData) : base(skillData)
+    {
+    }
+}
+
+/// <summary>
+/// GridForge À¯Åº °­È­
+/// </summary>
+public class Skill_Four_Grenade : ActiveTech
+{
+    public override void Activate(SkillManager skillManager, Player player)
+    {
+        base.Activate(skillManager, player);
+    }
+
+    public override void Deactivate(Player player, bool isAnotherSkill)
+    {
+        base.Deactivate(player, isAnotherSkill);
+    }
+
+    public Skill_Four_Grenade(SkillData skillData) : base(skillData)
+    {
+    }
+}
+
+/// <summary>
+/// Lux Á¦¾à À¯Åº °­È­
+/// </summary>
+public class Skill_Five_Grenade : ActiveTech
+{
+    public override void Activate(SkillManager skillManager, Player player)
+    {
+        base.Activate(skillManager, player);
+    }
+
+    public override void Deactivate(Player player, bool isAnotherSkill)
+    {
+        base.Deactivate(player, isAnotherSkill);
+    }
+
+    public Skill_Five_Grenade(SkillData skillData) : base(skillData)
     {
     }
 }

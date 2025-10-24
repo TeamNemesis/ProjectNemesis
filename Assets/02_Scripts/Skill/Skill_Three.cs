@@ -38,13 +38,27 @@ public class Skill_Three : SkillBase
             // 소용돌이
             case 31:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
+                ActiveTech SkillGrenade = new Skill_Three_Grenade(choosedSkill);
+                if (_skillManager.bombTech != null)
+                {
 
+                    _skillManager.bombTech.Deactivate(player, _skillManager.bombTech.skillData.skillIdx != choosedSkill.skillIdx);
+
+                }
+                SkillGrenade.Activate(_skillManager, player);
                 break;
 
             // 반동
             case 32:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
+                ActiveTech SkillSPAttack = new Skill_Three_SPAttack(choosedSkill);
+                if (_skillManager.skillTech != null)
+                {
 
+                    _skillManager.skillTech.Deactivate(player, _skillManager.skillTech.skillData.skillIdx != choosedSkill.skillIdx);
+
+                }
+                SkillSPAttack.Activate(_skillManager, player);
                 break;
 
             // 절대영역
@@ -110,7 +124,7 @@ public class Skill_Three : SkillBase
 
     private void ActivateRedShift(SkillData skill)
     {
-        skillManager.Player.playerModel.PlayerHit += MakeRedshift;
+        skillManager.player.playerModel.PlayerHit += MakeRedshift;
     }
     private void MakeRedshift(Transform monsterTransform)
     {

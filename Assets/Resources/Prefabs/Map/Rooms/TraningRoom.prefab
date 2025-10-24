@@ -1087,6 +1087,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96cb30745f93fc04ea9b128fc7d071d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _monsterSpawnPoints: []
   _doorSpawnPointsLeft:
   - {fileID: 3477641080582484682}
   - {fileID: 605347061084821205}
@@ -1095,10 +1096,6 @@ MonoBehaviour:
   - {fileID: 4385322778648596453}
   - {fileID: 3308077109767072933}
   - {fileID: 2788284564035509054}
-  _roomName: startDoor
-  _roomChance: 1
-  _roomType: 0
-  _doorPosForStartRoom: {fileID: 0}
 --- !u!1 &6835593521788022635
 GameObject:
   m_ObjectHideFlags: 0
