@@ -1,23 +1,16 @@
 using System;
 using UnityEngine;
 
-public enum TechSelectPackType
-{
-    Company1,
-    Company2,
-    Company3,
-    Company4,
-    Company5,
-}
-
-public class TechSelectPack : InteractableObject
+public class TechSelectPack : RewardInteractableObject
 {
     [SerializeField] Transform _guidePoint;
     [SerializeField] TechItem _techItem;
+
+    [Header("----- 읽기 전용 -----")]
     [SerializeField] TechSelectPackType _packType;
 
     public TechSelectPackType PackType => _packType;
-    public override InteractableType InteractableType => InteractableType.TechSelectPack;
+    public override InteractableType InteractableType => InteractableType.Reward;
     public override Vector3 GuidePoint => _guidePoint.position;
 
     public override event Action<IInteractable> OnInteracted;

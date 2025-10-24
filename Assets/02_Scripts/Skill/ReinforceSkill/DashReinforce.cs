@@ -12,7 +12,7 @@ public class Skill_One_Dash : ActiveTech
     [SerializeField]
     private PoisonDash _poisonDashPrefab;
 
-
+    private PoisonDashData _poisonDashData;
     /// <summary>
     /// 대쉬 실행시 실행할 액션
     /// </summary>
@@ -27,7 +27,8 @@ public class Skill_One_Dash : ActiveTech
         }
         // 공격 적중 시 이벤트에 추가
         base.Activate(skillManager, player);
-
+        _poisonDashData = new PoisonDashData(player, _skillData.skillBaseValue_1 + _skillData.skillLevelValue_1 * _skillData.skillLevel,
+            _skillData.skillBaseValue_2 + _skillData.skillLevelValue_2 * _skillData.skillLevel);
         _DashTry = () => ActiveTry(player);
         player.OnDashStarted += _DashTry;
     }
@@ -44,8 +45,7 @@ public class Skill_One_Dash : ActiveTech
         Vector3 position = player.transform.position;
         position.y = 0;
 
-
-        GameManager.Instance.PoolManager.GetFromPool(_poisonDashPrefab,position, _poisonDashPrefab.transform.rotation).GetComponent<PoisonDash>().Initialize();
+        GameManager.Instance.PoolManager.GetFromPool(_poisonDashPrefab,position, _poisonDashPrefab.transform.rotation,player.transform,_poisonDashData).GetComponent<PoisonDash>().Initialize();
     }
 
 
@@ -152,6 +152,47 @@ public class Skill_Three_Dash : ActiveTech
 
 
     public Skill_Three_Dash(SkillData skillData) : base(skillData)
+    {
+    }
+}
+
+
+/// <summary>
+/// GridForge Dash 강화
+/// </summary>
+public class Skill_Four_Dash : ActiveTech
+{
+    public override void Activate(SkillManager skillManager, Player player)
+    {
+        base.Activate(skillManager, player);
+    }
+
+    public override void Deactivate(Player player, bool isAnotherSkill)
+    {
+        base.Deactivate(player, isAnotherSkill);
+    }
+
+    public Skill_Four_Dash(SkillData skillData) : base(skillData)
+    {
+    }
+}
+
+/// <summary>
+/// LUX 제약 Dash 강화
+/// </summary>
+public class Skill_Five_Dash : ActiveTech
+{
+    public override void Activate(SkillManager skillManager, Player player)
+    {
+        base.Activate(skillManager, player);
+    }
+
+    public override void Deactivate(Player player, bool isAnotherSkill)
+    {
+        base.Deactivate(player, isAnotherSkill);
+    }
+
+    public Skill_Five_Dash(SkillData skillData) : base(skillData)
     {
     }
 }

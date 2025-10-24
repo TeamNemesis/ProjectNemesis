@@ -184,6 +184,7 @@ public static class Constants
     public const string DEBUFF_CONFUSION = "confusion";
     public const string DEBUFF_BURN = "burn";
     public const string DEBUFF_BINDING = "bind";
+    public const string DEBUFF_WEAKEN = "weaken";
     #endregion
 
     #region layer
@@ -212,4 +213,49 @@ public static class Constants
     #endregion
 
     #endregion
+}
+
+public enum TechSelectPackType
+{
+    Company1,
+    Company2,
+    Company3,
+    Company4,
+    Company5,
+}
+
+public enum RoomType
+{
+    Start,
+    Normal,
+    Lab,
+    Colosseum,
+    Shop,
+    Boss,
+}
+
+public enum NormalRoomType
+{
+    Credit,
+    Heal,
+    Chrome,
+    TechSelect,
+    TechUpgrade,
+}
+
+public enum RewardType
+{
+    Credit,
+    HealPack,
+    Chrome,
+    TechSelectPack,
+    TechUpgradePack,
+    MutantPack,
+}
+
+public enum InteractableType
+{
+    Door,
+    Reward,
+    Weapon,
 }

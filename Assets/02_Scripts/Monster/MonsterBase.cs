@@ -34,6 +34,28 @@ public class MonsterBase : CharacterModelBase
     [Header("Components")]
     [SerializeField] protected NavMeshAgent agent;
     [SerializeField] protected Transform _target;
+    
+    /// <summary>
+    /// 공격력 반환
+    /// </summary>
+    /// <returns></returns>
+    public float GetAttackDamage()
+    {
+        return attackDamage;
+    }
+    public MonsterSize GetMonsterSize()
+    {
+        return monsterSize;
+    }
+
+    /// <summary>
+    /// 공격력 설정
+    /// </summary>
+    /// <param name="attackDamage"></param>
+    public void SetAttackDamage(float attackDamage)
+    {
+        this.attackDamage = attackDamage;
+    }
 
     public Transform GetTarget()
     {

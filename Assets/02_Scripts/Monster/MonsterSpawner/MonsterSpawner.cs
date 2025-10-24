@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,7 +20,11 @@ public class MonsterSpawner : MonoBehaviour
     private List<List<MonsterSpawnInfo>> waitingWaves = new List<List<MonsterSpawnInfo>>(); // 대기 중인 웨이브 리스트
     private int currentWaveIndex = 0; // 현재 웨이브 인덱스
     private bool isWaveActive = false; // 현재 웨이브 진행 중인지 체크
-    
+
+    public List<GameObject> ActiveMonsters => activeMonsters;
+
+    public event Action OnAllWavesCompleted;
+
     private class MonsterSpawnInfo
     {
         public PoolableObject prefab;
@@ -97,7 +102,7 @@ public class MonsterSpawner : MonoBehaviour
         // 최대 스폰 포인트를 채울 때까지 랜덤 선택
         while (currentTotalCost < maxSpawnPoint)
         {
-            MonsterSpawnInfo randomMonster = availableMonsters[Random.Range(0, availableMonsters.Count)];
+            MonsterSpawnInfo randomMonster = availableMonsters[UnityEngine.Random.Range(0, availableMonsters.Count)];
 
             if (currentTotalCost + randomMonster.cost <= maxSpawnPoint)
             {
@@ -163,6 +168,7 @@ public class MonsterSpawner : MonoBehaviour
         if (currentWaveIndex >= waitingWaves.Count)
         {
             Debug.Log("모든 웨이브 완료");
+            OnAllWavesCompleted?.Invoke();
             return;
         }
 
@@ -188,7 +194,7 @@ public class MonsterSpawner : MonoBehaviour
         foreach (var monsterInfo in wave)
         {
             // 랜덤 스폰 위치 선택
-            Transform spawnPos = spawnPositions[Random.Range(0, spawnPositions.Count)];
+            Transform spawnPos = spawnPositions[UnityEngine.Random.Range(0, spawnPositions.Count)];
 
             GameObject spawnedMonster = GameManager.Instance.PoolManager.GetFromPool(monsterInfo.prefab, spawnPos.position, spawnPos.rotation);
 

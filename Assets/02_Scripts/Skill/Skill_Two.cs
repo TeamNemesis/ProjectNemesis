@@ -51,7 +51,7 @@ public class Skill_Two : SkillBase
             case 22:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 ActiveTech skillSPAttack = new Skill_Two_SPAttack(choosedSkill);
-                if (_skillManager.attackTech != null)
+                if (_skillManager.skillTech != null)
                 {
 
                     _skillManager.skillTech.Deactivate(player, _skillManager.skillTech.skillData.skillIdx != choosedSkill.skillIdx);
