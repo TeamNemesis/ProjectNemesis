@@ -10,7 +10,7 @@ using UnityEngine;
 /// </summary>
 public class MapController : MonoBehaviour
 {
-    [SerializeField] MonsterController _monsterController;
+    [SerializeField] MonsterController _roomController;
     [SerializeField] RoomSpawner _roomSpawner;
     [SerializeField] DoorSpawner _doorSpawner;
     [SerializeField] DoorDecider _doorDecider;
@@ -72,10 +72,10 @@ public class MapController : MonoBehaviour
         if (room.RoomInfo.RoomType == RoomType.Normal)
         {
             // 몬스터 스폰위치 갱신
-            _monsterController.UpdateMonsterSpawnPoints(room.MonsterSpawnPoints);
+            _roomController.UpdateMonsterSpawnPoints(room.MonsterSpawnPoints);
 
             // 몬스터 스폰
-            _monsterController.SpawnMonster();
+            _roomController.SpawnMonster();
         }
     }
 
