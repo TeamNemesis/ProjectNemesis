@@ -84,6 +84,7 @@ public class GameManager : MonoBehaviour
         _skillManger.InitializeSkillManager();
         _uiManager.InitializeManager();
         _currencyManager.Initialize();
+        _playerStatManager.Initialize();
     }
 
     [SerializeField] ResourceManager _resourceManager;      // 리소스 매니저

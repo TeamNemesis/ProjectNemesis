@@ -259,6 +259,7 @@ public class DebuffHandler : MonoBehaviour
                 if (monster != null)
                 {
                     monster.SetAttackDamage(originalDamage * active.totalValue);
+                    monster.isWeaken = true;
                 }
                 break;
 
@@ -311,6 +312,7 @@ public class DebuffHandler : MonoBehaviour
                 if (monster != null)
                 {
                     monster.SetAttackDamage(originalDamage);
+                    monster.isWeaken = false;
                 }
                 break;
             default:
@@ -545,6 +547,7 @@ public class DebuffHandler : MonoBehaviour
                     if (monster != null)
                     {
                         monster.SetAttackDamage(originalDamage);
+                        monster.isWeaken = false;
                     }
                     break;
 
@@ -599,7 +602,7 @@ public class DebuffHandler : MonoBehaviour
     {
         while (debuffHandler.GetActiveDebuffCount() > 0)
         {
-            debuffHandler.character.TakeDamage(debuffHandler.GetActiveDebuffCount() * GameManager.Instance.PlayerStatManager.totalMultiDamage * 5f);
+            debuffHandler.character.TakeDamage(debuffHandler.GetActiveDebuffCount() * 5f);
             yield return new WaitForSeconds(Constants.DEBUFF_TIME);
         }
         _increasePain = null;

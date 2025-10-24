@@ -259,3 +259,16 @@ public enum InteractableType
     Reward,
     Weapon,
 }
+
+/// <summary>
+/// 플레이어 어택타입 enum
+/// </summary>
+public enum ATTACKTYPE
+{
+    NONE,
+    NORMAL,
+    GRENADE,
+    SPECIALATTACK,
+    DASH,
+    COUNT
+}

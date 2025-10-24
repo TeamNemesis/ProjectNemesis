@@ -60,7 +60,7 @@ public class Skill_Two_Grenade : ActiveTech
 
         // 스킬 효과 적용 (플레이어 일반 공격력에 접근하여 공격력 추가)
         plusDamage = _skillData.skillBaseValue_1 + _skillData.skillLevelValue_1 * _skillData.skillLevel;
-        GameManager.Instance.PlayerStatManager.AddPlayerGrenadeDamage(plusDamage);
+        GameManager.Instance.PlayerStatManager.AddPlayerGrenadeDamageMulti(plusDamage);
     }
     public override void Deactivate(Player player, bool isSameSkill)
     {
@@ -68,7 +68,7 @@ public class Skill_Two_Grenade : ActiveTech
         base.Deactivate(player, isSameSkill);
 
         // 공격력 복귀
-        GameManager.Instance.PlayerStatManager.AddPlayerGrenadeDamage(-plusDamage);
+        GameManager.Instance.PlayerStatManager.AddPlayerGrenadeDamageMulti(-plusDamage);
 
     }
 
