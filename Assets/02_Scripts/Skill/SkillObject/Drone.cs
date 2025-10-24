@@ -191,10 +191,10 @@ public class Drone : PoolableObject
 				_currentState = State.Idle;
 		}
 
-		public void Initialize()
-		{
-				InitializeDrone(GameManager.Instance.player);
-		}
+		//public void Initialize()
+		//{
+		//		InitializeDrone(GameManager.Instance.player);
+		//}
 
 		public GameObject GetGameObject()
 		{

@@ -26,9 +26,25 @@ public class SkillManager : MonoBehaviour
     public Skill_Mutant skill_Mutant { get { return _skill_Mutant; } }
     #endregion
 
-    Player _player;
+    private Player _player;
+    public Player player => _player;
 
-    public Player Player => _player;
+    /// <summary>
+    /// 플레이어 할당
+    /// </summary>
+    /// <param name="player"></param>
+    public void SetPlayer(Player player)
+    {
+        _player = player;
+        _skill_One.SetPlayer(player);
+        _skill_Two.SetPlayer(player);
+        _skill_Three.SetPlayer(player);
+        _skill_Four.SetPlayer(player);
+        _skill_Five.SetPlayer(player);
+        _skill_Collab.SetPlayer(player);
+        _skill_Mutant.SetPlayer(player);
+
+    }
 
     private PlayerStatManager _playerStatManager;
     public PlayerStatManager playerStatManager{get { return _playerStatManager; }}
@@ -103,7 +119,6 @@ public class SkillManager : MonoBehaviour
         _skill_Collab.InitializeSkill(this);
         _skill_Mutant.InitializeSkill(this);
 
-        _player = GameManager.Instance.player;
         _playerStatManager = GameManager.Instance.PlayerStatManager;
 
     }

@@ -7,7 +7,7 @@ using UnityEngine;
 /// </summary>
 public class Skill_One_SPAttack : ActiveTech
 {
-
+    private Player _player;
 
     private Action _AttackTry;
     /// <summary>   
@@ -19,6 +19,7 @@ public class Skill_One_SPAttack : ActiveTech
     {
         // 공격 적중 시 이벤트에 추가
         base.Activate(skillManager, player);
+        _player = player;
         _AttackTry = () => ActiveTry(player);
         player.OnSpecialAttackStarted += _AttackTry;
         //player.SPAttackHit += HitEnemy;
@@ -49,7 +50,7 @@ public class Skill_One_SPAttack : ActiveTech
         if (isHit) return;
 
         isHit = true;
-        GameManager.Instance.player.playerModel.Heal(Constants.SKILL_ONE_SPATTACKHEAL);
+        _player.playerModel.Heal(Constants.SKILL_ONE_SPATTACKHEAL);
     }
 
 
@@ -91,3 +92,79 @@ public class Skill_Two_SPAttack : ActiveTech
     }
 }
 
+/// <summary>
+/// Gear 특수공격 강화
+/// </summary>
+public class Skill_Three_SPAttack: ActiveTech
+{
+    public override void Activate(SkillManager skillManager, Player player)
+    {
+        base.Activate(skillManager, player);
+    }
+
+    public override void Deactivate(Player player, bool isAnotherSkill)
+    {
+        base.Deactivate(player, isAnotherSkill);
+    }
+
+    public Skill_Three_SPAttack(SkillData skillData) : base(skillData)
+    {
+    }
+}
+
+/// <summary>
+/// GridForge 특수공격 강화
+/// </summary>
+public class Skill_Four_SPAttack : ActiveTech
+{
+    public override void Activate(SkillManager skillManager, Player player)
+    {
+        base.Activate(skillManager, player);
+    }
+
+    public override void Deactivate(Player player, bool isAnotherSkill)
+    {
+        base.Deactivate(player, isAnotherSkill);
+    }
+
+    public Skill_Four_SPAttack(SkillData skillData) : base(skillData)
+    {
+    }
+}
+
+/// <summary>
+/// Lux 제약 특수공격 강화
+/// </summary>
+public class Skill_Five_SPAttack : ActiveTech
+{
+    public override void Activate(SkillManager skillManager, Player player)
+    {
+        base.Activate(skillManager, player);
+        //TODO 특수공격 적중시 이벤트에 연결
+
+    }
+
+    public override void Deactivate(Player player, bool isAnotherSkill)
+    {
+        base.Deactivate(player, isAnotherSkill);
+        //TODO 특수공격 적중시 이벤트에 해제
+    }
+
+    public override void HitEnemy(Transform transform)
+    {
+        MonsterBase monster = transform.GetComponent<MonsterBase>();
+
+        if (monster.GetMonsterSize() == MonsterSize.BIG)
+        {
+            return;
+        }
+        else
+        {
+            monster.GetDebuffHandler().ApplyDebuff(DebuffHandler.DebuffData.CreateConfusion());
+        }
+    }
+
+    public Skill_Five_SPAttack(SkillData skillData) : base(skillData)
+    {
+    }
+}

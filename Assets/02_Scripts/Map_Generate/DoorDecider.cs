@@ -61,7 +61,7 @@ public class DoorDecider : MonoBehaviour
             throw new ArgumentOutOfRangeException(nameof(currentRoomIndex), "방 인덱스는 0~14 사이여야 합니다.");
 
         // 특수 규칙: 시작 방, 보스 직전, 보스 방
-        if (currentRoomIndex == 0)
+        if (currentRoomIndex == 1)
         {
             Debug.Log("[DoorDecider] GetNextDoorCount: start room -> force 1");
             return 1;

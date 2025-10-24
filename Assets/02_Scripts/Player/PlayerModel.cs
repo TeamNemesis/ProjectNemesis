@@ -1,4 +1,5 @@
 using System;
+using Unity.Mathematics;
 using UnityEngine;
 
 /// <summary>
@@ -15,9 +16,9 @@ public class PlayerModel : CharacterModelBase
     ///// 테스트용 공격 실행 이벤트
     ///// </summary>
     //public event Action AttackTry;
-    ///// <summary>
-    ///// 테스트용 공격 적중시 이벤트
-    ///// </summary>
+    /// <summary>
+    /// 테스트용 공격 적중시 이벤트
+    /// </summary>
     //public event Action<Transform> AttackHit;
 
     ///// <summary>
@@ -35,18 +36,15 @@ public class PlayerModel : CharacterModelBase
     ///// </summary>
     //public event Action<Transform> SPAttackHit;
 
-    /// <summary>
-    /// 플레이어 피격시
-    /// </summary>
-    public event Action<Transform> PlayerHit;
 
+    //public Transform currentTarget;
 
     //public void Update()
     //{
     //    if (Input.GetKeyDown(KeyCode.U))
     //    {
 
-    //        currentTarget.GetComponent<MonsterBase>().KnockBackEnemy(Vector3.forward * 10f, 20, 5f);
+    //        AttackHit.Invoke(currentTarget);
     //    }
 
     //}
@@ -55,15 +53,42 @@ public class PlayerModel : CharacterModelBase
     #endregion
 
 
+    /// <summary>
+    /// 플레이어 피격시
+    /// </summary>
+    public event Action<Transform> PlayerHit;
+
+    /// <summary>
+    /// 회피 가능한지
+    /// </summary>
+    private bool bIsAvoid;
+
+    /// <summary>
+    /// 회피율
+    /// </summary>
+    private float _avoidNum;
+    public float avoidNum { get { return _avoidNum; } }
+    public void SetAvoidNum(float avoidNum)
+    {
+        _avoidNum = avoidNum;
+    }
+
     public override void TakeDamage(float damage)
     {
+        if(bIsAvoid)
+        {
+            int tempNum = UnityEngine.Random.Range(0, 100);
+            if(tempNum > 100 * _avoidNum)
+            {
+                return;
+            }
+        }
         base.TakeDamage(damage);
     }
     public override void Initialize()
     {
         base.Initialize();
         SetCurrentHp(maxHealth); // 초기화 시 현재 체력을 최대 체력으로 설정
-        OnHpChangedEventPlay(currentHealth); // 초기 체력 이벤트 발행
         debuffHandler.InitializePlayer();
     }
 
