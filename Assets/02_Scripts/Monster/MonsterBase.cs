@@ -13,6 +13,7 @@ public enum MonsterSize
 public class MonsterBase : CharacterModelBase
 {
     [Header("Base Stats")]
+    [SerializeField] private float maxEliteHealth;
     [SerializeField] protected float attackDamage = 10;
     [SerializeField] protected float attackRange = 2f;
     [SerializeField] protected float detectionRange = 10f;
@@ -126,6 +127,13 @@ public class MonsterBase : CharacterModelBase
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * 5f);
         }
     }
+
+    private void SetEliteMaxHealth(int roomCount)
+    {
+        maxEliteHealth = (float)_maxHealth * 1 + (0.1f * roomCount);
+        _maxHealth = (int)maxEliteHealth;
+    }
+
 
     #region ³Ë¹é
 
