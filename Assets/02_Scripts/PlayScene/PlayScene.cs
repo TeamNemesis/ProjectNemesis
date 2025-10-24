@@ -35,14 +35,28 @@ public class PlayScene : MonoBehaviour
 
     private void Start()
     {
+        if (_player == null)
+        {
+            Debug.LogError("플레이어가 할당되지 않았습니다!");
+            return;
+        }
         _player.Initialize();
         Debug.Log("플레이어 할당");
         GameManager.Instance.skillManager.SetPlayer(_player);
+
         if (MapController == null)
         {
+            Debug.LogError("맵 컨트롤러가 할당되지 않았습니다!");
             return;
         }
         _mapController.Initialize();
+
+        if( _playSceneView == null)
+        {
+            Debug.LogError("PlaySceneView가 할당되지 않았습니다!");
+            return;
+        }
+        _playSceneView.Initialize();
     }
 
     private void Update()

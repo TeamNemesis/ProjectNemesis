@@ -15,7 +15,7 @@ public class PlaySceneView : MonoBehaviour
 
     public void Initialize()
     {
-
+        GameManager.Instance.CurrencyManager.GetCurrentCurrency();
     }
 
     public void UpdateHPBar(float currentHP, float maxHP)

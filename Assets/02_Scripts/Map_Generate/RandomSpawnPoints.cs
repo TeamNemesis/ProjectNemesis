@@ -7,10 +7,10 @@ public class RandomSpawnPoints : MonoBehaviour
     private Transform[] selectedSpawnPoints;
     void Start()
     {
-        ChooseSpawnPoints(3);
+        //ChooseSpawnPoints(3);
     }
 
-    private Transform[] ChooseSpawnPoints(int count)
+   public  Transform[] ChooseSpawnPoints(int count)
     {
         int[] index = new int[spawnPoints.Length];
 

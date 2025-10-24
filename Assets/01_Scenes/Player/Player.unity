@@ -633,6 +633,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1056976026 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7525364679573786404, guid: 2296a19a979e8e447b420d27e5dcddd9, type: 3}
+  m_PrefabInstance: {fileID: 1056976023}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1437012125
 GameObject:
   m_ObjectHideFlags: 0
@@ -1365,7 +1376,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6846b00efdad47541abf1528630c40d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _hpBarSlider: {fileID: 0}
+  _hpBarSlider: {fileID: 1056976026}
   _hpText: {fileID: 1056976025}
   _goldText: {fileID: 1680338975}
   _chromeText: {fileID: 1664840540}
@@ -1678,6 +1689,34 @@ PrefabInstance:
       propertyPath: m_Name
       value: MapCotnroller
       objectReference: {fileID: 0}
+    - target: {fileID: 8999976014532792861, guid: e457f452ef592394cae17c6b529b0a2f, type: 3}
+      propertyPath: monsterPrefabs.Array.size
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8999976014532792861, guid: e457f452ef592394cae17c6b529b0a2f, type: 3}
+      propertyPath: 'monsterPrefabs.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2821671262608775679, guid: 31d9d065d60ebc543aa9a7c07609ba6a, type: 3}
+    - target: {fileID: 8999976014532792861, guid: e457f452ef592394cae17c6b529b0a2f, type: 3}
+      propertyPath: 'monsterPrefabs.Array.data[1]'
+      value: 
+      objectReference: {fileID: 7539578067776936276, guid: 69a152d5ffcc54b43951b3258fab8a37, type: 3}
+    - target: {fileID: 8999976014532792861, guid: e457f452ef592394cae17c6b529b0a2f, type: 3}
+      propertyPath: 'monsterPrefabs.Array.data[2]'
+      value: 
+      objectReference: {fileID: 4891787988556077794, guid: 3c786e0e126f3c04aac997196a100f79, type: 3}
+    - target: {fileID: 8999976014532792861, guid: e457f452ef592394cae17c6b529b0a2f, type: 3}
+      propertyPath: 'monsterPrefabs.Array.data[3]'
+      value: 
+      objectReference: {fileID: 900541771517750140, guid: bcae6f7357fac65468003be58c7ce711, type: 3}
+    - target: {fileID: 8999976014532792861, guid: e457f452ef592394cae17c6b529b0a2f, type: 3}
+      propertyPath: 'monsterPrefabs.Array.data[4]'
+      value: 
+      objectReference: {fileID: 5829316648119766581, guid: 62dc2018ab6d11846bb1126a063a0f5c, type: 3}
+    - target: {fileID: 8999976014532792861, guid: e457f452ef592394cae17c6b529b0a2f, type: 3}
+      propertyPath: 'monsterPrefabs.Array.data[5]'
+      value: 
+      objectReference: {fileID: 6741232429851390812, guid: 6f189b3983160024da34cf72ae75aa8a, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

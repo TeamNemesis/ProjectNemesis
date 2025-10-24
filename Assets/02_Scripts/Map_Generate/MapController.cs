@@ -71,11 +71,16 @@ public class MapController : MonoBehaviour
         
         if (room.RoomInfo.RoomType == RoomType.Normal)
         {
-            // 몬스터 스폰위치 갱신
-            _roomController.UpdateMonsterSpawnPoints(room.MonsterSpawnPoints);
-
+            int roomCost = _currentRoomCount * 10; // 예시: 방 번호에 비례하는 비용
             // 몬스터 스폰
-            _roomController.SpawnMonster();
+            NormalRoom normalRoom = room as NormalRoom;
+            if (normalRoom == null)
+            {
+                Debug.LogError("OnRoomSpawned: Current room is not a NormalRoom");
+                return;
+            }
+            Transform[] spawnPoints = normalRoom.MonsterSpawnPoints;
+            _roomController.SpawnMonster(roomCost, spawnPoints);
         }
     }
 
