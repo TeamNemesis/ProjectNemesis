@@ -15,7 +15,7 @@ public class Skill_Two : SkillBase
     /// <summary>
     /// 전투스킬 강화, 모든 데미지 추가, 스킬 인덱스, 증가값
     /// </summary>
-    public event Action<int,float> CombatEquipment;
+    public event Action<int, float> CombatEquipment;
 
     public override void ActivateSkill(SkillData choosedSkill)
     {
@@ -64,7 +64,7 @@ public class Skill_Two : SkillBase
             case 23:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 ActiveTech skillDashAttack = new Skill_Two_Dash(choosedSkill);
-                if (_skillManager.dashTech!= null)
+                if (_skillManager.dashTech != null)
                 {
 
                     _skillManager.dashTech.Deactivate(player, _skillManager.dashTech.skillData.skillIdx != choosedSkill.skillIdx);
@@ -82,7 +82,14 @@ public class Skill_Two : SkillBase
             // 개선된 폭격
             case 25:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
-
+                if (choosedSkill.skillLevel == 1)
+                {
+                    ActiveImprovedBomb(choosedSkill.skillBaseValue_1 + choosedSkill.skillLevelValue_1);
+                }
+                else
+                {
+                    ActiveImprovedBomb(choosedSkill.skillLevelValue_1);
+                }
                 break;
 
             // 폭사
@@ -99,7 +106,14 @@ public class Skill_Two : SkillBase
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 //TODO 범위 스킬 구현에 대한 계수 회의 필요
                 // 범위 증가
-                skillManager.playerStatManager.AddPlayerAreaExtent(choosedSkill.skillBaseValue_1 + choosedSkill.skillLevelValue_1 * choosedSkill.skillLevel);
+                if (choosedSkill.skillLevel == 1)
+                {
+                    ActivePriming(choosedSkill.skillBaseValue_1 + choosedSkill.skillLevelValue_1);
+                }
+                else
+                {
+                    ActivePriming(choosedSkill.skillLevelValue_1);
+                }
                 break;
 
             default:
@@ -127,10 +141,24 @@ public class Skill_Two : SkillBase
     public void OnCombatEquipment(SkillData skillData)
     {
         float totalDamageUp = (float)(skillData.skillLevel * skillData.skillLevelValue_1 + skillData.skillBaseValue_1);
-        CombatEquipment?.Invoke(skillData.skillIdx,totalDamageUp);
-        
+        CombatEquipment?.Invoke(skillData.skillIdx, totalDamageUp);
+
     }
 
+    #endregion
+
+    #region 개선된 폭격
+    public void ActiveImprovedBomb(float skillData)
+    {
+        _skillManager.playerStatManager.MinusGrenadeCoolTimeMulti(skillData);
+    }
+    #endregion
+
+    #region 기폭제
+    public void ActivePriming(float skillData)
+    {
+        _skillManager.playerStatManager.AddPlayerAreaExtent(skillData);
+    }
     #endregion
 }
 

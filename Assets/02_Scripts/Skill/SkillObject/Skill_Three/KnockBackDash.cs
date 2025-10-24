@@ -48,7 +48,7 @@ public class KnockBackDash : AreaDamageBase,IInitializePoolable
     {
         if(data is  KnockBackDashData skillData)
         {
-            _damage = skillData.skillDamage * GameManager.Instance.PlayerStatManager.totalMultiDamage;
+            _damage = skillData.skillDamage;
             _knockBackDistance = skillData.skillKnockBackDistance * GameManager.Instance.PlayerStatManager.knockBackDistance;
         }
     }

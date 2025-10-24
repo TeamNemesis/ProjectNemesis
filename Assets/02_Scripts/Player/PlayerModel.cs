@@ -72,6 +72,12 @@ public class PlayerModel : CharacterModelBase
         _avoidNum = avoidNum;
     }
 
+    /// <summary>
+    /// 데미지 감소 효과 적용
+    /// </summary>
+    private bool BisReduceDamage;
+    private float _damageReducePercent;
+
     public override void TakeDamage(float damage)
     {
         if (bIsAvoid)
@@ -81,6 +87,11 @@ public class PlayerModel : CharacterModelBase
             {
                 return;
             }
+        }
+
+        if(BisReduceDamage)
+        {
+            damage*=(1f-_damageReducePercent);
         }
 
 
@@ -93,11 +104,25 @@ public class PlayerModel : CharacterModelBase
         debuffHandler.InitializePlayer();
         Debug.Log("연결");
         GameManager.Instance.PlayerStatManager.OnplayerAvoidanceChange += OnPlayerAvoidanceChange;
+        GameManager.Instance.PlayerStatManager.OnplayerHitPercentChange += OnPlayerHitReducePercentChange;
     }
 
-    private void OnPlayerAvoidanceChange()
+    private void OnPlayerHitReducePercentChange(float reducePercent)
     {
-        if (GameManager.Instance.PlayerStatManager.playerAvoidance > 0)
+        if (reducePercent > 0)
+        {
+            BisReduceDamage = true;
+        }
+        else
+        {
+            BisReduceDamage = false;
+        }
+        _avoidNum = reducePercent;
+    }
+
+    private void OnPlayerAvoidanceChange(float avoidance)
+    {
+        if (avoidance > 0)
         {
             bIsAvoid = true;
         }
@@ -105,7 +130,7 @@ public class PlayerModel : CharacterModelBase
         {
             bIsAvoid = false;
         }
-        _avoidNum = GameManager.Instance.PlayerStatManager.playerAvoidance;
+        _avoidNum = avoidance;
     }
 
     public void OnPlayerHit(Transform monsterTransform)

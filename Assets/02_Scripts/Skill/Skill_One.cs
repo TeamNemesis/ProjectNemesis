@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -13,6 +14,8 @@ public class Skill_One : SkillBase
     /// </summary>
     [SerializeField]
     private PoisonSpread _hitPoisonSpreadPrefab;
+    private PoisonSpreadData _hitPoisonSpreadData;
+    private Action<Transform> PoisonSpreadAction;
 
     /// <summary>
     /// 진화에 필요한 스택
@@ -94,10 +97,23 @@ public class Skill_One : SkillBase
             // 독성혈액
             case 16:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
-                //TODO 플레이어 모델에 받는데미지 감소 계수를 추가하여 10퍼센트 
-
-                //TODO 피격시 이벤트에 함수 추가 SpreadPoison
-                player.playerModel.PlayerHit += (transform) => SpreadPoison(player);
+                if (choosedSkill.skillLevel == 1)
+                {
+                    // 플레이어 모델에 받는데미지 감소 계수를 추가하여 10퍼센트 
+                    _skillManager.playerStatManager.AddReduceDamagePercent(choosedSkill.skillBaseValue_1 + choosedSkill.skillLevelValue_1);
+                    // 피격시 이벤트에 함수 추가 SpreadPoison
+                    _hitPoisonSpreadData = new PoisonSpreadData(choosedSkill.skillBaseValue_2 + choosedSkill.skillLevelValue_2);
+                }
+                else
+                {
+                    player.playerModel.PlayerHit -= PoisonSpreadAction;
+                    // 플레이어 모델에 받는데미지 감소 계수를 추가하여 10퍼센트 
+                    _skillManager.playerStatManager.AddReduceDamagePercent(choosedSkill.skillLevelValue_1);
+                    // 피격시 이벤트에 함수 추가 SpreadPoison
+                    _hitPoisonSpreadData = new PoisonSpreadData(choosedSkill.skillBaseValue_2 + choosedSkill.skillLevelValue_2);
+                }
+                PoisonSpreadAction = (transform) => SpreadPoison(player);
+                player.playerModel.PlayerHit += PoisonSpreadAction;
                 break;
 
             // 진화
@@ -154,7 +170,7 @@ public class Skill_One : SkillBase
         Vector3 position = player.transform.position;
         position.y = 0;
         //TODO 스킬 확인
-        PoisonSpread poisonSpread = GameManager.Instance.PoolManager.GetFromPool(_hitPoisonSpreadPrefab, position,_hitPoisonSpreadPrefab.transform.rotation).GetComponent<PoisonSpread>();
+        PoisonSpread poisonSpread = GameManager.Instance.PoolManager.GetFromPool(_hitPoisonSpreadPrefab, position,_hitPoisonSpreadPrefab.transform.rotation,player.transform,_hitPoisonSpreadData).GetComponent<PoisonSpread>();
         poisonSpread.Initialize();
     }
 
@@ -174,7 +190,7 @@ public class Skill_One : SkillBase
                 return;
             }
             // 랜덤한 스킬 레벨 업
-            _skillManager.upgradeSkillList[Random.Range(0, _skillManager.upgradeSkillList.Count)].ChooseSkill();
+            _skillManager.upgradeSkillList[UnityEngine.Random.Range(0, _skillManager.upgradeSkillList.Count)].ChooseSkill();
 
             // 스택 초기화
             levelupStack = 0;
