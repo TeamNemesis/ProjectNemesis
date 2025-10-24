@@ -11,7 +11,7 @@ public class Skill_Three : SkillBase
     public override void InitializeSkill(SkillManager skillManager)
     {
         base.InitializeSkill(skillManager);
-        if(_redshiftPrefab == null)
+        if (_redshiftPrefab == null)
         {
             _redshiftPrefab = Resources.Load<RedShift>("Prefabs/Skill/SkillObject/Skill_Three/RedShift");
         }
@@ -90,7 +90,14 @@ public class Skill_Three : SkillBase
             // 중력 증폭
             case 36:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
-
+                if (choosedSkill.skillLevel == 1)
+                {
+                    ActivateGravity(choosedSkill.skillBaseValue_1 + choosedSkill.skillLevelValue_1);
+                }
+                else
+                {
+                    ActivateGravity(choosedSkill.skillLevelValue_1);
+                }
                 break;
 
             // 사건의 지평선
@@ -131,7 +138,12 @@ public class Skill_Three : SkillBase
 
     }
     #endregion
-
+    #region 중력 증폭
+    public void ActivateGravity(float skill)
+    {
+        skillManager.playerStatManager.AddKnockBackDistance(skill);
+    }
+    #endregion
 }
 
 

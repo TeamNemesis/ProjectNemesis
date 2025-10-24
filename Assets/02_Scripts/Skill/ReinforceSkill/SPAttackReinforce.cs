@@ -93,7 +93,7 @@ public class Skill_Two_SPAttack : ActiveTech
 }
 
 /// <summary>
-/// Gear 특수공격 강화
+/// Gear 특수공격 강화(반동)
 /// </summary>
 public class Skill_Three_SPAttack: ActiveTech
 {
