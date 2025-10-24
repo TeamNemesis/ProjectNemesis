@@ -14,6 +14,7 @@ public class PoisonField : PoolableObject
     [SerializeField] private float poisonFieldRadius;
     [SerializeField] private string targetTag; // 타겟 태그
     [SerializeField] private Coroutine lifeTimeCoroutine;
+    [SerializeField] private bool isPoison = true;
 
     public void Initialize(string targetTag, float lifeTime, float poisonFieldRadius)
     {
@@ -50,7 +51,7 @@ public class PoisonField : PoolableObject
     // 플레이어가 트리거에 들어왔을 때
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag(targetTag))
+        if (other.CompareTag(targetTag) && isPoison)
         {
             DebuffHandler debuffHandler = other.GetComponent<DebuffHandler>();
             if (debuffHandler != null && debuffCoroutine == null)

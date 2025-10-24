@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
+
 
 public class Elite2 : MonsterBase
 {
@@ -225,27 +227,27 @@ public class Elite2 : MonsterBase
 
     private void TryUseSkill()
     {
-        // 사용 가능한 스킬 리스트
-        System.Collections.Generic.List<System.Action> availableSkills = new System.Collections.Generic.List<System.Action>();
+        // 사용 가능한 스킬 코루틴 리스트
+        List<IEnumerator> availableSkills = new List<IEnumerator>();
 
         if (bulletAttackCoolTime <= 0)
         {
-            availableSkills.Add(() => StartCoroutine(BulletAttack()));
+            availableSkills.Add(BulletAttack());
         }
         if (poisonLaserAttackCoolTime <= 0)
         {
-            availableSkills.Add(() => StartCoroutine(PoisonLaserAttack()));
+            availableSkills.Add(PoisonLaserAttack());
         }
         if (poisonFieldAttackCoolTime <= 0)
         {
-            availableSkills.Add(() => StartCoroutine(PoisonFieldAttack()));
+            availableSkills.Add(PoisonFieldAttack());
         }
 
         // 사용 가능한 스킬이 있으면 랜덤으로 선택
         if (availableSkills.Count > 0)
         {
             int randomIndex = Random.Range(0, availableSkills.Count);
-            availableSkills[randomIndex].Invoke();
+            StartCoroutine(availableSkills[randomIndex]);
         }
         else
         {
