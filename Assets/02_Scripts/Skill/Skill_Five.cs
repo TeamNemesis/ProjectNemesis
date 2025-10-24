@@ -20,7 +20,7 @@ public class Skill_Five : SkillBase
                 skillAttack.Activate(_skillManager, player);
                 break;
 
-                // 환각 구름
+            // 환각 구름
             case 51:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 ActiveTech skillGrenade = new Skill_Five_Grenade(choosedSkill);
@@ -31,7 +31,7 @@ public class Skill_Five : SkillBase
                 skillGrenade.Activate(_skillManager, player);
                 break;
 
-                // 섬망
+            // 섬망
             case 52:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 ActiveTech skillSPAttack = new Skill_Five_SPAttack(choosedSkill);
@@ -42,7 +42,7 @@ public class Skill_Five : SkillBase
                 skillSPAttack.Activate(_skillManager, player);
                 break;
 
-                // 아드레날린 레이스
+            // 아드레날린 레이스
             case 53:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 ActiveTech skillDash = new Skill_Five_Dash(choosedSkill);
@@ -54,36 +54,51 @@ public class Skill_Five : SkillBase
                 break;
 
 
-                // 약자 도태
+            // 약자 도태
             case 54:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
 
                 break;
 
-                // 불릿 타임
+            // 불릿 타임
             case 55:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
-
+                ActiveBulletTime(choosedSkill);
                 break;
 
-                // 케타민 드리프트
+            // 케타민 드리프트
             case 56:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
 
                 break;
 
-                // 정제
+            // 정제
             case 57:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
 
                 break;
 
-                
-           
+
+
             default:
                 Debug.Log("에러, 배정되지 않은 idx");
                 break;
 
         }
     }
+
+    #region 불릿타임
+    public void ActiveBulletTime(SkillData skill)
+    {
+        if (skill.skillLevel == 1)
+        {
+            _skillManager.playerStatManager.AddPlayerAvoidance(skill.skillBaseValue_1 + skill.skillLevelValue_1 * skill.skillLevel);
+        }
+        else
+        {
+            _skillManager.playerStatManager.AddPlayerAvoidance(skill.skillLevelValue_1);
+        }
+
+    }
+    #endregion
 }

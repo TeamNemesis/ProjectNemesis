@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class PlayerStatManager : MonoBehaviour
@@ -93,12 +94,14 @@ public class PlayerStatManager : MonoBehaviour
     /// <summary>
     /// 플레이어 일반 공격 데미지 계수
     /// </summary>
-    private float _playerAttackDamage;
+    private float _playerAttackDamage = 1f;
     public float playerAttackDamage { get { return _playerAttackDamage; } }
     public void AddPlayerAttackDamage(float plusDamage)
     {
         _playerAttackDamage += plusDamage;
+        OnPlayerAttackDamageChange?.Invoke();
     }
+    public event Action OnPlayerAttackDamageChange;
 
 
 
@@ -233,12 +236,14 @@ public class PlayerStatManager : MonoBehaviour
     /// <summary>
     /// 플레이어 회피율
     /// </summary>
-    private float _playerAvoidance;
+    private float _playerAvoidance= 0f;
     public float playerAvoidance { get { return _playerAvoidance; } }
     public void AddPlayerAvoidance(float plusPlayerAvoidance)
     {
         _playerAvoidance += plusPlayerAvoidance;
+        OnplayerAvoidanceChange?.Invoke();
     }
+    public event Action OnplayerAvoidanceChange;
     #endregion
 
     #region 넉백
@@ -298,11 +303,13 @@ public class PlayerStatManager : MonoBehaviour
     /// <summary>
     /// 약화 추가 데미지 계수
     /// </summary>
-    private float _weakenPlusDamage;
+    private float _weakenPlusDamage = 1f;
     public float weakenPlusDamage { get { return _weakenPlusDamage; } }
     public void AddWeakenPlusDamage(float PlusWeakenDamage)
     {
         _weakenPlusDamage += PlusWeakenDamage;
+        OnWeakenPlusDamageChange?.Invoke();
     }
+    public event Action OnWeakenPlusDamageChange;
     #endregion
 }

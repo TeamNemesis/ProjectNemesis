@@ -259,6 +259,7 @@ public class DebuffHandler : MonoBehaviour
                 if (monster != null)
                 {
                     monster.SetAttackDamage(originalDamage * active.totalValue);
+                    monster.isWeaken = true;
                 }
                 break;
 
@@ -311,6 +312,7 @@ public class DebuffHandler : MonoBehaviour
                 if (monster != null)
                 {
                     monster.SetAttackDamage(originalDamage);
+                    monster.isWeaken = false;
                 }
                 break;
             default:
@@ -545,6 +547,7 @@ public class DebuffHandler : MonoBehaviour
                     if (monster != null)
                     {
                         monster.SetAttackDamage(originalDamage);
+                        monster.isWeaken = false;
                     }
                     break;
 
