@@ -1,5 +1,4 @@
 using System;
-using Unity.Mathematics;
 using UnityEngine;
 
 /// <summary>
@@ -75,14 +74,16 @@ public class PlayerModel : CharacterModelBase
 
     public override void TakeDamage(float damage)
     {
-        if(bIsAvoid)
+        if (bIsAvoid)
         {
             int tempNum = UnityEngine.Random.Range(0, 100);
-            if(tempNum > 100 * _avoidNum)
+            if (tempNum > 100 * _avoidNum)
             {
                 return;
             }
         }
+
+
         base.TakeDamage(damage);
     }
     public override void Initialize()
@@ -90,6 +91,21 @@ public class PlayerModel : CharacterModelBase
         base.Initialize();
         SetCurrentHp(maxHealth); // 초기화 시 현재 체력을 최대 체력으로 설정
         debuffHandler.InitializePlayer();
+        Debug.Log("연결");
+        GameManager.Instance.PlayerStatManager.OnplayerAvoidanceChange += OnPlayerAvoidanceChange;
+    }
+
+    private void OnPlayerAvoidanceChange()
+    {
+        if (GameManager.Instance.PlayerStatManager.playerAvoidance > 0)
+        {
+            bIsAvoid = true;
+        }
+        else
+        {
+            bIsAvoid = false;
+        }
+        _avoidNum = GameManager.Instance.PlayerStatManager.playerAvoidance;
     }
 
     public void OnPlayerHit(Transform monsterTransform)

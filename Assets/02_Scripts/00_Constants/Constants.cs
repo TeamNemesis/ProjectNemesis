@@ -214,3 +214,16 @@ public static class Constants
 
     #endregion
 }
+
+/// <summary>
+/// 플레이어 어택타입 enum
+/// </summary>
+public enum ATTACKTYPE
+{
+    NONE,
+    NORMAL,
+    GRENADE,
+    SPECIALATTACK,
+    DASH,
+    COUNT
+}

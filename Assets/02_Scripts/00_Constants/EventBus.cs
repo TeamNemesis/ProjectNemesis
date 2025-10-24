@@ -8,10 +8,22 @@ using UnityEngine;
 /// </summary>
 public static class EventBus
 {
-    public static event Action<MonsterBase> OnMonsterHit;
+    public static event Action<WeaponType, ATTACKTYPE, Transform> OnMonsterHit;
 
-    public static void MonsterHit(MonsterBase monster)
+    public static void MonsterHit(WeaponType weaponType, ATTACKTYPE attackType,Transform monster)
     {
-        OnMonsterHit?.Invoke(monster);
+        OnMonsterHit?.Invoke(weaponType, attackType, monster);
     }
 }
+
+public enum ATTACKTYPE
+{
+    NONE,
+    NORMAL,
+    GRENADE,
+    SPECIALATTACK,
+    DASH,
+    COUNT
+}
+
+
