@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,6 +6,7 @@ using UnityEngine.AI;
 
 public class DebuffHandler : MonoBehaviour
 {
+    public static event Action<DebuffHandler> OnDebuff;
 
     [SerializeField]
     private Dictionary<string, ActiveDebuff> activeDebuffs = new Dictionary<string, ActiveDebuff>();
@@ -12,6 +14,11 @@ public class DebuffHandler : MonoBehaviour
     private NavMeshAgent agent;
     private float originalSpeed;
     private MonsterBase monster;
+
+    /// <summary>
+    /// 점진되는 고통
+    /// </summary>
+    private Coroutine _increasePain;
 
 
     public void InitializeMonster(NavMeshAgent agent)
@@ -142,7 +149,6 @@ public class DebuffHandler : MonoBehaviour
     {
         if (character == null || character.isDead)
             return;
-
         if (activeDebuffs.ContainsKey(newDebuff.debuffName))
         {
             ActiveDebuff existing = activeDebuffs[newDebuff.debuffName];
@@ -161,6 +167,11 @@ public class DebuffHandler : MonoBehaviour
             // 그 외 디버프들 시간 갱신. 스턴, 혼란일 경우 기존 코루틴 중단 후 새 코루틴으로 다시 시작
             else
             {
+                if (existing.remainingTime > newDebuff.debuffDuration)
+                {
+                    Debug.Log("지속시간");
+                    return;
+                }
                 existing.remainingTime = newDebuff.debuffDuration;
                 existing.totalValue = newDebuff.debuffValue;
 
@@ -181,6 +192,13 @@ public class DebuffHandler : MonoBehaviour
                     {
                         StopCoroutine(existing.effectRoutine);
                     }
+                    // 기존 혼란 상태를 먼저 정리
+                    if (monster != null)
+                    {
+                        monster.targetTag = Constants.TAG_PLAYER;
+                        monster.SetTarget(null);
+                    }
+                    // 새 혼란 코루틴 시작
                     existing.effectRoutine = StartCoroutine(ConfuseCoroutine(newDebuff.debuffDuration));
                 }
 
@@ -194,10 +212,14 @@ public class DebuffHandler : MonoBehaviour
                     existing.effectRoutine = StartCoroutine(BindCoroutine(newDebuff.debuffDuration));
                 }
             }
+            OnDebuff?.Invoke(this);
             return;
         }
         activeDebuffs.Add(newDebuff.debuffName, new ActiveDebuff(newDebuff));
         activeDebuffs[newDebuff.debuffName].routine = StartCoroutine(HandleDebuff(newDebuff));
+
+        OnDebuff?.Invoke(this);
+
     }
 
     private IEnumerator HandleDebuff(DebuffData debuff)
@@ -277,7 +299,22 @@ public class DebuffHandler : MonoBehaviour
     {
         character.isStunned = true;
 
+        if (agent != null)
+        {
+            if (agent.isOnNavMesh)
+            {
+                agent.isStopped = true;
+
+            }
+        }
+
         yield return new WaitForSeconds(duration);
+
+
+        if (agent != null && !character.isDead)
+        {
+            agent.isStopped = false;
+        }
 
         character.isStunned = false;
     }
@@ -311,17 +348,90 @@ public class DebuffHandler : MonoBehaviour
     /// <param name="duration"> 지속시간 </param>
     private IEnumerator ConfuseCoroutine(float duration)
     {
-        if (monster == null)
+        if (monster == null) yield break;
+
+        // 혼란 상태에 들어가기 전에 원래 상태 저장
+        // 이미 혼란 상태면 건너뛰기
+        bool wasAlreadyConfused = monster.targetTag == Constants.TAG_MONSTER;
+        string originalTag = wasAlreadyConfused ? Constants.TAG_PLAYER : monster.targetTag;
+        Transform originalTarget = wasAlreadyConfused ? null : monster.GetTarget();
+
+        float elapsedTime = 0f;
+
+        // 혼란 상태 시작
+        monster.targetTag = Constants.TAG_MONSTER;
+        monster.SetTarget(null);
+
+        while (elapsedTime < duration)
         {
-            yield break;
+            // 남은 시간 확인
+            if (activeDebuffs.ContainsKey(Constants.DEBUFF_CONFUSION))
+            {
+                ActiveDebuff activeDebuff = activeDebuffs[Constants.DEBUFF_CONFUSION];
+                if (activeDebuff.remainingTime <= 0)
+                {
+                    break;
+                }
+            }
+            else
+            {
+                break;
+            }
+
+            // 현재 타겟이 죽었거나 없으면 새로 찾기
+            Transform currentTarget = monster.GetTarget();
+            if (currentTarget == null || !currentTarget.gameObject.activeSelf)
+            {
+                GameObject[] monsters = GameObject.FindGameObjectsWithTag(Constants.TAG_MONSTER);
+                Transform closestMonster = null;
+                float closestDistance = Mathf.Infinity;
+
+                foreach (GameObject obj in monsters)
+                {
+                    if (obj.transform == monster.transform || !obj.activeSelf)
+                        continue;
+
+                    float distance = Vector3.Distance(monster.transform.position, obj.transform.position);
+                    if (distance < closestDistance)
+                    {
+                        closestDistance = distance;
+                        closestMonster = obj.transform;
+                    }
+                }
+
+                if (closestMonster != null)
+                {
+                    monster.SetTarget(closestMonster);
+                }
+            }
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
         }
 
-        string originalTag = monster.targetTag;
-        monster.targetTag = Constants.TAG_MONSTER;
+        // 혼란 상태 복구
+        if (!character.isDead && monster != null)
+        {
+            monster.targetTag = originalTag;
 
-        yield return new WaitForSeconds(duration);
-
-        monster.targetTag = originalTag;
+            // originalTarget이 null이면 플레이어를 자동으로 찾기
+            if (originalTarget == null)
+            {
+                GameObject playerObj = GameObject.FindGameObjectWithTag(Constants.TAG_PLAYER);
+                if (playerObj != null)
+                {
+                    monster.SetTarget(playerObj.transform);
+                }
+                else
+                {
+                    monster.SetTarget(null);
+                }
+            }
+            else
+            {
+                monster.SetTarget(originalTarget);
+            }
+        }
     }
 
     /// <summary>
@@ -403,8 +513,13 @@ public class DebuffHandler : MonoBehaviour
                     break;
 
                 case Constants.DEBUFF_STUN:
+
                     if (!character.isDead)
                     {
+                        if (agent != null)
+                        {
+                            agent.isStopped = false;
+                        }
                         character.isStunned = false;
                     }
                     break;
@@ -424,5 +539,39 @@ public class DebuffHandler : MonoBehaviour
             }
             activeDebuffs.Remove(debuffName);
         }
+    }
+
+
+    /// <summary>
+    /// 스킬 점진되는 고통 적용 함수
+    /// </summary>
+    public void IncreasePain(DebuffHandler debuffHandler)
+    {
+        if (debuffHandler.character.tag == Constants.TAG_PLAYER)
+        {
+            return;
+        }
+
+        // 점진되는 고통이 적용 중이 아니라면
+        if (debuffHandler._increasePain == null)
+        {
+            debuffHandler._increasePain = StartCoroutine(IncreasePainCoroutine(debuffHandler));
+        }
+    }
+
+    public IEnumerator IncreasePainCoroutine(DebuffHandler debuffHandler)
+    {
+        while (debuffHandler.GetActiveDebuffCount() > 0)
+        {
+            debuffHandler.character.TakeDamage(debuffHandler.GetActiveDebuffCount() * GameManager.Instance.PlayerStatManager.totalMultiDamage * 5f);
+            yield return new WaitForSeconds(Constants.DEBUFF_TIME);
+        }
+        _increasePain = null;
+
+    }
+
+    public void ConnectIncreasePain()
+    {
+        OnDebuff += IncreasePain;
     }
 }

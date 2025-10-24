@@ -16,7 +16,7 @@ public class NebulaPhantom : MonsterBase
     [SerializeField] private bool _isAttacking = false;
 
     [Header("Laser")]
-    [SerializeField] private GameObject laser;
+    [SerializeField] private PoolableObject SquareDecalPrefab;
 
     [SerializeField]
     private State currentState = State.Idle;
@@ -28,7 +28,7 @@ public class NebulaPhantom : MonsterBase
 
     private void Update()
     {
-        if (isDead || player == null) return;
+        if (isDead || _target == null) return;
         if (isStunned) return;
 
         LookAtPlayer();
@@ -58,7 +58,7 @@ public class NebulaPhantom : MonsterBase
     private void HandleIdle()
     {
         // 플레이어와 거리
-        float distance = Vector3.Distance(transform.position, player.position);
+        float distance = Vector3.Distance(transform.position, _target.position);
         if (distance <= detectionRange && CanSeePlayer())
         {
             currentState = State.Move;
@@ -66,8 +66,8 @@ public class NebulaPhantom : MonsterBase
     }
     private void HandleMove()
     {
-        if (player == null) return;
-        float distance = Vector3.Distance(transform.position, player.position);
+        if (_target == null) return;
+        float distance = Vector3.Distance(transform.position, _target.position);
         if (distance > detectionRange || !CanSeePlayer())
         {
             agent.ResetPath();
@@ -75,7 +75,7 @@ public class NebulaPhantom : MonsterBase
             return;
         }
 
-        agent.SetDestination(player.position);
+        agent.SetDestination(_target.position);
 
         if (distance <= attackRange && CanSeePlayer())
         {
@@ -88,16 +88,20 @@ public class NebulaPhantom : MonsterBase
     {
         _isAttacking = true;
 
-        if (player != null && Vector3.Distance(transform.position, player.position) <= attackRange)
+        if (_target != null && Vector3.Distance(transform.position, _target.position) <= attackRange)
         {
-            laser.SetActive(true);
+            Vector3 spawnPos = transform.position + transform.forward * 40;
+            spawnPos.y = 0;
+            GameObject decalobj = GameManager.Instance.PoolManager.GetFromPool(SquareDecalPrefab, spawnPos, SquareDecalPrefab.transform.rotation);
+
+            decalobj.GetComponent<SquareDecalEffect>().Play(attackDelay, transform, new Vector3(90, 0, 0));
             yield return new WaitForSeconds(attackDelay);
 
             float laserLength = 40f; // 사거리
 
             // 레이저 시작 위치를 플레이어 높이에 맞춤
             Vector3 startPos = transform.position + transform.forward * 0.5f;
-            startPos.y = player.position.y + 0.5f;
+            startPos.y = _target.position.y + 0.5f;
 
             // 디버그용 레이저 표시
             Debug.DrawRay(startPos, transform.forward * laserLength, Color.green, 0.3f);
@@ -119,8 +123,6 @@ public class NebulaPhantom : MonsterBase
                     Debug.Log($"총이 {hit.collider.name} 에 막힘");
                 }
             }
-
-            laser.SetActive(false);
             yield return new WaitForSeconds(attackDelay / 2);
         }
 

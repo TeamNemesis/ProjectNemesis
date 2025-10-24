@@ -258,6 +258,37 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &3796429431086391215
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7717432928454486222}
+  m_Layer: 0
+  m_Name: FirePos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7717432928454486222
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3796429431086391215}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.098, z: 0.6023}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2244350890717250916}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4023250755758224644
 GameObject:
   m_ObjectHideFlags: 0
@@ -354,7 +385,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2244350890717250916}
   - component: {fileID: 8324552329542656233}
-  - component: {fileID: 1442985798120474628}
+  - component: {fileID: -4422784606456200672}
   m_Layer: 0
   m_Name: Rifle
   m_TagString: Untagged
@@ -380,6 +411,7 @@ Transform:
   - {fileID: 8665993514273415281}
   - {fileID: 1395989053672026850}
   - {fileID: 7850366695342852346}
+  - {fileID: 7717432928454486222}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &8324552329542656233
@@ -404,7 +436,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &1442985798120474628
+--- !u!114 &-4422784606456200672
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -413,10 +445,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 4916232628880035297}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d771112f3bc717f4f990d82a9dfacca9, type: 3}
+  m_Script: {fileID: 11500000, guid: 3e6bfe823ffe6a04bbd9984ace6082a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _weaponType: 2
+  _firePos: {fileID: 7717432928454486222}
 --- !u!1 &5673592850977701241
 GameObject:
   m_ObjectHideFlags: 0

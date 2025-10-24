@@ -31,7 +31,16 @@ public class Door : MonoBehaviour
     //IInteractableManager _interactableManager;
     //IResourceManager _resourceManager; // ResourceManager 인터페이스(게임의 ResourceManager 래퍼)
 
-    bool _isInitialized = false;
+    //bool _isInitialized = false;
+
+    // 임시
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.F3))
+        {
+            OnRewardSelectionCompleted();
+        }
+    }
 
     /// <summary>
     /// 초기화: 반드시 RoomInfo를 주입해야 함.
@@ -49,8 +58,9 @@ public class Door : MonoBehaviour
         // 상태 주입
         _roomInfo = info;
 
-        // DoorInteractor와 안전하게 구독/등록
-        _doorInteractor.SetRoomInfo(_roomInfo);
+        // 방에 정보 넘겨주고 상호작용 비활성화(초기 상태)
+        _doorInteractor.SetRoomInfo(info);
+        _doorInteractor.ToggleInteraction(false);
 
         // 방지: 중복 구독
         _doorInteractor.OnInteracted -= OnDoorInteracted;
@@ -59,45 +69,12 @@ public class Door : MonoBehaviour
         // 등록
         //_interactableManager?.Register(_doorInteractor);
 
-        // 시각 적용: RoomInfo(ID) -> ResourceManager -> DoorView
-        //ApplyVisualsForRoomInfo(_roomInfo);
+        // 뷰에 정보 넘겨주고 뷰 비활성화(초기 상태)
+        _doorView.SetReward(info);
+        _doorView.ToggleReward(false);
 
-        _isInitialized = true;
+        //_isInitialized = true;
     }
-
-    /// <summary>
-    /// RoomInfo에 따라 DoorView에 미리보기/아이콘/텍스트 등을 적용한다.
-    /// 실제 asset lookup은 ResourceManager가 담당.
-    /// </summary>
-    //void ApplyVisualsForRoomInfo(RoomInfo info)
-    //{
-    //    if (_doorView == null) return;
-    //    if (_resourceManager == null)
-    //    {
-    //        Debug.LogWarning("Door.ApplyVisualsForRoomInfo: ResourceManager not provided.");
-    //        return;
-    //    }
-
-    //    // 기본 룸 데이터 적용
-    //    var roomData = _resourceManager.GetRoomData(info.RoomType);
-    //    if (roomData != null)
-    //    {
-    //        _doorView.ApplyRoomDataPreview(roomData);
-    //    }
-    //    else
-    //    {
-    //        _doorView.ClearPreview();
-    //    }
-
-    //    // Normal + TechSelect이면 회사별 테크팩 미리보기 적용(예시)
-    //    if (info.RoomType == RoomType.Normal && info.NormalRoomType == NormalRoomType.TechSelect)
-    //    {
-    //        string companyId = GameManager.Instance?.CompanyManager?.CurrentCompanyId;
-    //        var techCfg = _resourceManager.GetTechPackConfig(companyId) ?? _resourceManager.GetDefaultTechPackConfig();
-    //        if (techCfg != null)
-    //            _doorView.ApplyTechPackPreview(techCfg);
-    //    }
-    //}
 
     // OnInteracted 중계
     void OnDoorInteracted(IInteractable interactable)
@@ -134,6 +111,18 @@ public class Door : MonoBehaviour
 
         //_doorView?.ClearPreview();
         _roomInfo = null;
-        _isInitialized = false;
+        //_isInitialized = false;
+    }
+
+    /// <summary>
+    /// 방에서 보상 선택이 완료되었을 때 호출하여
+    /// 상호작용을 다시 활성화하고 보상을 뷰에 표시합니다.
+    /// </summary>
+    public void OnRewardSelectionCompleted()
+    {
+        // 상호작용 활성화
+        _doorInteractor.ToggleInteraction(true);
+        // 뷰에서 보상 보여주기
+        _doorView.ToggleReward(true);
     }
 }

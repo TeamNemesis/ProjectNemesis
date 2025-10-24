@@ -1,0 +1,41 @@
+using System.Collections;
+using Unity.VisualScripting;
+using UnityEngine;
+
+public class PoisonDash : AreaDamageBase
+{
+    [SerializeField]
+    private int _dashDamage;
+    public int dashDamage { get { return _dashDamage; } }
+
+    public void SetDashDamage(int dashDamage)
+    {
+        _dashDamage = dashDamage;
+    }
+
+    public GameObject GetGameObject()
+    {
+        return gameObject;
+    }
+
+    public void Initialize()
+    {
+        CheckTarget();
+        StartCoroutine(ReleaseCoroutine());
+    }
+
+
+    public override void ActiveSkill(Transform target)
+    {
+        GameManager.Instance.player.playerModel.Heal(1);
+        target.GetComponent<CharacterModelBase>().TakeDamage(dashDamage);
+    }
+
+    IEnumerator ReleaseCoroutine()
+    {
+        yield return new WaitForSeconds(Constants.SKILL_REMAIN);
+        GameManager.Instance.PoolManager.ReleaseToPoolByInterface(this);
+    }
+
+
+}

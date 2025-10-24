@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class SkillManager : MonoBehaviour
 {
@@ -24,11 +23,17 @@ public class SkillManager : MonoBehaviour
     public Skill_Collab skill_Collab { get { return _skill_Collab; } }
 
     private Skill_Mutant _skill_Mutant;
-    public Skill_Mutant skill_Mutant { get { return _skill_Mutant; }}
+    public Skill_Mutant skill_Mutant { get { return _skill_Mutant; } }
     #endregion
 
+    Player _player;
 
-     
+    public Player Player => _player;
+
+    private PlayerStatManager _playerStatManager;
+    public PlayerStatManager playerStatManager{get { return _playerStatManager; }}
+
+
 
     #region reinforce
     /// <summary>
@@ -36,9 +41,9 @@ public class SkillManager : MonoBehaviour
     /// </summary>
     [SerializeField]
     private ActiveTech _attackTech;
-    public ActiveTech attachTech { get { return _attackTech; } }
+    public ActiveTech attackTech { get { return _attackTech; } }
     public void SetAttackTech(ActiveTech attackTech)
-    { 
+    {
         _attackTech = attackTech;
     }
 
@@ -49,7 +54,7 @@ public class SkillManager : MonoBehaviour
     public ActiveTech bombTech { get { return _bombTech; } }
     public void SetBombTech(ActiveTech bombTech)
     {
-        _bombTech = bombTech; 
+        _bombTech = bombTech;
     }
 
     /// <summary>
@@ -58,8 +63,8 @@ public class SkillManager : MonoBehaviour
     private ActiveTech _skillTech;
     public ActiveTech skillTech { get { return _skillTech; } }
     public void SetSkillTech(ActiveTech skillTech)
-    { 
-        _skillTech = skillTech; 
+    {
+        _skillTech = skillTech;
     }
 
     /// <summary>
@@ -81,6 +86,7 @@ public class SkillManager : MonoBehaviour
 
     public void InitializeSkillManager()
     {
+
         _skill_One = GetComponent<Skill_One>();
         _skill_Two = GetComponent<Skill_Two>();
         _skill_Three = GetComponent<Skill_Three>();
@@ -96,6 +102,10 @@ public class SkillManager : MonoBehaviour
         _skill_Five.InitializeSkill(this);
         _skill_Collab.InitializeSkill(this);
         _skill_Mutant.InitializeSkill(this);
+
+        _player = GameManager.Instance.player;
+        _playerStatManager = GameManager.Instance.PlayerStatManager;
+
     }
 
     /// <summary>
@@ -163,7 +173,7 @@ public class SkillManager : MonoBehaviour
             }
         }
 
-     
+
 
         if (currentSkillData.Count > 0)
             return currentSkillData;
@@ -171,49 +181,8 @@ public class SkillManager : MonoBehaviour
 
     }
 
-  
-
-    /// <summary>
-    /// 가중치에 따른 스킬 회사 반환
-    /// </summary>
-    /// <returns></returns>
-    public SkillBase DrawSkillCompany()
-    {
-        int skillOneNum = _skill_One.skillNum + 1;
-        int skillTwoNum = _skill_Two.skillNum + 1;
-        int skillThreeNum = _skill_Three.skillNum + 1;
-        int skillFourNum = _skill_Four.skillNum + 1;
-        int skillFiveNum = _skill_Five.skillNum + 1;
-
-        int totalNum = skillOneNum + skillTwoNum + skillThreeNum + skillFourNum + skillFiveNum;
 
 
-        // 확률 총합
-        int tempNum = Random.Range(0, totalNum);
-
-
-        if (0 <= tempNum && tempNum < skillOneNum)
-        {
-            return _skill_One;
-        }
-        else if (tempNum < skillOneNum + skillTwoNum)
-        {
-            return _skill_Two;
-        }
-        else if (tempNum < skillOneNum + skillTwoNum + skillThreeNum)
-        {
-            return _skill_Three;
-        }
-        else if (tempNum < skillOneNum + skillTwoNum + skillThreeNum + skillFourNum)
-        {
-            return _skill_Four;
-        }
-        else
-        {
-            return _skill_Five;
-        }
-
-    }
 
     /// <summary>
     /// 입력받은 개수만큼 가중치에 따른 스킬 회사 반환
@@ -228,26 +197,49 @@ public class SkillManager : MonoBehaviour
         int skillFourNum = _skill_Four.skillNum + 1;
         int skillFiveNum = _skill_Five.skillNum + 1;
 
+        // 스킬팩을 다 뽑았고, 콜라보 스킬 조건이 안되면 가중치 0
+        if (skill_One.skillList.Count == 0 && CheckCollabo(skill_One, out _) == false)
+        {
+            skillOneNum = 0;
+        }
+        if (skill_Two.skillList.Count == 0 && CheckCollabo(skill_Two, out _) == false)
+        {
+            skillTwoNum = 0;
+        }
+        if (skill_Three.skillList.Count == 0 && CheckCollabo(skill_Three, out _) == false)
+        {
+            skillThreeNum = 0;
+        }
+        if (skill_Four.skillList.Count == 0 && CheckCollabo(skill_Four, out _) == false)
+        {
+            skillFourNum = 0;
+        }
+        if (skill_Five.skillList.Count == 0 && CheckCollabo(skill_Five, out _) == false)
+        {
+            skillFiveNum = 0;
+        }
+
+
         int totalNum = skillOneNum + skillTwoNum + skillThreeNum + skillFourNum + skillFiveNum;
 
         TechSelectPackType[] packTypes = new TechSelectPackType[count];
 
-        for (int i=0; i<count; i++)
+        for (int i = 0; i < count; i++)
         {
             int totalChance = Random.Range(0, totalNum);
-            if(totalChance < skillOneNum)
+            if (totalChance < skillOneNum)
             {
                 packTypes[i] = TechSelectPackType.Company1;
             }
-            else if(totalChance < skillOneNum + skillTwoNum)
+            else if (totalChance < skillOneNum + skillTwoNum)
             {
                 packTypes[i] = TechSelectPackType.Company2;
             }
-            else if(totalChance < skillOneNum + skillTwoNum + skillThreeNum)
+            else if (totalChance < skillOneNum + skillTwoNum + skillThreeNum)
             {
                 packTypes[i] = TechSelectPackType.Company3;
             }
-            else if(totalChance < skillOneNum + skillTwoNum + skillThreeNum + skillFourNum)
+            else if (totalChance < skillOneNum + skillTwoNum + skillThreeNum + skillFourNum)
             {
                 packTypes[i] = TechSelectPackType.Company4;
             }
@@ -421,6 +413,6 @@ public class SkillManager : MonoBehaviour
         return bCheck;
     }
 
-  
+
 
 }

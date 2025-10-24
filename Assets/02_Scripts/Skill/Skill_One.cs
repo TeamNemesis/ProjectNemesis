@@ -11,6 +11,7 @@ public class Skill_One : SkillBase
     /// <summary>
     /// 피격시 생성할 독 프리팹
     /// </summary>
+    [SerializeField]
     private PoisonSpread _hitPoisonSpreadPrefab;
 
     /// <summary>
@@ -28,9 +29,9 @@ public class Skill_One : SkillBase
             case 10:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 ActiveTech skillAttack = new Skill_One_Attack(choosedSkill);
-                if (_skillManager.attachTech != null)
+                if (_skillManager.attackTech != null)
                 {
-                    _skillManager.attachTech.Deactivate(player);
+                    _skillManager.attackTech.Deactivate(player, _skillManager.attackTech.skillData.skillIdx != choosedSkill.skillIdx);
                 }
                 skillAttack.Activate(_skillManager, player);
                 break;
@@ -38,24 +39,49 @@ public class Skill_One : SkillBase
             // 포자 퍼뜨리기
             case 11:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
-
+                ActiveTech skillGrenade = new Skill_One_Grenade(choosedSkill);
+                if (_skillManager.bombTech != null)
+                {
+                    if (_skillManager.bombTech.skillData.skillIdx != choosedSkill.skillIdx)
+                    {
+                        _skillManager.bombTech.Deactivate(player, _skillManager.bombTech.skillData.skillIdx != choosedSkill.skillIdx);
+                    }
+                }
+                skillGrenade.Activate(_skillManager, player);
                 break;
 
             // 피의 갈증
             case 12:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
-
+                ActiveTech skillSPAttack = new Skill_One_SPAttack(choosedSkill);
+                if (_skillManager.skillTech != null)
+                {
+                    if (_skillManager.skillTech.skillData.skillIdx != choosedSkill.skillIdx)
+                    {
+                        _skillManager.skillTech.Deactivate(player, _skillManager.skillTech.skillData.skillIdx != choosedSkill.skillIdx);
+                    }
+                }
+                skillSPAttack.Activate(_skillManager, player);
                 break;
 
             // 약육강식
             case 13:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
+                ActiveTech skillDash = new Skill_One_Dash(choosedSkill);
+                if (_skillManager.dashTech != null)
+                {
+                    if (_skillManager.dashTech.skillData.skillIdx != choosedSkill.skillIdx)
+                    {
+                        _skillManager.dashTech.Deactivate(player, _skillManager.dashTech.skillData.skillIdx != choosedSkill.skillIdx);
+                    }
+                }
+                skillDash.Activate(_skillManager, player);
                 break;
 
             // 넘치는 활력
             case 14:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
-                player.SetMaxHp((int)choosedSkill.skillLevelValue_1);
+                player.playerModel.SetMaxHp((int)choosedSkill.skillLevelValue_1);
                 break;
 
             // 초재생
@@ -71,7 +97,7 @@ public class Skill_One : SkillBase
                 //TODO 플레이어 모델에 받는데미지 감소 계수를 추가하여 10퍼센트 
 
                 //TODO 피격시 이벤트에 함수 추가 SpreadPoison
-
+                player.playerModel.PlayerHit += (transform) => SpreadPoison(player);
                 break;
 
             // 진화
@@ -97,7 +123,7 @@ public class Skill_One : SkillBase
         while (stack < 20)
         {
             yield return new WaitForSeconds(Constants.HEAL_SECOND);
-            player.Heal(Constants.HEAL_AMOUNT);
+            player.playerModel.Heal(Constants.HEAL_AMOUNT);
             stack++;
         }
     }
@@ -123,11 +149,16 @@ public class Skill_One : SkillBase
 
     #region 독성혈액
 
-    public void SpreadPoison()
+    public void SpreadPoison(Player player)
     {
-        //TODO 오브젝트풀 등록
-        Destroy(Instantiate(_hitPoisonSpreadPrefab, player.transform.position, player.transform.rotation), 0.5f);
+        Vector3 position = player.transform.position;
+        position.y = 0;
+        //TODO 스킬 확인
+        PoisonSpread poisonSpread = GameManager.Instance.PoolManager.GetFromPool(_hitPoisonSpreadPrefab, position,_hitPoisonSpreadPrefab.transform.rotation).GetComponent<PoisonSpread>();
+        poisonSpread.Initialize();
     }
+
+
 
     #endregion
 
@@ -150,6 +181,9 @@ public class Skill_One : SkillBase
         }
     }
     #endregion
+
+
+
 }
 
 
