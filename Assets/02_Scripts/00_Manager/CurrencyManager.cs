@@ -4,7 +4,7 @@ using UnityEngine;
 /// <summary>
 /// 플레이어의 화폐(골드, 크롬 등)를 관리하는 매니저 클래스입니다.
 /// </summary>
-public class CurrenyManager : MonoBehaviour
+public class CurrencyManager : MonoBehaviour
 {
     [Header("----- 데이터(임시) -----")]
     [SerializeField] float _startingGold = 100f;
@@ -31,6 +31,15 @@ public class CurrenyManager : MonoBehaviour
     public void Initialize()
     {
         _currentGold = _startingGold;
+        OnGoldChanged?.Invoke(_currentGold);
+    }
+
+    /// <summary>
+    /// 외부에서 현재 화폐 상태를 가져올 수 있도록 업데이트 이벤트를 강제로 발생시킵니다.
+    /// </summary>
+    public void GetCurrentCurrency()
+    {
+        OnChromeChanged?.Invoke(_currentChrome);
         OnGoldChanged?.Invoke(_currentGold);
     }
 

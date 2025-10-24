@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class PlaySceneView : MonoBehaviour
 {
     [Header("----- UI 컴포넌트 참조 -----")]
-    [SerializeField] Slider _hpBar;
+    [SerializeField] Slider _hpBarSlider;
     [SerializeField] TextMeshProUGUI _hpText;
     [SerializeField] TextMeshProUGUI _goldText;
     [SerializeField] TextMeshProUGUI _chromeText;
@@ -20,7 +20,7 @@ public class PlaySceneView : MonoBehaviour
 
     public void UpdateHPBar(float currentHP, float maxHP)
     {
-        _hpBar.value = currentHP / maxHP;
+        _hpBarSlider.value = currentHP / maxHP;
         _hpText.text = $"{currentHP} / {maxHP}";
     }
 

@@ -6,6 +6,7 @@ public class PlayScene : MonoBehaviour
     [SerializeField] Player _player;                               // 플레이어
     [SerializeField] PlayerInputHandler _inputHandler;             // 플레이어 입력 핸들러
     [SerializeField] MapController _mapController;                 // 맵 컨트롤러
+    [SerializeField] PlaySceneView _playSceneView;                 // 플레이 씬 뷰
 
     public MapController MapController => _mapController;
 
@@ -27,7 +28,9 @@ public class PlayScene : MonoBehaviour
         _inputHandler.OnSpecialAttackInputCanceled += _player.HandleSpecialCanceled;
         _inputHandler.OnInteractInput += _player.ExecuteInteraction;
 
-        // PlayScene.Awake
+        // PlaySceneView
+        GameManager.Instance.CurrencyManager.OnGoldChanged += _playSceneView.UpdateGoldText;
+        GameManager.Instance.CurrencyManager.OnChromeChanged += _playSceneView.UpdateChromeText;
     }
 
     private void Start()
