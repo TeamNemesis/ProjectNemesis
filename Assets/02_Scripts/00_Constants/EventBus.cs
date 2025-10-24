@@ -16,14 +16,5 @@ public static class EventBus
     }
 }
 
-public enum ATTACKTYPE
-{
-    NONE,
-    NORMAL,
-    GRENADE,
-    SPECIALATTACK,
-    DASH,
-    COUNT
-}
 
 
