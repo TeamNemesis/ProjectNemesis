@@ -23,14 +23,9 @@ public class PoisonSpread : AreaDamageBase
         GameManager.Instance.PoolManager.ReleaseToPoolByInterface(this);
     }
 
-    public GameObject GetGameObject()
-    {
-        return gameObject;
-    }
 
     public void Initialize()
     {
-        transform.SetParent(GameManager.Instance.player.transform);
         CheckTarget();
         StartCoroutine(DestroyPoisonSpreadCoroutine());
     }

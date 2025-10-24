@@ -53,21 +53,36 @@ public class Skill_Four : SkillBase
                 // EMP
             case 41:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
-
+                ActiveTech skillGrenade = new Skill_Four_Grenade(choosedSkill);
+                if (_skillManager.bombTech != null)
+                {
+                    _skillManager.bombTech.Deactivate(player, _skillManager.bombTech.skillData.skillIdx != choosedSkill.skillIdx);
+                }
+                skillGrenade.Activate(_skillManager, player);
                 break;
 
                 // 급속냉동
             case 42:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
-
+                ActiveTech skillSPAttack = new Skill_Four_SPAttack(choosedSkill);
+                if (_skillManager.skillTech != null)
+                {
+                    _skillManager.skillTech.Deactivate(player, _skillManager.skillTech.skillData.skillIdx != choosedSkill.skillIdx);
+                }
+                skillSPAttack.Activate(_skillManager, player);
                 break;
 
                 // 플라즈마 쉴드
             case 43:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
+                ActiveTech skillDash = new Skill_Four_Dash(choosedSkill);
+                if (_skillManager.dashTech != null)
+                {
+                    _skillManager.dashTech.Deactivate(player, _skillManager.dashTech.skillData.skillIdx != choosedSkill.skillIdx);
+                }
+                skillDash.Activate(_skillManager, player);
                 break;
-
-                // 취약
+            // 취약
             case 44:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
 
@@ -109,7 +124,7 @@ public class Skill_Four : SkillBase
     /// <param name="skillLevel"></param>
     public void ActivateSpawnDrone(int skillLevel)
     {
-        Transform playerTransform = GameManager.Instance.player.transform;
+        Transform playerTransform = skillManager.player.transform;
         Drone drone = GameManager.Instance.PoolManager.GetFromPool(dronePrefab,Vector3.zero , playerTransform.rotation,playerTransform).GetComponent<Drone>();
         droneList.Add(drone);
         Debug.Log(droneList.Count);

@@ -58,12 +58,6 @@ public class GameManager : MonoBehaviour
             DontDestroyOnLoad(gameObject);
         }
 
-
-        if (_player == null)
-        {
-            _player = FindAnyObjectByType<Player>();
-        }
-
         if (_skillManger==null)
         {
             _skillManger = Resources.Load<SkillManager>("Prefabs/Skill/SkillManager");
@@ -122,10 +116,5 @@ public class GameManager : MonoBehaviour
     private UIManager _uiManager;
     public UIManager UIManager { get { return _uiManager; } }
 
-    /// <summary>
-    /// 플레이어(Test용)
-    /// </summary>
-    [SerializeField]
-    private Player _player;
-    public Player player { get { return _player; } }
+
 }

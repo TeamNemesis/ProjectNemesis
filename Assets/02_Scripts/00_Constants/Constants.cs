@@ -184,6 +184,7 @@ public static class Constants
     public const string DEBUFF_CONFUSION = "confusion";
     public const string DEBUFF_BURN = "burn";
     public const string DEBUFF_BINDING = "bind";
+    public const string DEBUFF_WEAKEN = "weaken";
     #endregion
 
     #region layer
