@@ -2114,6 +2114,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16366c7266747e443b0627b093f86a87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _monsterSpawnPoints: []
   _doorSpawnPointsLeft:
   - {fileID: 2118117269731150339}
   - {fileID: 5376490524390820071}
@@ -2122,9 +2123,6 @@ MonoBehaviour:
   - {fileID: 5388599727319912745}
   - {fileID: 6224622537590684683}
   - {fileID: 3332043851456456210}
-  _roomName: labDoor
-  _roomChance: 0.1
-  _roomType: 3
 --- !u!1 &2238389247466334171
 GameObject:
   m_ObjectHideFlags: 0
