@@ -1,5 +1,5 @@
-﻿using JetBrains.Annotations;
-using System.Collections;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Elite1 : MonsterBase
@@ -25,9 +25,14 @@ public class Elite1 : MonsterBase
     [SerializeField] private GameObject rangePrefab;
     [SerializeField] private GameObject bladeWavePrefab;
     [SerializeField] private GameObject BulletPrefab;
-    //private bool isPattern = false;
+
     private int attackCount = 2;
     private float attackDist = 1f; // 공격 시 전진 거리
+
+    [Header("CoolTimes")]
+    [SerializeField] private float Pattern1CoolTime = 5f;
+    [SerializeField] private float Pattern2CoolTime = 5f;
+
 
     private void Update()
     {
@@ -55,7 +60,7 @@ public class Elite1 : MonsterBase
             case State.Attack:
                 if (!_isAttacking)
                 {
-                    //StartCoroutine(PerformAttackOnce());
+
                 }
                 break;
             case State.Die:
@@ -78,76 +83,27 @@ public class Elite1 : MonsterBase
     {
         if (_target == null) return;
         float distance = Vector3.Distance(transform.position, _target.position);
-        if (distance > detectionRange || !CanSeePlayer())   //플레이어와의 거리 > 탐지거리 ->이때 패턴 시작
+        if (distance > detectionRange || !CanSeePlayer())
         {
             agent.ResetPath();
             currentState = State.Idle;
             return;
         }
 
-        if (!_isAttacking)//패턴 하나 끝나면
+        if (!_isAttacking) //패턴 하나 끝나면
         {
-            //랜덤 패턴 선택
-            int randomPattern = Random.Range(1, 3);
-
-            if (randomPattern == 1)
-            {
-                Debug.Log("패턴1 시작");
-                Pattern1();
-            }
-            else
-            {
-                Debug.Log("패턴2 시작");
-                Pattern2();
-            }     
+            agent.ResetPath();
+            currentState = State.Attack;
         }
     }
 
-    //private IEnumerator PerformAttack()
-    //{
-    //    float distance = Vector3.Distance(transform.position, player.position);
-    //    _isAttacking = true;
-
-    //    if (player != null && distance <= attackRange)  //공격범위 내에 플레이어가 있을 때
-    //    {
-    //        // 몬스터 기준 중심 위치 설정
-    //        Vector3 center = transform.position + transform.forward * (_box_Length / 2f);
-
-    //        // 박스의 반 크기
-    //        Vector3 halfExtents = new Vector3(_box_Width / 2f, _box_Height / 2f, _box_Length / 2f);
-
-    //        // 박스의 회전 (몬스터 정면을 기준으로 정렬)
-    //        Quaternion orientation = Quaternion.LookRotation(transform.forward);
-
-    //        // 박스 영역 안의 적 탐색
-    //        Collider[] hitTarget = Physics.OverlapBox(center, halfExtents, orientation);
+    private IEnumerator PerformAttack() 
+    {
+        yield return null;
+    }
 
 
-    //        foreach (Collider target in hitTarget)
-    //        {
-    //            if (target.TryGetComponent(out IDamageable playerHealth) && target.tag == targetTag)
-    //            {
-    //                yield return new WaitForSeconds(0.5f);
-    //                float finalPlayerDistance = Vector3.Distance(transform.position, player.position);
-    //                if (finalPlayerDistance <= attackRange)
-    //                {
-    //                    if (playerHealth != null)
-    //                    {
-
-    //                        playerHealth.TakeDamage(attackDamage);  //데미지 적용
-                            
-    //                    }
-    //                }
-    //            }
-    //        }
-    //        yield return new WaitForSeconds(attackDelay);   //딜레이
-    //    }
-    //    _isAttacking = false;
-    //    currentState = State.Move; // 공격 후 다시 추격 상태로 전환
-    //}
-
-
-    void OnDrawGizmosSelected() // 이게뭐지..
+    void OnDrawGizmosSelected()
     {
         Vector3 center = transform.position + transform.forward * (_box_Length / 2f);
         Vector3 halfExtents = new Vector3(_box_Width / 2f, _box_Height / 2f, _box_Length / 2f);
@@ -158,14 +114,10 @@ public class Elite1 : MonsterBase
         Gizmos.DrawWireCube(Vector3.zero, halfExtents * 2f);
     }
 
-    void Pattern1()
-    {
-        StartCoroutine(Pattern1Routine());
-    }
     private IEnumerator Pattern1Routine()   // 패턴1 모든 루틴
     {
         _isAttacking = true;
-        // 사라지기
+
         _meshRenderer = GetComponent<MeshRenderer>();
         _meshRenderer.enabled = false;
 
@@ -223,6 +175,7 @@ public class Elite1 : MonsterBase
             yield return new WaitForSeconds(cool);
         }
     }
+
     void ShootBlade()
     {
         // 플레이어의 위치를 가져오되, 높이는 몬스터 높이와 동일하게 맞추기
@@ -236,10 +189,6 @@ public class Elite1 : MonsterBase
         GameObject blade = Instantiate(bladeWavePrefab, spawnPos, transform.rotation);
     }
 
-    void Pattern2()
-    {
-        StartCoroutine(Pattern2Routine());
-    }
     private IEnumerator Pattern2Routine()   // 패턴2 모든 루틴
     {
         _isAttacking = true;
@@ -342,6 +291,47 @@ public class Elite1 : MonsterBase
         // 생성
         Vector3 spawnPos = new Vector3(transform.position.x, 1f, transform.position.z) + transform.forward * 1f;
         GameObject bullet = Instantiate(BulletPrefab, spawnPos, transform.rotation);
+    }
+
+    private void CoolTimeController()
+    {
+        if (Pattern1CoolTime > 0)
+        {
+            Pattern1CoolTime -= Time.deltaTime;
+        }
+
+        if (Pattern2CoolTime > 0)
+        {
+            Pattern2CoolTime -= Time.deltaTime;
+        }
+    }
+
+    private void TryUseSkill()
+    {
+        // 사용 가능한 스킬 코루틴 리스트
+        List<IEnumerator> availableSkills = new List<IEnumerator>();
+
+
+        if (Pattern1CoolTime <= 0)
+        {
+            availableSkills.Add(Pattern1Routine());
+        }
+        if (Pattern2CoolTime <= 0)
+        {
+            availableSkills.Add(Pattern2Routine());
+        }
+
+        // 사용 가능한 스킬이 있으면 랜덤으로 선택
+        if (availableSkills.Count > 0)
+        {
+            int randomIndex = Random.Range(0, availableSkills.Count);
+            StartCoroutine(availableSkills[randomIndex]);
+        }
+        else
+        {
+            // 모든 스킬이 쿨타임이면 다시 추격
+            currentState = State.Move;
+        }
     }
 
 }
