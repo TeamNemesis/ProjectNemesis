@@ -35,12 +35,17 @@ public class Elite1 : MonsterBase
     private float attackDist = 1f; // 공격 시 전진 거리
 
     [Header("CoolTimes")]
-    [SerializeField] private float Pattern1CoolTime = 5f;
-    [SerializeField] private float Pattern2CoolTime = 5f;
+    [SerializeField] private float Pattern1CoolTime = 7f;
+    [SerializeField] private float Pattern2CoolTime = 7f;
+
+    [Header("Phase")]
+    [SerializeField] private bool isPhase2 = false;
+    private float lastHealthCheckThreshold = 1f;
 
 
     private void Update()
     {
+        CoolTimeController();
         if (isDead || _target == null) return;
         if (isStunned) return;
 
@@ -48,12 +53,7 @@ public class Elite1 : MonsterBase
         {
             LookAtPlayer();
         }
-        if (currentHealth / maxHealth <= 0.5f)    // 2페이즈
-        {
-            GetComponent<Renderer>().material.color = Color.red;    // 색깔 변경
-            _box_Length = 4f;   // 공격범위 변경
-            _box_Width = 4f;    // 공격범위 변경
-        }
+        
         switch (currentState)
         {
             case State.Idle:
@@ -259,16 +259,14 @@ public class Elite1 : MonsterBase
 
         foreach (Collider target in hitTargets)
         {
-            if (target.CompareTag(targetTag) && target.TryGetComponent(out IDamageable playerHealth))
+            if (target.CompareTag(targetTag) && target.TryGetComponent(out IDamageable player))
             {
-                playerHealth.TakeDamage(attackDamage);
+                player.TakeDamage(attackDamage);
             }
         }
 
         // TakeDamage 쿨타임
         yield return new WaitForSeconds(attackDelay);
-
-
     }
 
 
@@ -361,4 +359,29 @@ public class Elite1 : MonsterBase
         }
     }
 
+    public override void TakeDamage(float damage)
+    {
+        base.TakeDamage(damage);
+
+        float healthRatio = currentHealth / maxHealth;
+
+        // 체력 임계값을 넘었을 때만 체크
+        if (healthRatio <= 0.5f && lastHealthCheckThreshold > 0.5f)
+        {
+            EnterPhase2();
+        }
+
+        lastHealthCheckThreshold = healthRatio;
+    }
+
+    /// <summary>
+    /// 2 페이즈 진입
+    /// </summary>
+    private void EnterPhase2()
+    {
+        isPhase2 = true;
+        GetComponent<Renderer>().material.color = Color.red;
+        _box_Length = 4f;
+        _box_Width = 4f;
+    }
 }
