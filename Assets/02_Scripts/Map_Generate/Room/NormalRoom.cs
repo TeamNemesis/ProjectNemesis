@@ -26,14 +26,33 @@ public class NormalRoom : Room
             return System.Array.Empty<RewardInteractableObject>();
         }
 
-        GameObject prefab = GetPrefabForRoomType(dataManager);
-        if (prefab == null)
-        {
-            Debug.LogWarning($"NormalRoom.SpawnReward: No prefab mapped for NormalType {_roomInfo.NormalType}.");
-            return System.Array.Empty<RewardInteractableObject>();
-        }
+        var prefab = GetPrefabForRoomType(dataManager);
+        Debug.Log($"Spawning prefab: {(prefab != null ? prefab.name : "null")} for type {_roomInfo.NormalType}");
 
         var instantiated = Instantiate(prefab, _rewardSpawnPoints[0].position, Quaternion.identity, transform);
+        Debug.Log($"Instantiated root name: {instantiated.name}");
+
+        // 시도 1: 루트에서 찾기
+        var rewardRoot = instantiated.GetComponent<RewardInteractableObject>();
+        Debug.Log($"GetComponent<RewardInteractableObject>() => {(rewardRoot == null ? "null" : rewardRoot.GetType().FullName)}");
+
+        // 시도 2: 자식까지 검색
+        var rewardChild = instantiated.GetComponentInChildren<RewardInteractableObject>(true);
+        Debug.Log($"GetComponentInChildren<RewardInteractableObject>(true) => {(rewardChild == null ? "null" : rewardChild.GetType().FullName)}");
+
+        // 전체 MonoBehaviour 목록 출력(무엇이 붙어있는지 확인)
+        var monos = instantiated.GetComponentsInChildren<MonoBehaviour>(true);
+        foreach (var m in monos)
+            Debug.Log($"Component on instantiated: {m.GetType().FullName}");
+
+        //GameObject prefab = GetPrefabForRoomType(dataManager);
+        //if (prefab == null)
+        //{
+        //    Debug.LogWarning($"NormalRoom.SpawnReward: No prefab mapped for NormalType {_roomInfo.NormalType}.");
+        //    return System.Array.Empty<RewardInteractableObject>();
+        //}
+
+        //var instantiated = Instantiate(prefab, _rewardSpawnPoints[0].position, Quaternion.identity, transform);
         var reward = instantiated.GetComponent<RewardInteractableObject>();
         if (reward == null)
         {

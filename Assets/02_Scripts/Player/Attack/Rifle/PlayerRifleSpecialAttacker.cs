@@ -26,6 +26,9 @@ public class PlayerRifleSpecialAttacker : PlayerSpecialAttacker
     Coroutine _chargeRoutine;
     float _chargeTimer;
 
+    // 중복 발사 방지 플래그
+    bool _hasFired = false;
+
     public override WeaponType WeaponType => WeaponType.Rifle; // 예시
 
     public override void Initialize(Player player)
@@ -36,18 +39,38 @@ public class PlayerRifleSpecialAttacker : PlayerSpecialAttacker
     public override void StartCharge()
     {
         base.StartCharge();
+
+        // 이미 차지중이면 중복 시작 방지
+        if (_chargeRoutine != null)
+            return;
+
+        // 발사 플래그 리셋
+        _hasFired = false;
+
         // owner에서 코루틴을 시작하여 차지 업데이트
-        if (_chargeRoutine != null) _player.StopCoroutine(_chargeRoutine);
         _chargeRoutine = _player.StartCoroutine(ChargeRoutine());
     }
 
     public override void StopChargeAndFire()
     {
+        // 이미 발사한 경우 재발사 방지
+        if (_hasFired)
+        {
+            // 코루틴이 돌고 있으면 중단하고 정리
+            if (_chargeRoutine != null) { _player.StopCoroutine(_chargeRoutine); _chargeRoutine = null; }
+            _chargeTimer = 0f;
+            base.StopChargeAndFire();
+            return;
+        }
+
+        // 멈추고 발사
         if (_chargeRoutine != null) { _player.StopCoroutine(_chargeRoutine); _chargeRoutine = null; }
         float ratio = Mathf.Clamp01(_chargeTimer / maxChargeTime);
         _chargeTimer = 0f;
+
         // 실제 발사
         FireWithCharge(ratio);
+
         base.StopChargeAndFire(); // triggers events & EndSpecial
     }
 
@@ -55,6 +78,7 @@ public class PlayerRifleSpecialAttacker : PlayerSpecialAttacker
     {
         if (_chargeRoutine != null) { _player.StopCoroutine(_chargeRoutine); _chargeRoutine = null; }
         _chargeTimer = 0f;
+        _hasFired = false;
         base.CancelCharge();
     }
 
@@ -68,22 +92,37 @@ public class PlayerRifleSpecialAttacker : PlayerSpecialAttacker
             RaiseChargeUpdated(ratio);
             yield return null;
         }
-        // 자동 풀차지 시 자동 발사(선택)
+
+        // 자동 풀차지 시 자동 발사
         _chargeRoutine = null;
         float fullRatio = 1f;
-        FireWithCharge(fullRatio);
-        base.StopChargeAndFire(); 
+
+        // 발사 플래그 세우고 발사
+        if (!_hasFired)
+        {
+            FireWithCharge(fullRatio);
+            _hasFired = true;
+        }
+
+        // 차지 루틴에서 직접 EndSpecial/Stop 이벤트를 호출할 수 있음.
+        base.StopChargeAndFire();
         EndSpecial();
     }
 
     protected override void Fire()
     {
-        // 파생 클래스 외부에서 직접 호출하지 않도록 비워둠 or 기본 동작 구현
+        // 파생 클래스 외부에서 직접 호출하지 않도록 비워두거나 기본 동작 구현
         FireWithCharge(0f);
     }
 
     void FireWithCharge(float ratio)
     {
+        // 이미 발사된 경우 재진입 방지
+        if (_hasFired) return;
+        _hasFired = true;
+
+        Debug.Log($"PlayerRifleSpecialAttacker.FireWithCharge ratio={ratio} frame={Time.frameCount}");
+
         float damage = Mathf.Lerp(minDamage, maxDamage, ratio);
         float width = Mathf.Lerp(minWidth, maxWidth, ratio);
 
@@ -93,10 +132,23 @@ public class PlayerRifleSpecialAttacker : PlayerSpecialAttacker
         if (laserPrefab != null)
         {
             GameObject go = Instantiate(laserPrefab);
+            // 선택사항: 부모를 정리된 오브젝트로 붙여서 계층 관리
+            go.transform.SetParent(_player.transform, true);
+
             var laser = go.GetComponent<LaserBeam>();
+            if (laser == null)
+            {
+                Debug.LogError("Laser prefab does not contain LaserBeam component.");
+                Destroy(go);
+                return;
+            }
+
             laser.Initialize(origin, dir, maxDistance, damage, width, wallMask, enemyMask, _player.gameObject);
             laser.lifeTime = visualLifetime;
             laser.Fire();
+
+            // 시각 오브젝트가 스스로 제거하지 않을 경우 안전하게 Destroy 예약
+            Destroy(go, visualLifetime + 0.1f);
         }
         else
         {

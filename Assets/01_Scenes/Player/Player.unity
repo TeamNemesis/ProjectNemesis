@@ -753,13 +753,29 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5707644572232838547, guid: 640f7220942f4c54a9058c35735d0eb9, type: 3}
+      propertyPath: maxX
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 5707644572232838547, guid: 640f7220942f4c54a9058c35735d0eb9, type: 3}
+      propertyPath: maxZ
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 5707644572232838547, guid: 640f7220942f4c54a9058c35735d0eb9, type: 3}
+      propertyPath: minX
+      value: -30
+      objectReference: {fileID: 0}
+    - target: {fileID: 5707644572232838547, guid: 640f7220942f4c54a9058c35735d0eb9, type: 3}
+      propertyPath: minZ
+      value: -50
+      objectReference: {fileID: 0}
     - target: {fileID: 6686156600494389063, guid: 640f7220942f4c54a9058c35735d0eb9, type: 3}
       propertyPath: m_Name
       value: Main Camera
       objectReference: {fileID: 0}
     - target: {fileID: 7832817765617677151, guid: 640f7220942f4c54a9058c35735d0eb9, type: 3}
       propertyPath: orthographic size
-      value: 5
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

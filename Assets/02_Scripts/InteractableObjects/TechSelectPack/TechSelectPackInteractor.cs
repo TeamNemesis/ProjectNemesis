@@ -20,6 +20,7 @@ public class TechSelectPackInteractor : RewardInteractableObject
     public void Initialize(TechSelectPackType packType)
     {
         _packType = packType;
+        GameManager.Instance.UIManager.onRewardSelect += RaiseRewardGivenEvent;
     }
 
     public override void StartInteract(Transform subject)
@@ -31,5 +32,10 @@ public class TechSelectPackInteractor : RewardInteractableObject
     protected override IEnumerator RewardCoroutine()
     {
         throw new NotImplementedException();
+    }
+
+    void RaiseRewardGivenEvent()
+    {
+        OnRewardGiven?.Invoke();
     }
 }

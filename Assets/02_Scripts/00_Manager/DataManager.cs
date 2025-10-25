@@ -97,6 +97,7 @@ public class DataManager : MonoBehaviour
             return;
         }
         _rewardDataMap.Clear();
+        _techPackDataMap.Clear();
         foreach (var reward in rewards) {
             if (reward.RewardType == RewardType.TechSelectPack) {
                 // TechSelectPack 딕셔너리에 넣기
