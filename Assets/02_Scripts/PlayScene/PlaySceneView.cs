@@ -18,18 +18,19 @@ public class PlaySceneView : MonoBehaviour
         GameManager.Instance.CurrencyManager.GetCurrentCurrency();
     }
 
-    public void UpdateHPBar(float currentHP, float maxHP)
+    public void UpdateHPBar(int currentHp, int maxHp)
     {
-        _hpBarSlider.value = currentHP / maxHP;
-        _hpText.text = $"{currentHP} / {maxHP}";
+        _hpBarSlider.maxValue = maxHp;
+        _hpBarSlider.value = currentHp;
+        _hpText.text = $"{currentHp} / {maxHp}";
     }
 
-    public void UpdateGoldText(float currentGold)
+    public void UpdateGoldText(int currentGold)
     {
         _goldText.text = $"{currentGold}";
     }
 
-    public void UpdateChromeText(float currentChrome)
+    public void UpdateChromeText(int currentChrome)
     {
         _chromeText.text = $"{currentChrome}";
     }

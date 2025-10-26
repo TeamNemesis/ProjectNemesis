@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using UnityEngine;
 
 public class ChromeInteractor : RewardInteractableObject
 {
@@ -7,6 +8,8 @@ public class ChromeInteractor : RewardInteractableObject
 
     protected override IEnumerator RewardCoroutine()
     {
-        throw new NotImplementedException();
+        yield return new WaitForSeconds(0.01f);
+        GameManager.Instance.CurrencyManager.AddChrome(10);
+        OnRewardGiven?.Invoke();
     }
 }

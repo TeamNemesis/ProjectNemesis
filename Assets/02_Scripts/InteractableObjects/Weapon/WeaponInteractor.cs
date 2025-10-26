@@ -6,10 +6,7 @@ using UnityEngine;
 /// </summary>
 public class WeaponInteractor : InteractableObject
 {
-    [SerializeField] Transform _guidePoint;
     [SerializeField] WeaponType _weaponType;
-
-    public override Vector3 GuidePoint => _guidePoint.position;
 
     public override InteractableType InteractableType => InteractableType.Weapon;
     public WeaponType WeaponType => _weaponType;

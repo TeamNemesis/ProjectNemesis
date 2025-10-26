@@ -8,6 +8,8 @@ public class CreditInteractor : RewardInteractableObject
 
     protected override IEnumerator RewardCoroutine()
     {
-        throw new NotImplementedException();
+        yield return new WaitForSeconds(0.01f);
+        GameManager.Instance.CurrencyManager.AddCredit(500);
+        OnRewardGiven?.Invoke();
     }
 }

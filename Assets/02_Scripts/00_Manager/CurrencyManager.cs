@@ -7,31 +7,31 @@ using UnityEngine;
 public class CurrencyManager : MonoBehaviour
 {
     [Header("----- 데이터(임시) -----")]
-    [SerializeField] float _startingGold = 100f;
+    [SerializeField] int _startingCredit = 100;
 
     [Header("----- 읽기 전용 -----")]
-    [SerializeField] float _currentGold;
-    [SerializeField] float _currentChrome;
+    [SerializeField] int _currentCredit;
+    [SerializeField] int _currentChrome;
 
-    public float CurrentGold => _currentGold;
-    public float CurrentChrome => _currentChrome;
+    public int CurrentGold => _currentCredit;
+    public int CurrentChrome => _currentChrome;
 
     /// <summary>
     /// 골드가 변경되었을 때 발생하는 이벤트입니다.
     /// 매개변수는 변경된 후 최종적으로 갖고있는 현재 골드 양입니다.
     /// </summary>
-    public event Action<float> OnGoldChanged;
+    public event Action<int> OnCreditChanged;
 
     /// <summary>
     /// 크롬이 변경되었을 때 발생하는 이벤트입니다.
     /// 매개변수는 변경된 후 최종적으로 갖고있는 현재 크롬 양입니다.
     /// </summary>
-    public event Action<float> OnChromeChanged;
+    public event Action<int> OnChromeChanged;
 
     public void Initialize()
     {
-        _currentGold = _startingGold;
-        OnGoldChanged?.Invoke(_currentGold);
+        _currentCredit = _startingCredit;
+        OnCreditChanged?.Invoke(_currentCredit);
     }
 
     /// <summary>
@@ -40,16 +40,16 @@ public class CurrencyManager : MonoBehaviour
     public void GetCurrentCurrency()
     {
         OnChromeChanged?.Invoke(_currentChrome);
-        OnGoldChanged?.Invoke(_currentGold);
+        OnCreditChanged?.Invoke(_currentCredit);
     }
 
-    public void AddGold(float amount)
+    public void AddCredit(int amount)
     {
-        _currentGold += amount;
-        OnGoldChanged?.Invoke(_currentGold);
+        _currentCredit += amount;
+        OnCreditChanged?.Invoke(_currentCredit);
     }
 
-    public void AddChrome(float amount)
+    public void AddChrome(int amount)
     {
         _currentChrome += amount;
         OnChromeChanged?.Invoke(_currentChrome);

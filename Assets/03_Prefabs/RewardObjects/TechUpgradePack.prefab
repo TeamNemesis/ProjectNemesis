@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 7244223153070222510}
   - component: {fileID: -3143644292241591165}
   - component: {fileID: 5969187396448914151}
+  - component: {fileID: -7490245269174704584}
   m_Layer: 6
   m_Name: TechUpgradePack
   m_TagString: Untagged
@@ -30,7 +31,7 @@ Transform:
   m_GameObject: {fileID: 4939083516330407042}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 11.48, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -123,6 +124,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52debbd6a3c04f44bb26b94b126f1021, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _guidePoint: {fileID: 4517807865614754762}
+  _techItem: {fileID: -7490245269174704584}
 --- !u!114 &5969187396448914151
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -133,6 +136,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1e276cf56c5db974ab47d7acb451cde0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-7490245269174704584
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4939083516330407042}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5d943ea9d6f9d04c82a4ac8eeb7a397, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &6843297556739107668
