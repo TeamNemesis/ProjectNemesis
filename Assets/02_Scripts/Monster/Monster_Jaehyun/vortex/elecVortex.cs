@@ -1,5 +1,4 @@
-﻿using Unity.AppUI.UI;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
 
 public class elecVortex : MonoBehaviour
@@ -19,7 +18,10 @@ public class elecVortex : MonoBehaviour
 
     [SerializeField] private int damage = 20;           // 초당 데미지
 
+   
+    [SerializeField] private float damageInterval = 1f; // 1초 간격으로 데미지
 
+    private float damageTimer = 0f;
     void Start()
     {
         Tr = GetComponent<Transform>();
@@ -42,12 +44,12 @@ void Update()
             Vector3 targetPos = point.position;
             targetPos.y = col.transform.position.y; // 수직 이동 방지
 
-            // 👉 Lerp로 천천히 당기기
+            // Lerp로 천천히 당기기
             Vector3 newPos = Vector3.Lerp(col.transform.position, targetPos, Time.deltaTime * power);
             agent.Warp(newPos); // Move 대신 Warp로 안정 이동
         }
 
-        // 👉 가장 가까운 몬스터로 Vortex가 부드럽게 이동
+        // 가장 가까운 몬스터로 Vortex가 부드럽게 이동
         GameObject nearest = GetNearestMonster();
         if (nearest != null)
         {
@@ -56,11 +58,17 @@ void Update()
 
             // Lerp로 부드럽게 이동
             transform.position = Vector3.Lerp(transform.position, targetPos, Time.deltaTime * speed);
-
-            // Y값 완전히 고정 (원하면)
-            transform.position = new Vector3(transform.position.x, 0f, transform.position.z);
         }
+
+        damageTimer += Time.deltaTime;
+        if (damageTimer >= damageInterval)
+        {
+            ApplyDamage();
+            damageTimer = 0f;
+        }
+
     }
+    //주변몬스터 
     private GameObject GetNearestMonster()
     {
         GameObject nearest = null;
@@ -79,6 +87,15 @@ void Update()
         }
 
         return nearest;
+    }
+
+    private void ApplyDamage()
+    {
+        foreach (var col in colliders)
+        {
+            CharacterModelBase target = col.GetComponent<CharacterModelBase>();
+            target.TakeDamage(damage);
+        }
     }
 
     void OnDrawGizmosSelected() //실린더 모양 기즈모
