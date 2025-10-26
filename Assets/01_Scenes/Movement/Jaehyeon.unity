@@ -542,7 +542,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 1196318717}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eccc1521f13268c4f884417658d86ae3, type: 3}
   m_Name: 
@@ -4333,6 +4333,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 3156450904419965930, guid: 8fb7464f2132e3543ac3eafe0c4e1fcb, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3156450904419965930, guid: 8fb7464f2132e3543ac3eafe0c4e1fcb, type: 3}
       propertyPath: _interactableGuideView
       value: 
       objectReference: {fileID: 1696986076}
@@ -8122,7 +8126,7 @@ Transform:
   m_GameObject: {fileID: 8175059898544244173}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 15.9, y: 0, z: 10.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -8298,7 +8302,7 @@ Transform:
   m_GameObject: {fileID: 272672480465219428}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -6.78, y: 0, z: -8.22}
+  m_LocalPosition: {x: -4.49, y: 0.47856933, z: -8.38653}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -8546,7 +8550,7 @@ MonoBehaviour:
   monsters:
   - {fileID: 4932549610395736362}
   - {fileID: 272672480465219428}
-  speed: 5
+  speed: 1
   layer:
     serializedVersion: 2
     m_Bits: 1024
@@ -8554,7 +8558,7 @@ MonoBehaviour:
   radius: 5
   height: 2
   ConstHeight: 5
-  power: 10
+  power: 2
   damage: 20
 --- !u!65 &8428478167035396756
 BoxCollider:

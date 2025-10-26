@@ -5,7 +5,7 @@ using UnityEngine.AI;
 public class elecVortex : MonoBehaviour
 {
     [SerializeField] private GameObject[] monsters;     // 임시 설정
-    [SerializeField] private float speed;               // 따라갈 속도
+    [SerializeField] private float speed=1f;               // 따라갈 속도
 
     [SerializeField] private LayerMask layer;           // 아마 달렸있을 Enemy Layer
     [SerializeField] private Collider[] colliders;      // 감지한 Collder배열(끌어당길)
@@ -25,35 +25,40 @@ public class elecVortex : MonoBehaviour
         Tr = GetComponent<Transform>();
     }
 
-    void Update()
+  
+void Update()
     {
-        Vector3 pos1 = new Vector3(Tr.position.x, Tr.position.y - ConstHeight, Tr.position.z);  //캡슐의 맨아래 위치
-        Vector3 pos2 = new Vector3(Tr.position.x, Tr.position.y + ConstHeight, Tr.position.z);  //캡슐의 맨위 위치
-        colliders = Physics.OverlapCapsule(pos2, pos1, radius, layer);  //실제 범위
+        Vector3 pos1 = new Vector3(Tr.position.x, Tr.position.y - ConstHeight, Tr.position.z);
+        Vector3 pos2 = new Vector3(Tr.position.x, Tr.position.y + ConstHeight, Tr.position.z);
+        colliders = Physics.OverlapCapsule(pos2, pos1, radius, layer);
+
+        Transform point = transform.Find("Point");
 
         foreach (var col in colliders)
         {
             NavMeshAgent agent = col.GetComponent<NavMeshAgent>();
+            if (agent == null) continue;
 
-            // Point자식
-            Transform point = transform.Find("Point");
+            Vector3 targetPos = point.position;
+            targetPos.y = col.transform.position.y; // 수직 이동 방지
 
-            // 이동 방향 계산 (Point의 위치 - 현재 위치)
-            Vector3 dir = (point.position - col.transform.position).normalized;
-
-            // 힘 적용
-            agent.Move(dir * Time.deltaTime * power);
+            // 👉 Lerp로 천천히 당기기
+            Vector3 newPos = Vector3.Lerp(col.transform.position, targetPos, Time.deltaTime * power);
+            agent.Warp(newPos); // Move 대신 Warp로 안정 이동
         }
 
-        //배열에서 가까운오브젝트 찾고 이동. 
+        // 👉 가장 가까운 몬스터로 Vortex가 부드럽게 이동
         GameObject nearest = GetNearestMonster();
         if (nearest != null)
         {
             Vector3 targetPos = nearest.transform.position;
-            Vector3 moveDir = (targetPos - transform.position).normalized;
+            targetPos.y = transform.position.y; // Y값 고정
 
-            // 🔹 3. speed 속도로 이동
-            transform.position += moveDir * speed * Time.deltaTime;
+            // Lerp로 부드럽게 이동
+            transform.position = Vector3.Lerp(transform.position, targetPos, Time.deltaTime * speed);
+
+            // Y값 완전히 고정 (원하면)
+            transform.position = new Vector3(transform.position.x, 0f, transform.position.z);
         }
     }
     private GameObject GetNearestMonster()
