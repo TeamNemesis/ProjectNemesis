@@ -3,12 +3,14 @@ using UnityEngine;
 public class StartRoom : Room
 {
     [SerializeField] PoolableObject[] _weapons;
+    [SerializeField] PoolableObject[] _cheatItems;
 
     public override void Initialize(RoomInfo roomInfo)
     {
         base.Initialize(roomInfo);
         SpawnInteractableWeapons();
         RewardSelectionFinished();
+        CheatReward();
     }
 
     public override RewardInteractableObject[] SpawnReward()
@@ -31,5 +33,15 @@ public class StartRoom : Room
             weaponObj.transform.SetParent(_rewardSpawnPoints[i]);
             _poolableObjectsInRoom.Add(weaponObj);
         }
+    }
+
+    void CheatReward()
+    {
+        for(int i=0;i<_cheatItems.Length;i++)
+        {
+            var cheatItemObj = GameManager.Instance.PoolManager.GetFromPool(_cheatItems[i], new Vector3(2*i,1f,0), Quaternion.identity);
+            _poolableObjectsInRoom.Add(cheatItemObj);
+        }
+
     }
 }

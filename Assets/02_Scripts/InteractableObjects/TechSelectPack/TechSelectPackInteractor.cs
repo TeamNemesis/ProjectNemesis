@@ -15,7 +15,7 @@ public class TechSelectPackInteractor : RewardInteractableObject
 
     public void Initialize(TechSelectPackType packType)
     {
-        _packType = packType;
+        //_packType = packType;
         GameManager.Instance.UIManager.onRewardSelect += RaiseRewardGivenEvent;
     }
 
