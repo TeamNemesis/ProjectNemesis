@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class PoolManager : MonoBehaviour
@@ -15,7 +14,7 @@ public class PoolManager : MonoBehaviour
     /// <summary>
     /// 풀에서 오브젝트 가져오기
     /// </summary>
-    public GameObject GetFromPool(PoolableObject poolable, Vector3 position,Quaternion rotation, Transform parentTransform = null, object data = null)
+    public GameObject GetFromPool(PoolableObject poolable, Vector3 position, Quaternion rotation, Transform parentTransform = null, object data = null)
     {
         GameObject prefabObject = poolable.gameObject;
         if (!availablePools.ContainsKey(prefabObject.name))
@@ -45,17 +44,17 @@ public class PoolManager : MonoBehaviour
         availablePools[prefabObject.name].RemoveAt(availablePools[prefabObject.name].Count - 1);
         obj.transform.position = position;
         obj.transform.rotation = rotation;
-        if(parentTransform!=null)
+        if (parentTransform != null)
         {
             obj.transform.SetParent(parentTransform);
         }
-        
+
         if (poolable is IInitializePoolable)
         {
             IInitializePoolable initializePoolable = obj.GetComponent<PoolableObject>() as IInitializePoolable;
             initializePoolable.Initialize(data);
-        } 
-                
+        }
+
         obj.SetActive(true);
         inUsePools[prefabObject.name].Add(obj);
 
@@ -65,7 +64,7 @@ public class PoolManager : MonoBehaviour
     /// <summary>
     /// 풀이 비어있을 때 새로운 오브젝트 생성
     /// </summary>
-    private GameObject CreateNewObject(GameObject prefabObject, Vector3 position,Quaternion rotation, Transform parentTransform = null)
+    private GameObject CreateNewObject(GameObject prefabObject, Vector3 position, Quaternion rotation, Transform parentTransform = null)
     {
         GameObject newObj;
         // 새 객체 생성
@@ -105,11 +104,11 @@ public class PoolManager : MonoBehaviour
     {
         GameObject obj = poolable.gameObject;
 
-        if(poolable is IReleasePoolable)
+        if (poolable is IReleasePoolable)
         {
-						IReleasePoolable releaseObject = obj.GetComponent<PoolableObject>() as IReleasePoolable;
-						releaseObject.ReleaseObjectPool();
-				}
+            IReleasePoolable releaseObject = obj.GetComponent<PoolableObject>() as IReleasePoolable;
+            releaseObject.ReleaseObjectPool();
+        }
 
         if (!inUsePools.ContainsKey(obj.name))
         {
@@ -117,8 +116,6 @@ public class PoolManager : MonoBehaviour
             Destroy(obj);
             return;
         }
-
-        
 
         int index = inUsePools[obj.name].IndexOf(obj);
         if (index >= 0)
@@ -136,9 +133,6 @@ public class PoolManager : MonoBehaviour
         }
     }
 
-	
-
-  
     #endregion
     /// <summary>
     /// 풀에 오브젝트 반환 (사용 완료)
@@ -179,7 +173,7 @@ public class PoolManager : MonoBehaviour
         return (available, inUse, available + inUse);
     }
 
-    
+
 
     /// <summary>
     /// 모든 풀 초기화

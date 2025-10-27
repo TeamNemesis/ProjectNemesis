@@ -37,8 +37,8 @@ public class PoisonDash : AreaDamageBase,IInitializePoolable
 
     public override void ActiveSkill(Transform target)
     {
-        _player.playerModel.Heal((int)_dashHeal);
-        target.GetComponent<CharacterModelBase>().TakeDamage(dashDamage);
+        _player.playerModel.Heal(1);
+        target.GetComponent<CharacterModelBase>().TakeDamage(dashDamage, null);
     }
 
     IEnumerator ReleaseCoroutine()

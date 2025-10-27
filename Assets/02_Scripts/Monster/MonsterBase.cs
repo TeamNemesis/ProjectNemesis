@@ -10,8 +10,18 @@ public enum MonsterSize
 }
 
 
+
 public class MonsterBase : CharacterModelBase, IInitializePoolable
 {
+    protected enum MonsterState
+    {
+        Idle,
+        Move,
+        Attack,
+        Die
+    }
+
+
     [Header("Base Stats")]
     [SerializeField] private float maxEliteHealth;
     [SerializeField] protected float attackDamage = 10;
@@ -25,6 +35,8 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
     [SerializeField] protected Rigidbody monsterRigidbody;
     [SerializeField] protected Collider monsterCollider;
 
+    [Header("Base State")]
+    [SerializeField] protected MonsterState baseState = MonsterState.Idle;
 
 
     #region 넉백
@@ -79,7 +91,7 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
         Initialize();
     }
 
-    public void Initialize(object data = null)
+    public virtual void Initialize(object data = null)
     {
         base.Initialize();
 
@@ -90,9 +102,12 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
         isBindned = false;
         isWeaken = false;
 
+        // === 상태 머신 초기화 ===
+        baseState = MonsterState.Idle;
+
         // === 컴포넌트 초기화 ===
         agent = GetComponent<NavMeshAgent>();
-        if (agent != null)
+        if (agent != null && agent.isOnNavMesh)
         {
             agent.enabled = true;
             agent.isStopped = false;
@@ -189,7 +204,7 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
             if (collision.gameObject.layer == LayerMask.NameToLayer(Constants.LAYER_MASK_WALL))
             {
                 Debug.Log("충돌");
-                TakeDamage(GameManager.Instance.PlayerStatManager.knockBackDamage * GameManager.Instance.PlayerStatManager.knockBackDamageMulti);
+                TakeDamage(GameManager.Instance.PlayerStatManager.knockBackDamage * GameManager.Instance.PlayerStatManager.knockBackDamageMulti, null);
                 EndKnockBack();
             }
 
@@ -204,7 +219,7 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
     /// <param name="damage"></param>
     public void KnockBackEnemy(Vector3 pushDirection, float damage, float knockBackDistance)
     {
-        TakeDamage(damage);
+        TakeDamage(damage, null);
 
         if (_knockBackCoroutine != null)
         {

@@ -287,7 +287,7 @@ public class DebuffHandler : MonoBehaviour
             {
                 case Constants.DEBUFF_POISON:
                 case Constants.DEBUFF_OVERLOAD:
-                    character.TakeDamage(active.totalValue);          // 플레이어 모댐증 적용 요망
+                    character.TakeDamage(active.totalValue, null);          // 플레이어 모댐증 적용 요망
                     break;
                 default:
                     break;
@@ -602,7 +602,7 @@ public class DebuffHandler : MonoBehaviour
     {
         while (debuffHandler.GetActiveDebuffCount() > 0)
         {
-            debuffHandler.character.TakeDamage(debuffHandler.GetActiveDebuffCount() * 5f);
+            debuffHandler.character.TakeDamage(debuffHandler.GetActiveDebuffCount() * 5f, null);
             yield return new WaitForSeconds(Constants.DEBUFF_TIME);
         }
         _increasePain = null;

@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,21 +6,12 @@ using UnityEngine;
 
 public class Elite3 : MonsterBase
 {
-    [SerializeField]
-    private enum State
-    {
-        Idle,   // 플레이어를 아직 못 찾았거나 감지 범위 밖일 때
-        Move,   // 플레이어를 추격 중일 때
-        Attack, // 공격
-        Die     // 죽음
-    }
     [Header("Local Stats")]
     [SerializeField] private int laserAttackCount = 0; // 연속 공격 횟수
 
-    [Header("PoisonField")]
-    [SerializeField] private float _poisonFieldDuration = 999f; // 독성 구름 지속 시간
-    [SerializeField] private float _poisonFieldRadius = 6f;   // 독성 구름 반경
-    [SerializeField] private float _poisonFieldDelay = 2f;
+    [Header("Missile")]
+    [SerializeField]private int missileAttackCounter = 0;
+    [SerializeField]private int maxMissileAttackCount = 5;
 
     [Header("Bullet")]
     [SerializeField] float bulletLifeTime = 8f;
@@ -28,17 +20,12 @@ public class Elite3 : MonsterBase
     [SerializeField] private bool _isAttacking = false;
 
     [Header("Prefabs")]
-    [SerializeField] private PoolableObject squareDecalPrefab;
-    [SerializeField] private PoolableObject attackDecalPrefab;
-    [SerializeField] private PoolableObject poisonFieldPrefab;
+    [SerializeField] private PoolableObject missilePrefab;
     [SerializeField] private PoolableObject eliteBulletPrefab;
 
     [Header("CoolTimes")]
     [SerializeField] private float bulletAttackCoolTime = 5f;
-    [SerializeField] private float poisonLaserAttackCoolTime = 5f;
-    [SerializeField] private float poisonFieldAttackCoolTime = 10f;
 
-    [Header("STATE"), SerializeField] private State currentState = State.Idle;
 
     private void Update()
     {
@@ -46,18 +33,18 @@ public class Elite3 : MonsterBase
         if (isDead || _target == null) return;
         if (isStunned) return;
 
-        switch (currentState)
+        switch (baseState)
         {
-            case State.Idle:
+            case MonsterState.Idle:
                 HandleIdle();
                 break;
-            case State.Attack:
+            case MonsterState.Attack:
                 if (!_isAttacking)
                 {
-
+                    StartCoroutine(MissileAttack());
                 }
                 break;
-            case State.Die:
+            case MonsterState.Die:
                 Die();
                 break;
         }
@@ -71,7 +58,7 @@ public class Elite3 : MonsterBase
         float distance = Vector3.Distance(transform.position, _target.position);
         if (distance <= attackRange && CanSeePlayer())
         {
-            currentState = State.Attack;
+            baseState = MonsterState.Attack;
         }
     }
 
@@ -113,14 +100,26 @@ public class Elite3 : MonsterBase
         }
         _isAttacking = false;
         maxBulletAttackCounter = 0;
-        currentState = State.Attack;
+        baseState = MonsterState.Attack;
     }
 
 
     private IEnumerator MissileAttack()
     {
+        _isAttacking = true;
+        while (missileAttackCounter < maxMissileAttackCount) 
+        {
+            Vector3 spawnPos = transform.position + new Vector3(0, 0, -transform.localScale.z);
+            spawnPos.y = 0;
+            PoolableObject missile = GameManager.Instance.PoolManager.GetFromPool(missilePrefab, spawnPos, Quaternion.identity).GetComponent<PoolableObject>();
 
-        yield return null;
+            yield return new WaitForSeconds(1f);
+            missileAttackCounter++;
+        }
+
+        _isAttacking = false;
+        missileAttackCounter = 0;
+        baseState = MonsterState.Attack;
     }
 
 
@@ -128,10 +127,10 @@ public class Elite3 : MonsterBase
     {
         if (bulletAttackCoolTime > 0)
             bulletAttackCoolTime -= Time.deltaTime;
-        if (poisonLaserAttackCoolTime > 0)
-            poisonLaserAttackCoolTime -= Time.deltaTime;
-        if (poisonFieldAttackCoolTime > 0)
-            poisonFieldAttackCoolTime -= Time.deltaTime;
+        if (true)
+            return;
+        if (true)
+            return;
     }
 
     private void TryUseSkill()
@@ -143,11 +142,11 @@ public class Elite3 : MonsterBase
         {
             availableSkills.Add(BulletAttack());
         }
-        if (poisonLaserAttackCoolTime <= 0)
+        if (true)
         {
 
         }
-        if (poisonFieldAttackCoolTime <= 0)
+        if (true)
         {
 
         }
@@ -160,7 +159,7 @@ public class Elite3 : MonsterBase
         }
         else
         {
-            currentState = State.Attack;
+            baseState = MonsterState.Attack;
         }
     }
 }

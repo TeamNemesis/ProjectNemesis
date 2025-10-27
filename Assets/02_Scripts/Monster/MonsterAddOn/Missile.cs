@@ -5,16 +5,9 @@ using UnityEngine.AI;
 
 public class Missile : MonsterBase
 {
-    private enum State
-    {
-        Idle,   // 플레이어를 아직 못 찾았거나 감지 범위 밖일 때
-        Move,   // 플레이어를 추격 중일 때
-        Attack, // 자폭 시도
-        Die     // 파괴됨
-    }
 
     [Header("Local Stats"), SerializeField]
-    private float _explosionRadius = 3f;      // 실제 폭발 범위
+    private float _explosionRadius = 2f;      // 실제 폭발 범위
 
     // attackDamage, attackRange, attackDelay, isDead 등은 MonsterBase에서 상속됨
 
@@ -22,30 +15,28 @@ public class Missile : MonsterBase
     private PoolableObject circlePrefab;     // AttackDecalEffect 프리팹 (Inspector에서 지정)
 
     [SerializeField] private bool _isFusing = false;
-    [SerializeField]
-    private State currentState = State.Idle;
 
     private void Update()
     {
         if (isDead || _target == null) return;
         if (isStunned) return;
 
-        switch (currentState)
+        switch (baseState)
         {
-            case State.Idle:
+            case MonsterState.Idle:
                 HandleIdle();
                 break;
 
-            case State.Move:
+            case MonsterState.Move:
                 HandleMove();
                 break;
 
-            case State.Attack:
+            case MonsterState.Attack:
                 if (!_isFusing)
                     StartCoroutine(SelfDestructionAttack());
                 break;
 
-            case State.Die:
+            case MonsterState.Die:
                 Die();
                 break;
         }
@@ -57,7 +48,7 @@ public class Missile : MonsterBase
 
         if (distance <= detectionRange)
         {
-            currentState = State.Move;
+            baseState = MonsterState.Move;
         }
     }
 
@@ -68,7 +59,7 @@ public class Missile : MonsterBase
         if (distance > detectionRange)
         {
             agent.ResetPath();
-            currentState = State.Idle;
+            baseState = MonsterState.Idle;
             return;
         }
 
@@ -76,7 +67,7 @@ public class Missile : MonsterBase
 
         if (distance <= attackRange && !_isFusing)
         {
-            currentState = State.Attack;
+            baseState = MonsterState.Attack;
         }
     }
 
@@ -93,16 +84,15 @@ public class Missile : MonsterBase
                 AttackDecalEffect effect = circle.GetComponent<AttackDecalEffect>();
                 if (effect != null)
                 {
-                    effect.Play(attackDelay, _explosionRadius);
+                    effect.Play(0.1f, _explosionRadius);
                 }
             }
 
-            // 자폭까지 딜레이
-            yield return new WaitForSeconds(attackDelay);
+            yield return new WaitForSeconds(0.1f);
 
             CheckTarget();
 
-            currentState = State.Die;
+            baseState = MonsterState.Die;
         }
     }
 
@@ -115,8 +105,17 @@ public class Missile : MonsterBase
         {
             if (collider.tag == targetTag)
             {
-                collider.GetComponent<IDamageable>().TakeDamage(attackDamage);
+                collider.GetComponent<IDamageable>().TakeDamage(attackDamage, transform);
             }
         }
+    }
+    public override void Initialize(object data = null)
+    {
+        base.Initialize(data); // 부모 클래스의 Initialize 호출
+
+        // 미사일 전용 초기화
+        baseState = MonsterState.Idle;
+        _isFusing = false;
+        StopAllCoroutines();
     }
 }

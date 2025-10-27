@@ -115,7 +115,7 @@ public class elecVortex : MonoBehaviour
         foreach (var col in colliders)
         {
             CharacterModelBase target = col.GetComponent<CharacterModelBase>();
-            target.TakeDamage(damage);
+            target.TakeDamage(damage, null);
             Debug.Log("데미지 적용!");
         }
     }
