@@ -66,7 +66,7 @@ public class Player : MonoBehaviour
 
     public bool CanMove => _canMove;
     public bool IsDashing => _isDashing;
-    public bool IsNormalAttacking => _isNormalAttacking;
+    public bool IsNormalAttacking => _normalAttacker.IsAttacking;
     public bool IsSpecialAttacking => _isSpecialAttacking;
 
     #region 이벤트
@@ -106,6 +106,7 @@ public class Player : MonoBehaviour
         _statManager = GameManager.Instance.PlayerStatManager;
 
         _weaponController.OnWeaponChanged += OnWeaponChanged;
+        SubscribeNormalAttacker(_normalAttacker);
 
         _interactionController.OnWeaponInteract += OnWeaponInteracted;
         _interactionController.OnDoorInteract += OnDoorInteracted;
@@ -157,18 +158,29 @@ public class Player : MonoBehaviour
     /// </summary>
     void EvaluateTransitions()
     {
-        // 1) 일반 공격 입력 처리(우선순위 최상)
+        // 1) 일반 공격 입력 처리
         if (_normalAttackPressed && TryConsumeNormalAttack())
         {
-            Debug.Log("일반공격 입력 들어옴");
-            if (_normalAttacker != null)
+            if (_normalAttacker != null && !_isDashing && !_isSpecialAttacking)
             {
-                if(!_isDashing && !_isNormalAttacking && !_isSpecialAttacking)
+                // 요청만 보냄. 실제 상태 전환은 AttackStarted 이벤트에서 수행
+                bool accepted = false;
+                try
                 {
-                    // StateMachine을 이용한 전환
-                    _stateMachine.ChangeState(PlayerStateType.NormalAttack);
-                    return;
+                    accepted = _normalAttacker.RequestAttack();
                 }
+                catch (Exception ex)
+                {
+                    Debug.LogWarning($"RequestAttack exception: {ex}");
+                    accepted = false;
+                }
+
+                if (!accepted)
+                {
+                    Debug.Log("Player: attack request was rejected (cooldown, busy, etc.)");
+                }
+                // accepted이면 attacker가 AttackStarted 이벤트를 내고 그 이벤트에서 상태 전환
+                return;
             }
         }
 
@@ -265,6 +277,9 @@ public class Player : MonoBehaviour
         _normalAttacker = _normalAttackerMap[weapon.WeaponType];
         _specialAttacker = _specialAttackerMap[weapon.WeaponType];
 
+        UnsubscribeNormalAttacker(_normalAttacker);
+        SubscribeNormalAttacker(_normalAttacker);
+
         if (weapon.WeaponType == WeaponType.Rifle)
         {
             PlayerRifleNormalAttacker playerRifleNormalAttacker = _normalAttacker as PlayerRifleNormalAttacker;
@@ -290,6 +305,38 @@ public class Player : MonoBehaviour
     // 애니메이션 이벤트에서 Player의 메서드를 호출하도록 설정하세요.
     // 예: 애니메이션 클립의 이벤트에서 "OnAttackFireEvent" 와 "OnAttackEndEvent"를 호출.
 
+    void SubscribeNormalAttacker(PlayerNormalAttacker attacker)
+    {
+        if (attacker == null) return;
+        attacker.AttackStarted += OnAttackerStarted;
+        attacker.AttackEnded += OnAttackerEnded;
+    }
+
+    void UnsubscribeNormalAttacker(PlayerNormalAttacker attacker)
+    {
+        if (attacker == null) return;
+        attacker.AttackStarted -= OnAttackerStarted;
+        attacker.AttackEnded -= OnAttackerEnded;
+    }
+
+    void OnAttackerStarted()
+    {
+        Debug.Log("Player: attacker started -> change to NormalAttack state");
+        // 상태 전환은 여기서 확실히 수행
+        _stateMachine.ChangeState(PlayerStateType.NormalAttack);
+        // 필요하면 플레이어 플래그 동기화 (권장: 제거하고 attacker.IsAttacking에 의존)
+        _isNormalAttacking = true;
+        OnNormalAttackStarted?.Invoke();
+    }
+
+    void OnAttackerEnded()
+    {
+        Debug.Log("Player: attacker ended -> return to Idle");
+        _isNormalAttacking = false;
+        // 상태머신을 Idle로 돌리거나 상태 전환 로직을 트리거
+        _stateMachine.ChangeState(PlayerStateType.Idle);
+    }
+
     /// <summary>
     /// 애니메이션의 발사(히트) 프레임에서 호출.
     /// 라우팅하여 현재 장착된 attacker의 FireNow() 등 실동작을 실행한다.
@@ -304,6 +351,14 @@ public class Player : MonoBehaviour
         if (_normalAttacker is PlayerRifleNormalAttacker rifle)
         {
             rifle.FireNow();
+            OnNormalAttackStarted?.Invoke();
+            return;
+        }
+
+        // 블레이드 계열은 Animation_OnComboWindowOpen 호출
+        if( _normalAttacker is PlayerBladeNormalAttacker blade)
+        {
+            blade.Animation_OnComboWindowOpen();
             OnNormalAttackStarted?.Invoke();
             return;
         }
@@ -327,6 +382,13 @@ public class Player : MonoBehaviour
         {
             Debug.Log(" Rifle OnAnimationAttackEnd 호출됨");
             rifle.OnAnimationAttackEnd();
+            return;
+        }
+        // 블레이드일 경우 애니메이션 종료 콜백
+        if (_normalAttacker is PlayerBladeNormalAttacker blade)
+        {
+            Debug.Log(" Blade OnAnimationAttackEnd 호출됨");
+            blade.Animation_OnComboWindowClose();
             return;
         }
 
