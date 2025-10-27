@@ -74,10 +74,10 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
     }
 
 
-    //private void Start()
-    //{
-    //    Initialize();
-    //}
+    private void Start()
+    {
+        Initialize();
+    }
 
     public void Initialize(object data = null)
     {
