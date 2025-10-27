@@ -115,7 +115,6 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
         if (monsterRigidbody != null)
         {
             monsterRigidbody.isKinematic = true;
-            monsterRigidbody.linearVelocity = Vector3.zero;
         }
 
         monsterCollider = GetComponent<Collider>();

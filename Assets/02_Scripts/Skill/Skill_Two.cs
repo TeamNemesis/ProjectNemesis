@@ -11,6 +11,7 @@ public class Skill_Two : SkillBase
     /// </summary>
     [SerializeField]
     private ExplosionDeath _explosionDeathPrefab;
+    private ExplosionDeathData _explosionDeathData;
 
     /// <summary>
     /// 전투스킬 강화, 모든 데미지 추가, 스킬 인덱스, 증가값
@@ -96,6 +97,10 @@ public class Skill_Two : SkillBase
             case 26:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
 
+                _explosionDeathData = new ExplosionDeathData(
+                    choosedSkill.skillBaseValue_1 + choosedSkill.skillLevelValue_1 * choosedSkill.skillLevel,
+                    choosedSkill.skillBaseValue_2 + choosedSkill.skillLevelValue_2 * choosedSkill.skillLevel
+                    );
 
                 //TODO 몬스터 스포너에 몬스터 생성시 이벤트에 연결
                 skillManager.playScene.MapController.MonsterController.MonsterSpawner.OnMonsterSpawned -= ConnectMakeExpolsion;
@@ -141,7 +146,7 @@ public class Skill_Two : SkillBase
     {
         Vector3 position = monsterTransform.position;
         position.y = 0;
-        GameManager.Instance.PoolManager.GetFromPool(_explosionDeathPrefab, position, _explosionDeathPrefab.transform.rotation).GetComponent<ExplosionDeath>().Initialize();
+        GameManager.Instance.PoolManager.GetFromPool(_explosionDeathPrefab, position, _explosionDeathPrefab.transform.rotation,null, _explosionDeathData).GetComponent<ExplosionDeath>().Initialize();
     }
     #endregion
 

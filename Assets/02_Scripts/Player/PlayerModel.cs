@@ -94,7 +94,7 @@ public class PlayerModel : CharacterModelBase
             damage*=(1f-_damageReducePercent);
         }
 
-
+        
         base.TakeDamage(damage);
     }
     public override void Initialize()

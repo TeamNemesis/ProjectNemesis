@@ -101,7 +101,7 @@ public class Skill_One : SkillBase
                 {
                     // 플레이어 모델에 받는데미지 감소 계수를 추가하여 10퍼센트 
                     _skillManager.playerStatManager.AddReduceDamagePercent(choosedSkill.skillBaseValue_1 + choosedSkill.skillLevelValue_1);
-                    // 피격시 이벤트에 함수 추가 SpreadPoison
+                    // 데이터 제작
                     _hitPoisonSpreadData = new PoisonSpreadData(choosedSkill.skillBaseValue_2 + choosedSkill.skillLevelValue_2);
                 }
                 else
@@ -109,9 +109,10 @@ public class Skill_One : SkillBase
                     _skillManager.playScene.player.playerModel.PlayerHit -= PoisonSpreadAction;
                     // 플레이어 모델에 받는데미지 감소 계수를 추가하여 10퍼센트 
                     _skillManager.playerStatManager.AddReduceDamagePercent(choosedSkill.skillLevelValue_1);
-                    // 피격시 이벤트에 함수 추가 SpreadPoison
-                    _hitPoisonSpreadData = new PoisonSpreadData(choosedSkill.skillBaseValue_2 + choosedSkill.skillLevelValue_2);
                 }
+
+                // 데이터 제작
+                _hitPoisonSpreadData = new PoisonSpreadData(choosedSkill.skillBaseValue_2 + choosedSkill.skillLevelValue_2);
                 PoisonSpreadAction = (transform) => SpreadPoison(_skillManager.playScene.player);
                 _skillManager.playScene.player.playerModel.PlayerHit += PoisonSpreadAction;
                 break;

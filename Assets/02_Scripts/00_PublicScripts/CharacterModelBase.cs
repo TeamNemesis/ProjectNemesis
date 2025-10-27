@@ -56,6 +56,7 @@ public abstract class CharacterModelBase : PoolableObject, IDamageable
     /// currentHp / maxHp
     /// </summary>
     public event Action<int, int> OnHpChanged;
+    public event Action<int, int> OnHeal;
     public event Action<float> OnMoveSpeedChanged; // 이동 속도 변경 시 발생하는 이벤트
 
     public event Action OnDieEvent;
@@ -88,6 +89,7 @@ public abstract class CharacterModelBase : PoolableObject, IDamageable
             _currentHealth = maxHealth;
         }
         OnHpChanged?.Invoke(_currentHealth, _maxHealth);
+        OnHeal?.Invoke(_currentHealth, _maxHealth);
     }
 
     public virtual void TakeDamage(float damage)

@@ -45,11 +45,6 @@ public static class Constants
     public static int HEAL_AMOUNT = 1;
 
     /// <summary>
-    /// 범위 증가 스킬을 위한 계수
-    /// </summary>
-    public static float SKILL_EXTENT = 1f;
-
-    /// <summary>
     /// 기술 분류를 위한 태그
     /// </summary>
     public const string SKILL_TAG_ATTACK = "기본공격";
