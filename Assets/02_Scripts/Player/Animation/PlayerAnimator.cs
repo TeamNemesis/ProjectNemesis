@@ -28,9 +28,9 @@ public class PlayerAnimator : MonoBehaviour
     /// <summary>
     /// 플레이어의 일반공격 입력을 받아 공격 애니메이션을 실행하는 함수
     /// </summary>
-    public void OnNormalAttack()
+    public void OnNormalAttack(int comboCount)
     {
-        _animator.SetTrigger(Constants.ANIPARAM_ONNORMALATTACK);
+        _animator.SetTrigger(Constants.ANIPARAM_ONNORMALATTACK+$"{comboCount}");
     }
 
     public void OnSpecialAttack()

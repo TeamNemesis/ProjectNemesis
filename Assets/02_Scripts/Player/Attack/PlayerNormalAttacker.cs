@@ -6,12 +6,14 @@ using UnityEngine;
 /// - 기존의 abstract Attack()은 유지하되, RequestAttack()을 추가하여
 ///   Player가 안전하게 호출할 수 있도록 함.
 /// </summary>
-public abstract class PlayerNormalAttacker : MonoBehaviour
+public abstract class PlayerNormalAttacker : MonoBehaviour, IAttacker
 {
     public abstract WeaponType WeaponType { get; }
 
     public virtual event Action OnAttackStarted;
     public virtual event Action OnAttackEnded;
+    public event Action AttackStarted;
+    public event Action AttackEnded;
 
     // 공격 중인지 표시 (파생 클래스에서 보호 수준으로 변경 가능)
     public bool IsAttacking { get; protected set; }
@@ -52,4 +54,14 @@ public abstract class PlayerNormalAttacker : MonoBehaviour
 
     // 기본 조건: 현재 공격 중이 아니면 시작 가능
     protected virtual bool CanStartAttack() => !IsAttacking;
+
+    public void OnAnimationFire()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void OnAnimationEnd()
+    {
+        throw new NotImplementedException();
+    }
 }
