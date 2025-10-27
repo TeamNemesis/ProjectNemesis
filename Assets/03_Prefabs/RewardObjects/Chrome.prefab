@@ -44,6 +44,7 @@ GameObject:
   - component: {fileID: 459473153736466}
   - component: {fileID: 1796135538927984495}
   - component: {fileID: -8668029148517557481}
+  - component: {fileID: 1650350573118353778}
   m_Layer: 6
   m_Name: Chrome
   m_TagString: Untagged
@@ -154,3 +155,15 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.5972574, y: 0.06939678, z: 0.6395051}
   m_Center: {x: 0.00014126301, y: 0.0029551245, z: 0.023222452}
+--- !u!114 &1650350573118353778
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5468571426455784466}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc722e1497ebce346b87739747660c61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
