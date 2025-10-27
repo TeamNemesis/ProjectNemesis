@@ -29,4 +29,13 @@ public class TechItem : MonoBehaviour
         skillchoose.SetUpgradeBtn();
     }
     #endregion
+
+    #region 돌연변이 업그레이드
+
+    public void Mutantupgrade()
+    {
+        SkillChoose skillchoose = gameObject.GetComponent<SkillChoose>();
+        skillchoose.SetMutant();
+    }
+    #endregion
 }

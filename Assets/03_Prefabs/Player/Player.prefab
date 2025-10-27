@@ -17168,12 +17168,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4dd914b0022246a47a8ce199a9933656, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxHealth: 100
+  _maxHealth: 10000
   _currentHealth: 0
   _moveSpeed: 5
   isStunned: 0
   isPushed: 0
   isBindned: 0
+  isWeaken: 0
   isDead: 0
   debuffHandler: {fileID: 0}
 --- !u!114 &2918574613242863231

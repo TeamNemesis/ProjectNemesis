@@ -251,36 +251,6 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
---- !u!1 &372897815 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 924899988649064326, guid: e457f452ef592394cae17c6b529b0a2f, type: 3}
-  m_PrefabInstance: {fileID: 2075901255451418171}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &372897817 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8999976014532792861, guid: e457f452ef592394cae17c6b529b0a2f, type: 3}
-  m_PrefabInstance: {fileID: 2075901255451418171}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 372897815}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b9a327fe9be46e94984afe2b597befe5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &372897818
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 372897815}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 25a7bbd1027371840b7979faa9a4d082, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _monsterSpawner: {fileID: 372897817}
-  _spawnPointsCount: 15
 --- !u!1001 &676341597
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1573,14 +1543,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 924899988649064326, guid: e457f452ef592394cae17c6b529b0a2f, type: 3}
-      propertyPath: m_Name
-      value: MonsterController
-      objectReference: {fileID: 0}
-    - target: {fileID: 995494566586830382, guid: e457f452ef592394cae17c6b529b0a2f, type: 3}
-      propertyPath: _monsterController
-      value: 
-      objectReference: {fileID: 372897818}
     - target: {fileID: 4057448122965568358, guid: e457f452ef592394cae17c6b529b0a2f, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1621,61 +1583,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7440761391914242109, guid: e457f452ef592394cae17c6b529b0a2f, type: 3}
-      propertyPath: door_HealChance
-      value: 50
-      objectReference: {fileID: 0}
-    - target: {fileID: 7440761391914242109, guid: e457f452ef592394cae17c6b529b0a2f, type: 3}
-      propertyPath: door_ChromeChance
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7440761391914242109, guid: e457f452ef592394cae17c6b529b0a2f, type: 3}
-      propertyPath: door_CreditChance
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7440761391914242109, guid: e457f452ef592394cae17c6b529b0a2f, type: 3}
-      propertyPath: door_UpgradeChance
-      value: 0.1
-      objectReference: {fileID: 0}
     - target: {fileID: 8651227612276589479, guid: e457f452ef592394cae17c6b529b0a2f, type: 3}
       propertyPath: m_Name
       value: MapController
       objectReference: {fileID: 0}
-    - target: {fileID: 8999976014532792861, guid: e457f452ef592394cae17c6b529b0a2f, type: 3}
-      propertyPath: monsterPrefabs.Array.size
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 8999976014532792861, guid: e457f452ef592394cae17c6b529b0a2f, type: 3}
-      propertyPath: 'monsterPrefabs.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2821671262608775679, guid: 31d9d065d60ebc543aa9a7c07609ba6a, type: 3}
-    - target: {fileID: 8999976014532792861, guid: e457f452ef592394cae17c6b529b0a2f, type: 3}
-      propertyPath: 'monsterPrefabs.Array.data[1]'
-      value: 
-      objectReference: {fileID: 7539578067776936276, guid: 69a152d5ffcc54b43951b3258fab8a37, type: 3}
-    - target: {fileID: 8999976014532792861, guid: e457f452ef592394cae17c6b529b0a2f, type: 3}
-      propertyPath: 'monsterPrefabs.Array.data[2]'
-      value: 
-      objectReference: {fileID: 4891787988556077794, guid: 3c786e0e126f3c04aac997196a100f79, type: 3}
-    - target: {fileID: 8999976014532792861, guid: e457f452ef592394cae17c6b529b0a2f, type: 3}
-      propertyPath: 'monsterPrefabs.Array.data[3]'
-      value: 
-      objectReference: {fileID: 900541771517750140, guid: bcae6f7357fac65468003be58c7ce711, type: 3}
-    - target: {fileID: 8999976014532792861, guid: e457f452ef592394cae17c6b529b0a2f, type: 3}
-      propertyPath: 'monsterPrefabs.Array.data[4]'
-      value: 
-      objectReference: {fileID: 5829316648119766581, guid: 62dc2018ab6d11846bb1126a063a0f5c, type: 3}
-    - target: {fileID: 8999976014532792861, guid: e457f452ef592394cae17c6b529b0a2f, type: 3}
-      propertyPath: 'monsterPrefabs.Array.data[5]'
-      value: 
-      objectReference: {fileID: 6741232429851390812, guid: 6f189b3983160024da34cf72ae75aa8a, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 924899988649064326, guid: e457f452ef592394cae17c6b529b0a2f, type: 3}
-      insertIndex: 1
-      addedObject: {fileID: 372897818}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e457f452ef592394cae17c6b529b0a2f, type: 3}
 --- !u!1001 &4326727731789881342
 PrefabInstance:
@@ -1705,10 +1620,6 @@ PrefabInstance:
       propertyPath: _playSceneView
       value: 
       objectReference: {fileID: 1780337995}
-    - target: {fileID: 974063387521994696, guid: e982a7b2b11f8004d910665f1f0a777f, type: 3}
-      propertyPath: _interactionController
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 4134382197736487388, guid: e982a7b2b11f8004d910665f1f0a777f, type: 3}
       propertyPath: m_Name
       value: PlayScene
@@ -1820,10 +1731,6 @@ PrefabInstance:
     - target: {fileID: 7270792034495344502, guid: 8fb7464f2132e3543ac3eafe0c4e1fcb, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8793683881695727164, guid: 8fb7464f2132e3543ac3eafe0c4e1fcb, type: 3}
-      propertyPath: _maxHealth
-      value: 10000
       objectReference: {fileID: 0}
     - target: {fileID: 8951883238645882597, guid: 8fb7464f2132e3543ac3eafe0c4e1fcb, type: 3}
       propertyPath: m_Name
