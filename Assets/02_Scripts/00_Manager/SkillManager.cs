@@ -26,28 +26,22 @@ public class SkillManager : MonoBehaviour
     public Skill_Mutant skill_Mutant { get { return _skill_Mutant; } }
     #endregion
 
-    private Player _player;
-    public Player player => _player;
+    private PlayScene _playerScenes;
+    public PlayScene playScene => _playerScenes;
+
+    private PlayerStatManager _playerStatManager;
+    public PlayerStatManager playerStatManager { get { return _playerStatManager; } }
+
+
 
     /// <summary>
     /// 플레이어 할당
     /// </summary>
     /// <param name="player"></param>
-    public void SetPlayer(Player player)
+    public void SetPlayScene(PlayScene playScene)
     {
-        _player = player;
-        _skill_One.SetPlayer(player);
-        _skill_Two.SetPlayer(player);
-        _skill_Three.SetPlayer(player);
-        _skill_Four.SetPlayer(player);
-        _skill_Five.SetPlayer(player);
-        _skill_Collab.SetPlayer(player);
-        _skill_Mutant.SetPlayer(player);
-
+        _playerScenes = playScene;
     }
-
-    private PlayerStatManager _playerStatManager;
-    public PlayerStatManager playerStatManager{get { return _playerStatManager; }}
 
 
 

@@ -29,10 +29,10 @@ public class Skill_Three : SkillBase
                 if (_skillManager.attackTech != null)
                 {
 
-                    _skillManager.attackTech.Deactivate(player, _skillManager.attackTech.skillData.skillIdx != choosedSkill.skillIdx);
+                    _skillManager.attackTech.Deactivate(_skillManager.playScene.player, _skillManager.attackTech.skillData.skillIdx != choosedSkill.skillIdx);
 
                 }
-                skillAttack.Activate(_skillManager, player);
+                skillAttack.Activate(_skillManager, _skillManager.playScene.player);
                 break;
 
             // 소용돌이
@@ -42,10 +42,10 @@ public class Skill_Three : SkillBase
                 if (_skillManager.bombTech != null)
                 {
 
-                    _skillManager.bombTech.Deactivate(player, _skillManager.bombTech.skillData.skillIdx != choosedSkill.skillIdx);
+                    _skillManager.bombTech.Deactivate(_skillManager.playScene.player, _skillManager.bombTech.skillData.skillIdx != choosedSkill.skillIdx);
 
                 }
-                SkillGrenade.Activate(_skillManager, player);
+                SkillGrenade.Activate(_skillManager, _skillManager.playScene.player);
                 break;
 
             // 반동
@@ -55,10 +55,10 @@ public class Skill_Three : SkillBase
                 if (_skillManager.skillTech != null)
                 {
 
-                    _skillManager.skillTech.Deactivate(player, _skillManager.skillTech.skillData.skillIdx != choosedSkill.skillIdx);
+                    _skillManager.skillTech.Deactivate(_skillManager.playScene.player, _skillManager.skillTech.skillData.skillIdx != choosedSkill.skillIdx);
 
                 }
-                SkillSPAttack.Activate(_skillManager, player);
+                SkillSPAttack.Activate(_skillManager, _skillManager.playScene.player);
                 break;
 
             // 절대영역
@@ -68,10 +68,10 @@ public class Skill_Three : SkillBase
                 if (_skillManager.dashTech != null)
                 {
 
-                    _skillManager.dashTech.Deactivate(player, _skillManager.dashTech.skillData.skillIdx != choosedSkill.skillIdx);
+                    _skillManager.dashTech.Deactivate(_skillManager.playScene.player, _skillManager.dashTech.skillData.skillIdx != choosedSkill.skillIdx);
 
                 }
-                skillDashAttack.Activate(_skillManager, player);
+                skillDashAttack.Activate(_skillManager, _skillManager.playScene.player);
                 break;
 
 
@@ -131,7 +131,7 @@ public class Skill_Three : SkillBase
 
     private void ActivateRedShift(SkillData skill)
     {
-        skillManager.player.playerModel.PlayerHit += MakeRedshift;
+        _skillManager.playScene.player.playerModel.PlayerHit += MakeRedshift;
     }
     private void MakeRedshift(Transform monsterTransform)
     {

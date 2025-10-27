@@ -10,6 +10,7 @@ public class PlayScene : MonoBehaviour
     [SerializeField] CameraMover _cameraMover;                     // 카메라 무버
 
     public MapController MapController => _mapController;
+    public Player player => _player;
 
     private void Awake()
     {
@@ -38,8 +39,6 @@ public class PlayScene : MonoBehaviour
             return;
         }
         _player.Initialize();
-        Debug.Log("플레이어 할당");
-        GameManager.Instance.skillManager.SetPlayer(_player);
 
         if (MapController == null)
         {
@@ -60,6 +59,9 @@ public class PlayScene : MonoBehaviour
             return;
         }
         _cameraMover.Initialize(_player);
+
+        GameManager.Instance.skillManager.SetPlayScene(this);
+
     }
 
     private void Update()
