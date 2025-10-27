@@ -62,7 +62,7 @@ public class Elite3 : MonsterBase
             case State.Attack:
                 if (!_isAttacking)
                 {
-                    StartCoroutine(BulletAttack());
+
                 }
                 break;
             case State.Die:
@@ -202,10 +202,10 @@ public class Elite3 : MonsterBase
                     float angle = i * 45f + angleOffset;
                     Quaternion bulletRotation = Quaternion.Euler(0, angle, 0);
                     GameObject bullet = GameManager.Instance.PoolManager.GetFromPool(eliteBulletPrefab, transform.position, bulletRotation);
-                    TurretBullet turretBullet = bullet.GetComponent<TurretBullet>();
+                    EliteBullet turretBullet = bullet.GetComponent<EliteBullet>();
                     if (turretBullet != null)
                     {
-                        turretBullet.Initialize(targetTag, attackDamage, bulletLifeTime);
+                        turretBullet.Initialize(targetTag, attackDamage, bulletLifeTime, gameObject);
                     }
                 }
 

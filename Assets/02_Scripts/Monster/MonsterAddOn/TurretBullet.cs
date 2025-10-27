@@ -24,12 +24,12 @@ public class TurretBullet : PoolableObject
         this.lifeTime = lifeTime;
     }
 
-    public void Initialize(string targetTag, float damage, float lifeTime)
+    public void Initialize(string targetTag, float damage, float lifeTime, GameObject owner)
     {
         SetTarget(targetTag);
         SetDamage(damage);
         SetLifeTime(lifeTime);
-        this.owner = gameObject;
+        this.owner = owner;
         StartLifeTime();
     }
 

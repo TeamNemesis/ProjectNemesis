@@ -134,6 +134,12 @@ public class MonsterBase : CharacterModelBase
         _maxHealth = (int)maxEliteHealth;
     }
 
+    protected override void Die()
+    {
+        GameManager.Instance.CurrencyManager.AddCredit(cost);
+        base.Die();
+    }
+
 
     #region ³Ë¹é
 
