@@ -14,7 +14,7 @@ public abstract class CharacterModelBase : PoolableObject, IDamageable
     {
         _maxHealth += plusMaxHp;
         _currentHealth += plusMaxHp;
-        OnHpChanged?.Invoke(_maxHealth, _currentHealth);
+        OnHpChanged?.Invoke(_currentHealth, _maxHealth);
     }
 
 
@@ -29,7 +29,7 @@ public abstract class CharacterModelBase : PoolableObject, IDamageable
     public void SetCurrentHp(int currentHp)
     {
         _currentHealth = currentHp;
-        OnHpChanged?.Invoke(_maxHealth, _currentHealth);
+        OnHpChanged?.Invoke(_currentHealth, _maxHealth);
     }
 
     [SerializeField]
@@ -51,8 +51,11 @@ public abstract class CharacterModelBase : PoolableObject, IDamageable
     [SerializeField] public bool isDead = false;       // 죽음
 
 
-
-    public event Action<int, int> OnHpChanged; // 체력 변경 시 발생하는 이벤트
+    /// <summary>
+    /// 체력 변경 시 발생하는 이벤트
+    /// currentHp / maxHp
+    /// </summary>
+    public event Action<int, int> OnHpChanged;
     public event Action<float> OnMoveSpeedChanged; // 이동 속도 변경 시 발생하는 이벤트
 
     public event Action OnDieEvent;
@@ -83,7 +86,7 @@ public abstract class CharacterModelBase : PoolableObject, IDamageable
         {
             _currentHealth = maxHealth;
         }
-        OnHpChanged?.Invoke(_maxHealth, _currentHealth);
+        OnHpChanged?.Invoke(_currentHealth, _maxHealth);
     }
 
     public virtual void TakeDamage(float damage)
@@ -149,7 +152,7 @@ public abstract class CharacterModelBase : PoolableObject, IDamageable
         }
         else
         {
-            OnHpChanged?.Invoke(_maxHealth, _currentHealth); // 체력 변경 이벤트 발행
+            OnHpChanged?.Invoke(_currentHealth, _maxHealth); // 체력 변경 이벤트 발행
         }
     }
 
