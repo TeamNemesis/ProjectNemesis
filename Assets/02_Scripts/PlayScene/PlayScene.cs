@@ -7,16 +7,12 @@ public class PlayScene : MonoBehaviour
     [SerializeField] PlayerInputHandler _inputHandler;             // 플레이어 입력 핸들러
     [SerializeField] MapController _mapController;                 // 맵 컨트롤러
     [SerializeField] PlaySceneView _playSceneView;                 // 플레이 씬 뷰
+    [SerializeField] CameraMover _cameraMover;                     // 카메라 무버
 
     public MapController MapController => _mapController;
 
     private void Awake()
     {
-        //_inputHandler.OnDashInput += _player.Dash;
-        //_inputHandler.OnNomralAttackInput += _player.NormalAttack;
-        //// 여기에 모바일용 유탄공격 시작 이벤트를 추가하여 UI를 생성하는 메서드를 연결할 수 있습니다.
-        //_inputHandler.OnGrenadeAttackInputEnded += _player.GrenadeAttack;
-        //_inputHandler.OnSpecialAttackInput += _player.SpecialAttack;
         _inputHandler.OnInteractInput += _player.ExecuteInteraction;
 
         // PlayerInputHandler의 이벤트와 Player 메서드 연결
@@ -29,8 +25,9 @@ public class PlayScene : MonoBehaviour
         _inputHandler.OnInteractInput += _player.ExecuteInteraction;
 
         // PlaySceneView
-        GameManager.Instance.CurrencyManager.OnGoldChanged += _playSceneView.UpdateGoldText;
+        GameManager.Instance.CurrencyManager.OnCreditChanged += _playSceneView.UpdateGoldText;
         GameManager.Instance.CurrencyManager.OnChromeChanged += _playSceneView.UpdateChromeText;
+        _player.playerModel.OnHpChanged += _playSceneView.UpdateHPBar;
     }
 
     private void Start()
@@ -57,6 +54,12 @@ public class PlayScene : MonoBehaviour
             return;
         }
         _playSceneView.Initialize();
+        if (_cameraMover == null)
+        {
+            Debug.LogError("카메라 무버가 할당되지 않았습니다!");
+            return;
+        }
+        _cameraMover.Initialize(_player);
     }
 
     private void Update()

@@ -9,16 +9,16 @@ using UnityEngine;
 /// </summary>
 public abstract class Room : MonoBehaviour
 {
-    [SerializeField] Transform[] _monsterSpawnPoints;
+    [SerializeField] protected Transform[] _rewardSpawnPoints;        // 보상 오브젝트 스폰 위치들 (프리팹에 세팅)
 
     [Header("Door spawn points (setup on prefab)")]
     [SerializeField] protected Transform[] _doorSpawnPointsLeft;
     [SerializeField] protected Transform[] _doorSpawnPointsRight;
 
-    RoomInfo _roomInfo;
+    protected RoomInfo _roomInfo;
 
     // 구조적 데이터는 프리팹에 보관 (인스펙터에서 볼 수 있음)
-    public Transform[] MonsterSpawnPoints => _monsterSpawnPoints;
+    public Transform[] RewardSpawnPoints => _rewardSpawnPoints;
     public Transform[] DoorSpawnPointsLeft => _doorSpawnPointsLeft;
     public Transform[] DoorSpawnPointsRight => _doorSpawnPointsRight;
 
@@ -158,13 +158,7 @@ public abstract class Room : MonoBehaviour
         return results.ToArray();
     }
 
-    public RewardInteractableObject SpawnReward()
-    {
-        RewardInteractableObject reward = null;
-        reward.OnRewardGiven += RewardSelectionFinished;
-
-        return reward;
-    }
+    public abstract RewardInteractableObject[] SpawnReward();
 
     public void RewardSelectionFinished()
     {

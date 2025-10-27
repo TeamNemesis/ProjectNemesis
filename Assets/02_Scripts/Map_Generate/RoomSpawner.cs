@@ -8,6 +8,7 @@ using UnityEngine;
 public class RoomSpawner : MonoBehaviour
 {
     public event Action<Room> OnRoomSpawned; // 방이 생성될 때 발생하는 이벤트
+    public event Action OnRewardSelectionFinished;  // 보상 선택이 완료되었을 때 발생하는 이벤트
 
     public void Initialize()
     {
@@ -78,6 +79,7 @@ public class RoomSpawner : MonoBehaviour
         // SO 기반 초기화(정책: Room 내부에서 필요한 값들을 SO로부터 적용)
         try
         {
+            room.OnRewardSelectionFinished += RaiseRewardSelectionFinishedEvent;
             room.Initialize(roomInfo);
         }
         catch (Exception ex)
@@ -90,5 +92,10 @@ public class RoomSpawner : MonoBehaviour
         // 이벤트는 초기화 이후에 발생
         OnRoomSpawned?.Invoke(room);
         return room;
+    }
+
+    public void RaiseRewardSelectionFinishedEvent()
+    {
+        OnRewardSelectionFinished?.Invoke();
     }
 }

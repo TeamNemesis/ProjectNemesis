@@ -753,18 +753,41 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5707644572232838547, guid: 640f7220942f4c54a9058c35735d0eb9, type: 3}
+      propertyPath: maxX
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 5707644572232838547, guid: 640f7220942f4c54a9058c35735d0eb9, type: 3}
+      propertyPath: maxZ
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 5707644572232838547, guid: 640f7220942f4c54a9058c35735d0eb9, type: 3}
+      propertyPath: minX
+      value: -30
+      objectReference: {fileID: 0}
+    - target: {fileID: 5707644572232838547, guid: 640f7220942f4c54a9058c35735d0eb9, type: 3}
+      propertyPath: minZ
+      value: -50
+      objectReference: {fileID: 0}
+    - target: {fileID: 5707644572232838547, guid: 640f7220942f4c54a9058c35735d0eb9, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6686156600494389063, guid: 640f7220942f4c54a9058c35735d0eb9, type: 3}
       propertyPath: m_Name
       value: Main Camera
       objectReference: {fileID: 0}
     - target: {fileID: 7832817765617677151, guid: 640f7220942f4c54a9058c35735d0eb9, type: 3}
       propertyPath: orthographic size
-      value: 5
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6686156600494389063, guid: 640f7220942f4c54a9058c35735d0eb9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1694783951}
   m_SourcePrefab: {fileID: 100100000, guid: 640f7220942f4c54a9058c35735d0eb9, type: 3}
 --- !u!1001 &1647806879
 PrefabInstance:
@@ -1136,6 +1159,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1694783945 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6686156600494389063, guid: 640f7220942f4c54a9058c35735d0eb9, type: 3}
+  m_PrefabInstance: {fileID: 1518028902}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1694783951
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1694783945}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f952f8878a15d3a40a0a0f58bde84f89, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _offset: {x: 0, y: 15, z: -15}
+  _cameraSpeed: 5
+  _minX: -30
+  _maxX: 30
+  _minZ: -50
+  _maxZ: 50
+  _transparentAlpha: 0.1
+  _obstacleMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  _target: {fileID: 0}
 --- !u!1 &1780337990
 GameObject:
   m_ObjectHideFlags: 0
@@ -1570,6 +1621,22 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7440761391914242109, guid: e457f452ef592394cae17c6b529b0a2f, type: 3}
+      propertyPath: door_HealChance
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 7440761391914242109, guid: e457f452ef592394cae17c6b529b0a2f, type: 3}
+      propertyPath: door_ChromeChance
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7440761391914242109, guid: e457f452ef592394cae17c6b529b0a2f, type: 3}
+      propertyPath: door_CreditChance
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7440761391914242109, guid: e457f452ef592394cae17c6b529b0a2f, type: 3}
+      propertyPath: door_UpgradeChance
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 8651227612276589479, guid: e457f452ef592394cae17c6b529b0a2f, type: 3}
       propertyPath: m_Name
       value: MapController
@@ -1622,6 +1689,10 @@ PrefabInstance:
       propertyPath: _player
       value: 
       objectReference: {fileID: 4771888688139491524}
+    - target: {fileID: 974063387521994696, guid: e982a7b2b11f8004d910665f1f0a777f, type: 3}
+      propertyPath: _cameraMover
+      value: 
+      objectReference: {fileID: 1694783951}
     - target: {fileID: 974063387521994696, guid: e982a7b2b11f8004d910665f1f0a777f, type: 3}
       propertyPath: _inputHandler
       value: 

@@ -206,6 +206,7 @@ public static class Constants
 
     #region ResourcesPath
     public static string RESOURCES_PATH_PLAYER_WEAPONSET = "ScriptableObjects/Player/PlayerWeaponSets";
+    public static string RESOURCES_PATH_REWARD_DATA_SO = "ScriptableObjects/Rewards";
 
     #region Map
     public static string RESOURCES_PATH_ROOMDATASO = "ScriptableObjects/Map/Rooms";
@@ -259,7 +260,6 @@ public enum InteractableType
     Reward,
     Weapon,
 }
-
 /// <summary>
 /// 플레이어 어택타입 enum
 /// </summary>
