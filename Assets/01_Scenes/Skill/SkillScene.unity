@@ -910,6 +910,8 @@ MonoBehaviour:
   targetTag: Player
   monsterSize: 0
   cost: 0
+  monsterRigidbody: {fileID: 0}
+  monsterCollider: {fileID: 0}
   _knockBackDamage: 0
   player: {fileID: 0}
   agent: {fileID: 0}
@@ -1793,7 +1795,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1568837109
 MonoBehaviour:
   m_ObjectHideFlags: 0

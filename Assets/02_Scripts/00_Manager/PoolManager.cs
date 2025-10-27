@@ -30,7 +30,15 @@ public class PoolManager : MonoBehaviour
         if (availablePools[prefabObject.name].Count == 0)
         {
             Debug.LogWarning($"'{prefabObject.name}' 풀이 비어있습니다! 새로운 오브젝트를 생성합니다.");
-            return CreateNewObject(prefabObject, position,rotation,parentTransform);
+            GameObject newObj = CreateNewObject(prefabObject, position, rotation, parentTransform);
+
+            if (poolable is IInitializePoolable)
+            {
+                IInitializePoolable initializePoolable = newObj.GetComponent<PoolableObject>() as IInitializePoolable;
+                initializePoolable.Initialize(data);
+            }
+
+            return newObj;
         }
 
         GameObject obj = availablePools[prefabObject.name][availablePools[prefabObject.name].Count - 1];
