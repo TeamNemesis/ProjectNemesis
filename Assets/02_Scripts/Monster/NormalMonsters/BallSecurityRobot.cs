@@ -5,13 +5,6 @@ using UnityEngine.AI;
 
 public class BallSecurityRobot : MonsterBase
 {
-    private enum State
-    {
-        Idle,   // 플레이어를 아직 못 찾았거나 감지 범위 밖일 때
-        Move,   // 플레이어를 추격 중일 때
-        Attack, // 자폭 시도
-        Die     // 파괴됨
-    }
 
     [Header("Local Stats"), SerializeField]
     private float _explosionRadius = 3f;      // 실제 폭발 범위
@@ -22,30 +15,28 @@ public class BallSecurityRobot : MonsterBase
     private PoolableObject circlePrefab;     // AttackDecalEffect 프리팹 (Inspector에서 지정)
 
     [SerializeField] private bool _isFusing = false;
-    [SerializeField]
-    private State currentState = State.Idle; 
 
     private void Update()
     {
         if (isDead || _target == null) return;
         if (isStunned) return;
 
-        switch (currentState)
+        switch (baseState)
         {
-            case State.Idle:
+            case MonsterState.Idle:
                 HandleIdle();
                 break;
 
-            case State.Move:
+            case MonsterState.Move:
                 HandleMove();
                 break;
 
-            case State.Attack:
+            case MonsterState.Attack:
                 if (!_isFusing)
                     StartCoroutine(SelfDestructionAttack());
                 break;
 
-            case State.Die:
+            case MonsterState.Die:
                 Die();
                 break;
         }
@@ -57,7 +48,7 @@ public class BallSecurityRobot : MonsterBase
 
         if (distance <= detectionRange)
         {
-            currentState = State.Move;
+            baseState = MonsterState.Move;
         }
     }
 
@@ -68,7 +59,7 @@ public class BallSecurityRobot : MonsterBase
         if (distance > detectionRange)
         {
             agent.ResetPath();
-            currentState = State.Idle;
+            baseState = MonsterState.Idle;
             return;
         }
 
@@ -76,7 +67,7 @@ public class BallSecurityRobot : MonsterBase
 
         if (distance <= attackRange && !_isFusing)
         {
-            currentState = State.Attack;
+            baseState = MonsterState.Attack;
         }
     }
 
@@ -102,7 +93,7 @@ public class BallSecurityRobot : MonsterBase
 
             CheckTarget();
 
-            currentState = State.Die;
+            baseState = MonsterState.Die;
         }
     }
 

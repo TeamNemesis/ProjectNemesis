@@ -3,14 +3,6 @@ using UnityEngine;
 
 public class NebulaChemicalDisease : MonsterBase
 {
-    [SerializeField]
-    private enum State
-    {
-        Idle,   // 플레이어를 아직 못 찾았거나 감지 범위 밖일 때
-        Move,   // 플레이어를 추격 중일 때
-        Attack, // 공격
-        Die     // 죽음
-    }
     [Header("Local Stats")]
     [SerializeField] private float _poisonFieldDuration = 5f; // 독성 구름 지속 시간
     [SerializeField] private float _poisonFieldRadius = 3f;   // 독성 구름 반경
@@ -23,9 +15,6 @@ public class NebulaChemicalDisease : MonsterBase
     [Header("AttackDecalPrefab"),SerializeField]
     private PoolableObject attackDecalPrefab; // 공격 장판 프리팹
 
-    [SerializeField]
-    private State currentState = State.Idle;
-
     private void Update()
     {
         if (isDead || _target == null) return;
@@ -36,21 +25,21 @@ public class NebulaChemicalDisease : MonsterBase
             LookAtPlayer();
         }
 
-        switch (currentState)
+        switch (baseState)
         {
-            case State.Idle:
+            case MonsterState.Idle:
                 HandleIdle();
                 break;
-            case State.Move:
+            case MonsterState.Move:
                 HandleMove();
                 break;
-            case State.Attack:
+            case MonsterState.Attack:
                 if (!_isAttacking)
                 {
                     StartCoroutine(PerformAttack());
                 }
                 break;
-            case State.Die:
+            case MonsterState.Die:
                 Die();
                 break;
         }
@@ -64,7 +53,7 @@ public class NebulaChemicalDisease : MonsterBase
         float distance = Vector3.Distance(transform.position, _target.position);
         if (distance <= detectionRange && CanSeePlayer())
         {
-            currentState = State.Move;
+            baseState = MonsterState.Move;
         }
     }
     private void HandleMove()
@@ -74,7 +63,7 @@ public class NebulaChemicalDisease : MonsterBase
         if (distance > detectionRange || !CanSeePlayer())
         {
             agent.ResetPath();
-            currentState = State.Idle;
+            baseState = MonsterState.Idle;
             return;
         }
 
@@ -83,7 +72,7 @@ public class NebulaChemicalDisease : MonsterBase
         if (distance <= attackRange && CanSeePlayer())
         {
             agent.ResetPath();
-            currentState = State.Attack;
+            baseState = MonsterState.Attack;
         }
     }
 
@@ -110,6 +99,6 @@ public class NebulaChemicalDisease : MonsterBase
             yield return new WaitForSeconds(attackDelay);
         }
         _isAttacking = false;
-        currentState = State.Move; // 공격 후 다시 추격 상태로 전환
+        baseState = MonsterBase.MonsterState.Move; // 공격 후 다시 추격 상태로 전환
     }
 }

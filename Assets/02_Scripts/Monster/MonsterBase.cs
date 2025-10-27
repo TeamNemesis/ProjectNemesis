@@ -10,8 +10,18 @@ public enum MonsterSize
 }
 
 
+
 public class MonsterBase : CharacterModelBase, IInitializePoolable
 {
+    protected enum MonsterState
+    {
+        Idle,
+        Move,
+        Attack,
+        Die
+    }
+
+
     [Header("Base Stats")]
     [SerializeField] private float maxEliteHealth;
     [SerializeField] protected float attackDamage = 10;
@@ -25,6 +35,8 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
     [SerializeField] protected Rigidbody monsterRigidbody;
     [SerializeField] protected Collider monsterCollider;
 
+    [Header("Base State")]
+    [SerializeField] protected MonsterState baseState = MonsterState.Idle;
 
 
     #region 넉백
@@ -74,12 +86,12 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
     }
 
 
-    //private void Start()
-    //{
-    //    Initialize();
-    //}
+    private void Start()
+    {
+        Initialize();
+    }
 
-    public void Initialize(object data = null)
+    public virtual void Initialize(object data = null)
     {
         base.Initialize();
 
@@ -90,9 +102,12 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
         isBindned = false;
         isWeaken = false;
 
+        // === 상태 머신 초기화 ===
+        baseState = MonsterState.Idle;
+
         // === 컴포넌트 초기화 ===
         agent = GetComponent<NavMeshAgent>();
-        if (agent != null)
+        if (agent != null && agent.isOnNavMesh)
         {
             agent.enabled = true;
             agent.isStopped = false;
