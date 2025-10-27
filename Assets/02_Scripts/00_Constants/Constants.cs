@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using UnityEngine;
 
 public static class Constants
 {
@@ -212,6 +214,59 @@ public static class Constants
     public static string RESOURCES_PATH_ROOMDATASO = "ScriptableObjects/Map/Rooms";
     public static string RESOURCES_PATH_DOOR_PREFAB = "Prefabs/Map/Doors/Door";
     #endregion
+
+    #endregion
+
+    #region knockBack
+    public const float KNOCKBACK_COOLTIME = 5f;
+    #endregion
+
+    #region Util
+
+    /// <summary>
+    /// origin과 가장 가까운 List의 요소 반환
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="origin"></param>
+    /// <param name="targetList"></param>
+    /// <returns></returns>
+    public static T GetNearestObject<T>(Transform origin, List<T> targetList)  where T : Component
+    {
+        if(targetList == null)
+        {
+            Debug.LogWarning("리스트가 null입니다.");
+            return null;
+        }
+
+
+        
+        if(targetList.Count == 0)
+        {
+            Debug.LogWarning("리스트가 비어있습니다.");
+            return null;
+        }
+
+
+        float minDistance = float.MaxValue;
+        T nearestObject = null;
+
+        foreach(T target in targetList)
+        {
+            if(target ==null)
+            {
+                continue;
+            }
+            float distance = Vector3.Distance(origin.position, target.transform.position);
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                nearestObject = target;
+            }
+        }
+
+        return nearestObject;
+
+    }
 
     #endregion
 }

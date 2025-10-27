@@ -197,8 +197,9 @@ public class PlayerStatManager : MonoBehaviour
     public void AddPlayerDashDistanceMulti(float plusDashDistanceMulti)
     {
         _playerDashDistanceMulti += plusDashDistanceMulti;
+        OnPlayerDashDistanceMultiChange?.Invoke(_playerDashDistanceMulti);
     }
-
+    public event Action<float> OnPlayerDashDistanceMultiChange;
     /// <summary>
     /// 플레이어 애니메이션 일반 공격 재생 속도
     /// </summary>
@@ -310,7 +311,9 @@ public class PlayerStatManager : MonoBehaviour
     public void AddKockBackDamageMulti(float plusKnockBackDamageMulti)
     {
         _knockBackDamageMulti += plusKnockBackDamageMulti;
+        OnKnockBackDamgeMultiChange?.Invoke(_knockBackDamageMulti);
     }
+    public event Action<float> OnKnockBackDamgeMultiChange;
 
     /// <summary>
     /// 넉백 거리 계수
@@ -320,7 +323,9 @@ public class PlayerStatManager : MonoBehaviour
     public void AddKnockBackDistance(float plusKnockBackDistance)
     {
         _knockBackDistance += plusKnockBackDistance;
+        OnKnockBackDistanceChange?.Invoke(_knockBackDistance);
     }
+    public event Action<float> OnKnockBackDistanceChange;
 
     /// <summary>
     /// 넉백 미는 힘
@@ -357,7 +362,7 @@ public class PlayerStatManager : MonoBehaviour
 
     
 
-    public void TakeDamage(WeaponType weaponType,ATTACKTYPE attackType,Transform monster)
+    public void TakeDamage(WeaponType weaponType,ATTACKTYPE attackType,Transform monster, Transform attackerTransform)
     {
         float damage = 0f;
         switch (attackType)

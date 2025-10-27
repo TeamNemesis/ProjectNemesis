@@ -3,7 +3,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class BallSecurityRobot : MonsterBase
+public class Missile : MonsterBase
 {
     private enum State
     {
@@ -23,7 +23,7 @@ public class BallSecurityRobot : MonsterBase
 
     [SerializeField] private bool _isFusing = false;
     [SerializeField]
-    private State currentState = State.Idle; 
+    private State currentState = State.Idle;
 
     private void Update()
     {
@@ -86,7 +86,7 @@ public class BallSecurityRobot : MonsterBase
         {
             _isFusing = true;
 
-            // 자폭 카운트다운 원 생성 (로봇의 자식으로 붙임)
+            // 자폭 카운트다운 원 생성
             if (circlePrefab != null)
             {
                 GameObject circle = GameManager.Instance.PoolManager.GetFromPool(circlePrefab, transform.position, circlePrefab.transform.rotation);

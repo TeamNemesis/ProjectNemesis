@@ -44,7 +44,7 @@ public class Skill_One_SPAttack : ActiveTech
         isHit = false;
     }
 
-    public override void HitEnemy(Transform transform)
+    public override void HitEnemy(WeaponType weapon, ATTACKTYPE attack, Transform transform,Transform attackerTransform)
     {
         // 이미 효과가 발동했었다면 return;
         if (isHit) return;
@@ -93,7 +93,7 @@ public class Skill_Two_SPAttack : ActiveTech
 }
 
 /// <summary>
-/// Gear 특수공격 강화
+/// Gear 특수공격 강화(반동)
 /// </summary>
 public class Skill_Three_SPAttack: ActiveTech
 {
@@ -150,7 +150,7 @@ public class Skill_Five_SPAttack : ActiveTech
         //TODO 특수공격 적중시 이벤트에 해제
     }
 
-    public override void HitEnemy(Transform transform)
+    public override void HitEnemy(WeaponType weapon, ATTACKTYPE attack, Transform transform, Transform attackerTransform)
     {
         MonsterBase monster = transform.GetComponent<MonsterBase>();
 

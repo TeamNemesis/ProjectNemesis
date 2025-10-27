@@ -62,7 +62,7 @@ public abstract class ActiveTech
     /// <summary>
     /// 기술이 적중될 때 호출되는 메서드
     /// </summary>  
-    public virtual void HitEnemy(Transform transform)
+    public virtual void HitEnemy(WeaponType weaponType, ATTACKTYPE attackType, Transform monster,Transform attacker = null)
     {
         Debug.Log("스킬 사용 ");
     }

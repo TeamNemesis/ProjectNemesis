@@ -28,10 +28,10 @@ public class Skill_Two : SkillBase
                 ActiveTech skillAttack = new Skill_Two_Attack(choosedSkill);
                 if (_skillManager.attackTech != null)
                 {
-                    _skillManager.attackTech.Deactivate(player, _skillManager.attackTech.skillData.skillIdx != choosedSkill.skillIdx);
+                    _skillManager.attackTech.Deactivate(_skillManager.playScene.player, _skillManager.attackTech.skillData.skillIdx != choosedSkill.skillIdx);
 
                 }
-                skillAttack.Activate(_skillManager, player);
+                skillAttack.Activate(_skillManager, _skillManager.playScene.player);
                 break;
 
             // 폭발!
@@ -41,10 +41,10 @@ public class Skill_Two : SkillBase
                 if (_skillManager.bombTech != null)
                 {
 
-                    _skillManager.bombTech.Deactivate(player, _skillManager.bombTech.skillData.skillIdx != choosedSkill.skillIdx);
+                    _skillManager.bombTech.Deactivate(_skillManager.playScene.player, _skillManager.bombTech.skillData.skillIdx != choosedSkill.skillIdx);
 
                 }
-                skillGrenade.Activate(_skillManager, player);
+                skillGrenade.Activate(_skillManager, _skillManager.playScene.player);
                 break;
 
             // 비밀무기
@@ -54,10 +54,10 @@ public class Skill_Two : SkillBase
                 if (_skillManager.skillTech != null)
                 {
 
-                    _skillManager.skillTech.Deactivate(player, _skillManager.skillTech.skillData.skillIdx != choosedSkill.skillIdx);
+                    _skillManager.skillTech.Deactivate(_skillManager.playScene.player, _skillManager.skillTech.skillData.skillIdx != choosedSkill.skillIdx);
 
                 }
-                skillSPAttack.Activate(_skillManager, player);
+                skillSPAttack.Activate(_skillManager, _skillManager.playScene.player);
                 break;
 
             // 깜짝선물
@@ -67,10 +67,10 @@ public class Skill_Two : SkillBase
                 if (_skillManager.dashTech != null)
                 {
 
-                    _skillManager.dashTech.Deactivate(player, _skillManager.dashTech.skillData.skillIdx != choosedSkill.skillIdx);
+                    _skillManager.dashTech.Deactivate(_skillManager.playScene.player, _skillManager.dashTech.skillData.skillIdx != choosedSkill.skillIdx);
 
                 }
-                skillDashAttack.Activate(_skillManager, player);
+                skillDashAttack.Activate(_skillManager, _skillManager.playScene.player);
                 break;
 
             // 전투장비 강화
@@ -96,9 +96,10 @@ public class Skill_Two : SkillBase
             case 26:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
 
-                //TODO 몬스터 스포너에 몬스터 생성시 이벤트에 연결
-                // monsterSpawner.OnSpawnMonster += (monster)=>monster.OnDie+=()=>MakeExplosion(monster.transform);
 
+                //TODO 몬스터 스포너에 몬스터 생성시 이벤트에 연결
+                skillManager.playScene.MapController.MonsterController.MonsterSpawner.OnMonsterSpawned -= ConnectMakeExpolsion;
+                skillManager.playScene.MapController.MonsterController.MonsterSpawner.OnMonsterSpawned += ConnectMakeExpolsion;
                 break;
 
             // 기폭제
@@ -124,6 +125,18 @@ public class Skill_Two : SkillBase
     }
 
     #region 폭사
+    public void ConnectMakeExpolsion(MonsterBase monster)
+    {
+        Action handler = null;
+        handler = () =>
+        {
+            monster.OnDieEvent -= handler; 
+            MakeExplosion(monster.transform);
+        };
+
+        monster.OnDieEvent += handler;
+    }
+
     public void MakeExplosion(Transform monsterTransform)
     {
         Vector3 position = monsterTransform.position;
