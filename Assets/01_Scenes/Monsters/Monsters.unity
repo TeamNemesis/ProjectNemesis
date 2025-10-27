@@ -440,6 +440,9 @@ GameObject:
   - component: {fileID: 1595431332}
   - component: {fileID: 1595431331}
   - component: {fileID: 1595431330}
+  - component: {fileID: 1595431335}
+  - component: {fileID: 1595431334}
+  - component: {fileID: 1595431336}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -536,6 +539,89 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1595431334
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1595431329}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c677594193edb9849a150de7cbf651ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _maxHealth: 100
+  _currentHealth: 0
+  _moveSpeed: 5
+  isStunned: 0
+  isPushed: 0
+  isBindned: 0
+  isWeaken: 0
+  isDead: 0
+  debuffHandler: {fileID: 0}
+  maxEliteHealth: 0
+  attackDamage: 10
+  attackRange: 1000
+  detectionRange: 1000
+  attackDelay: 0.5
+  originalSpeed: 10
+  targetTag: Player
+  monsterSize: 2
+  cost: 0
+  _knockBackDamage: 0
+  player: {fileID: 0}
+  agent: {fileID: 0}
+  _target: {fileID: 0}
+  laserAttackCount: 0
+  _poisonFieldDuration: 999
+  _poisonFieldRadius: 6
+  _poisonFieldDelay: 2
+  bulletLifeTime: 8
+  maxBulletAttackCounter: 0
+  _isAttacking: 0
+  squareDecalPrefab: {fileID: 0}
+  attackDecalPrefab: {fileID: 0}
+  poisonFieldPrefab: {fileID: 0}
+  eliteBulletPrefab: {fileID: 5248596736412313402, guid: d48011a799ce2aa49b2e2b81fc593843, type: 3}
+  bulletAttackCoolTime: 5
+  poisonLaserAttackCoolTime: 5
+  poisonFieldAttackCoolTime: 10
+  currentState: 0
+--- !u!114 &1595431335
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1595431329}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 725c1c87d9a2e3346bd4c5a3c364f518, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!195 &1595431336
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1595431329}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 1
+  m_BaseOffset: 0.5
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &1606999126
 GameObject:
   m_ObjectHideFlags: 0
