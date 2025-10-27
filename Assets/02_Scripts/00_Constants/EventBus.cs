@@ -8,10 +8,16 @@ using UnityEngine;
 /// </summary>
 public static class EventBus
 {
-    public static event Action<MonsterBase> OnMonsterHit;
+    /// <summary>
+    /// 몬스터 적중시 이벤트 <무기 타입,공격 타입, 적 트랜스폼, 공격자 트랜스폼(플레이어, 총알 드론 등)
+    /// </summary>
+    public static event Action<WeaponType, ATTACKTYPE, Transform,Transform> OnMonsterHit;
 
-    public static void MonsterHit(MonsterBase monster)
+    public static void MonsterHit(WeaponType weaponType, ATTACKTYPE attackType,Transform monster,Transform attacker)
     {
-        OnMonsterHit?.Invoke(monster);
+        OnMonsterHit?.Invoke(weaponType, attackType, monster,attacker);
     }
 }
+
+
+

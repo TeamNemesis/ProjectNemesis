@@ -19,7 +19,7 @@ public class BallSecurityRobot : MonsterBase
     // attackDamage, attackRange, attackDelay, isDead 등은 MonsterBase에서 상속됨
 
     [Header("Effects"), SerializeField]
-    private GameObject circlePrefab;     // AttackDecalEffect 프리팹 (Inspector에서 지정)
+    private PoolableObject circlePrefab;     // AttackDecalEffect 프리팹 (Inspector에서 지정)
 
     [SerializeField] private bool _isFusing = false;
     [SerializeField]
@@ -89,7 +89,7 @@ public class BallSecurityRobot : MonsterBase
             // 자폭 카운트다운 원 생성 (로봇의 자식으로 붙임)
             if (circlePrefab != null)
             {
-                GameObject circle = Instantiate(circlePrefab, transform.position, circlePrefab.transform.rotation, transform);
+                GameObject circle = GameManager.Instance.PoolManager.GetFromPool(circlePrefab, transform.position, circlePrefab.transform.rotation);
                 AttackDecalEffect effect = circle.GetComponent<AttackDecalEffect>();
                 if (effect != null)
                 {

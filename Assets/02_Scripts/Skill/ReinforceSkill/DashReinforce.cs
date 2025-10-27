@@ -21,7 +21,7 @@ public class Skill_One_Dash : ActiveTech
 
     public override void Activate(SkillManager skillManager, Player player)
     {
-        if(_poisonDashPrefab == null)
+        if (_poisonDashPrefab == null)
         {
             _poisonDashPrefab = Resources.Load<PoisonDash>("Prefabs/Skill/SkillObject/Skill_One/PoisonDash");
         }
@@ -45,7 +45,7 @@ public class Skill_One_Dash : ActiveTech
         Vector3 position = player.transform.position;
         position.y = 0;
 
-        GameManager.Instance.PoolManager.GetFromPool(_poisonDashPrefab,position, _poisonDashPrefab.transform.rotation,player.transform,_poisonDashData).GetComponent<PoisonDash>().Initialize();
+        GameManager.Instance.PoolManager.GetFromPool(_poisonDashPrefab, position, _poisonDashPrefab.transform.rotation, player.transform, _poisonDashData).GetComponent<PoisonDash>().Initialize();
     }
 
 
@@ -69,7 +69,7 @@ public class Skill_Two_Dash : ActiveTech
     /// </summary>
     public Action _DashTry;
 
-    
+
 
     public override void Activate(SkillManager skillManager, Player player)
     {
@@ -147,7 +147,7 @@ public class Skill_Three_Dash : ActiveTech
             _skillData.skillBaseValue_1 + _skillData.skillLevelValue_1 * _skillData.skillLevel, // 데미지
             _skillData.skillBaseValue_2 + _skillData.skillLevelValue_2 * _skillData.skillLevel); // 넉백 거리
 
-        GameManager.Instance.PoolManager.GetFromPool(_knockBackDashPrefab, position, _knockBackDashPrefab.transform.rotation,null, dashData).GetComponent<KnockBackDash>().Initialize();
+        GameManager.Instance.PoolManager.GetFromPool(_knockBackDashPrefab, position, _knockBackDashPrefab.transform.rotation, null, dashData).GetComponent<KnockBackDash>().Initialize();
     }
 
 
@@ -182,14 +182,52 @@ public class Skill_Four_Dash : ActiveTech
 /// </summary>
 public class Skill_Five_Dash : ActiveTech
 {
+    private bool bIsAttackReinForce;
+
+    private float _attackReinForce;
+    private Action _dashAction;
+    private Action _attackAction;
+
     public override void Activate(SkillManager skillManager, Player player)
     {
         base.Activate(skillManager, player);
+        _dashAction = () => ActiveTry(player);
+        _attackAction = () => AttackTry();
+        _attackReinForce = _skillData.skillLevel * _skillData.skillLevelValue_1 + _skillData.skillBaseValue_1;
+        player.OnDashStarted += _dashAction;
+        player.OnNormalAttackStarted += _attackAction;
     }
 
     public override void Deactivate(Player player, bool isAnotherSkill)
     {
         base.Deactivate(player, isAnotherSkill);
+        AttackTry();
+        player.OnDashStarted -= _dashAction;
+        player.OnNormalAttackStarted -= _attackAction;
+
+    }
+
+    public override void ActiveTry(Player player)
+    {
+        if (!bIsAttackReinForce)
+        {
+
+            GameManager.Instance.PlayerStatManager.AddPlayerAttackDamage(_attackReinForce);
+            Debug.Log(GameManager.Instance.PlayerStatManager.playerAttackDamage);
+
+            bIsAttackReinForce = true;
+        }
+    }
+
+    public void AttackTry()
+    {
+        if (bIsAttackReinForce)
+        {
+            GameManager.Instance.PlayerStatManager.AddPlayerAttackDamage(-_attackReinForce);
+            Debug.Log(GameManager.Instance.PlayerStatManager.playerAttackDamage);
+            bIsAttackReinForce = false;
+        }
+
     }
 
     public Skill_Five_Dash(SkillData skillData) : base(skillData)

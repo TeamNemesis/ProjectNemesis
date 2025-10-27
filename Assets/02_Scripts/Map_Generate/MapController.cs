@@ -20,6 +20,11 @@ public class MapController : MonoBehaviour
     [SerializeField] int _currentRoomCount = -1;
     [SerializeField] bool _hasLabRoomAppeared = false;
 
+    public MonsterController MonsterController => _monsterController;
+    public RoomSpawner RoomSpawner => _roomSpawner;
+    public DoorSpawner DoorSpawner => _doorSpawner;
+    public DoorDecider DoorDecider => _doorDecider;
+
     public Room CurrentRoom => _currentRoom;
     public Door[] CurrentDoors => _currentDoors;
     public int CurrentRoomCount => _currentRoomCount;
@@ -37,6 +42,7 @@ public class MapController : MonoBehaviour
 
         _roomSpawner.Initialize();
         _doorDecider.Initialize();
+        _monsterController.Initialize();
     }
 
     void OnDoorInteracted(IInteractable interactable)
@@ -223,6 +229,10 @@ public class MapController : MonoBehaviour
             // 기본 SpawnDoor(Transform, RoomInfo)
             Door door = _doorSpawner.SpawnDoor(position, info);
         _currentRoom.OnRewardSelectionFinished += door.OnRewardSelectionCompleted;
+        if (_currentRoom.RoomInfo.RoomType == RoomType.Start)
+        {
+            door.OnRewardSelectionCompleted();
+        }
             if (door != null && parent != null)
                 door.transform.SetParent(parent, worldPositionStays: true);
 
@@ -251,6 +261,14 @@ public class MapController : MonoBehaviour
 
     void DestroyCurrentRoomObjects()
     {
+
+        // PoolableObject 찾아서 반환 처리
+        var poolables = _currentRoom.PoolableObjectsInRoom;
+        foreach (var poolableObj in poolables)
+        {
+            GameManager.Instance.PoolManager.ReleaseToPool(poolableObj);
+        }
+
         // 먼저 문들 파괴
         if (_currentDoors != null)
         {

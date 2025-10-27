@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class PlayerStatManager : MonoBehaviour
@@ -93,23 +94,25 @@ public class PlayerStatManager : MonoBehaviour
     /// <summary>
     /// 플레이어 일반 공격 데미지 계수
     /// </summary>
-    private float _playerAttackDamage;
+    private float _playerAttackDamage = 1f;
     public float playerAttackDamage { get { return _playerAttackDamage; } }
     public void AddPlayerAttackDamage(float plusDamage)
     {
         _playerAttackDamage += plusDamage;
+        OnPlayerAttackDamageChange?.Invoke();
     }
+    public event Action OnPlayerAttackDamageChange;
 
 
 
     /// <summary>
     /// 플레이어 유탄 공격 데미지 계수
     /// </summary>
-    private float _playerGrenadeDamage;
-    public float playerGrenadeDamage { get { return _playerGrenadeDamage; } }
-    public void AddPlayerGrenadeDamage(float plusGrenadeDamage)
+    private float _playerGrenadeDamageMulti;
+    public float playerGrenadeDamageMulti { get { return _playerGrenadeDamageMulti; } }
+    public void AddPlayerGrenadeDamageMulti(float plusGrenadeDamage)
     {
-        _playerGrenadeDamage += plusGrenadeDamage;
+        _playerGrenadeDamageMulti += plusGrenadeDamage;
     }
   
 
@@ -124,13 +127,23 @@ public class PlayerStatManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 플레이어 대쉬 공격력 계수
+    /// 플레이어 대쉬 공격력
     /// </summary>
     private float _playerDashDamage;
     public float playerDashDamage { get { return _playerDashDamage; } }
     public void AddPlayerDashDamage(float plusDashDamage)
     {
         _playerDashDamage += plusDashDamage;
+    }
+
+    /// <summary>
+    /// 플레이어 대쉬 공격력계수
+    /// </summary>
+    private float _playerDashDamageMulti;
+    public float playerDashDamageMulti { get { return _playerDashDamageMulti; } }
+    public void AddPlayerDashDamageMulti(float plusDashDamage)
+    {
+        _playerDashDamageMulti += plusDashDamage;
     }
 
     #endregion
@@ -140,7 +153,7 @@ public class PlayerStatManager : MonoBehaviour
     /// <summary>
     /// 모든 데미지 증가 계수
     /// </summary>
-    private float _totalMultiDamage = 1f;
+    private float _totalMultiDamage = 0f;
     public float totalMultiDamage { get { return _totalMultiDamage; } }
 
     /// <summary>
@@ -159,7 +172,12 @@ public class PlayerStatManager : MonoBehaviour
     public void AddPlayerMoveSpeed(float plusMoveSpeed)
     {
         _playerMoveSpeed += plusMoveSpeed;
+        OnPlayerMoveSpeedChange?.Invoke();
     }
+    public event Action OnPlayerMoveSpeedChange;
+
+
+
 
     /// <summary>
     /// 플레이어 대쉬 거리
@@ -179,8 +197,9 @@ public class PlayerStatManager : MonoBehaviour
     public void AddPlayerDashDistanceMulti(float plusDashDistanceMulti)
     {
         _playerDashDistanceMulti += plusDashDistanceMulti;
+        OnPlayerDashDistanceMultiChange?.Invoke(_playerDashDistanceMulti);
     }
-
+    public event Action<float> OnPlayerDashDistanceMultiChange;
     /// <summary>
     /// 플레이어 애니메이션 일반 공격 재생 속도
     /// </summary>
@@ -197,6 +216,16 @@ public class PlayerStatManager : MonoBehaviour
     #region 유탄, 범위공격
 
     /// <summary>
+    /// 유탄 공격력
+    /// </summary>
+    private float _playerGrenadeDamage;
+    public float playerGrenadeDamage { get { return _playerGrenadeDamage; } }
+    public void AddPlayerGreneadeDamage(float plusGreneadeDamage)
+    {
+        _playerGrenadeDamage += plusGreneadeDamage;
+    }
+
+    /// <summary>
     /// 플레이어 범위 공격 범위 계수
     /// </summary>
     private float _playerAreaExtent = 1f;
@@ -204,18 +233,35 @@ public class PlayerStatManager : MonoBehaviour
     public void AddPlayerAreaExtent(float plusAreaExtent)
     {
         _playerAreaExtent += plusAreaExtent;
+        OnAreaExtentChange?.Invoke(_playerAreaExtent);
     }
-
+    public event Action<float> OnAreaExtentChange;
 
     /// <summary>
-    /// 유탄 쿨타임 계수
+    /// 유탄 쿨타임 
     /// </summary>
     private float _grenadeCoolTime;
     public float grenadeCoolTime { get { return _grenadeCoolTime; } }
     public void SetGrenadeCoolTime(float grenadeCoolTime)
     {
-        _grenadeCoolTime *= grenadeCoolTime;
+        _grenadeCoolTime = grenadeCoolTime;
+        OnGrenadeCoolTimeChange?.Invoke(_grenadeCoolTime);
     }
+    public event Action<float> OnGrenadeCoolTimeChange;
+
+
+
+    /// <summary>
+    /// 유탄 쿨타임 계수
+    /// </summary>
+    private float _grenadeCoolTimeMulti;
+    public float grenadeCoolTimeMulti { get { return _grenadeCoolTimeMulti; } }
+    public void MinusGrenadeCoolTimeMulti(float grenadeCoolTime)
+    {
+        _grenadeCoolTimeMulti -= grenadeCoolTime;
+        OnGrenadeCoolTimeMultiChange?.Invoke(_grenadeCoolTimeMulti);
+    }
+    public event Action<float> OnGrenadeCoolTimeMultiChange;
 
     #endregion
 
@@ -223,22 +269,26 @@ public class PlayerStatManager : MonoBehaviour
     /// <summary>
     /// 플레이어 받는 피해 계수
     /// </summary>
-    private float _playerHitPercent = 1f;
-    public float playerHitPercent { get { return _playerHitPercent; } }
-    public void AddPlayerHitPercent(float plusHitPercent)
+    private float _playerReduceDamagePercent = 1f;
+    public float playerReduceDamagePercent { get { return _playerReduceDamagePercent; } }
+    public void AddReduceDamagePercent(float plusReduceDamagePercent)
     {
-        _playerHitPercent += plusHitPercent;
+        _playerReduceDamagePercent += plusReduceDamagePercent;
+        OnplayerHitPercentChange?.Invoke(_playerReduceDamagePercent);
     }
-    
+    public event Action<float> OnplayerHitPercentChange;
+
     /// <summary>
     /// 플레이어 회피율
     /// </summary>
-    private float _playerAvoidance;
+    private float _playerAvoidance= 0f;
     public float playerAvoidance { get { return _playerAvoidance; } }
     public void AddPlayerAvoidance(float plusPlayerAvoidance)
     {
         _playerAvoidance += plusPlayerAvoidance;
+        OnplayerAvoidanceChange?.Invoke(_playerAvoidance);
     }
+    public event Action<float> OnplayerAvoidanceChange;
     #endregion
 
     #region 넉백
@@ -261,7 +311,9 @@ public class PlayerStatManager : MonoBehaviour
     public void AddKockBackDamageMulti(float plusKnockBackDamageMulti)
     {
         _knockBackDamageMulti += plusKnockBackDamageMulti;
+        OnKnockBackDamgeMultiChange?.Invoke(_knockBackDamageMulti);
     }
+    public event Action<float> OnKnockBackDamgeMultiChange;
 
     /// <summary>
     /// 넉백 거리 계수
@@ -271,7 +323,9 @@ public class PlayerStatManager : MonoBehaviour
     public void AddKnockBackDistance(float plusKnockBackDistance)
     {
         _knockBackDistance += plusKnockBackDistance;
+        OnKnockBackDistanceChange?.Invoke(_knockBackDistance);
     }
+    public event Action<float> OnKnockBackDistanceChange;
 
     /// <summary>
     /// 넉백 미는 힘
@@ -298,11 +352,70 @@ public class PlayerStatManager : MonoBehaviour
     /// <summary>
     /// 약화 추가 데미지 계수
     /// </summary>
-    private float _weakenPlusDamage;
+    private float _weakenPlusDamage = 0f;
     public float weakenPlusDamage { get { return _weakenPlusDamage; } }
     public void AddWeakenPlusDamage(float PlusWeakenDamage)
     {
         _weakenPlusDamage += PlusWeakenDamage;
     }
     #endregion
+
+    
+
+    public void TakeDamage(WeaponType weaponType,ATTACKTYPE attackType,Transform monster, Transform attackerTransform)
+    {
+        float damage = 0f;
+        switch (attackType)
+        {
+            case ATTACKTYPE.NORMAL:
+                switch (weaponType)
+                {
+                    case WeaponType.Blade:
+                        damage = _bladeAttackDamage * playerAttackDamage;
+                        break;
+                    case WeaponType.Rifle:
+                        damage = _playerRifleAttackDamage * playerAttackDamage;
+                        break;
+                    case WeaponType.HackingDevice:
+                        damage = _playerHackAttackDamage * playerAttackDamage;
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            case ATTACKTYPE.GRENADE:
+                damage = playerGrenadeDamage * playerGrenadeDamageMulti;
+                break;
+            case ATTACKTYPE.SPECIALATTACK:
+                switch (weaponType)
+                {
+                    case WeaponType.Blade:
+                        damage = _bladeSPAttackDamage * playerSPAttackDamage;
+                        break;
+                    case WeaponType.Rifle:
+                        damage = _playerRifleSPAttackDamage * playerSPAttackDamage;
+                        break;
+                    case WeaponType.HackingDevice:
+                        damage = _playerHackSPAttackDamage * playerSPAttackDamage;
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            case ATTACKTYPE.DASH:
+                damage = _playerDashDamage * playerDashDamageMulti;
+                break;
+            
+            default:
+                break;
+        }
+
+        monster.GetComponent<MonsterBase>().TakeDamage(damage);
+    }
+
+
+    public void Initialize()
+    {
+        EventBus.OnMonsterHit += TakeDamage;
+    }
 }

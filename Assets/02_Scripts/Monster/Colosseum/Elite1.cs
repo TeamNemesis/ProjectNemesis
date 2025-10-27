@@ -19,9 +19,10 @@ public class Elite1 : MonsterBase
     [SerializeField] private float _box_Width = 3;
 
     [Header("Elite Stats")]
-    [SerializeField] private float teleportAttackRange = 3f; // 텔포 공격 범위   
+    [SerializeField] private float teleportAttackRange = 4.5f; // 텔포 공격 범위   
     [SerializeField] private float teleportAttackDelay = 1f; // 텔포 공격 딜레이
     [SerializeField] private float bladeAttackkDelay = 1f;
+    [SerializeField] int stopDistance = 1;
 
     [SerializeField]
     private State currentState = State.Idle;
@@ -32,15 +33,20 @@ public class Elite1 : MonsterBase
     [SerializeField] private PoolableObject BulletPrefab;
 
     private int attackCount = 2;
-    private float attackDist = 1f; // 공격 시 전진 거리
+    private float attackDist = 2f; // 공격 시 전진 거리
 
     [Header("CoolTimes")]
-    [SerializeField] private float Pattern1CoolTime = 5f;
-    [SerializeField] private float Pattern2CoolTime = 5f;
+    [SerializeField] private float Pattern1CoolTime = 7f;
+    [SerializeField] private float Pattern2CoolTime = 7f;
+
+    [Header("Phase")]
+    [SerializeField] private bool isPhase2 = false;
+    private float lastHealthCheckThreshold = 1f;
 
 
     private void Update()
     {
+        CoolTimeController();
         if (isDead || _target == null) return;
         if (isStunned) return;
 
@@ -48,12 +54,7 @@ public class Elite1 : MonsterBase
         {
             LookAtPlayer();
         }
-        if (currentHealth / maxHealth <= 0.5f)    // 2페이즈
-        {
-            GetComponent<Renderer>().material.color = Color.red;    // 색깔 변경
-            _box_Length = 4f;   // 공격범위 변경
-            _box_Width = 4f;    // 공격범위 변경
-        }
+        
         switch (currentState)
         {
             case State.Idle:
@@ -65,7 +66,7 @@ public class Elite1 : MonsterBase
             case State.Attack:
                 if (!_isAttacking)
                 {
-                    StartCoroutine(Pattern1Routine());
+                    TryUseSkill();
                 }
                 break;
             case State.Die:
@@ -119,6 +120,8 @@ public class Elite1 : MonsterBase
     /// </summary>
     private IEnumerator Pattern1Routine()
     {
+
+        Pattern1CoolTime = 7f;
         _isAttacking = true;
 
         _meshRenderer = GetComponent<MeshRenderer>();
@@ -210,12 +213,13 @@ public class Elite1 : MonsterBase
 
     private IEnumerator Pattern2Routine()   // 패턴2 모든 루틴
     {
+
+        Pattern2CoolTime = 7f;
         _isAttacking = true;
         // 플레이어 방향 계산
         Vector3 dirToPlayer = (_target.position - transform.position).normalized;
 
         // 플레이어에서 일정 거리 떨어진 곳 까지 대쉬
-        int stopDistance = 3;
         Vector3 dashTarget = _target.position - dirToPlayer * stopDistance;
 
         // 대쉬 실행
@@ -259,16 +263,14 @@ public class Elite1 : MonsterBase
 
         foreach (Collider target in hitTargets)
         {
-            if (target.CompareTag(targetTag) && target.TryGetComponent(out IDamageable playerHealth))
+            if (target.CompareTag(targetTag) && target.TryGetComponent(out IDamageable player))
             {
-                playerHealth.TakeDamage(attackDamage);
+                player.TakeDamage(attackDamage);
             }
         }
 
         // TakeDamage 쿨타임
         yield return new WaitForSeconds(attackDelay);
-
-
     }
 
 
@@ -342,6 +344,7 @@ public class Elite1 : MonsterBase
         if (Pattern1CoolTime <= 0)
         {
             availableSkills.Add(Pattern1Routine());
+
         }
         if (Pattern2CoolTime <= 0)
         {
@@ -361,4 +364,29 @@ public class Elite1 : MonsterBase
         }
     }
 
+    public override void TakeDamage(float damage)
+    {
+        base.TakeDamage(damage);
+
+        float healthRatio = currentHealth / maxHealth;
+
+        // 체력 임계값을 넘었을 때만 체크
+        if (healthRatio <= 0.5f && lastHealthCheckThreshold > 0.5f)
+        {
+            EnterPhase2();
+        }
+
+        lastHealthCheckThreshold = healthRatio;
+    }
+
+    /// <summary>
+    /// 2 페이즈 진입
+    /// </summary>
+    private void EnterPhase2()
+    {
+        isPhase2 = true;
+        GetComponent<Renderer>().material.color = Color.red;
+        _box_Length = 4f;
+        _box_Width = 4f;
+    }
 }

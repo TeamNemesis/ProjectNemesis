@@ -49,7 +49,7 @@ MonoBehaviour:
   _threeDoorChance: 0.3
   door_CreditChance: 0.1
   door_HealChance: 0.1
-  door_UpgradeChance: 0.3
+  door_UpgradeChance: 0.1
   door_ChromeChance: 0.1
   door_SkillPackChance: 0.6
 --- !u!1 &924899988649064326
@@ -61,9 +61,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6423724744313231913}
+  - component: {fileID: 361616287686529096}
   - component: {fileID: 8999976014532792861}
   m_Layer: 0
-  m_Name: MonsterSpawner
+  m_Name: MonsterController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -84,6 +85,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 4057448122965568358}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &361616287686529096
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 924899988649064326}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25a7bbd1027371840b7979faa9a4d082, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _monsterSpawner: {fileID: 8999976014532792861}
 --- !u!114 &8999976014532792861
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -96,6 +110,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9a327fe9be46e94984afe2b597befe5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  monsterPrefabs:
+  - {fileID: 2821671262608775679, guid: 31d9d065d60ebc543aa9a7c07609ba6a, type: 3}
+  - {fileID: 7539578067776936276, guid: 69a152d5ffcc54b43951b3258fab8a37, type: 3}
+  - {fileID: 4891787988556077794, guid: 3c786e0e126f3c04aac997196a100f79, type: 3}
+  - {fileID: 900541771517750140, guid: bcae6f7357fac65468003be58c7ce711, type: 3}
+  - {fileID: 5829316648119766581, guid: 62dc2018ab6d11846bb1126a063a0f5c, type: 3}
+  - {fileID: 6741232429851390812, guid: 6f189b3983160024da34cf72ae75aa8a, type: 3}
 --- !u!1 &1235077924488153432
 GameObject:
   m_ObjectHideFlags: 0
@@ -141,17 +162,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _monsterSpawner: {fileID: 8999976014532792861}
-  _roomCost: 0
-  _waveCost: 0
-  _spawnPoints: []
-  _bossSpawnPoint: {fileID: 0}
-  _monsterToSpawn:
-  - {fileID: 7131538502737706710, guid: 05af92cfe0add3d408a6e51234dd8b5e, type: 3}
-  - {fileID: 163027234455247028, guid: 40a8aa3c618df0149a684f4b8b70e277, type: 3}
-  - {fileID: 4113899957910836829, guid: f9c64bc444e17ac44aca1f5087f6229f, type: 3}
-  - {fileID: 5430880455391894325, guid: c54b7b7beacbd9846bf93fdb765128ba, type: 3}
-  - {fileID: 3823149093494956183, guid: 592992e98e94c464b8cf94cf8beefbb3, type: 3}
-  - {fileID: 412706925956391160, guid: dd74f587fe3832e468f6885ccc4ee1ba, type: 3}
 --- !u!1 &6203556568886599692
 GameObject:
   m_ObjectHideFlags: 0
@@ -245,7 +255,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7e94795e38465a46be4d4ed0bf56b71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _roomController: {fileID: 3173697964846456939}
+  _monsterController: {fileID: 361616287686529096}
   _roomSpawner: {fileID: 6518109571764521038}
   _doorSpawner: {fileID: 4078022813217791419}
   _doorDecider: {fileID: 7440761391914242109}

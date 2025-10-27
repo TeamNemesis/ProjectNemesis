@@ -6,8 +6,6 @@ using UnityEngine;
 /// <summary>
 /// 플레이어의 주요 컴포넌트들을 관리하는 최상위 클래스
 /// - 상태머신 전환(EvaluateTransitions)과 입력 소비를 담당
-/// - 무기별 일반 공격 동작은 _normalAttacker(추상/베이스)에 위임
-/// - 애니메이션 이벤트는 Player에서 받아 해당 attacker의 발사/종료 메서드를 호출
 /// </summary>
 public class Player : MonoBehaviour
 {
@@ -21,7 +19,7 @@ public class Player : MonoBehaviour
     [SerializeField] PlayerAnimationEventForwarder _forwarder; // 플레이어 애니메이션 이벤트 포워더 컴포넌트
     [SerializeField] PlayerGrenadeAttacker _grenadeAttacker;   // 플레이어 유탄 발사 컴포넌트
 
-    [SerializeField] PlayerNormalAttacker[] _normalAttackers;          // 플레이어 일반 공격 컴포넌트 배열 (무기별로 다름)
+    [SerializeField] PlayerNormalAttacker[] _normalAttackers;        // 플레이어 일반 공격 컴포넌트 배열 (무기별로 다름)
     [SerializeField] PlayerSpecialAttacker[] _specialAttackers;      // 플레이어 특수 공격 컴포넌트 배열 (무기별로 다름)
 
     [Header("----- 상호작용 컴포넌트 -----")]
@@ -165,22 +163,6 @@ public class Player : MonoBehaviour
             Debug.Log("일반공격 입력 들어옴");
             if (_normalAttacker != null)
             {
-                //// reflection 제거: RequestAttack()이 있으면 직접 호출
-                //bool accepted = false;
-                //try
-                //{
-                //    accepted = _normalAttacker.RequestAttack();
-                //}
-                //catch (Exception ex)
-                //{
-                //    Debug.LogWarning($"Player.EvaluateTransitions: RequestAttack 호출 중 예외: {ex}");
-                //    accepted = false;
-                //}
-
-                //Debug.Log("일반공격 시도: " + accepted);
-
-                // 공격 시작이 허용되고 Player가 바쁘지 않다면 상태 전환
-                //if (accepted && !IsDashing && !IsNormalAttacking && !IsSpecialAttacking)
                 if(!_isDashing && !_isNormalAttacking && !_isSpecialAttacking)
                 {
                     // StateMachine을 이용한 전환
@@ -247,6 +229,7 @@ public class Player : MonoBehaviour
     public void SetToIdle()
     {
         _stateMachine.ChangeState(PlayerStateType.Idle);
+        SetIsNormalAttacking(false);
     }
     
     public void Move(Vector2 moveDir)
@@ -270,6 +253,40 @@ public class Player : MonoBehaviour
     #endregion
 
     #region 일반공격 애니메이션 이벤트 라우팅
+    /// <summary>
+    /// 무기가 변경되었을 때 호출되는 함수
+    /// 컴포넌트들을 무기에 맞게 변경한다.
+    /// </summary>
+    /// <param name="weaponType"></param>
+    void OnWeaponChanged(Weapon weapon)
+    {
+        _currentWeaponSet = GameManager.Instance.DataManager.WeaponSetMap[weapon.WeaponType];
+
+        _normalAttacker = _normalAttackerMap[weapon.WeaponType];
+        _specialAttacker = _specialAttackerMap[weapon.WeaponType];
+
+        if (weapon.WeaponType == WeaponType.Rifle)
+        {
+            PlayerRifleNormalAttacker playerRifleNormalAttacker = _normalAttacker as PlayerRifleNormalAttacker;
+            PlayerRifleSpecialAttacker playerRifleSpecialAttacker = _specialAttacker as PlayerRifleSpecialAttacker;
+            RifleWeapon rifleWeapon = weapon as RifleWeapon;
+
+            playerRifleNormalAttacker.Initialize(this, rifleWeapon.FirePos);
+            playerRifleSpecialAttacker.Initialize(this);
+        }
+
+        if (weapon.WeaponType == WeaponType.Blade)
+        {
+            PlayerBladeNormalAttacker playerBladeNormalAttacker = _normalAttacker as PlayerBladeNormalAttacker;
+
+            playerBladeNormalAttacker.Initialize(this);
+        }
+        //_grenadeAttacker = _currentWeaponSet.GrenadeAttacker;
+
+        _animator.SetAnimator(_currentWeaponSet.AnimController);
+        // 만약 이펙트가 바뀌거나 사운드 등 효과가 필요해서 이벤트가 필요하다면
+        // 무기변경 이벤트를 만들어서 여기에 추가
+    }
     // 애니메이션 이벤트에서 Player의 메서드를 호출하도록 설정하세요.
     // 예: 애니메이션 클립의 이벤트에서 "OnAttackFireEvent" 와 "OnAttackEndEvent"를 호출.
 
@@ -347,7 +364,7 @@ public class Player : MonoBehaviour
     #region 상호작용 처리 (기존 로직)
     public void OnWeaponInteracted(WeaponType newWeaponType)
     {
-        _weaponController.OnWeaponInteracted(newWeaponType);
+        _weaponController.ChangeWeapon(newWeaponType);
     }
 
     public void OnDoorInteracted(RoomInfo roomInfo)
@@ -395,32 +412,6 @@ public class Player : MonoBehaviour
         _interactableGuideView.HideUI();
     }
 
-    /// <summary>
-    /// 무기가 변경되었을 때 호출되는 함수
-    /// 컴포넌트들을 무기에 맞게 변경한다.
-    /// </summary>
-    /// <param name="weaponType"></param>
-    void OnWeaponChanged(Weapon weapon)
-    {
-        _currentWeaponSet = GameManager.Instance.DataManager.WeaponSetMap[weapon.WeaponType];
-
-        _normalAttacker = _normalAttackerMap[weapon.WeaponType];
-        _specialAttacker = _specialAttackerMap[weapon.WeaponType];
-
-        if (weapon.WeaponType == WeaponType.Rifle)
-        {
-            PlayerRifleNormalAttacker playerRifleNormalAttacker = _normalAttacker as PlayerRifleNormalAttacker;
-            PlayerRifleSpecialAttacker playerRifleSpecialAttacker = _specialAttacker as PlayerRifleSpecialAttacker;
-            RifleWeapon rifleWeapon = weapon as RifleWeapon;
-
-            playerRifleNormalAttacker.Initialize(this, rifleWeapon.FirePos);
-            playerRifleSpecialAttacker.Initialize(this);
-        }
-        //_grenadeAttacker = _currentWeaponSet.GrenadeAttacker;
-
-        _animator.SetAnimator(_currentWeaponSet.AnimController);
-        // 만약 이펙트가 바뀌거나 사운드 등 효과가 필요해서 이벤트가 필요하다면
-        // 무기변경 이벤트를 만들어서 여기에 추가
-    }
+    
     #endregion
 }

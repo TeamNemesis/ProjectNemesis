@@ -23,6 +23,7 @@ public class MonsterSpawner : MonoBehaviour
 
     public List<GameObject> ActiveMonsters => activeMonsters;
 
+    public event Action<MonsterBase> OnMonsterSpawned;
     public event Action OnAllWavesCompleted;
 
     private class MonsterSpawnInfo
@@ -187,7 +188,7 @@ public class MonsterSpawner : MonoBehaviour
     {
         if (spawnPositions == null || spawnPositions.Count == 0)
         {
-            Debug.LogError("스폰 위치가 설정 요망");
+            Debug.LogError("스폰 위치 설정 요망");
             return;
         }
 
@@ -197,14 +198,15 @@ public class MonsterSpawner : MonoBehaviour
             Transform spawnPos = spawnPositions[UnityEngine.Random.Range(0, spawnPositions.Count)];
 
             GameObject spawnedMonster = GameManager.Instance.PoolManager.GetFromPool(monsterInfo.prefab, spawnPos.position, spawnPos.rotation);
+            OnMonsterSpawned?.Invoke(spawnedMonster.GetComponent<MonsterBase>());
+            MonsterBase monsterbase = spawnedMonster.GetComponent<MonsterBase>();
 
             activeMonsters.Add(spawnedMonster);
 
-            // 몬스터에 Die 이벤트 연결
-            CharacterModelBase characterModel = spawnedMonster.GetComponent<CharacterModelBase>();
-            if (characterModel != null)
+            
+            if (monsterbase != null)
             {
-                characterModel.OnDieEvent += () => OnMonsterDeath(spawnedMonster);
+                monsterbase.OnDieEvent += () => OnMonsterDeath(spawnedMonster);
             }
         }
     }

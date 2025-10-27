@@ -59,7 +59,10 @@ public class InteractionController : MonoBehaviour
         {
             case InteractableType.Weapon:
                 if (interactable is WeaponInteractor w)
+                {
                     OnWeaponInteract?.Invoke(w.WeaponType);
+                    Debug.Log(w.WeaponType + " 무기와 상호작용 이벤트 발행됨");
+                }
                 break;
             case InteractableType.Door:
                 if (interactable is DoorInteractor d)
