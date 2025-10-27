@@ -1,10 +1,11 @@
-﻿using UnityEngine;
+﻿using Unity.AppUI.Core;
+using UnityEngine;
 using UnityEngine.AI;
 
 public class elecVortex : MonoBehaviour
 {
     [SerializeField] private GameObject[] monsters;     // 임시 설정
-    [SerializeField] private float speed=1f;               // 따라갈 속도
+    [SerializeField] private float speed;               // 따라갈 속도
 
     [SerializeField] private LayerMask layer;           // 아마 달렸있을 Enemy Layer
     [SerializeField] private Collider[] colliders;      // 감지한 Collder배열(끌어당길)
@@ -42,26 +43,31 @@ void Update()
             if (agent == null) continue;
 
             Vector3 targetPos = point.position;
-            targetPos.y = col.transform.position.y; // 수직 이동 방지
+            //targetPos.y = col.transform.position.y; // y값 고정
 
-            // Lerp로 천천히 당기기
+            // 당기기(lerp사용)
             Vector3 newPos = Vector3.Lerp(col.transform.position, targetPos, Time.deltaTime * power);
-            agent.Warp(newPos); // Move 대신 Warp로 안정 이동
+            //Vector3 newPos = (point.position - col.transform.position).normalized;
+
+            agent.Warp(newPos);
+            //agent.Move(newPos);
+            //agent.Move(newPos * Time.deltaTime * power);
         }
 
-        // 가장 가까운 몬스터로 Vortex가 부드럽게 이동
-        GameObject nearest = GetNearestMonster();
+        // 가장 가까운 몬스터로
+        GameObject nearest = GetNearMonster();
         if (nearest != null)
         {
             Vector3 targetPos = nearest.transform.position;
-            targetPos.y = transform.position.y; // Y값 고정
+            targetPos.y = transform.position.y; // y값 고정
 
-            // Lerp로 부드럽게 이동
+            // lerp
             transform.position = Vector3.Lerp(transform.position, targetPos, Time.deltaTime * speed);
         }
 
+        //데미지 타이머
         damageTimer += Time.deltaTime;
-        if (damageTimer >= damageInterval)
+        if (damageTimer >= damageInterval)  
         {
             ApplyDamage();
             damageTimer = 0f;
@@ -69,17 +75,17 @@ void Update()
 
     }
     //주변몬스터 
-    private GameObject GetNearestMonster()
+    private GameObject GetNearMonster()
     {
         GameObject nearest = null;
         float minDist = float.MaxValue;
 
-        foreach (var monster in monsters)
+        foreach (var monster in monsters)   
         {
             if (monster == null) continue;
 
             float dist = Vector3.Distance(transform.position, monster.transform.position);
-            if (dist < minDist)
+            if (dist < minDist) //최소값 갱신
             {
                 minDist = dist;
                 nearest = monster;
