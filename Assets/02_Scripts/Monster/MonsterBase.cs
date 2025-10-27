@@ -111,17 +111,17 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
         debuffHandler.InitializeMonster(agent);
 
         // === 물리 초기화 (넉백 관련) ===
-        Rigidbody rb = GetComponent<Rigidbody>();
-        if (rb != null)
+        monsterRigidbody = GetComponent<Rigidbody>();
+        if (monsterRigidbody != null)
         {
-            rb.isKinematic = true;
-            rb.linearVelocity = Vector3.zero;
+            monsterRigidbody.isKinematic = true;
+            monsterRigidbody.linearVelocity = Vector3.zero;
         }
 
-        Collider col = GetComponent<Collider>();
-        if (col != null)
+        monsterCollider = GetComponent<Collider>();
+        if (monsterCollider != null)
         {
-            col.isTrigger = true;
+            monsterCollider.isTrigger = true;
         }
 
         // === 코루틴 정리 ===
@@ -217,12 +217,12 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
             Debug.Log("대형이므로 넉백 무시");
             return;
         }
-        GetComponent<Collider>().isTrigger = false;
+        monsterCollider.isTrigger = false;
         isPushed = true;
         debuffHandler.ApplyDebuff(DebuffHandler.DebuffData.CreateStun(0.5f));
-        GetComponent<Rigidbody>().isKinematic = false;
-        GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
-        GetComponent<Rigidbody>().AddForce(pushDirection, ForceMode.VelocityChange);
+        monsterRigidbody.isKinematic = false;
+        monsterRigidbody.linearVelocity = Vector3.zero;
+        monsterRigidbody.AddForce(pushDirection, ForceMode.VelocityChange);
 
         _knockBackCoroutine = StartCoroutine(KnockBackCoroutine(knockBackDistance));
         StartCoroutine(KnockBackCoolTime());
@@ -238,10 +238,16 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
     public IEnumerator KnockBackCoroutine(float knockBackDistance)
     {
         float time=0;
+        float maxTime = 1f;
         Vector3 startPosition = transform.position;
         while (Vector3.Distance(transform.position, startPosition) < knockBackDistance)
         {
             time += Time.deltaTime;
+            if(time > maxTime)
+            {
+                Debug.Log("속도가 너무 느려 강제 종료");
+                break;
+            }
             yield return null;
         }
         EndKnockBack();
@@ -249,9 +255,10 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
 
     public void EndKnockBack()
     {
-        GetComponent<Rigidbody>().isKinematic = true;
         isPushed = false;
-        GetComponent<Collider>().isTrigger = true;
+        monsterRigidbody.linearVelocity = Vector3.zero ;
+        monsterRigidbody.isKinematic = true;
+       monsterCollider.isTrigger = true;
     }
 
     public IEnumerator KnockBackCoolTime(float knockBackCoolTime = Constants.KNOCKBACK_COOLTIME)
