@@ -1,9 +1,9 @@
-using System.Collections.Generic;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 
-public class Elite2 : MonsterBase
+public class Elite3 : MonsterBase
 {
     [SerializeField]
     private enum State
@@ -62,7 +62,7 @@ public class Elite2 : MonsterBase
             case State.Attack:
                 if (!_isAttacking)
                 {
-                    TryUseSkill();
+
                 }
                 break;
             case State.Die:
@@ -189,24 +189,34 @@ public class Elite2 : MonsterBase
     {
         _isAttacking = true;
         bulletAttackCoolTime = 5f; // 총알 공격 쿨타임 초기화
-
         if (_target != null && Vector3.Distance(transform.position, _target.position) <= attackRange)
         {
-            while (maxBulletAttackCounter < 2)
+            float angleOffset = 0f; // 회전 각도 오프셋
+            int maxRotations = 20; // 총 회전 수
+
+            for (int rotation = 0; rotation < maxRotations; rotation++)
             {
+                // 8방향으로 총알 발사
                 for (int i = 0; i < 8; i++)
                 {
-                    float angle = i * 45f;
-                    Quaternion rotation = Quaternion.Euler(0, angle, 0);
-
-                    GameObject bullet = GameManager.Instance.PoolManager.GetFromPool(eliteBulletPrefab, transform.position, rotation);
+                    float angle = i * 45f + angleOffset;
+                    Quaternion bulletRotation = Quaternion.Euler(0, angle, 0);
+                    GameObject bullet = GameManager.Instance.PoolManager.GetFromPool(eliteBulletPrefab, transform.position, bulletRotation);
                     EliteBullet turretBullet = bullet.GetComponent<EliteBullet>();
                     if (turretBullet != null)
                     {
                         turretBullet.Initialize(targetTag, attackDamage, bulletLifeTime, gameObject);
                     }
                 }
-                maxBulletAttackCounter++;
+
+                angleOffset += 10f; // 매 회전마다 10도씩 회전
+
+                // 360도를 넘으면 초기화 (한 바퀴 완성)
+                if (angleOffset >= 360f)
+                {
+                    angleOffset -= 360f;
+                }
+
                 yield return new WaitForSeconds(attackDelay);
             }
         }
@@ -214,6 +224,8 @@ public class Elite2 : MonsterBase
         maxBulletAttackCounter = 0;
         currentState = State.Move; // 공격 후 다시 추격 상태로 전환
     }
+
+
 
     private void CoolTimeController()
     {

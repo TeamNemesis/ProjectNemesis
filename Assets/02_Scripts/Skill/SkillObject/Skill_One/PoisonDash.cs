@@ -48,7 +48,7 @@ public class PoisonDash : AreaDamageBase,IInitializePoolable
         if(data is PoisonDashData dashData)
         {
             _player = dashData.player;
-            _dashDamage = dashData.damage * GameManager.Instance.PlayerStatManager.totalMultiDamage;
+            _dashDamage = dashData.damage;
             _areaExtent = dashData.extent * GameManager.Instance.PlayerStatManager.playerAreaExtent;
         }
     }
