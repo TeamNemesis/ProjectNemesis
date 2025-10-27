@@ -188,7 +188,7 @@ public class MonsterSpawner : MonoBehaviour
     {
         if (spawnPositions == null || spawnPositions.Count == 0)
         {
-            Debug.LogError("스폰 위치가 설정 요망");
+            Debug.LogError("스폰 위치 설정 요망");
             return;
         }
 
@@ -199,14 +199,14 @@ public class MonsterSpawner : MonoBehaviour
 
             GameObject spawnedMonster = GameManager.Instance.PoolManager.GetFromPool(monsterInfo.prefab, spawnPos.position, spawnPos.rotation);
             OnMonsterSpawned?.Invoke(spawnedMonster.GetComponent<MonsterBase>());
+            MonsterBase monsterbase = spawnedMonster.GetComponent<MonsterBase>();
 
             activeMonsters.Add(spawnedMonster);
 
-            // 몬스터에 Die 이벤트 연결
-            CharacterModelBase characterModel = spawnedMonster.GetComponent<CharacterModelBase>();
-            if (characterModel != null)
+            
+            if (monsterbase != null)
             {
-                characterModel.OnDieEvent += () => OnMonsterDeath(spawnedMonster);
+                monsterbase.OnDieEvent += () => OnMonsterDeath(spawnedMonster);
             }
         }
     }

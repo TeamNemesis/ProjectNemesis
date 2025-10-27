@@ -10,7 +10,7 @@ public enum MonsterSize
 }
 
 
-public class MonsterBase : CharacterModelBase
+public class MonsterBase : CharacterModelBase, IInitializePoolable
 {
     [Header("Base Stats")]
     [SerializeField] private float maxEliteHealth;
@@ -74,25 +74,62 @@ public class MonsterBase : CharacterModelBase
     }
 
 
-    private void Start()
-    {
-        Initialize();
-    }
+    //private void Start()
+    //{
+    //    Initialize();
+    //}
 
-
-    public override void Initialize()
+    public void Initialize(object data = null)
     {
         base.Initialize();
-        agent = GetComponent<NavMeshAgent>();
-        originalSpeed = agent.speed;
 
+        // === 상태 초기화 ===
+        isDead = false;
+        isPushed = false;
+        isStunned = false;
+        isBindned = false;
+        isWeaken = false;
+
+        // === 컴포넌트 초기화 ===
+        agent = GetComponent<NavMeshAgent>();
+        if (agent != null)
+        {
+            agent.enabled = true;
+            agent.isStopped = false;
+            agent.speed = originalSpeed;
+        }
+
+        // === 타겟 설정 ===
         GameObject targetObj = GameObject.FindGameObjectWithTag(targetTag);
         if (targetObj != null)
             _target = targetObj.transform;
 
+        // === 체력 초기화 ===
         SetCurrentHp(maxHealth);
 
+        // === 디버프 초기화 ===
         debuffHandler.InitializeMonster(agent);
+
+        // === 물리 초기화 (넉백 관련) ===
+        Rigidbody rb = GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.isKinematic = true;
+            rb.linearVelocity = Vector3.zero;
+        }
+
+        Collider col = GetComponent<Collider>();
+        if (col != null)
+        {
+            col.isTrigger = true;
+        }
+
+        // === 코루틴 정리 ===
+        if (_knockBackCoroutine != null)
+        {
+            StopCoroutine(_knockBackCoroutine);
+            _knockBackCoroutine = null;
+        }
     }
 
     protected bool CanSeePlayer()
@@ -135,6 +172,12 @@ public class MonsterBase : CharacterModelBase
     {
         maxEliteHealth = (float)_maxHealth * 1 + (0.1f * roomCount);
         _maxHealth = (int)maxEliteHealth;
+    }
+
+    protected override void Die()
+    {
+        GameManager.Instance.CurrencyManager.AddCredit(cost);
+        base.Die();
     }
 
 

@@ -65,7 +65,7 @@ public class AutoTurret : MonsterBase
             TurretBullet turretBullet = bullet.GetComponent<TurretBullet>();
             if (turretBullet != null)
             {
-                turretBullet.Initialize(targetTag, attackDamage, bulletLifeTime);
+                turretBullet.Initialize(targetTag, attackDamage, bulletLifeTime , gameObject);
             }
             yield return new WaitForSeconds(attackDelay);
         }

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 
 public static class Constants
@@ -315,6 +315,7 @@ public enum InteractableType
     Reward,
     Weapon,
 }
+
 /// <summary>
 /// 플레이어 어택타입 enum
 /// </summary>
