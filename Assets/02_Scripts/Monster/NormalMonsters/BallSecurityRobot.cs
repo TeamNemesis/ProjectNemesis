@@ -106,7 +106,7 @@ public class BallSecurityRobot : MonsterBase
         {
             if (collider.tag == targetTag)
             {
-                collider.GetComponent<IDamageable>().TakeDamage(attackDamage);
+                collider.GetComponent<IDamageable>().TakeDamage(attackDamage, transform);
             }
         }
     }

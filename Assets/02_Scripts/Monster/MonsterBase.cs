@@ -205,7 +205,7 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
             if (collision.gameObject.layer == LayerMask.NameToLayer(Constants.LAYER_MASK_WALL))
             {
                 Debug.Log("Ãæµ¹");
-                TakeDamage(GameManager.Instance.PlayerStatManager.knockBackDamage * GameManager.Instance.PlayerStatManager.knockBackDamageMulti);
+                TakeDamage(GameManager.Instance.PlayerStatManager.knockBackDamage * GameManager.Instance.PlayerStatManager.knockBackDamageMulti, null);
                 EndKnockBack();
             }
 
@@ -220,7 +220,7 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
     /// <param name="damage"></param>
     public void KnockBackEnemy(Vector3 pushDirection, float damage, float knockBackDistance)
     {
-        TakeDamage(damage);
+        TakeDamage(damage, null);
 
         if (_knockBackCoroutine != null)
         {

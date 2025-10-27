@@ -410,7 +410,7 @@ public class PlayerStatManager : MonoBehaviour
                 break;
         }
 
-        monster.GetComponent<MonsterBase>().TakeDamage(damage);
+        monster.GetComponent<MonsterBase>().TakeDamage(damage, null);
     }
 
 

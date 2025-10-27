@@ -78,7 +78,7 @@ public class PlayerModel : CharacterModelBase
     private bool BisReduceDamage;
     private float _damageReducePercent;
 
-    public override void TakeDamage(float damage)
+    public override void TakeDamage(float damage, Transform attacker)
     {
         if (bIsAvoid)
         {
@@ -95,7 +95,7 @@ public class PlayerModel : CharacterModelBase
         }
 
 
-        base.TakeDamage(damage);
+        base.TakeDamage(damage, attacker);
     }
     public override void Initialize()
     {

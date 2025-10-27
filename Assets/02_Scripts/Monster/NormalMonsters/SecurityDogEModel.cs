@@ -119,7 +119,7 @@ public class SecurityDogEModel : MonsterBase
             var playerHealth = other.GetComponent<PlayerHealth>();
             if (playerHealth != null)
             {
-                playerHealth.TakeDamage(attackDamage);
+                playerHealth.TakeDamage(attackDamage, transform);
             }
         }
     }

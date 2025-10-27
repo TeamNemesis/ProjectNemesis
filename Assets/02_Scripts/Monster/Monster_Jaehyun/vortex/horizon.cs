@@ -52,7 +52,7 @@ public class horizon : MonoBehaviour
                 CharacterModelBase target = col.GetComponent<CharacterModelBase>();
                 if (target != null)
                 {
-                    target.TakeDamage(damage);
+                    target.TakeDamage(damage, null);
                     Debug.Log("데미지 적용!");
                 }
             }

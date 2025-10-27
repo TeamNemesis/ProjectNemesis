@@ -164,7 +164,7 @@ public class Elite1 : MonsterBase
         {
             if (collider.tag == targetTag)
             {
-                collider.GetComponent<IDamageable>().TakeDamage(attackDamage);
+                collider.GetComponent<IDamageable>().TakeDamage(attackDamage, transform);
             }
         }
 
@@ -254,7 +254,7 @@ public class Elite1 : MonsterBase
         {
             if (target.CompareTag(targetTag) && target.TryGetComponent(out IDamageable player))
             {
-                player.TakeDamage(attackDamage);
+                player.TakeDamage(attackDamage, transform);
             }
         }
 
@@ -353,9 +353,9 @@ public class Elite1 : MonsterBase
         }
     }
 
-    public override void TakeDamage(float damage)
+    public override void TakeDamage(float damage, Transform attacker)
     {
-        base.TakeDamage(damage);
+        base.TakeDamage(damage, attacker);
 
         float healthRatio = currentHealth / maxHealth;
 

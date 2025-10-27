@@ -100,7 +100,7 @@ public class NebulaVanguard : MonsterBase
                     {
                         if (playerHealth != null)
                         {
-                            playerHealth.TakeDamage(attackDamage);
+                            playerHealth.TakeDamage(attackDamage, transform);
                         }
                     }
                 }

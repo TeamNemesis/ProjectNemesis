@@ -20,7 +20,7 @@ public class ExplosionDeath : AreaDamageBase
 
     public override void ActiveSkill(Transform target)
     {
-        target.GetComponent<IDamageable>().TakeDamage(Constants.EXPLOSIONDEATH_DAMAGE);
+        target.GetComponent<IDamageable>().TakeDamage(Constants.EXPLOSIONDEATH_DAMAGE, null);
     }
 
     public IEnumerator DestroyExplosionCoroutine(float time, PoolableObject gameObject)

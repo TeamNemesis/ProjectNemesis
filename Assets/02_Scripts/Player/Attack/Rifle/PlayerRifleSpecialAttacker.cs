@@ -162,7 +162,7 @@ public class PlayerRifleSpecialAttacker : PlayerSpecialAttacker
             foreach (var h in hits)
             {
                 var dmg = h.collider.GetComponentInParent<IDamageable>();
-                if (dmg != null) dmg.TakeDamage(damage);
+                if (dmg != null) dmg.TakeDamage(damage, null);
             }
         }
     }
