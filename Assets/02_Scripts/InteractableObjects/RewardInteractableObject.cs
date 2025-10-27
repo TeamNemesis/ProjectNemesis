@@ -5,24 +5,21 @@ using UnityEngine;
 public abstract class RewardInteractableObject : InteractableObject
 {
     Coroutine _rewardCoroutine;
+    protected Transform _player;
 
     public override InteractableType InteractableType => InteractableType.Reward;
 
-    public override Vector3 GuidePoint => throw new NotImplementedException();
-
+    public abstract event Action OnRewardGiven;
     public override event Action<IInteractable> OnInteracted;
-    public event Action OnRewardGiven;
 
     public override void StartInteract(Transform subject)
     {
+        _player = subject;
         _rewardCoroutine = StartCoroutine(RewardCoroutine());
+        OnInteracted?.Invoke(this);
     }
 
-    protected virtual IEnumerator RewardCoroutine()
-    {
-        // 보상 지급 로직 구현
-        yield return null;
-    }
+    protected abstract IEnumerator RewardCoroutine();
 
     private void OnDisable()
     {

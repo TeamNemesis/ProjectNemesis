@@ -37,6 +37,7 @@ public class MapController : MonoBehaviour
 
         _roomSpawner.Initialize();
         _doorDecider.Initialize();
+        _monsterController.Initialize();
     }
 
     void OnDoorInteracted(IInteractable interactable)
@@ -223,6 +224,10 @@ public class MapController : MonoBehaviour
             // 기본 SpawnDoor(Transform, RoomInfo)
             Door door = _doorSpawner.SpawnDoor(position, info);
         _currentRoom.OnRewardSelectionFinished += door.OnRewardSelectionCompleted;
+        if (_currentRoom.RoomInfo.RoomType == RoomType.Start)
+        {
+            door.OnRewardSelectionCompleted();
+        }
             if (door != null && parent != null)
                 door.transform.SetParent(parent, worldPositionStays: true);
 

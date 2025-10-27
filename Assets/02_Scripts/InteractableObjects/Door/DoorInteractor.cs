@@ -6,24 +6,10 @@ using UnityEngine;
 /// </summary>
 public class DoorInteractor : InteractableObject
 {
-    [SerializeField] Transform _guidePoint;
     [SerializeField] InteractableType _interactableType = InteractableType.Door;
 
     [SerializeField] RoomInfo _roomInfo;
     [SerializeField] bool _canInteract = true;
-
-    public override Vector3 GuidePoint
-    {
-        get
-        {
-            if (_guidePoint == null)
-            {
-                // 방어적 처리: GuidePoint가 없으면 transform 위치 사용
-                return transform.position;
-            }
-            return _guidePoint.position;
-        }
-    }
 
     public RoomInfo RoomInfo => _roomInfo;
     public override InteractableType InteractableType => _interactableType;

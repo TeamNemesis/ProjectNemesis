@@ -6,8 +6,6 @@ public class MonsterController : MonoBehaviour
 {
     [SerializeField] MonsterSpawner _monsterSpawner;    // 몬스터 소환기
 
-    [SerializeField] int _spawnPointsCount = 15;      // 소환 위치 개수
-
     public event Action OnAllMonsterDefeated;
 
     public void Initialize()

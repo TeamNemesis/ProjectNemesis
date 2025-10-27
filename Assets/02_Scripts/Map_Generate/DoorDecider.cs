@@ -158,7 +158,7 @@ public class DoorDecider : MonoBehaviour
     List<RoomType> ApplySpecialRules(int currentRoomIndex)
     {
         var types = new List<RoomType>();
-        if (currentRoomIndex == 0)
+        if (currentRoomIndex == 1)
         {
             types.Add(RoomType.Normal);
         }
