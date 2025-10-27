@@ -16,6 +16,7 @@ public class WeaponInteractor : InteractableObject
     public override void StartInteract(Transform subject)
     {
         Debug.Log("무기와 상호작용 함");
+        GameManager.Instance.InteractableManager.Register(this);
         OnInteracted?.Invoke(this);
     }
 }

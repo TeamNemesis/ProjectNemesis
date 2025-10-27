@@ -347,7 +347,7 @@ public class Player : MonoBehaviour
     #region 상호작용 처리 (기존 로직)
     public void OnWeaponInteracted(WeaponType newWeaponType)
     {
-        _weaponController.OnWeaponInteracted(newWeaponType);
+        _weaponController.ChangeWeapon(newWeaponType);
     }
 
     public void OnDoorInteracted(RoomInfo roomInfo)

@@ -34,7 +34,7 @@ public class PlayerWeaponController : MonoBehaviour
     /// 무기와 상호작용 시 호출되는 함수
     /// </summary>
     /// <param name="newWeapon"></param>
-    public void OnWeaponInteracted(WeaponType newWeaponType)
+    public void ChangeWeapon(WeaponType newWeaponType)
     {
         // 장착중인 무기가 없을 때
         if (_currentWeapon == null)
