@@ -16,6 +16,7 @@ public abstract class Room : MonoBehaviour
     [SerializeField] protected Transform[] _doorSpawnPointsRight;
 
     protected RoomInfo _roomInfo;
+    protected List<GameObject> _poolableObjectsInRoom = new List<GameObject>();
 
     // 구조적 데이터는 프리팹에 보관 (인스펙터에서 볼 수 있음)
     public Transform[] RewardSpawnPoints => _rewardSpawnPoints;
@@ -24,6 +25,7 @@ public abstract class Room : MonoBehaviour
 
     // 런타임에서 RoomData로부터 필요한 값 접근
     public RoomInfo RoomInfo => _roomInfo;
+    public List<GameObject> PoolableObjectsInRoom => _poolableObjectsInRoom;    
 
     public event Action OnRewardSelectionFinished;
 
@@ -159,6 +161,11 @@ public abstract class Room : MonoBehaviour
     }
 
     public abstract RewardInteractableObject[] SpawnReward();
+
+    public List<GameObject> GetPoolableObjectsInRoom()
+    {
+        return _poolableObjectsInRoom;
+    }
 
     public void RewardSelectionFinished()
     {

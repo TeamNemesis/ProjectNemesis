@@ -261,6 +261,14 @@ public class MapController : MonoBehaviour
 
     void DestroyCurrentRoomObjects()
     {
+
+        // PoolableObject 찾아서 반환 처리
+        var poolables = _currentRoom.PoolableObjectsInRoom;
+        foreach (var poolableObj in poolables)
+        {
+            GameManager.Instance.PoolManager.ReleaseToPool(poolableObj);
+        }
+
         // 먼저 문들 파괴
         if (_currentDoors != null)
         {
