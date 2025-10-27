@@ -26,6 +26,11 @@ public class PlayScene : MonoBehaviour
         _inputHandler.OnInteractInput += _player.ExecuteInteraction;
 
         // PlaySceneView
+        if(_playSceneView == null)
+        {
+            Debug.LogError("PlaySceneView가 할당되지 않았습니다!");
+            return;
+        }
         GameManager.Instance.CurrencyManager.OnCreditChanged += _playSceneView.UpdateGoldText;
         GameManager.Instance.CurrencyManager.OnChromeChanged += _playSceneView.UpdateChromeText;
         _player.playerModel.OnHpChanged += _playSceneView.UpdateHPBar;
