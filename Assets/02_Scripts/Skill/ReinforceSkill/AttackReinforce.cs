@@ -193,7 +193,7 @@ public class Skill_Four_Attack : ActiveTech
         _AttackTry = () => ActiveTry(player);
         _DroneAttack = (WeaponType weapon, ATTACKTYPE attack, Transform transform, Transform attackerTransform) => ActiveTry(player);
         player.OnNormalAttackStarted += _AttackTry;
-        //player.AttackHit += HitEnemy;
+        EventBus.OnMonsterHit += HitEnemy;
         Drone[] drones = player.transform.GetComponentsInChildren<Drone>();
         if (drones.Length > 0)
         {
@@ -210,7 +210,8 @@ public class Skill_Four_Attack : ActiveTech
         base.Deactivate(player, isSameSkill);
         // 이벤트 해제
         player.OnNormalAttackStarted -= _AttackTry;
-        //player.AttackHit -= HitEnemy;
+        EventBus.OnMonsterHit -= HitEnemy;
+
 
         Drone[] drones = player.transform.GetComponentsInChildren<Drone>();
         if (drones.Length > 0)
@@ -249,6 +250,7 @@ public class Skill_Four_Attack : ActiveTech
         {
             // 스턴 적용
             transform.GetComponent<DebuffHandler>().ApplyDebuff(DebuffHandler.DebuffData.CreateStun(1f));
+            stack = 0;
         }
     }
 
@@ -267,8 +269,8 @@ public class Skill_Five_Attack : ActiveTech
     public override void Activate(SkillManager skillManager, Player player)
     {
         base.Activate(skillManager, player);
-        //TODO 일반공격 적중시 이벤트에 연결
-        //player.playerModel.AttackHit += HitEnemy;
+
+        EventBus.OnMonsterHit += HitEnemy;
         Drone[] drones = player.transform.GetComponentsInChildren<Drone>();
         if (drones.Length > 0)
         {
@@ -282,8 +284,8 @@ public class Skill_Five_Attack : ActiveTech
     public override void Deactivate(Player player, bool isSameSkill)
     {
         base.Deactivate(player, isSameSkill);
-        //TODO 이벤트 해제
-        //player.playerModel.AttackHit -= HitEnemy;
+
+        EventBus.OnMonsterHit -= HitEnemy;
 
         Drone[] drones = player.transform.GetComponentsInChildren<Drone>();
         if (drones.Length > 0)
