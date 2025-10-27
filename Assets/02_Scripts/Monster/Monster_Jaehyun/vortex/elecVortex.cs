@@ -18,7 +18,6 @@ public class elecVortex : MonoBehaviour
 
     [SerializeField] private int damage = 20;           // 초당 데미지
 
-   
     [SerializeField] private float damageInterval = 1f; // 1초 간격으로 데미지
 
     private float damageTimer = 0f;
@@ -44,7 +43,7 @@ public class elecVortex : MonoBehaviour
     }
 
   
-void Update()
+    void Update()
     {
         Vector3 pos1 = new Vector3(Tr.position.x, Tr.position.y - ConstHeight, Tr.position.z);
         Vector3 pos2 = new Vector3(Tr.position.x, Tr.position.y + ConstHeight, Tr.position.z);
@@ -61,12 +60,12 @@ void Update()
             //targetPos.y = col.transform.position.y; // y값 고정
 
             // 당기기(lerp사용)
-            Vector3 newPos = Vector3.Lerp(col.transform.position, targetPos, Time.deltaTime * power);
-            //Vector3 newPos = (point.position - col.transform.position).normalized;
+            //Vector3 newPos = Vector3.Lerp(col.transform.position, targetPos, Time.deltaTime * power);
+            Vector3 newPos = (point.position - col.transform.position).normalized;
 
-            agent.Warp(newPos);
+            //agent.Warp(newPos);
             //agent.Move(newPos);
-            //agent.Move(newPos * Time.deltaTime * power);
+            agent.Move(newPos * Time.deltaTime * power);
         }
 
         // 가장 가까운 몬스터로
@@ -77,7 +76,9 @@ void Update()
             targetPos.y = transform.position.y; // y값 고정
 
             // lerp
-            transform.position = Vector3.Lerp(transform.position, targetPos, Time.deltaTime * speed);
+            //transform.position = Vector3.Lerp(transform.position, targetPos, Time.deltaTime * speed);
+            // 균등하게
+            transform.position = Vector3.MoveTowards(transform.position, targetPos, speed * Time.deltaTime);
         }
 
         //데미지 타이머
@@ -118,7 +119,6 @@ void Update()
             Debug.Log("데미지 적용!");
         }
     }
-
     void OnDrawGizmosSelected() //실린더 모양 기즈모
     {
         // 기즈모 색상 설정
