@@ -23,6 +23,7 @@ public class MonsterSpawner : MonoBehaviour
 
     public List<GameObject> ActiveMonsters => activeMonsters;
 
+    public event Action<MonsterBase> OnMonsterSpawned;
     public event Action OnAllWavesCompleted;
 
     private class MonsterSpawnInfo
@@ -197,6 +198,7 @@ public class MonsterSpawner : MonoBehaviour
             Transform spawnPos = spawnPositions[UnityEngine.Random.Range(0, spawnPositions.Count)];
 
             GameObject spawnedMonster = GameManager.Instance.PoolManager.GetFromPool(monsterInfo.prefab, spawnPos.position, spawnPos.rotation);
+            OnMonsterSpawned?.Invoke(spawnedMonster.GetComponent<MonsterBase>());
 
             activeMonsters.Add(spawnedMonster);
 
