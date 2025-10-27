@@ -1,32 +1,37 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class electricMan : MonoBehaviour
 {
-    void Start()
-    {
-        
-    }
-    void Update()
-    {
-        
-    }
-    //private void OnControllerColliderHit(ControllerColliderHit hit)
-    //{
-    //    if (hit.gameObject.tag == "Monster")
-    //    {
-    //        Debug.Log("충돌 감지됨");
-    //    }
-    //}
-    //private void OnCollisionEnter(Collision collision)
-    //{
-    //    Debug.Log(collision.gameObject.name);
-    //}
+    [SerializeField] private int damage = 60;       // 충돌 시 데미지
+    [SerializeField] private float damageInterval = 1f; // 같은 몬스터당 딜레이
+
+    // 각 몬스터별 마지막 데미지 시간 저장
+    private Dictionary<GameObject, float> lastDamageTime = new Dictionary<GameObject, float>();
+
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
-        if(hit.gameObject.tag == "Monster")
+        if (hit.gameObject.CompareTag("Monster"))
         {
-            Debug.Log("충돌 감지됨");
+            GameObject monster = hit.gameObject;
+            float lastTime;
+
+            // 딕셔너리에서 마지막 타이밍 가져오기 (없으면 기본값 0)
+            lastDamageTime.TryGetValue(monster, out lastTime);
+
+            if (Time.time - lastTime >= damageInterval)
+            {
+                // 실제 데미지 처리
+                CharacterModelBase target = monster.GetComponent<CharacterModelBase>();
+                if (target != null)
+                {
+                    target.TakeDamage(damage);
+                    Debug.Log("데미지 적용!");
+                }
+
+                // 타이머 갱신
+                lastDamageTime[monster] = Time.time;
+            }
         }
     }
-
 }
