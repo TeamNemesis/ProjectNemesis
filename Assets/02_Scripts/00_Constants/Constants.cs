@@ -217,6 +217,9 @@ public static class Constants
 
     #endregion
 
+    #region knockBack
+    public const float KNOCKBACK_COOLTIME = 5f;
+    #endregion
 
     #region Util
 

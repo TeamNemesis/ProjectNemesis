@@ -22,6 +22,9 @@ public class MonsterBase : CharacterModelBase
     [SerializeField] public string targetTag = Constants.TAG_PLAYER;
     [SerializeField] protected MonsterSize monsterSize = MonsterSize.SMALL;
     [SerializeField] protected int cost;
+    [SerializeField] protected Rigidbody monsterRigidbody;
+    [SerializeField] protected Collider monsterCollider;
+
 
 
     #region 넉백
@@ -145,6 +148,7 @@ public class MonsterBase : CharacterModelBase
             {
                 Debug.Log("충돌");
                 TakeDamage(GameManager.Instance.PlayerStatManager.knockBackDamage * GameManager.Instance.PlayerStatManager.knockBackDamageMulti);
+                EndKnockBack();
             }
 
         }
@@ -159,8 +163,15 @@ public class MonsterBase : CharacterModelBase
     public void KnockBackEnemy(Vector3 pushDirection, float damage, float knockBackDistance)
     {
         TakeDamage(damage);
+
+        if (_knockBackCoroutine != null)
+        {
+            Debug.Log("넉백 중이므로 넉백 무시");
+            return;
+        }
         if (monsterSize == MonsterSize.BIG)
         {
+            Debug.Log("대형이므로 넉백 무시");
             return;
         }
         GetComponent<Collider>().isTrigger = false;
@@ -170,11 +181,8 @@ public class MonsterBase : CharacterModelBase
         GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
         GetComponent<Rigidbody>().AddForce(pushDirection, ForceMode.VelocityChange);
 
-        if (_knockBackCoroutine != null)
-        {
-            StopCoroutine(_knockBackCoroutine);
-        }
         _knockBackCoroutine = StartCoroutine(KnockBackCoroutine(knockBackDistance));
+        StartCoroutine(KnockBackCoolTime());
     }
 
 
@@ -186,14 +194,26 @@ public class MonsterBase : CharacterModelBase
     /// <returns></returns>
     public IEnumerator KnockBackCoroutine(float knockBackDistance)
     {
+        float time=0;
         Vector3 startPosition = transform.position;
         while (Vector3.Distance(transform.position, startPosition) < knockBackDistance)
         {
+            time += Time.deltaTime;
             yield return null;
         }
+        EndKnockBack();
+    }
+
+    public void EndKnockBack()
+    {
         GetComponent<Rigidbody>().isKinematic = true;
         isPushed = false;
         GetComponent<Collider>().isTrigger = true;
+    }
+
+    public IEnumerator KnockBackCoolTime(float knockBackCoolTime = Constants.KNOCKBACK_COOLTIME)
+    {
+        yield return new WaitForSeconds(knockBackCoolTime);
         _knockBackCoroutine = null;
     }
     #endregion

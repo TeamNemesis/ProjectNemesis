@@ -73,6 +73,7 @@ public abstract class CharacterModelBase : PoolableObject, IDamageable
     public virtual void Initialize()
     {
         debuffHandler = GetComponent<DebuffHandler>();
+        OnDieEvent += ()=>Debug.LogWarning("죽음");
     }
 
     /// <summary>
@@ -160,8 +161,13 @@ public abstract class CharacterModelBase : PoolableObject, IDamageable
 
     protected virtual void Die()
     {
+        // 죽은 상태면 반환
+        if(isDead)
+        {
+            return;
+        }
         OnDieEvent?.Invoke();
-
+        Debug.LogWarning("몬스터 죽음");
         isDead = true;
         GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
         OnDieEvent = null;

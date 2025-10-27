@@ -96,9 +96,10 @@ public class Skill_Two : SkillBase
             case 26:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
 
-                //TODO 몬스터 스포너에 몬스터 생성시 이벤트에 연결
-                // monsterSpawner.OnSpawnMonster += (monster)=>monster.OnDie+=()=>MakeExplosion(monster.transform);
 
+                //TODO 몬스터 스포너에 몬스터 생성시 이벤트에 연결
+                skillManager.playScene.MapController.MonsterController.MonsterSpawner.OnMonsterSpawned -= ConnectMakeExpolsion;
+                skillManager.playScene.MapController.MonsterController.MonsterSpawner.OnMonsterSpawned += ConnectMakeExpolsion;
                 break;
 
             // 기폭제
@@ -124,6 +125,18 @@ public class Skill_Two : SkillBase
     }
 
     #region 폭사
+    public void ConnectMakeExpolsion(MonsterBase monster)
+    {
+        Action handler = null;
+        handler = () =>
+        {
+            monster.OnDieEvent -= handler; 
+            MakeExplosion(monster.transform);
+        };
+
+        monster.OnDieEvent += handler;
+    }
+
     public void MakeExplosion(Transform monsterTransform)
     {
         Vector3 position = monsterTransform.position;

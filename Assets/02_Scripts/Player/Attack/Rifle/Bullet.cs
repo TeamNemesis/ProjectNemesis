@@ -59,6 +59,7 @@ public class Bullet : PoolableObject
         {
             GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
             MonsterBase monsterBase= other.GetComponent<MonsterBase>();
+            EventBus.MonsterHit(WeaponType.Rifle, ATTACKTYPE.NORMAL, other.transform,transform);
             monsterBase.TakeDamage(_damage); // 예시로 10의 데미지를 입힘
         }
         else if(other.CompareTag("Environment"))

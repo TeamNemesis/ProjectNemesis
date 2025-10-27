@@ -362,7 +362,7 @@ public class PlayerStatManager : MonoBehaviour
 
     
 
-    public void TakeDamage(WeaponType weaponType,ATTACKTYPE attackType,Transform monster)
+    public void TakeDamage(WeaponType weaponType,ATTACKTYPE attackType,Transform monster, Transform attackerTransform)
     {
         float damage = 0f;
         switch (attackType)
