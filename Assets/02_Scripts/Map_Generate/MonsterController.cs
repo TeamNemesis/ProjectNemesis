@@ -8,6 +8,8 @@ public class MonsterController : MonoBehaviour
 
     public event Action OnAllMonsterDefeated;
 
+    public MonsterSpawner MonsterSpawner => _monsterSpawner;
+
     public void Initialize()
     {
         _monsterSpawner.OnAllWavesCompleted += AllMonsterDefeated;

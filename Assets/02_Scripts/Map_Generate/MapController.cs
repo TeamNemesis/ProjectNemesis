@@ -20,6 +20,11 @@ public class MapController : MonoBehaviour
     [SerializeField] int _currentRoomCount = -1;
     [SerializeField] bool _hasLabRoomAppeared = false;
 
+    public MonsterController MonsterController => _monsterController;
+    public RoomSpawner RoomSpawner => _roomSpawner;
+    public DoorSpawner DoorSpawner => _doorSpawner;
+    public DoorDecider DoorDecider => _doorDecider;
+
     public Room CurrentRoom => _currentRoom;
     public Door[] CurrentDoors => _currentDoors;
     public int CurrentRoomCount => _currentRoomCount;
