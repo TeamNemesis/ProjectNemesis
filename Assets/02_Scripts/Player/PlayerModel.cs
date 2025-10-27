@@ -94,6 +94,10 @@ public class PlayerModel : CharacterModelBase
             damage*=(1f-_damageReducePercent);
         }
 
+        if(attacker != null)
+        {
+            OnPlayerHit(attacker);
+        }
 
         base.TakeDamage(damage, attacker);
     }
