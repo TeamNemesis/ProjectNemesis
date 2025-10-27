@@ -1,5 +1,4 @@
-﻿using Unity.AppUI.Core;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
 
 public class elecVortex : MonoBehaviour
@@ -10,7 +9,7 @@ public class elecVortex : MonoBehaviour
     [SerializeField] private LayerMask layer;           // 아마 달렸있을 Enemy Layer
     [SerializeField] private Collider[] colliders;      // 감지한 Collder배열(끌어당길)
 
-    [SerializeField] private float radius = 5f;         // 반지름
+    [SerializeField] private float radius = 5f;         // 반지름(끌어당길 범위)
     [SerializeField] private float height = 2f;         // 범위 높이
 
     private Transform Tr;
@@ -23,6 +22,22 @@ public class elecVortex : MonoBehaviour
     [SerializeField] private float damageInterval = 1f; // 1초 간격으로 데미지
 
     private float damageTimer = 0f;
+
+    public float Radius
+    {
+        get => radius;
+        set => radius = value;
+    }
+    public int Damage
+    {
+        get => damage;
+        set => damage = value;
+    }
+    public float Speed
+    {
+        get => speed;
+        set => speed = value;
+    }
     void Start()
     {
         Tr = GetComponent<Transform>();
@@ -91,7 +106,6 @@ void Update()
                 nearest = monster;
             }
         }
-
         return nearest;
     }
 
@@ -101,6 +115,7 @@ void Update()
         {
             CharacterModelBase target = col.GetComponent<CharacterModelBase>();
             target.TakeDamage(damage);
+            Debug.Log("데미지 적용!");
         }
     }
 
