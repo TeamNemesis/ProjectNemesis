@@ -24,4 +24,9 @@ public class TechUpgradePackInteractor : RewardInteractableObject
     {
         OnRewardGiven?.Invoke();
     }
+
+    private void OnDisable()
+    {
+        GameManager.Instance.UIManager.onRewardSelect -= RaiseRewardGivenEvent;
+    }
 }

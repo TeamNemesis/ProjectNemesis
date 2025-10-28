@@ -29,4 +29,9 @@ public class TechSelectPackInteractor : RewardInteractableObject
     {
         OnRewardGiven?.Invoke();
     }
+
+    void OnDisable()
+    {
+        GameManager.Instance.UIManager.onRewardSelect -= RaiseRewardGivenEvent;
+    }
 }
