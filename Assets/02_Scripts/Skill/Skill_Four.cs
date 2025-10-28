@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 /// <summary>
@@ -85,14 +86,7 @@ public class Skill_Four : SkillBase
             // 취약
             case 44:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
-                if (choosedSkill.skillLevel == 1)
-                {
-                    ActivateWeaken(choosedSkill.skillBaseValue_1 + choosedSkill.skillLevelValue_1);
-                }
-                else
-                {
-                    ActivateWeaken(choosedSkill.skillLevelValue_1);
-                }
+                ActivateWeaken(choosedSkill);
                 break;
 
             // 점진되는 고통
@@ -125,9 +119,16 @@ public class Skill_Four : SkillBase
     }
 
     #region 취약
-    public void ActivateWeaken(float skill)
+    public void ActivateWeaken(SkillData choosedSkill)
     {
-        _skillManager.playerStatManager.AddWeakenPlusDamage(skill);
+        if (choosedSkill.skillLevel == 1)
+        {
+            _skillManager.playerStatManager.AddWeakenPlusDamage(choosedSkill.skillBaseValue_1 + choosedSkill.skillLevelValue_1);
+        }
+        else
+        {
+            _skillManager.playerStatManager.AddWeakenPlusDamage(choosedSkill.skillLevelValue_1);
+        }
     }
     #endregion
 
@@ -177,12 +178,18 @@ public class Skill_Four : SkillBase
     #region 강화된 추진력
     private void ActivateThrust(SkillData choosedSkill)
     {
-        Debug.Log(skillManager.playerStatManager == null);
-        // 대쉬 이동거리 value1 만큼 증가
-        skillManager.playerStatManager.AddPlayerDashDistanceMulti(choosedSkill.skillBaseValue_1);
+        if (choosedSkill.skillLevel == 1)
+        {
+            // 대쉬 이동거리 value1 만큼 증가
+            _skillManager.playerStatManager.AddPlayerDashDistanceMulti(choosedSkill.skillBaseValue_1 + choosedSkill.skillLevelValue_1);
+        }
+        else
+        {
+            skillManager.playerStatManager.AddPlayerDashDistanceMulti(choosedSkill.skillLevelValue_1);
+        }
         // 대쉬 후 value3초간 value2 만큼 이동속도 증가 이벤트 연결
-        plusMoveSpeed = choosedSkill.skillBaseValue_2;
-        plusMoveSpeedTime = choosedSkill.skillBaseValue_3;
+        plusMoveSpeed = choosedSkill.skillBaseValue_2 + choosedSkill.skillLevelValue_2 * choosedSkill.skillLevel;
+        plusMoveSpeedTime = choosedSkill.skillBaseValue_3 + choosedSkill.skillLevelValue_3 * choosedSkill.skillLevel;
 
 
         //TODO 대쉬 끝 이벤트에 연결

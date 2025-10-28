@@ -256,9 +256,9 @@ public class PlayerStatManager : MonoBehaviour
     /// </summary>
     private float _grenadeCoolTimeMulti;
     public float grenadeCoolTimeMulti { get { return _grenadeCoolTimeMulti; } }
-    public void MinusGrenadeCoolTimeMulti(float grenadeCoolTime)
+    public void AddGrenadeCoolTimeMulti(float grenadeCoolTime)
     {
-        _grenadeCoolTimeMulti -= grenadeCoolTime;
+        _grenadeCoolTimeMulti += grenadeCoolTime;
         OnGrenadeCoolTimeMultiChange?.Invoke(_grenadeCoolTimeMulti);
     }
     public event Action<float> OnGrenadeCoolTimeMultiChange;

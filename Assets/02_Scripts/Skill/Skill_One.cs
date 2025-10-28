@@ -91,7 +91,9 @@ public class Skill_One : SkillBase
             case 15:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 //TODO 방 입장시 이벤트에 초재생 연결 StartAutoHeal()
+                skillManager.playScene.MapController.OnRoomStart += StartAutoHeal;
                 //TODO 전투 종료시 이벤트에 초재생 해제 연결 StopAutoHeal()
+                skillManager.playScene.MapController.MonsterController.MonsterSpawner.OnAllWavesCompleted += StopAutoHeal;
                 break;
 
             // 독성혈액
@@ -147,6 +149,7 @@ public class Skill_One : SkillBase
             _skillManager.playScene.player.playerModel.Heal(Constants.HEAL_AMOUNT);
             stack++;
         }
+        StopAutoHeal();
     }
 
 
@@ -155,6 +158,7 @@ public class Skill_One : SkillBase
     /// </summary>
     public void StartAutoHeal()
     {
+        Debug.LogError("초재생 시작");
         _autoHeal = StartCoroutine(StartAutoHealRoutine());
     }
 
@@ -163,6 +167,11 @@ public class Skill_One : SkillBase
     /// </summary>
     public void StopAutoHeal()
     {
+        Debug.LogError("초재생 끝");
+        if(_autoHeal == null)
+        {
+            return;
+        }
         StopCoroutine(_autoHeal);
         _autoHeal = null;
     }
@@ -174,7 +183,6 @@ public class Skill_One : SkillBase
     {
         Vector3 position = player.transform.position;
         position.y = 0;
-        //TODO 스킬 확인
         PoisonSpread poisonSpread = GameManager.Instance.PoolManager.GetFromPool(_hitPoisonSpreadPrefab, position,_hitPoisonSpreadPrefab.transform.rotation,player.transform,_hitPoisonSpreadData).GetComponent<PoisonSpread>();
         poisonSpread.Initialize();
     }

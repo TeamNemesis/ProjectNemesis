@@ -338,6 +338,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7349629332669910898, guid: 8fb7464f2132e3543ac3eafe0c4e1fcb, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 8951883238645882597, guid: 8fb7464f2132e3543ac3eafe0c4e1fcb, type: 3}
       propertyPath: m_Name
       value: Player
@@ -912,6 +916,7 @@ MonoBehaviour:
   cost: 0
   monsterRigidbody: {fileID: 0}
   monsterCollider: {fileID: 0}
+  _isAttacking: 0
   baseState: 0
   _knockBackDamage: 0
   player: {fileID: 0}

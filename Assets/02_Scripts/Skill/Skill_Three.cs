@@ -90,14 +90,9 @@ public class Skill_Three : SkillBase
             // 중력 증폭
             case 36:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
-                if (choosedSkill.skillLevel == 1)
-                {
-                    ActivateGravity(choosedSkill.skillBaseValue_1 + choosedSkill.skillLevelValue_1);
-                }
-                else
-                {
-                    ActivateGravity(choosedSkill.skillLevelValue_1);
-                }
+
+                ActivateGravity(choosedSkill);
+
                 break;
 
             // 사건의 지평선
@@ -139,9 +134,19 @@ public class Skill_Three : SkillBase
     }
     #endregion
     #region 중력 증폭
-    public void ActivateGravity(float skill)
+    public void ActivateGravity(SkillData choosedSkill)
     {
-        skillManager.playerStatManager.AddKnockBackDistance(skill);
+        //처음 습득시
+        if (choosedSkill.skillLevel == 1)
+        {
+            skillManager.playerStatManager.AddKnockBackDistance(choosedSkill.skillLevelValue_1 + choosedSkill.skillBaseValue_1);
+        }
+        // 그 이후는 레벨 계수만 추가
+        else
+        {
+            skillManager.playerStatManager.AddKnockBackDistance(choosedSkill.skillLevelValue_1);
+
+        }
     }
     #endregion
 }

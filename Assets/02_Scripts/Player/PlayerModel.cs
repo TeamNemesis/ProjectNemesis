@@ -83,8 +83,9 @@ public class PlayerModel : CharacterModelBase
         if (bIsAvoid)
         {
             int tempNum = UnityEngine.Random.Range(0, 100);
-            if (tempNum > 100 * _avoidNum)
+            if (tempNum < 100 * _avoidNum)
             {
+                Debug.LogError("회피");
                 return;
             }
         }

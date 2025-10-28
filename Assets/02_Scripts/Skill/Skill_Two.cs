@@ -13,10 +13,6 @@ public class Skill_Two : SkillBase
     private ExplosionDeath _explosionDeathPrefab;
     private ExplosionDeathData _explosionDeathData;
 
-    /// <summary>
-    /// 전투스킬 강화, 모든 데미지 추가, 스킬 인덱스, 증가값
-    /// </summary>
-    public event Action<int, float> CombatEquipment;
 
     public override void ActivateSkill(SkillData choosedSkill)
     {
@@ -83,14 +79,9 @@ public class Skill_Two : SkillBase
             // 개선된 폭격
             case 25:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
-                if (choosedSkill.skillLevel == 1)
-                {
-                    ActiveImprovedBomb(choosedSkill.skillBaseValue_1 + choosedSkill.skillLevelValue_1);
-                }
-                else
-                {
-                    ActiveImprovedBomb(choosedSkill.skillLevelValue_1);
-                }
+                ActiveImprovedBomb(choosedSkill);
+
+                
                 break;
 
             // 폭사
@@ -110,16 +101,8 @@ public class Skill_Two : SkillBase
             // 기폭제
             case 27:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
-                //TODO 범위 스킬 구현에 대한 계수 회의 필요
                 // 범위 증가
-                if (choosedSkill.skillLevel == 1)
-                {
-                    ActivePriming(choosedSkill.skillBaseValue_1 + choosedSkill.skillLevelValue_1);
-                }
-                else
-                {
-                    ActivePriming(choosedSkill.skillLevelValue_1);
-                }
+                ActivePriming(choosedSkill);
                 break;
 
             default:
@@ -156,26 +139,49 @@ public class Skill_Two : SkillBase
     /// 전투장비 이벤트 발행
     /// </summary>
     /// <param name="skillData"></param>
-    public void OnCombatEquipment(SkillData skillData)
+    public void OnCombatEquipment(SkillData choosedSkill)
     {
-        float totalDamageUp = (float)(skillData.skillLevel * skillData.skillLevelValue_1 + skillData.skillBaseValue_1);
-        CombatEquipment?.Invoke(skillData.skillIdx, totalDamageUp);
+        if (choosedSkill.skillLevel == 1)
+        {
+            skillManager.playerStatManager.AddTotalMultiDamage(choosedSkill.skillLevelValue_1+choosedSkill.skillBaseValue_1);
+        }
+        else
+        {
+            skillManager.playerStatManager.AddTotalMultiDamage(choosedSkill.skillLevelValue_1);
 
+        }
     }
 
     #endregion
 
     #region 개선된 폭격
-    public void ActiveImprovedBomb(float skillData)
+    public void ActiveImprovedBomb(SkillData choosedSkill)
     {
-        _skillManager.playerStatManager.MinusGrenadeCoolTimeMulti(skillData);
+
+        if (choosedSkill.skillLevel == 1)
+        {
+            _skillManager.playerStatManager.AddGrenadeCoolTimeMulti(choosedSkill.skillBaseValue_1+choosedSkill.skillLevelValue_1);
+        }
+        else
+        {
+            _skillManager.playerStatManager.AddGrenadeCoolTimeMulti(choosedSkill.skillLevelValue_1);
+        }
     }
     #endregion
 
     #region 기폭제
-    public void ActivePriming(float skillData)
+    public void ActivePriming(SkillData choosedSkill)
     {
-        _skillManager.playerStatManager.AddPlayerAreaExtent(skillData);
+        if (choosedSkill.skillLevel == 1)
+        {
+            _skillManager.playerStatManager.AddPlayerAreaExtent(choosedSkill.skillBaseValue_1 + choosedSkill.skillLevelValue_1);
+
+        }
+        else
+        {
+            _skillManager.playerStatManager.AddPlayerAreaExtent(choosedSkill.skillLevelValue_1);
+
+        }
     }
     #endregion
 }
