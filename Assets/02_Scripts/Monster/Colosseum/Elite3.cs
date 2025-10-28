@@ -7,7 +7,7 @@ using UnityEngine;
 public class Elite3 : MonsterBase
 {
     [Header("Local Stats")]
-    [SerializeField] private int laserAttackCount = 0; // 연속 공격 횟수
+
 
     [Header("Missile")]
     [SerializeField]private int missileAttackCounter = 0;
@@ -15,7 +15,6 @@ public class Elite3 : MonsterBase
 
     [Header("Bullet")]
     [SerializeField] float bulletLifeTime = 8f;
-    [SerializeField] int maxBulletAttackCounter = 0;
 
     [Header("Prefabs")]
     [SerializeField] private PoolableObject missilePrefab;
@@ -95,7 +94,6 @@ public class Elite3 : MonsterBase
             }
         }
         _isAttacking = false;
-        maxBulletAttackCounter = 0;
         baseState = MonsterState.Attack;
     }
     #endregion
