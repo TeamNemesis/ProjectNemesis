@@ -120,8 +120,12 @@ public class Skill_One : SkillBase
             // 진화
             case 17:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
-                //TODO 문과 상호작용시에 연결 SkillLevelUp
                 // 연결시 SkillLevelUp이 완료되면 다음 과정으로 넘어갈 수 있게
+                if(choosedSkill.skillLevel == 1)
+                {
+                    levelupStack = 0;
+                }
+                EventBus.OnEvolution += SkillLevelUp;
                 break;
 
             default:
@@ -191,11 +195,14 @@ public class Skill_One : SkillBase
                 return;
             }
             // 랜덤한 스킬 레벨 업
-            _skillManager.upgradeSkillList[UnityEngine.Random.Range(0, _skillManager.upgradeSkillList.Count)].ChooseSkill();
+            SkillData choosedskill = _skillManager.upgradeSkillList[UnityEngine.Random.Range(0, _skillManager.upgradeSkillList.Count)];
+            choosedskill.ChooseSkill();
+            choosedskill.skillCompany.ActivateSkill(choosedskill);
 
             // 스택 초기화
             levelupStack = 0;
         }
+        Debug.LogError("스킬 진화 발동" + levelupStack);
     }
     #endregion
 

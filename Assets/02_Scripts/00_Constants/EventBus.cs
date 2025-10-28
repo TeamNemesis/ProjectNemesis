@@ -17,6 +17,19 @@ public static class EventBus
     {
         OnMonsterHit?.Invoke(weaponType, attackType, monster,attacker);
     }
+
+    /// <summary>
+    /// 방 2개 넘어갈 시 진화 스킬 발동을 위한 이벤트
+    /// </summary>
+    public static event Action OnEvolution;
+
+    public static void Evolution()
+    {
+        Debug.LogError("이벤트 버스 호출");
+        OnEvolution?.Invoke();
+    }
+
+
 }
 
 
