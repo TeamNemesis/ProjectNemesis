@@ -34,6 +34,7 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
     [SerializeField] protected int cost;
     [SerializeField] protected Rigidbody monsterRigidbody;
     [SerializeField] protected Collider monsterCollider;
+    [SerializeField] protected bool _isAttacking = false;
 
     [Header("Base State")]
     [SerializeField] protected MonsterState baseState = MonsterState.Idle;
@@ -101,6 +102,7 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
         isStunned = false;
         isBindned = false;
         isWeaken = false;
+        _isAttacking = false;
 
         // === 상태 머신 초기화 ===
         baseState = MonsterState.Idle;

@@ -4,7 +4,6 @@ using UnityEngine;
 public class NebulaVanguard : MonsterBase
 {
     [Header("Local Stats")]
-    [SerializeField] private bool _isAttacking = false;
     [SerializeField] private float _box_Length = 3;
     [SerializeField] private float _box_Height = 3;
     [SerializeField] private float _box_Width = 3;

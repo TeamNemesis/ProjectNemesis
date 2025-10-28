@@ -5,7 +5,6 @@ public class NebulaPhantom : MonsterBase
 {
     [Header("Local Stats")]
     [SerializeField] private float aimingDelay; // 조준 시간(공격 전 대기 시간)
-    [SerializeField] private bool _isAttacking = false;
 
     [Header("Laser")]
     [SerializeField] private PoolableObject SquareDecalPrefab;

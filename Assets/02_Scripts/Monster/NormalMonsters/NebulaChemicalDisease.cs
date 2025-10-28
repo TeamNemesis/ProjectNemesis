@@ -7,7 +7,6 @@ public class NebulaChemicalDisease : MonsterBase
     [SerializeField] private float _poisonFieldDuration = 5f; // 독성 구름 지속 시간
     [SerializeField] private float _poisonFieldRadius = 3f;   // 독성 구름 반경
     [SerializeField] private float _poisonFieldDelay = 2f;
-    [SerializeField] private bool _isAttacking = false;
 
     [Header("PoisonFieldPrefab"),SerializeField]
     private PoolableObject poisonFieldPrefab; // 독성 구름 프리팹

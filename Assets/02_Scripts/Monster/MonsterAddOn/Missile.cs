@@ -14,8 +14,6 @@ public class Missile : MonsterBase
     [Header("Effects"), SerializeField]
     private PoolableObject circlePrefab;     // AttackDecalEffect 프리팹 (Inspector에서 지정)
 
-    [SerializeField] private bool _isFusing = false;
-
     private void Update()
     {
         if (isDead || _target == null) return;
@@ -32,7 +30,7 @@ public class Missile : MonsterBase
                 break;
 
             case MonsterState.Attack:
-                if (!_isFusing)
+                if (!_isAttacking)
                     StartCoroutine(SelfDestructionAttack());
                 break;
 
@@ -65,7 +63,7 @@ public class Missile : MonsterBase
 
         agent.SetDestination(_target.position);
 
-        if (distance <= attackRange && !_isFusing)
+        if (distance <= attackRange && !_isAttacking)
         {
             baseState = MonsterState.Attack;
         }
@@ -73,9 +71,9 @@ public class Missile : MonsterBase
 
     private IEnumerator SelfDestructionAttack()
     {
-        if (_target != null && !_isFusing)
+        if (_target != null && !_isAttacking)
         {
-            _isFusing = true;
+            _isAttacking = true;
 
             // 자폭 카운트다운 원 생성
             if (circlePrefab != null)
@@ -115,7 +113,7 @@ public class Missile : MonsterBase
 
         // 미사일 전용 초기화
         baseState = MonsterState.Idle;
-        _isFusing = false;
+        _isAttacking = false;
         StopAllCoroutines();
     }
 }
