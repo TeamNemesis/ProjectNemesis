@@ -17,8 +17,6 @@ public class Elite3 : MonsterBase
     [SerializeField] float bulletLifeTime = 8f;
     [SerializeField] int maxBulletAttackCounter = 0;
 
-    [SerializeField] private bool _isAttacking = false;
-
     [Header("Prefabs")]
     [SerializeField] private PoolableObject missilePrefab;
     [SerializeField] private PoolableObject eliteBulletPrefab;
@@ -50,8 +48,6 @@ public class Elite3 : MonsterBase
         }
     }
 
-
-
     private void HandleIdle()
     {
         // 플레이어와 거리
@@ -62,7 +58,7 @@ public class Elite3 : MonsterBase
         }
     }
 
-
+    #region 총알 패턴 코루틴
     private IEnumerator BulletAttack()
     {
         _isAttacking = true;
@@ -102,8 +98,9 @@ public class Elite3 : MonsterBase
         maxBulletAttackCounter = 0;
         baseState = MonsterState.Attack;
     }
+    #endregion
 
-
+    #region 미사일 패턴 코루틴
     private IEnumerator MissileAttack()
     {
         _isAttacking = true;
@@ -121,8 +118,9 @@ public class Elite3 : MonsterBase
         missileAttackCounter = 0;
         baseState = MonsterState.Attack;
     }
+    #endregion
 
-
+    #region 쿨타임 컨트롤러
     private void CoolTimeController()
     {
         if (bulletAttackCoolTime > 0)
@@ -132,7 +130,9 @@ public class Elite3 : MonsterBase
         if (true)
             return;
     }
+    #endregion
 
+    #region 랜덤 스킬 사용
     private void TryUseSkill()
     {
         // 사용 가능한 스킬 코루틴 리스트
@@ -162,4 +162,5 @@ public class Elite3 : MonsterBase
             baseState = MonsterState.Attack;
         }
     }
+    #endregion
 }

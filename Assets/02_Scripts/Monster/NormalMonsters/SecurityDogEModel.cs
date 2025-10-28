@@ -5,7 +5,6 @@ using static UnityEngine.LightAnchor;
 public class SecurityDogEModel : MonsterBase
 {
     [Header("Local Stats")]
-    [SerializeField] private bool _isAttacking = false;
     [SerializeField] private float jumpPrepareTime = 0.5f; // 점프 준비 시간
     [SerializeField] private float jumpSpeed = 15f; // 점프 속도
     [SerializeField] private float jumpDuration = 0.8f; // 점프 지속 시간

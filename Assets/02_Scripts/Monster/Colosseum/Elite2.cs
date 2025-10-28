@@ -17,8 +17,6 @@ public class Elite2 : MonsterBase
     [SerializeField] float bulletLifeTime = 8f;
     [SerializeField] int maxBulletAttackCounter = 0;
 
-    [SerializeField] private bool _isAttacking = false;
-
     [Header("Prefabs")]
     [SerializeField] private PoolableObject squareDecalPrefab;
     [SerializeField] private PoolableObject attackDecalPrefab;

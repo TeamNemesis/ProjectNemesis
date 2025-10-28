@@ -13,8 +13,6 @@ public class AutoTurret : MonsterBase
         Attack, // °ø°Ý
         Die     // Á×À½
     }
-    [Header("Local Stats")]
-    [SerializeField] private bool _isAttacking = false;
 
     [Header("TurretBulletPrefab"), SerializeField]
     private PoolableObject turretbullet; // ÅÍ·¿ ÃÑ¾Ë ÇÁ¸®Æé
