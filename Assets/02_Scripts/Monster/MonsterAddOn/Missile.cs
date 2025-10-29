@@ -1,7 +1,5 @@
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.AI;
 
 public class Missile : MonsterBase
 {
@@ -9,6 +7,9 @@ public class Missile : MonsterBase
     [Header("Local Stats"), SerializeField]
     private float _explosionRadius = 2f;      // 실제 폭발 범위
     private float lifeTime = 15f;               // 미사일 생존 시간
+    private float elapsedTime;
+
+    private bool onPhase2 = false;
 
     // attackDamage, attackRange, attackDelay, isDead 등은 MonsterBase에서 상속됨
 
@@ -18,14 +19,16 @@ public class Missile : MonsterBase
     [Header("Bullet"), SerializeField]
     private PoolableObject bulletPrefab;      // 총알 프리팹
 
-    private Coroutine lifeTimeCoroutine;
-
     public override void Initialize(object data = null)
     {
         base.Initialize(data); // 부모 클래스의 Initialize 호출
 
         // 미사일 전용 초기화
-        StartLifeTime();
+        if (data is bool phase2)
+        {
+            onPhase2 = phase2;
+        }
+        elapsedTime = 0f;
         baseState = MonsterState.Idle;
         _isAttacking = false;
         StopAllCoroutines();
@@ -34,6 +37,17 @@ public class Missile : MonsterBase
 
     private void Update()
     {
+        if (!isDead)
+        {
+            elapsedTime += Time.deltaTime;
+
+            if (elapsedTime >= lifeTime)
+            {
+                baseState = MonsterState.Die;
+                Die();
+                return;
+            }
+        }
         if (isDead || _target == null) return;
         if (isStunned) return;
 
@@ -55,26 +69,6 @@ public class Missile : MonsterBase
             case MonsterState.Die:
                 Die();
                 break;
-        }
-    }
-
-    private void StartLifeTime()
-    {
-        if (lifeTimeCoroutine != null)
-        {
-            StopCoroutine(lifeTimeCoroutine);
-        }
-
-        lifeTimeCoroutine = StartCoroutine(LifeTimeCoroutine());
-    }
-
-    private IEnumerator LifeTimeCoroutine()
-    {
-        yield return new WaitForSeconds(lifeTime);
-
-        if (!isDead)
-        {
-            baseState = MonsterState.Die;
         }
     }
 
@@ -165,11 +159,14 @@ public class Missile : MonsterBase
         }
     }
 
-    
+
 
     protected override void Die()
     {
-        DieAttack();
+        if (onPhase2)
+        {
+            DieAttack();
+        }
         base.Die();
     }
 }
