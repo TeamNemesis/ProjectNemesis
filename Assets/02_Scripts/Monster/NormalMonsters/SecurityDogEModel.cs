@@ -9,6 +9,9 @@ public class SecurityDogEModel : MonsterBase
     [SerializeField] private float jumpCoolTime = 5f;
     [SerializeField] private float currentCoolTime = 0f;
 
+    private float fixedYPosition;
+    private Quaternion fixedRotation;
+
     // Start() 제거!
 
     private void Update()
@@ -108,6 +111,10 @@ public class SecurityDogEModel : MonsterBase
 
         if (distance < attackRange)
         {
+            // Y축 위치와 회전값 저장
+            fixedYPosition = transform.position.y;
+            fixedRotation = transform.rotation;
+
             // NavMeshAgent 정지 및 비활성화
             agent.isStopped = true;
             agent.ResetPath();
@@ -118,8 +125,15 @@ public class SecurityDogEModel : MonsterBase
             // 현재 속도 초기화
             if (monsterRigidbody != null)
             {
-                monsterRigidbody.linearVelocity = Vector3.zero;
-                monsterRigidbody.angularVelocity = Vector3.zero; // 회전 속도도 초기화
+                if (!monsterRigidbody.isKinematic)
+                {
+                    monsterRigidbody.linearVelocity = Vector3.zero;
+                    monsterRigidbody.angularVelocity = Vector3.zero;
+                }
+
+                // Rigidbody 제약 설정 (Y축 위치와 회전 고정)
+                monsterRigidbody.constraints = RigidbodyConstraints.FreezePositionY |
+                                               RigidbodyConstraints.FreezeRotation;
             }
 
             yield return new WaitForSeconds(jumpPrepareTime);
@@ -131,7 +145,6 @@ public class SecurityDogEModel : MonsterBase
             // Rigidbody가 있는지 확인 후 AddForce
             if (monsterRigidbody != null)
             {
-                // 킨마틱 모드 확인 (킨마틱이면 일시적으로 해제)
                 bool wasKinematic = monsterRigidbody.isKinematic;
                 if (wasKinematic)
                 {
@@ -139,7 +152,6 @@ public class SecurityDogEModel : MonsterBase
                 }
 
                 monsterRigidbody.AddForce(jumpDirection * jumpForce, ForceMode.Impulse);
-                Debug.Log($"점프 실행! 힘: {jumpForce}, 방향: {jumpDirection}, Kinematic: {wasKinematic}");
 
                 // 돌진 시간
                 yield return new WaitForSeconds(1f);
@@ -148,11 +160,20 @@ public class SecurityDogEModel : MonsterBase
                 monsterRigidbody.linearVelocity = Vector3.zero;
                 monsterRigidbody.angularVelocity = Vector3.zero;
 
+                // Y축 위치와 회전값 복원
+                Vector3 pos = transform.position;
+                pos.y = fixedYPosition;
+                transform.position = pos;
+                transform.rotation = fixedRotation;
+
                 // 킨마틱 모드 복원
                 if (wasKinematic)
                 {
                     monsterRigidbody.isKinematic = true;
                 }
+
+                // Rigidbody 제약 해제
+                monsterRigidbody.constraints = RigidbodyConstraints.None;
             }
             else
             {
@@ -187,15 +208,59 @@ public class SecurityDogEModel : MonsterBase
         baseState = MonsterState.Move;
     }
 
-    private void OnTriggerEnter(Collider other)
+    protected override void OnCollisionEnter(Collision collision)
     {
-        if (_isAttacking && other.CompareTag(targetTag))
+        base.OnCollisionEnter(collision);
+
+        // 공격 중일 때만 충돌 처리
+        if (_isAttacking)
         {
-            var playerHealth = other.GetComponent<PlayerHealth>();
-            if (playerHealth != null)
+            // Y축 위치와 회전값 유지
+            Vector3 pos = transform.position;
+            pos.y = fixedYPosition;
+            transform.position = pos;
+            transform.rotation = fixedRotation;
+
+            // 타겟이 맞는지 확인
+            if (collision.gameObject.CompareTag(targetTag))
             {
-                playerHealth.TakeDamage(attackDamage, transform);
+                if (monsterRigidbody != null)
+                {
+                    monsterRigidbody.linearVelocity = Vector3.zero;
+                    monsterRigidbody.angularVelocity = Vector3.zero;
+                }
+
+                var playerHealth = collision.gameObject.GetComponent<IDamageable>();
+                if (playerHealth != null)
+                {
+                    playerHealth.TakeDamage(attackDamage, transform);
+                }
             }
+            else
+            {
+                // 타겟이 아닌 대상과 충돌 시 해당 대상의 충돌을 무시
+                Collider otherCollider = collision.collider;
+                Collider myCollider = GetComponent<Collider>();
+                if (otherCollider != null && myCollider != null)
+                {
+                    Physics.IgnoreCollision(myCollider, otherCollider, true);
+
+                    // 공격이 끝나면 충돌 무시 해제 (코루틴으로 처리)
+                    StartCoroutine(ResetCollisionIgnore(myCollider, otherCollider));
+                }
+            }
+        }
+    }
+
+    private IEnumerator ResetCollisionIgnore(Collider myCollider, Collider otherCollider)
+    {
+        // 공격이 끝날 때까지 대기
+        yield return new WaitUntil(() => !_isAttacking);
+
+        // 충돌 무시 해제
+        if (myCollider != null && otherCollider != null)
+        {
+            Physics.IgnoreCollision(myCollider, otherCollider, false);
         }
     }
 }

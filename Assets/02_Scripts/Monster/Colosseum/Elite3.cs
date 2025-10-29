@@ -75,10 +75,10 @@ public class Elite3 : MonsterBase
                     float angle = i * 45f + angleOffset;
                     Quaternion bulletRotation = Quaternion.Euler(0, angle, 0);
                     GameObject bullet = GameManager.Instance.PoolManager.GetFromPool(eliteBulletPrefab, transform.position, bulletRotation);
-                    EliteBullet turretBullet = bullet.GetComponent<EliteBullet>();
-                    if (turretBullet != null)
+                    EliteBullet elitetBullet = bullet.GetComponent<EliteBullet>();
+                    if (elitetBullet != null)
                     {
-                        turretBullet.Initialize(targetTag, attackDamage, bulletLifeTime, gameObject);
+                        elitetBullet.Initialize(targetTag, attackDamage, bulletLifeTime, gameObject);
                     }
                 }
 
