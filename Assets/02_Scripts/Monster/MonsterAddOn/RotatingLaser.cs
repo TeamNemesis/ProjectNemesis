@@ -121,8 +121,7 @@ public class RotatingLaser : MonoBehaviour
             GameObject player = hit.collider.gameObject;
 
             // 데미지 간격 체크
-            if (!lastDamageTime.ContainsKey(player) ||
-                Time.time - lastDamageTime[player] >= damageInterval)
+            if (!lastDamageTime.ContainsKey(player) || Time.time - lastDamageTime[player] >= damageInterval)
             {
                 // IDamageable 인터페이스 호출
                 IDamageable damageable = player.GetComponent<IDamageable>();
