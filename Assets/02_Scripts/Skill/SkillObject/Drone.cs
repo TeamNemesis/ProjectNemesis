@@ -183,7 +183,7 @@ public class Drone : PoolableObject
             {
                 Attack?.Invoke(WeaponType.None, ATTACKTYPE.NORMAL, currentTarget,transform);
                 // 이부분에서 IDamageAble 인터페이스로 바꾸면서 TakeHit 함수대신 TakeDamage 함수로 바꿈
-                target.TakeDamage(Constants.DRONE_ATTACK);
+                target.TakeDamage(Constants.DRONE_ATTACK, null);
                 yield return new WaitForSeconds(_attackCoolTime);
             }
         }

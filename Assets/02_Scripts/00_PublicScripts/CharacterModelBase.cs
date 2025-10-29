@@ -90,7 +90,7 @@ public abstract class CharacterModelBase : PoolableObject, IDamageable
         OnHpChanged?.Invoke(_currentHealth, _maxHealth);
     }
 
-    public virtual void TakeDamage(float damage)
+    public virtual void TakeDamage(float damage, Transform attacker)
     {
         if (isDead) return;
 

@@ -3,28 +3,11 @@ using UnityEngine;
 
 public class NebulaPhantom : MonsterBase
 {
-    [SerializeField]
-    private enum State
-    {
-        Idle,   // 플레이어를 아직 못 찾았거나 감지 범위 밖일 때
-        Move,   // 플레이어를 추격 중일 때
-        Attack, // 공격
-        Die     // 죽음
-    }
     [Header("Local Stats")]
     [SerializeField] private float aimingDelay; // 조준 시간(공격 전 대기 시간)
-    [SerializeField] private bool _isAttacking = false;
 
     [Header("Laser")]
     [SerializeField] private PoolableObject SquareDecalPrefab;
-
-    [SerializeField]
-    private State currentState = State.Idle;
-
-    //private void Start()
-    //{
-    //    StartCoroutine(HidingFunction());
-    //}
 
     private void Update()
     {
@@ -34,21 +17,21 @@ public class NebulaPhantom : MonsterBase
         LookAtPlayer();
         StartCoroutine(HidingFunction());
 
-        switch (currentState)
+        switch (baseState)
         {
-            case State.Idle:
+            case MonsterState.Idle:
                 HandleIdle();
                 break;
-            case State.Move:
+            case MonsterState.Move:
                 HandleMove();
                 break;
-            case State.Attack:
+            case MonsterState.Attack:
                 if (!_isAttacking)
                 {
                     StartCoroutine(PerformAttack());
                 }
                 break;
-            case State.Die:
+            case MonsterState.Die:
                 Die();
                 break;
         }
@@ -61,7 +44,7 @@ public class NebulaPhantom : MonsterBase
         float distance = Vector3.Distance(transform.position, _target.position);
         if (distance <= detectionRange && CanSeePlayer())
         {
-            currentState = State.Move;
+            baseState = MonsterState.Move;
         }
     }
     private void HandleMove()
@@ -71,7 +54,7 @@ public class NebulaPhantom : MonsterBase
         if (distance > detectionRange || !CanSeePlayer())
         {
             agent.ResetPath();
-            currentState = State.Idle;
+            baseState = MonsterState.Idle;
             return;
         }
 
@@ -80,7 +63,7 @@ public class NebulaPhantom : MonsterBase
         if (distance <= attackRange && CanSeePlayer())
         {
             agent.ResetPath();
-            currentState = State.Attack;
+            baseState = MonsterState.Attack;
         }
     }
 
@@ -114,7 +97,7 @@ public class NebulaPhantom : MonsterBase
                     var damageable = hit.collider.GetComponent<IDamageable>();
                     if (damageable != null)
                     {
-                        damageable.TakeDamage(10);
+                        damageable.TakeDamage(attackDamage, transform);
                         Debug.Log("플레이어 피격");
                     }
                 }
@@ -127,7 +110,7 @@ public class NebulaPhantom : MonsterBase
         }
 
         _isAttacking = false;
-        currentState = State.Move; // 공격 후 다시 추격 상태로 전환
+        baseState = MonsterState.Move; // 공격 후 다시 추격 상태로 전환
     }
 
     private IEnumerator HidingFunction()

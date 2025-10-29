@@ -3,22 +3,10 @@ using UnityEngine;
 
 public class NebulaVanguard : MonsterBase
 {
-    [SerializeField]
-    private enum State
-    {
-        Idle,   // 플레이어를 아직 못 찾았거나 감지 범위 밖일 때
-        Move,   // 플레이어를 추격 중일 때
-        Attack, // 공격
-        Die     // 죽음
-    }
     [Header("Local Stats")]
-    [SerializeField] private bool _isAttacking = false;
     [SerializeField] private float _box_Length = 3;
     [SerializeField] private float _box_Height = 3;
     [SerializeField] private float _box_Width = 3;
-
-    [SerializeField]
-    private State currentState = State.Idle;
 
     private void Update()
     {
@@ -30,21 +18,21 @@ public class NebulaVanguard : MonsterBase
             LookAtPlayer();
         }
 
-        switch (currentState)
+        switch (baseState)
         {
-            case State.Idle:
+            case MonsterState.Idle:
                 HandleIdle();
                 break;
-            case State.Move:
+            case MonsterState.Move:
                 HandleMove();
                 break;
-            case State.Attack:
+            case MonsterState.Attack:
                 if (!_isAttacking)
                 {
                     StartCoroutine(PerformAttack());
                 }
                 break;
-            case State.Die:
+            case MonsterState.Die:
                 Die();
                 break;
         }
@@ -58,7 +46,7 @@ public class NebulaVanguard : MonsterBase
         float distance = Vector3.Distance(transform.position, _target.position);
         if (distance <= detectionRange && CanSeePlayer())
         {
-            currentState = State.Move;
+            baseState = MonsterState.Move;
         }
     }
     private void HandleMove()
@@ -68,7 +56,7 @@ public class NebulaVanguard : MonsterBase
         if (distance > detectionRange || !CanSeePlayer())
         {
             agent.ResetPath();
-            currentState = State.Idle;
+            baseState = MonsterState.Idle;
             return;
         }
 
@@ -77,7 +65,7 @@ public class NebulaVanguard : MonsterBase
         if (distance <= attackRange && CanSeePlayer())
         {
             agent.ResetPath();
-            currentState = State.Attack;
+            baseState = MonsterState.Attack;
         }
     }
 
@@ -111,7 +99,7 @@ public class NebulaVanguard : MonsterBase
                     {
                         if (playerHealth != null)
                         {
-                            playerHealth.TakeDamage(attackDamage);
+                            playerHealth.TakeDamage(attackDamage, transform);
                         }
                     }
                 }
@@ -119,7 +107,7 @@ public class NebulaVanguard : MonsterBase
             yield return new WaitForSeconds(attackDelay);
         }
         _isAttacking = false;
-        currentState = State.Move; // 공격 후 다시 추격 상태로 전환
+        baseState = MonsterState.Move; // 공격 후 다시 추격 상태로 전환
     }
 
 

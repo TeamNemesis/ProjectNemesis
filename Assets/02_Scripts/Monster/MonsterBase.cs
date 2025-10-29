@@ -10,8 +10,18 @@ public enum MonsterSize
 }
 
 
+
 public class MonsterBase : CharacterModelBase, IInitializePoolable
 {
+    protected enum MonsterState
+    {
+        Idle,
+        Move,
+        Attack,
+        Die
+    }
+
+
     [Header("Base Stats")]
     [SerializeField] private float maxEliteHealth;
     [SerializeField] protected float attackDamage = 10;
@@ -24,7 +34,10 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
     [SerializeField] protected int cost;
     [SerializeField] protected Rigidbody monsterRigidbody;
     [SerializeField] protected Collider monsterCollider;
+    [SerializeField] protected bool _isAttacking = false;
 
+    [Header("Base State")]
+    [SerializeField] protected MonsterState baseState = MonsterState.Idle;
 
 
     #region 넉백
@@ -79,7 +92,7 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
         Initialize();
     }
 
-    public void Initialize(object data = null)
+    public virtual void Initialize(object data = null)
     {
         base.Initialize();
 
@@ -89,10 +102,14 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
         isStunned = false;
         isBindned = false;
         isWeaken = false;
+        _isAttacking = false;
+
+        // === 상태 머신 초기화 ===
+        baseState = MonsterState.Idle;
 
         // === 컴포넌트 초기화 ===
         agent = GetComponent<NavMeshAgent>();
-        if (agent != null)
+        if (agent != null && agent.isOnNavMesh)
         {
             agent.enabled = true;
             agent.isStopped = false;
@@ -116,12 +133,6 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
         {
             monsterRigidbody.isKinematic = true;
             monsterRigidbody.linearVelocity = Vector3.zero;
-        }
-
-        monsterCollider = GetComponent<Collider>();
-        if (monsterCollider != null)
-        {
-            monsterCollider.isTrigger = true;
         }
 
         // === 코루틴 정리 ===
@@ -190,7 +201,7 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
             if (collision.gameObject.layer == LayerMask.NameToLayer(Constants.LAYER_MASK_WALL))
             {
                 Debug.Log("충돌");
-                TakeDamage(GameManager.Instance.PlayerStatManager.knockBackDamage * GameManager.Instance.PlayerStatManager.knockBackDamageMulti);
+                TakeDamage(GameManager.Instance.PlayerStatManager.knockBackDamage * GameManager.Instance.PlayerStatManager.knockBackDamageMulti, null);
                 EndKnockBack();
             }
 
@@ -205,7 +216,7 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
     /// <param name="damage"></param>
     public void KnockBackEnemy(Vector3 pushDirection, float damage, float knockBackDistance)
     {
-        TakeDamage(damage);
+        TakeDamage(damage, null);
 
         if (_knockBackCoroutine != null)
         {

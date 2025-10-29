@@ -5,13 +5,6 @@ using UnityEngine.AI;
 
 public class BallSecurityRobot : MonsterBase
 {
-    private enum State
-    {
-        Idle,   // 플레이어를 아직 못 찾았거나 감지 범위 밖일 때
-        Move,   // 플레이어를 추격 중일 때
-        Attack, // 자폭 시도
-        Die     // 파괴됨
-    }
 
     [Header("Local Stats"), SerializeField]
     private float _explosionRadius = 3f;      // 실제 폭발 범위
@@ -21,31 +14,27 @@ public class BallSecurityRobot : MonsterBase
     [Header("Effects"), SerializeField]
     private PoolableObject circlePrefab;     // AttackDecalEffect 프리팹 (Inspector에서 지정)
 
-    [SerializeField] private bool _isFusing = false;
-    [SerializeField]
-    private State currentState = State.Idle; 
-
     private void Update()
     {
         if (isDead || _target == null) return;
         if (isStunned) return;
 
-        switch (currentState)
+        switch (baseState)
         {
-            case State.Idle:
+            case MonsterState.Idle:
                 HandleIdle();
                 break;
 
-            case State.Move:
+            case MonsterState.Move:
                 HandleMove();
                 break;
 
-            case State.Attack:
-                if (!_isFusing)
+            case MonsterState.Attack:
+                if (!_isAttacking)
                     StartCoroutine(SelfDestructionAttack());
                 break;
 
-            case State.Die:
+            case MonsterState.Die:
                 Die();
                 break;
         }
@@ -57,7 +46,7 @@ public class BallSecurityRobot : MonsterBase
 
         if (distance <= detectionRange)
         {
-            currentState = State.Move;
+            baseState = MonsterState.Move;
         }
     }
 
@@ -68,23 +57,23 @@ public class BallSecurityRobot : MonsterBase
         if (distance > detectionRange)
         {
             agent.ResetPath();
-            currentState = State.Idle;
+            baseState = MonsterState.Idle;
             return;
         }
 
         agent.SetDestination(_target.position);
 
-        if (distance <= attackRange && !_isFusing)
+        if (distance <= attackRange && !_isAttacking)
         {
-            currentState = State.Attack;
+            baseState = MonsterState.Attack;
         }
     }
 
     private IEnumerator SelfDestructionAttack()
     {
-        if (_target != null && !_isFusing)
+        if (_target != null && !_isAttacking)
         {
-            _isFusing = true;
+            _isAttacking = true;
 
             // 자폭 카운트다운 원 생성 (로봇의 자식으로 붙임)
             if (circlePrefab != null)
@@ -102,7 +91,7 @@ public class BallSecurityRobot : MonsterBase
 
             CheckTarget();
 
-            currentState = State.Die;
+            baseState = MonsterState.Die;
         }
     }
 
@@ -115,7 +104,7 @@ public class BallSecurityRobot : MonsterBase
         {
             if (collider.tag == targetTag)
             {
-                collider.GetComponent<IDamageable>().TakeDamage(attackDamage);
+                collider.GetComponent<IDamageable>().TakeDamage(attackDamage, transform);
             }
         }
     }

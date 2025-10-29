@@ -13,33 +13,28 @@ public class AutoTurret : MonsterBase
         Attack, // 공격
         Die     // 죽음
     }
-    [Header("Local Stats")]
-    [SerializeField] private bool _isAttacking = false;
 
     [Header("TurretBulletPrefab"), SerializeField]
     private PoolableObject turretbullet; // 터렛 총알 프리펩
-
-    [SerializeField]
-    private State currentState = State.Idle;
 
     private void Update()
     {
         if (isDead || _target == null) return;
         if (isStunned) return;
 
-        switch (currentState)
+        switch (baseState)
         {
-            case State.Idle:
+            case MonsterState.Idle:
                 HandleIdle();
                 break;
-            case State.Attack:
+            case MonsterState.Attack:
                 LookAtPlayer();
                 if (!_isAttacking)
                 {
                     StartCoroutine(PerformAttack());
                 }
                 break;
-            case State.Die:
+            case MonsterState.Die:
                 Die();
                 break;
         }
@@ -51,7 +46,7 @@ public class AutoTurret : MonsterBase
         float distance = Vector3.Distance(transform.position, _target.position);
         if (distance <= attackRange && CanSeePlayer())
         {
-            currentState = State.Attack;
+            baseState = MonsterState.Attack;
         }
     }
 
@@ -70,6 +65,6 @@ public class AutoTurret : MonsterBase
             yield return new WaitForSeconds(attackDelay);
         }
         _isAttacking = false;
-        currentState = State.Idle; // 공격 후 다시 대기 상태로 전환
+        baseState = MonsterState.Idle; // 공격 후 다시 대기 상태로 전환
     }
 }

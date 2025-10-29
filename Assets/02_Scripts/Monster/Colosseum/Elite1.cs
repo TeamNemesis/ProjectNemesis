@@ -4,16 +4,7 @@ using UnityEngine;
 
 public class Elite1 : MonsterBase
 {
-    [SerializeField]
-    private enum State
-    {
-        Idle,   // 플레이어를 아직 못 찾았거나 감지 범위 밖일 때
-        Move,   // 플레이어를 추격 중일 때
-        Attack, // 공격
-        Die     // 죽음
-    }
     [Header("Local Stats")]
-    [SerializeField] private bool _isAttacking = false;
     [SerializeField] private float _box_Length = 3;
     [SerializeField] private float _box_Height = 3;
     [SerializeField] private float _box_Width = 3;
@@ -23,9 +14,6 @@ public class Elite1 : MonsterBase
     [SerializeField] private float teleportAttackDelay = 1f; // 텔포 공격 딜레이
     [SerializeField] private float bladeAttackkDelay = 1f;
     [SerializeField] int stopDistance = 1;
-
-    [SerializeField]
-    private State currentState = State.Idle;
 
     [SerializeField] private MeshRenderer _meshRenderer;
     [SerializeField] private PoolableObject attackDecal;
@@ -55,21 +43,21 @@ public class Elite1 : MonsterBase
             LookAtPlayer();
         }
         
-        switch (currentState)
+        switch (baseState)
         {
-            case State.Idle:
+            case MonsterState.Idle:
                 HandleIdle();
                 break;
-            case State.Move:
+            case MonsterState.Move:
                 HandleMove();
                 break;
-            case State.Attack:
+            case MonsterState.Attack:
                 if (!_isAttacking)
                 {
                     TryUseSkill();
                 }
                 break;
-            case State.Die:
+            case MonsterState.Die:
                 Die();
                 break;
         }
@@ -82,7 +70,7 @@ public class Elite1 : MonsterBase
         float distance = Vector3.Distance(transform.position, _target.position);
         if (distance <= detectionRange && CanSeePlayer())
         {
-            currentState = State.Move;
+            baseState = MonsterState.Move;
         }
     }
     private void HandleMove()
@@ -92,14 +80,14 @@ public class Elite1 : MonsterBase
         if (distance > detectionRange || !CanSeePlayer())
         {
             agent.ResetPath();
-            currentState = State.Idle;
+            baseState = MonsterState.Idle;
             return;
         }
 
         if (!_isAttacking) //패턴 하나 끝나면
         {
             agent.ResetPath();
-            currentState = State.Attack;
+            baseState = MonsterState.Attack;
         }
     }
 
@@ -115,9 +103,7 @@ public class Elite1 : MonsterBase
         Gizmos.DrawWireCube(Vector3.zero, halfExtents * 2f);
     }
 
-    /// <summary>
-    /// 패턴 1
-    /// </summary>
+    #region 패턴1 코루틴
     private IEnumerator Pattern1Routine()
     {
 
@@ -146,6 +132,7 @@ public class Elite1 : MonsterBase
         }
         _isAttacking = false;
     }
+    
 
 
     private IEnumerator ScaleTime()
@@ -175,12 +162,11 @@ public class Elite1 : MonsterBase
         {
             if (collider.tag == targetTag)
             {
-                collider.GetComponent<IDamageable>().TakeDamage(attackDamage);
+                collider.GetComponent<IDamageable>().TakeDamage(attackDamage, transform);
             }
         }
 
         transform.position = new Vector3(spawnPos.x, 2f, spawnPos.z);   //range로 위치이동
-
     }
 
 
@@ -195,6 +181,7 @@ public class Elite1 : MonsterBase
             yield return new WaitForSeconds(cooltime);
         }
     }
+    
 
     void ShootBlade()
     {
@@ -207,10 +194,10 @@ public class Elite1 : MonsterBase
         // 생성
         Vector3 spawnPos = new Vector3(transform.position.x, 1f, transform.position.z) + transform.forward * 1f;
         GameObject blade = GameManager.Instance.PoolManager.GetFromPool(bladeWavePrefab, spawnPos, transform.rotation);
-        
     }
+    #endregion
 
-
+    #region 패턴2 코루틴
     private IEnumerator Pattern2Routine()   // 패턴2 모든 루틴
     {
 
@@ -265,7 +252,7 @@ public class Elite1 : MonsterBase
         {
             if (target.CompareTag(targetTag) && target.TryGetComponent(out IDamageable player))
             {
-                player.TakeDamage(attackDamage);
+                player.TakeDamage(attackDamage, transform);
             }
         }
 
@@ -308,7 +295,6 @@ public class Elite1 : MonsterBase
         }
     }
 
-
     void ShootBullet()
     {
         // 플레이어의 위치를 가져오되, 높이는 몬스터 높이와 동일하게 맞추기
@@ -321,6 +307,7 @@ public class Elite1 : MonsterBase
         Vector3 spawnPos = new Vector3(transform.position.x, 1f, transform.position.z) + transform.forward * 1f;
         GameObject bullet = GameManager.Instance.PoolManager.GetFromPool(BulletPrefab, spawnPos, transform.rotation);
     }
+    #endregion
 
     private void CoolTimeController()
     {
@@ -360,13 +347,13 @@ public class Elite1 : MonsterBase
         else
         {
             // 모든 스킬이 쿨타임이면 다시 추격
-            currentState = State.Move;
+            baseState = MonsterState.Move;
         }
     }
 
-    public override void TakeDamage(float damage)
+    public override void TakeDamage(float damage, Transform attacker)
     {
-        base.TakeDamage(damage);
+        base.TakeDamage(damage, attacker);
 
         float healthRatio = currentHealth / maxHealth;
 

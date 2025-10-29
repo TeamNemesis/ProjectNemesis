@@ -84,7 +84,7 @@ public class LaserBeam : MonoBehaviour
             var dmg = h.collider.GetComponentInParent<IDamageable>();
             if (dmg != null)
             {
-                dmg.TakeDamage(_damage);
+                dmg.TakeDamage(_damage, null);
             }
             else
             {
