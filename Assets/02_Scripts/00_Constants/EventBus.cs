@@ -29,6 +29,16 @@ public static class EventBus
         OnEvolution?.Invoke();
     }
 
+    /// <summary>
+    /// 몬스터 넉백 시 발생하는 이벤트
+    /// </summary>
+    public static event Action<Vector3> OnMonsterKnockBack;
+
+    public static void MonsterKnockBack(Vector3 monsterPosition)
+    {
+        Debug.LogError("이벤트 호출");
+        OnMonsterKnockBack?.Invoke(monsterPosition);
+    }
 
 }
 

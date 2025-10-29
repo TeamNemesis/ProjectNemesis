@@ -80,8 +80,6 @@ public class Skill_Two : SkillBase
             case 25:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 ActiveImprovedBomb(choosedSkill);
-
-                
                 break;
 
             // 폭사
