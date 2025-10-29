@@ -1,3 +1,5 @@
+using Unity.AppUI.Core;
+using UnityEditor.Search;
 using UnityEngine;
 
 /// <summary>
@@ -7,6 +9,10 @@ public class Skill_Three : SkillBase
 {
     [SerializeField]
     private RedShift _redshiftPrefab;
+    private float _redshiftSpeed;
+    private float _redshiftDamage;
+    private float _redshiftKnockBackDistance;
+    private float _redshiftExtent;
 
     public override void InitializeSkill(SkillManager skillManager)
     {
@@ -90,14 +96,9 @@ public class Skill_Three : SkillBase
             // 중력 증폭
             case 36:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
-                if (choosedSkill.skillLevel == 1)
-                {
-                    ActivateGravity(choosedSkill.skillBaseValue_1 + choosedSkill.skillLevelValue_1);
-                }
-                else
-                {
-                    ActivateGravity(choosedSkill.skillLevelValue_1);
-                }
+
+                ActivateGravity(choosedSkill);
+
                 break;
 
             // 사건의 지평선
@@ -128,20 +129,53 @@ public class Skill_Three : SkillBase
 
         }
     }
-
+    #endregion
+    #region 적색편이
     private void ActivateRedShift(SkillData skill)
     {
+        _skillManager.playScene.player.playerModel.PlayerHit -= MakeRedshift;
+
+        _redshiftKnockBackDistance = skill.skillBaseValue_1 + skill.skillLevelValue_1 * skill.skillLevel;
+        _redshiftDamage = skill.skillBaseValue_2 + skill.skillLevelValue_2 * skill.skillLevel;
+        _redshiftExtent = skill.skillBaseValue_3 + skill.skillLevelValue_3 * skill.skillLevel;
+        _redshiftSpeed = 15f;
+
         _skillManager.playScene.player.playerModel.PlayerHit += MakeRedshift;
     }
     private void MakeRedshift(Transform monsterTransform)
     {
 
+        Vector3 playerPosition = _skillManager.playScene.player.transform.position;
+        Vector3 direction = monsterTransform.position - playerPosition;
+        direction.y = 0;
+        direction.Normalize();
+        if(direction == Vector3.zero)
+        {
+            direction =
+            Constants.GetNearestObject(_skillManager.playScene.player.transform, skillManager.playScene.MapController.MonsterController.MonsterSpawner.ActiveMonsters).transform.position
+            - playerPosition;
+        }
+        Debug.Log(monsterTransform.gameObject.name + monsterTransform.position);
+        RedShiftData redShiftData = new RedShiftData(direction, _redshiftSpeed, _redshiftExtent, _redshiftKnockBackDistance, _redshiftDamage);
+        playerPosition.y = 0;
+        Quaternion rotation = Quaternion.LookRotation(direction);
+        GameManager.Instance.PoolManager.GetFromPool(_redshiftPrefab, playerPosition, rotation, null, redShiftData);
     }
     #endregion
     #region 중력 증폭
-    public void ActivateGravity(float skill)
+    public void ActivateGravity(SkillData choosedSkill)
     {
-        skillManager.playerStatManager.AddKnockBackDistance(skill);
+        //처음 습득시
+        if (choosedSkill.skillLevel == 1)
+        {
+            skillManager.playerStatManager.AddKnockBackDistance(choosedSkill.skillLevelValue_1 + choosedSkill.skillBaseValue_1);
+        }
+        // 그 이후는 레벨 계수만 추가
+        else
+        {
+            skillManager.playerStatManager.AddKnockBackDistance(choosedSkill.skillLevelValue_1);
+
+        }
     }
     #endregion
 }

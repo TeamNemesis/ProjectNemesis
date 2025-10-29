@@ -30,6 +30,11 @@ public class MapController : MonoBehaviour
     public int CurrentRoomCount => _currentRoomCount;
     public bool HasLabRoomAppeared => _hasLabRoomAppeared;
 
+    /// <summary>
+    /// 룸 로딩이 끝나고 전투 시작시 발행하는 이벤트
+    /// </summary>
+    public event Action OnRoomStart;
+
     public void Initialize()
     {
         if (_roomSpawner == null) Debug.LogError("MapController.Initialize: _roomSpawner is null");
@@ -89,6 +94,7 @@ public class MapController : MonoBehaviour
             Transform[] spawnPoints = normalRoom.MonsterSpawnPoints;
             _monsterController.SpawnMonster(roomCost, spawnPoints);
         }
+        OnRoomStart?.Invoke();
     }
 
     void UpdateCurrentRoomState(Room room)
