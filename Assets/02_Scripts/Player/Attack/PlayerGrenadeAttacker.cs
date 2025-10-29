@@ -110,11 +110,12 @@ public class PlayerGrenadeAttacker : MonoBehaviour, IAttacker
             yield return null;
         }
 
-        Explode(grenade.transform.position);
+        EventBus.GrenadeBomb(grenade.transform.position);
+        Explode(grenade.transform.position,grenade.transform);
         Destroy(grenade);
     }
 
-    private void Explode(Vector3 position)
+    private void Explode(Vector3 position,Transform grenadeTransform)
     {
         Collider[] hits = Physics.OverlapSphere(position, explosionRadius, enemyLayer);
         foreach (Collider hit in hits)
@@ -123,7 +124,7 @@ public class PlayerGrenadeAttacker : MonoBehaviour, IAttacker
             if (enemy != null)
             {
                 Transform monster = hit.transform;
-                EventBus.MonsterHit(WeaponType.None, ATTACKTYPE.GRENADE, transform, transform);
+                EventBus.MonsterHit(WeaponType.None, ATTACKTYPE.GRENADE, monster, grenadeTransform);
             }
         }
 

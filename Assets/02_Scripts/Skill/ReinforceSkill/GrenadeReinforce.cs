@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 /// <summary>
@@ -6,43 +5,53 @@ using UnityEngine;
 /// </summary>
 public class Skill_One_Grenade : ActiveTech
 {
-    /// <summary>
-    /// 착탄 지점 독 프리팹
-    /// </summary>
-    [SerializeField]
-    private GrenadePoison _grenadePoisonPrefab;
+		/// <summary>
+		/// 착탄 지점 독 프리팹
+		/// </summary>
+		[SerializeField]
+		private GrenadePoison _grenadePoisonPrefab;
+		private GrenadePoisonData _grenadePoisonData;
 
-    public override void Activate(SkillManager skillManager, Player player)
-    {
-        // 공격 적중 시 이벤트에 추가
-        base.Activate(skillManager, player);
+		public override void Activate(SkillManager skillManager, Player player)
+		{
+				// 공격 적중 시 이벤트에 추가
+				base.Activate(skillManager, player);
 
-        _grenadePoisonPrefab = Resources.Load<GrenadePoison>("Prefabs/Skill/SkillObject/Skill_One/GrenadePoison");
-        //TODO 유탄 폭발시 이벤트에 연결
-        //player.GrenadeBomb += GrenadeBomb;
+				if (_grenadePoisonPrefab == null)
+				{
+						_grenadePoisonPrefab = Resources.Load<GrenadePoison>("Prefabs/Skill/SkillObject/Skill_One/GrenadePoison");
+				}
 
-    }
-    public override void Deactivate(Player player, bool isSameSkill)
-    {
-        // 리스트 제거
-        base.Deactivate(player, isSameSkill);
-        // 이벤트 해제
-        //TODO 유탄 폭발시 이벤트에서 해제
-        //player.GrenadeBomb -= GrenadeBomb;
-    }
+				_grenadePoisonData = new GrenadePoisonData(skillData.skillBaseValue_1 + skillData.skillLevelValue_1*skillData.skillLevel,
+						skillData.skillBaseValue_2 + skillData.skillLevelValue_2 * skillData.skillLevel);
 
-    public void GrenadeBomb(Vector3 position)
-    {
-        position.y = 0;
-        GameManager.Instance.PoolManager.GetFromPool(_grenadePoisonPrefab, position, _grenadePoisonPrefab.transform.rotation).GetComponent<GrenadePoison>().Initialize();
+				//TODO 유탄 폭발시 이벤트에 연결
+				EventBus.OnGrenadeBomb -= GrenadeBomb;
+				EventBus.OnGrenadeBomb += GrenadeBomb;
 
-    }
+		}
+		public override void Deactivate(Player player, bool isSameSkill)
+		{
+				// 리스트 제거
+				base.Deactivate(player, isSameSkill);
+				// 이벤트 해제
+				//TODO 유탄 폭발시 이벤트에서 해제
+
+				EventBus.OnGrenadeBomb -= GrenadeBomb;
+		}
+
+		public void GrenadeBomb(Vector3 position)
+		{
+				position.y = 0;
+				GameManager.Instance.PoolManager.GetFromPool(_grenadePoisonPrefab, position, Quaternion.identity, null, _grenadePoisonData).GetComponent<GrenadePoison>().Initialize();
+
+		}
 
 
-    public Skill_One_Grenade(SkillData choosedSkill) : base(choosedSkill)
-    {
+		public Skill_One_Grenade(SkillData choosedSkill) : base(choosedSkill)
+		{
 
-    }
+		}
 
 
 }
@@ -53,49 +62,49 @@ public class Skill_One_Grenade : ActiveTech
 public class Skill_Two_Grenade : ActiveTech
 {
 
-    private float plusDamage;
-    public override void Activate(SkillManager skillManager, Player player)
-    {
-        base.Activate(skillManager, player);
+		private float plusDamage;
+		public override void Activate(SkillManager skillManager, Player player)
+		{
+				base.Activate(skillManager, player);
 
-        // 스킬 효과 적용 (플레이어 일반 공격력에 접근하여 공격력 추가)
-        plusDamage = _skillData.skillBaseValue_1 + _skillData.skillLevelValue_1 * _skillData.skillLevel;
-        GameManager.Instance.PlayerStatManager.AddPlayerGrenadeDamageMulti(plusDamage);
-    }
-    public override void Deactivate(Player player, bool isSameSkill)
-    {
-        // 리스트 제거
-        base.Deactivate(player, isSameSkill);
+				// 스킬 효과 적용 (플레이어 일반 공격력에 접근하여 공격력 추가)
+				plusDamage = _skillData.skillBaseValue_1 + _skillData.skillLevelValue_1 * _skillData.skillLevel;
+				GameManager.Instance.PlayerStatManager.AddPlayerGrenadeDamageMulti(plusDamage);
+		}
+		public override void Deactivate(Player player, bool isSameSkill)
+		{
+				// 리스트 제거
+				base.Deactivate(player, isSameSkill);
 
-        // 공격력 복귀
-        GameManager.Instance.PlayerStatManager.AddPlayerGrenadeDamageMulti(-plusDamage);
+				// 공격력 복귀
+				GameManager.Instance.PlayerStatManager.AddPlayerGrenadeDamageMulti(-plusDamage);
 
-    }
+		}
 
 
-    public Skill_Two_Grenade(SkillData skillData) : base(skillData)
-    {
-    }
+		public Skill_Two_Grenade(SkillData skillData) : base(skillData)
+		{
+		}
 }
 
 /// <summary>
 /// Gear 유탄 강화
 /// </summary>
-public class Skill_Three_Grenade: ActiveTech
+public class Skill_Three_Grenade : ActiveTech
 {
-    public override void Activate(SkillManager skillManager, Player player)
-    {
-        base.Activate(skillManager, player);
-    }
+		public override void Activate(SkillManager skillManager, Player player)
+		{
+				base.Activate(skillManager, player);
+		}
 
-    public override void Deactivate(Player player, bool isAnotherSkill)
-    {
-        base.Deactivate(player, isAnotherSkill);
-    }
+		public override void Deactivate(Player player, bool isAnotherSkill)
+		{
+				base.Deactivate(player, isAnotherSkill);
+		}
 
-    public Skill_Three_Grenade(SkillData skillData) : base(skillData)
-    {
-    }
+		public Skill_Three_Grenade(SkillData skillData) : base(skillData)
+		{
+		}
 }
 
 /// <summary>
@@ -103,19 +112,46 @@ public class Skill_Three_Grenade: ActiveTech
 /// </summary>
 public class Skill_Four_Grenade : ActiveTech
 {
-    public override void Activate(SkillManager skillManager, Player player)
-    {
-        base.Activate(skillManager, player);
-    }
+		/// <summary>
+		/// 착탄 지점 EMP 프리팹
+		/// </summary>
+		[SerializeField]
+		private GrenadeEMP _grenadeEMPPrefab;
+		private GrenadeEMPData _grenadeEMPData;
 
-    public override void Deactivate(Player player, bool isAnotherSkill)
-    {
-        base.Deactivate(player, isAnotherSkill);
-    }
+		public override void Activate(SkillManager skillManager, Player player)
+		{
+				base.Activate(skillManager, player);
+				if(_grenadeEMPPrefab == null)
+				{
+						_grenadeEMPPrefab = Resources.Load<GrenadeEMP>("Prefabs/Skill/SkillObject/Skill_Four/GrenadeEMP");
+				}
+				_grenadeEMPData = new GrenadeEMPData(skillData.skillBaseValue_1 + skillData.skillLevelValue_1 * skillData.skillLevel,
+					skillData.skillBaseValue_2 + skillData.skillLevelValue_2 * skillData.skillLevel);
 
-    public Skill_Four_Grenade(SkillData skillData) : base(skillData)
-    {
-    }
+				//TODO 유탄 폭발시 이벤트에 연결
+				EventBus.OnGrenadeBomb -= GrenadeBomb;
+				EventBus.OnGrenadeBomb += GrenadeBomb;
+		}
+
+		public override void Deactivate(Player player, bool isAnotherSkill)
+		{
+				base.Deactivate(player, isAnotherSkill);
+				EventBus.OnGrenadeBomb -= GrenadeBomb;
+		}
+
+
+
+		public void GrenadeBomb(Vector3 position)
+		{
+				position.y = 0;
+				GameManager.Instance.PoolManager.GetFromPool(_grenadeEMPPrefab, position, Quaternion.identity, null, _grenadeEMPData).GetComponent<GrenadeEMP>().Initialize();
+
+		}
+		public Skill_Four_Grenade(SkillData skillData) : base(skillData)
+		{
+
+		}
 }
 
 /// <summary>
@@ -123,17 +159,43 @@ public class Skill_Four_Grenade : ActiveTech
 /// </summary>
 public class Skill_Five_Grenade : ActiveTech
 {
-    public override void Activate(SkillManager skillManager, Player player)
-    {
-        base.Activate(skillManager, player);
-    }
+		/// <summary>
+		/// 착탄 지점 약화 폭발 프리팹
+		/// </summary>
+		[SerializeField]
+		private WeakenArea _grenadeWeakenPrefab;
+		private WeakenAreaData _grenadeWeakenData;
 
-    public override void Deactivate(Player player, bool isAnotherSkill)
-    {
-        base.Deactivate(player, isAnotherSkill);
-    }
+		public override void Activate(SkillManager skillManager, Player player)
+		{
+				base.Activate(skillManager, player);
+				if (_grenadeWeakenPrefab == null)
+				{
+						_grenadeWeakenPrefab = Resources.Load<WeakenArea>("Prefabs/Skill/SkillObject/Skill_Five/GrenadeWeaken");
+				}
+				_grenadeWeakenData = new WeakenAreaData(skillData.skillBaseValue_1 + skillData.skillLevelValue_1 * skillData.skillLevel);
 
-    public Skill_Five_Grenade(SkillData skillData) : base(skillData)
-    {
-    }
+				//TODO 유탄 폭발시 이벤트에 연결
+				EventBus.OnGrenadeBomb -= GrenadeBomb;
+				EventBus.OnGrenadeBomb += GrenadeBomb;
+		}
+
+		public override void Deactivate(Player player, bool isAnotherSkill)
+		{
+				base.Deactivate(player, isAnotherSkill);
+				EventBus.OnGrenadeBomb -= GrenadeBomb;
+		}
+
+		
+
+		public void GrenadeBomb(Vector3 position)
+		{
+				position.y = 0;
+				GameManager.Instance.PoolManager.GetFromPool(_grenadeWeakenPrefab, position, Quaternion.identity, null, _grenadeWeakenData).GetComponent<WeakenArea>().Initialize();
+
+		}
+		public Skill_Five_Grenade(SkillData skillData) : base(skillData)
+		{
+
+		}
 }

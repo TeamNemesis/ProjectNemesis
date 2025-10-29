@@ -44,8 +44,7 @@ public class PoisonSpread : AreaDamageBase,IInitializePoolable
     {
         if(data is PoisonSpreadData skillData)
         {
-               _areaExtent = skillData.extent * GameManager.Instance.PlayerStatManager.playerAreaExtent;
-            transform.localScale = Vector3.one * _areaExtent * 2f;
+            SetAreaExtent(skillData.extent);
         }
     }
 }

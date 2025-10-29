@@ -70,10 +70,6 @@ public static class Constants
     /// </summary>
     public static float SKILL_ONE_SPATTACK_STACKTIME = 1f;
 
-    /// <summary>
-    /// 장판 지속 시간
-    /// </summary>
-    public static float SKILL_ONE_SPATTACK_TIME = 3f;
 
     /// <summary>
     /// 피의 갈증 힐량

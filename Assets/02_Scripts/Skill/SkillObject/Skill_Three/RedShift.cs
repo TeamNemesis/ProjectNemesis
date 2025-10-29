@@ -52,11 +52,9 @@ public class RedShift : AreaDamageBase, IInitializePoolable
         {
             direction = redShiftData.moveDir;
             speed = redShiftData.moveSpeed;
-            SetAreaExtent(redShiftData.shiftExtend* GameManager.Instance.PlayerStatManager.playerAreaExtent);
             _knockBackDistance = redShiftData.knockBackDistance;
             _damage = redShiftData.collisionDamage;
-            transform.localScale = Vector3.one * areaExtent * 2f;
-
+            SetAreaExtent(redShiftData.shiftExtend);
         }
         _currentTime = 0f;
 

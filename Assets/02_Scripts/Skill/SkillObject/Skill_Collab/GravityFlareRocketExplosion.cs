@@ -21,25 +21,29 @@ public class GravityFlareRocketExplosion : AreaDamageBase, IInitializePoolable
     public void Initialize()
     {
         CheckTarget();
-        RemoveCoroutine();
+        StartCoroutine(RemoveCoroutine());
     }
     public override void ActiveSkill(Transform target)
     {
         target.GetComponent<MonsterBase>().TakeDamage(_damage);
+        Debug.LogError("데미지" + _damage);
     }
     public void Initialize(object data)
     {
        if(data is GravityFlareRocketExplosionData skillData)
         {
             _damage = skillData.damage;
-            _areaExtent = skillData.extent;
-            transform.localScale = Vector3.one * _areaExtent * 2f;
+            SetAreaExtent(skillData.extent);
         }
     }
 
     public IEnumerator RemoveCoroutine()
     {
+        Debug.LogError("삭제 코루틴 시작");
         yield return new WaitForSeconds(Constants.SKILL_REMAIN);
+        Debug.LogError("삭제");
         GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
+
+
     }
 }

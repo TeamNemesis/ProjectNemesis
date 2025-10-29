@@ -1,427 +1,470 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using UnityEngine;
 
 public class SkillManager : MonoBehaviour
 {
-    #region skill
-    private Skill_One _skill_One;
-    public Skill_One skill_One { get { return _skill_One; } }
-
-    private Skill_Two _skill_Two;
-    public Skill_Two skill_Two { get { return _skill_Two; } }
-
-    private Skill_Three _skill_Three;
-    public Skill_Three skill_Three { get { return _skill_Three; } }
-
-    private Skill_Four _skill_Four;
-    public Skill_Four skill_Four { get { return _skill_Four; } }
-
-    private Skill_Five _skill_Five;
-    public Skill_Five skill_Five { get { return _skill_Five; } }
-
-    private Skill_Collab _skill_Collab;
-    public Skill_Collab skill_Collab { get { return _skill_Collab; } }
-
-    private Skill_Mutant _skill_Mutant;
-    public Skill_Mutant skill_Mutant { get { return _skill_Mutant; } }
-    #endregion
-
-    private PlayScene _playerScenes;
-    public PlayScene playScene => _playerScenes;
-
-    private PlayerStatManager _playerStatManager;
-    public PlayerStatManager playerStatManager { get { return _playerStatManager; } }
-
-
-
-    /// <summary>
-    /// ÇÃ·¹ÀÌ¾î ÇÒ´ç
-    /// </summary>
-    /// <param name="player"></param>
-    public void SetPlayScene(PlayScene playScene)
-    {
-        _playerScenes = playScene;
-    }
-
-
-
-    #region reinforce
-    /// <summary>
-    /// ÀÏ¹İ°ø°İ °­È­ ±â¼ú
-    /// </summary>
-    [SerializeField]
-    private ActiveTech _attackTech;
-    public ActiveTech attackTech { get { return _attackTech; } }
-    public void SetAttackTech(ActiveTech attackTech)
-    {
-        _attackTech = attackTech;
-    }
-
-    /// <summary>
-    /// À¯Åº °­È­ ±â¼ú
-    /// </summary>
-    private ActiveTech _bombTech;
-    public ActiveTech bombTech { get { return _bombTech; } }
-    public void SetBombTech(ActiveTech bombTech)
-    {
-        _bombTech = bombTech;
-    }
-
-    /// <summary>
-    /// Æ¯¼ö °ø°İ °­È­ ±â¼ú
-    /// </summary>
-    private ActiveTech _skillTech;
-    public ActiveTech skillTech { get { return _skillTech; } }
-    public void SetSkillTech(ActiveTech skillTech)
-    {
-        _skillTech = skillTech;
-    }
-
-    /// <summary>
-    /// ´ë½¬ °­È­ ±â¼ú
-    /// </summary>
-    private ActiveTech _dashTech;
-    public ActiveTech dashTech { get { return _dashTech; } }
-    public void SetDashTech(ActiveTech dashTech)
-    {
-        _dashTech = dashTech;
-    }
-    #endregion
-
-    /// <summary>
-    /// ¾÷±×·¹ÀÌµå °¡´É ½ºÅ³µé ¸ñ·Ï
-    /// </summary>
-    private List<SkillData> _upgradeSkillList = new List<SkillData>();
-    public List<SkillData> upgradeSkillList { get { return _upgradeSkillList; } }
-
-    public void InitializeSkillManager()
-    {
-
-        _skill_One = GetComponent<Skill_One>();
-        _skill_Two = GetComponent<Skill_Two>();
-        _skill_Three = GetComponent<Skill_Three>();
-        _skill_Four = GetComponent<Skill_Four>();
-        _skill_Five = GetComponent<Skill_Five>();
-        _skill_Collab = GetComponent<Skill_Collab>();
-        _skill_Mutant = GetComponent<Skill_Mutant>();
-
-        _skill_One.InitializeSkill(this);
-        _skill_Two.InitializeSkill(this);
-        _skill_Three.InitializeSkill(this);
-        _skill_Four.InitializeSkill(this);
-        _skill_Five.InitializeSkill(this);
-        _skill_Collab.InitializeSkill(this);
-        _skill_Mutant.InitializeSkill(this);
-
-        _playerStatManager = GameManager.Instance.PlayerStatManager;
-
-    }
-
-    /// <summary>
-    /// »ÌÀº ½ºÅ³ ¸®½ºÆ® ¼øÈ¸ÇÏ¿© ¸®½ºÆ® Á¦ÀÛ
-    /// </summary>
-    public List<SkillData> GetChooseSkillList()
-    {
-        List<SkillData> currentSkillData = new List<SkillData>();
-
-
-        if (_skill_Mutant.GetNumberSkillList() != 0)
-        {
-            foreach (SkillData skillData in _skill_Mutant.currentSkillData)
-            {
-                currentSkillData.Add(skillData);
-            }
-        }
-
-        if (_skill_Collab.GetNumberSkillList() != 0)
-        {
-            foreach (SkillData skillData in _skill_Collab.currentSkillData)
-            {
-                currentSkillData.Add(skillData);
-            }
-        }
-
-        if (_skill_One.GetNumberSkillList() != 0)
-        {
-            foreach (SkillData skillData in _skill_One.currentSkillData)
-            {
-                currentSkillData.Add(skillData);
-            }
-        }
-
-        if (_skill_Two.GetNumberSkillList() != 0)
-        {
-            foreach (SkillData skillData in _skill_Two.currentSkillData)
-            {
-                currentSkillData.Add(skillData);
-            }
-
-        }
-
-        if (_skill_Three.GetNumberSkillList() != 0)
-        {
-            foreach (SkillData skillData in _skill_Three.currentSkillData)
-            {
-                currentSkillData.Add(skillData);
-            }
-        }
-
-        if (_skill_Four.GetNumberSkillList() != 0)
-        {
-            foreach (SkillData skillData in _skill_Four.currentSkillData)
-            {
-                currentSkillData.Add(skillData);
-            }
-        }
-
-        if (_skill_Five.GetNumberSkillList() != 0)
-        {
-            foreach (SkillData skillData in _skill_Five.currentSkillData)
-            {
-                currentSkillData.Add(skillData);
-            }
-        }
-
-
-
-        if (currentSkillData.Count > 0)
-            return currentSkillData;
-        else return null;
-
-    }
-
-
-
-
-    /// <summary>
-    /// ÀÔ·Â¹ŞÀº °³¼ö¸¸Å­ °¡ÁßÄ¡¿¡ µû¸¥ ½ºÅ³ È¸»ç ¹İÈ¯
-    /// </summary>
-    /// <param name="count"></param>
-    /// <returns></returns>
-    public TechSelectPackType[] GetSkillPackTypes(int count)
-    {
-        int skillOneNum = _skill_One.skillNum + 1;
-        int skillTwoNum = _skill_Two.skillNum + 1;
-        int skillThreeNum = _skill_Three.skillNum + 1;
-        int skillFourNum = _skill_Four.skillNum + 1;
-        int skillFiveNum = _skill_Five.skillNum + 1;
-
-        // ½ºÅ³ÆÑÀ» ´Ù »Ì¾Ò°í, Äİ¶óº¸ ½ºÅ³ Á¶°ÇÀÌ ¾ÈµÇ¸é °¡ÁßÄ¡ 0
-        if (skill_One.skillList.Count == 0 && CheckCollabo(skill_One, out _) == false)
-        {
-            skillOneNum = 0;
-        }
-        if (skill_Two.skillList.Count == 0 && CheckCollabo(skill_Two, out _) == false)
-        {
-            skillTwoNum = 0;
-        }
-        if (skill_Three.skillList.Count == 0 && CheckCollabo(skill_Three, out _) == false)
-        {
-            skillThreeNum = 0;
-        }
-        if (skill_Four.skillList.Count == 0 && CheckCollabo(skill_Four, out _) == false)
-        {
-            skillFourNum = 0;
-        }
-        if (skill_Five.skillList.Count == 0 && CheckCollabo(skill_Five, out _) == false)
-        {
-            skillFiveNum = 0;
-        }
-
-
-        int totalNum = skillOneNum + skillTwoNum + skillThreeNum + skillFourNum + skillFiveNum;
-
-        TechSelectPackType[] packTypes = new TechSelectPackType[count];
-
-        for (int i = 0; i < count; i++)
-        {
-            int totalChance = Random.Range(0, totalNum);
-            if (totalChance < skillOneNum)
-            {
-                packTypes[i] = TechSelectPackType.Company1;
-            }
-            else if (totalChance < skillOneNum + skillTwoNum)
-            {
-                packTypes[i] = TechSelectPackType.Company2;
-            }
-            else if (totalChance < skillOneNum + skillTwoNum + skillThreeNum)
-            {
-                packTypes[i] = TechSelectPackType.Company3;
-            }
-            else if (totalChance < skillOneNum + skillTwoNum + skillThreeNum + skillFourNum)
-            {
-                packTypes[i] = TechSelectPackType.Company4;
-            }
-            else
-            {
-                packTypes[i] = TechSelectPackType.Company5;
-            }
-        }
-        return packTypes;
-    }
-
-    /// <summary>
-    /// ÇöÀç °¡Áö°í ÀÖ´Â ÃÑ ½ºÅ³ °³¼ö
-    /// </summary>
-    /// <returns></returns>
-    public int GetTotalSkillNumber()
-    {
-        int skillOneNum = _skill_One.GetNumberSkillList();
-        int skillTwoNum = _skill_Two.GetNumberSkillList();
-        int skillThreeNum = _skill_Three.GetNumberSkillList();
-        int skillFourNum = _skill_Four.GetNumberSkillList();
-        int skillFiveNum = _skill_Five.GetNumberSkillList();
-
-        return skillOneNum + skillTwoNum + skillThreeNum + skillFourNum + skillFiveNum;
-    }
-
-
-
-    /// <summary>
-    /// Äİ¶óº¸ ½ºÅ³ Á¶°Ç °Ë»ç
-    /// </summary>
-    /// <param name="skillCompany"></param>
-    public bool CheckCollabo(SkillBase skillCompany, out List<int> indexList)
-    {
-        indexList = new List<int>();
-        bool bCheck = false;
-        // ÇöÀç °í¸¥ ±â¼úÆÑÀÇ Á¶°Ç °Ë»ç
-        if (skillCompany.currentSkillData.Count < Constants.COLLABCNT)
-        {
-            indexList = null;
-            return bCheck;
-        }
-
-        if (skillCompany == _skill_One)
-        {
-            // ¿¬°üµÈ ±â¼ú È¸»ç Á¶°Ç °Ë»ç
-            if (_skill_Two.currentSkillData.Count >= Constants.COLLABCNT)
-            {
-                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == Constants.INDEX_ONE_TWO);
-                if (index != Constants.NOCONTAININDEX)
-                {
-                    indexList.Add(index);
-                }
-
-                bCheck = true;
-            }
-
-            if (_skill_Five.currentSkillData.Count >= Constants.COLLABCNT)
-            {
-                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == Constants.INDEX_FIVE_ONE);
-                if (index != Constants.NOCONTAININDEX)
-                {
-                    indexList.Add(index);
-                }
-
-                bCheck = true;
-            }
-        }
-        else if (skillCompany == _skill_Two)
-        {
-            // ¿¬°üµÈ ±â¼ú È¸»ç Á¶°Ç °Ë»ç
-            if (_skill_Three.currentSkillData.Count >= Constants.COLLABCNT)
-            {
-                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == Constants.INDEX_TWO_THREE);
-                if (index != Constants.NOCONTAININDEX)
-                {
-                    indexList.Add(index);
-                }
-
-                bCheck = true;
-            }
-
-            if (_skill_One.currentSkillData.Count >= Constants.COLLABCNT)
-            {
-                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == Constants.INDEX_ONE_TWO);
-                if (index != Constants.NOCONTAININDEX)
-                {
-                    indexList.Add(index);
-                }
-
-                bCheck = true;
-            }
-        }
-        else if (skillCompany == _skill_Three)
-        {
-            // ¿¬°üµÈ ±â¼ú È¸»ç Á¶°Ç °Ë»ç
-            if (_skill_Four.currentSkillData.Count >= Constants.COLLABCNT)
-            {
-                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == Constants.INDEX_THREE_FOUR);
-                if (index != Constants.NOCONTAININDEX)
-                {
-                    indexList.Add(index);
-                }
-
-                bCheck = true;
-            }
-
-            if (_skill_Two.currentSkillData.Count >= Constants.COLLABCNT)
-            {
-                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == Constants.INDEX_TWO_THREE);
-                if (index != Constants.NOCONTAININDEX)
-                {
-                    indexList.Add(index);
-                }
-
-                bCheck = true;
-            }
-        }
-        else if (skillCompany == _skill_Four)
-        {
-            // ¿¬°üµÈ ±â¼ú È¸»ç Á¶°Ç °Ë»ç
-            if (_skill_Five.currentSkillData.Count >= Constants.COLLABCNT)
-            {
-                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == Constants.INDEX_FOUR_FIVE);
-                if (index != Constants.NOCONTAININDEX)
-                {
-                    indexList.Add(index);
-                }
-
-                bCheck = true;
-            }
-
-            if (_skill_Three.currentSkillData.Count >= Constants.COLLABCNT)
-            {
-                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == Constants.INDEX_THREE_FOUR);
-                if (index != Constants.NOCONTAININDEX)
-                {
-                    indexList.Add(index);
-                }
-
-                bCheck = true;
-            }
-        }
-        else if (skillCompany == _skill_Five)
-        {
-            // ¿¬°üµÈ ±â¼ú È¸»ç Á¶°Ç °Ë»ç
-            if (_skill_Four.currentSkillData.Count >= Constants.COLLABCNT)
-            {
-                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == Constants.INDEX_FOUR_FIVE);
-                if (index != Constants.NOCONTAININDEX)
-                {
-                    indexList.Add(index);
-                }
-
-                bCheck = true;
-            }
-
-            if (_skill_One.currentSkillData.Count >= Constants.COLLABCNT)
-            {
-                int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == Constants.INDEX_FIVE_ONE);
-                if (index != Constants.NOCONTAININDEX)
-                {
-                    indexList.Add(index);
-                }
-
-                bCheck = true;
-            }
-        }
-
-        // Äİ¶óº¸ ½ºÅ³ Á¶°Ç ¸¸Á·ÇÏ´ÂÁö ¹İÈ¯
-        return bCheck;
-    }
-
-
+		#region skill
+		private Skill_One _skill_One;
+		public Skill_One skill_One { get { return _skill_One; } }
+
+		private Skill_Two _skill_Two;
+		public Skill_Two skill_Two { get { return _skill_Two; } }
+
+		private Skill_Three _skill_Three;
+		public Skill_Three skill_Three { get { return _skill_Three; } }
+
+		private Skill_Four _skill_Four;
+		public Skill_Four skill_Four { get { return _skill_Four; } }
+
+		private Skill_Five _skill_Five;
+		public Skill_Five skill_Five { get { return _skill_Five; } }
+
+		private Skill_Collab _skill_Collab;
+		public Skill_Collab skill_Collab { get { return _skill_Collab; } }
+
+		private Skill_Mutant _skill_Mutant;
+		public Skill_Mutant skill_Mutant { get { return _skill_Mutant; } }
+		#endregion
+
+		private PlayScene _playerScenes;
+		public PlayScene playScene => _playerScenes;
+
+		private PlayerStatManager _playerStatManager;
+		public PlayerStatManager playerStatManager { get { return _playerStatManager; } }
+
+
+
+		/// <summary>
+		/// í”Œë ˆì´ì–´ í• ë‹¹
+		/// </summary>
+		/// <param name="player"></param>
+		public void SetPlayScene(PlayScene playScene)
+		{
+				_playerScenes = playScene;
+		}
+
+
+
+		#region reinforce
+		/// <summary>
+		/// ì¼ë°˜ê³µê²© ê°•í™” ê¸°ìˆ 
+		/// </summary>
+		[SerializeField]
+		private ActiveTech _attackTech;
+		public ActiveTech attackTech { get { return _attackTech; } }
+		public void SetAttackTech(ActiveTech attackTech)
+		{
+				_attackTech = attackTech;
+		}
+
+		/// <summary>
+		/// ìœ íƒ„ ê°•í™” ê¸°ìˆ 
+		/// </summary>
+		private ActiveTech _bombTech;
+		public ActiveTech bombTech { get { return _bombTech; } }
+		public void SetBombTech(ActiveTech bombTech)
+		{
+				_bombTech = bombTech;
+		}
+
+		/// <summary>
+		/// íŠ¹ìˆ˜ ê³µê²© ê°•í™” ê¸°ìˆ 
+		/// </summary>
+		private ActiveTech _skillTech;
+		public ActiveTech skillTech { get { return _skillTech; } }
+		public void SetSkillTech(ActiveTech skillTech)
+		{
+				_skillTech = skillTech;
+		}
+
+		/// <summary>
+		/// ëŒ€ì‰¬ ê°•í™” ê¸°ìˆ 
+		/// </summary>
+		private ActiveTech _dashTech;
+		public ActiveTech dashTech { get { return _dashTech; } }
+		public void SetDashTech(ActiveTech dashTech)
+		{
+				_dashTech = dashTech;
+		}
+		#endregion
+
+		/// <summary>
+		/// ì—…ê·¸ë ˆì´ë“œ ê°€ëŠ¥ ìŠ¤í‚¬ë“¤ ëª©ë¡
+		/// </summary>
+		private List<SkillData> _upgradeSkillList = new List<SkillData>();
+		public List<SkillData> upgradeSkillList { get { return _upgradeSkillList; } }
+
+		public void InitializeSkillManager()
+		{
+
+				_skill_One = GetComponent<Skill_One>();
+				_skill_Two = GetComponent<Skill_Two>();
+				_skill_Three = GetComponent<Skill_Three>();
+				_skill_Four = GetComponent<Skill_Four>();
+				_skill_Five = GetComponent<Skill_Five>();
+				_skill_Collab = GetComponent<Skill_Collab>();
+				_skill_Mutant = GetComponent<Skill_Mutant>();
+
+				_skill_One.InitializeSkill(this);
+				_skill_Two.InitializeSkill(this);
+				_skill_Three.InitializeSkill(this);
+				_skill_Four.InitializeSkill(this);
+				_skill_Five.InitializeSkill(this);
+				_skill_Collab.InitializeSkill(this);
+				_skill_Mutant.InitializeSkill(this);
+
+				_playerStatManager = GameManager.Instance.PlayerStatManager;
+
+		}
+
+		/// <summary>
+		/// ë½‘ì€ ìŠ¤í‚¬ ë¦¬ìŠ¤íŠ¸ ìˆœíšŒí•˜ì—¬ ë¦¬ìŠ¤íŠ¸ ì œì‘
+		/// </summary>
+		public List<SkillData> GetChooseSkillList()
+		{
+				List<SkillData> currentSkillData = new List<SkillData>();
+
+
+				if (_skill_Mutant.GetNumberSkillList() != 0)
+				{
+						foreach (SkillData skillData in _skill_Mutant.currentSkillData)
+						{
+								currentSkillData.Add(skillData);
+						}
+				}
+
+				if (_skill_Collab.GetNumberSkillList() != 0)
+				{
+						foreach (SkillData skillData in _skill_Collab.currentSkillData)
+						{
+								currentSkillData.Add(skillData);
+						}
+				}
+
+				if (_skill_One.GetNumberSkillList() != 0)
+				{
+						foreach (SkillData skillData in _skill_One.currentSkillData)
+						{
+								currentSkillData.Add(skillData);
+						}
+				}
+
+				if (_skill_Two.GetNumberSkillList() != 0)
+				{
+						foreach (SkillData skillData in _skill_Two.currentSkillData)
+						{
+								currentSkillData.Add(skillData);
+						}
+
+				}
+
+				if (_skill_Three.GetNumberSkillList() != 0)
+				{
+						foreach (SkillData skillData in _skill_Three.currentSkillData)
+						{
+								currentSkillData.Add(skillData);
+						}
+				}
+
+				if (_skill_Four.GetNumberSkillList() != 0)
+				{
+						foreach (SkillData skillData in _skill_Four.currentSkillData)
+						{
+								currentSkillData.Add(skillData);
+						}
+				}
+
+				if (_skill_Five.GetNumberSkillList() != 0)
+				{
+						foreach (SkillData skillData in _skill_Five.currentSkillData)
+						{
+								currentSkillData.Add(skillData);
+						}
+				}
+
+
+
+				if (currentSkillData.Count > 0)
+						return currentSkillData;
+				else return null;
+
+		}
+
+
+
+
+		/// <summary>
+		/// ì…ë ¥ë°›ì€ ê°œìˆ˜ë§Œí¼ ê°€ì¤‘ì¹˜ì— ë”°ë¥¸ ìŠ¤í‚¬ íšŒì‚¬ ë°˜í™˜
+		/// </summary>
+		/// <param name="count"></param>
+		/// <returns></returns>
+		public TechSelectPackType[] GetSkillPackTypes(int count)
+		{
+				int skillOneNum = _skill_One.skillNum + 1;
+				int skillTwoNum = _skill_Two.skillNum + 1;
+				int skillThreeNum = _skill_Three.skillNum + 1;
+				int skillFourNum = _skill_Four.skillNum + 1;
+				int skillFiveNum = _skill_Five.skillNum + 1;
+
+				// ìŠ¤í‚¬íŒ©ì„ ë‹¤ ë½‘ì•˜ê³ , ì½œë¼ë³´ ìŠ¤í‚¬ ì¡°ê±´ì´ ì•ˆë˜ë©´ ê°€ì¤‘ì¹˜ 0
+				if (skill_One.skillList.Count == 0 && CheckCollabo(skill_One, out _) == false)
+				{
+						skillOneNum = 0;
+				}
+				if (skill_Two.skillList.Count == 0 && CheckCollabo(skill_Two, out _) == false)
+				{
+						skillTwoNum = 0;
+				}
+				if (skill_Three.skillList.Count == 0 && CheckCollabo(skill_Three, out _) == false)
+				{
+						skillThreeNum = 0;
+				}
+				if (skill_Four.skillList.Count == 0 && CheckCollabo(skill_Four, out _) == false)
+				{
+						skillFourNum = 0;
+				}
+				if (skill_Five.skillList.Count == 0 && CheckCollabo(skill_Five, out _) == false)
+				{
+						skillFiveNum = 0;
+				}
+
+
+				int totalNum = skillOneNum + skillTwoNum + skillThreeNum + skillFourNum + skillFiveNum;
+
+				TechSelectPackType[] packTypes = new TechSelectPackType[count];
+
+				for (int i = 0; i < count; i++)
+				{
+						int totalChance = Random.Range(0, totalNum);
+						if (totalChance < skillOneNum)
+						{
+								packTypes[i] = TechSelectPackType.Company1;
+						}
+						else if (totalChance < skillOneNum + skillTwoNum)
+						{
+								packTypes[i] = TechSelectPackType.Company2;
+						}
+						else if (totalChance < skillOneNum + skillTwoNum + skillThreeNum)
+						{
+								packTypes[i] = TechSelectPackType.Company3;
+						}
+						else if (totalChance < skillOneNum + skillTwoNum + skillThreeNum + skillFourNum)
+						{
+								packTypes[i] = TechSelectPackType.Company4;
+						}
+						else
+						{
+								packTypes[i] = TechSelectPackType.Company5;
+						}
+				}
+				return packTypes;
+		}
+
+		/// <summary>
+		/// í˜„ì¬ ê°€ì§€ê³  ìˆëŠ” ì´ ìŠ¤í‚¬ ê°œìˆ˜
+		/// </summary>
+		/// <returns></returns>
+		public int GetTotalSkillNumber()
+		{
+				int skillOneNum = _skill_One.GetNumberSkillList();
+				int skillTwoNum = _skill_Two.GetNumberSkillList();
+				int skillThreeNum = _skill_Three.GetNumberSkillList();
+				int skillFourNum = _skill_Four.GetNumberSkillList();
+				int skillFiveNum = _skill_Five.GetNumberSkillList();
+
+				return skillOneNum + skillTwoNum + skillThreeNum + skillFourNum + skillFiveNum;
+		}
+
+
+
+		/// <summary>
+		/// ì½œë¼ë³´ ìŠ¤í‚¬ ì¡°ê±´ ê²€ì‚¬
+		/// </summary>
+		/// <param name="skillCompany"></param>
+		public bool CheckCollabo(SkillBase skillCompany, out List<int> indexList)
+		{
+				indexList = new List<int>();
+				bool bCheck = false;
+				// í˜„ì¬ ê³ ë¥¸ ê¸°ìˆ íŒ©ì˜ ì¡°ê±´ ê²€ì‚¬
+				if (skillCompany.currentSkillData.Count < Constants.COLLABCNT)
+				{
+						indexList = null;
+						return bCheck;
+				}
+
+				if (skillCompany == _skill_One)
+				{
+						// ì—°ê´€ëœ ê¸°ìˆ  íšŒì‚¬ ì¡°ê±´ ê²€ì‚¬
+						if (_skill_Two.currentSkillData.Count >= Constants.COLLABCNT)
+						{
+								int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == Constants.INDEX_ONE_TWO);
+								if (index != Constants.NOCONTAININDEX)
+								{
+										indexList.Add(index);
+								}
+
+								bCheck = true;
+						}
+
+						if (_skill_Five.currentSkillData.Count >= Constants.COLLABCNT)
+						{
+								int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == Constants.INDEX_FIVE_ONE);
+								if (index != Constants.NOCONTAININDEX)
+								{
+										indexList.Add(index);
+								}
+
+								bCheck = true;
+						}
+				}
+				else if (skillCompany == _skill_Two)
+				{
+						// ì—°ê´€ëœ ê¸°ìˆ  íšŒì‚¬ ì¡°ê±´ ê²€ì‚¬
+						if (_skill_Three.currentSkillData.Count >= Constants.COLLABCNT)
+						{
+								int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == Constants.INDEX_TWO_THREE);
+								if (index != Constants.NOCONTAININDEX)
+								{
+										indexList.Add(index);
+								}
+
+								bCheck = true;
+						}
+
+						if (_skill_One.currentSkillData.Count >= Constants.COLLABCNT)
+						{
+								int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == Constants.INDEX_ONE_TWO);
+								if (index != Constants.NOCONTAININDEX)
+								{
+										indexList.Add(index);
+								}
+
+								bCheck = true;
+						}
+				}
+				else if (skillCompany == _skill_Three)
+				{
+						// ì—°ê´€ëœ ê¸°ìˆ  íšŒì‚¬ ì¡°ê±´ ê²€ì‚¬
+						if (_skill_Four.currentSkillData.Count >= Constants.COLLABCNT)
+						{
+								int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == Constants.INDEX_THREE_FOUR);
+								if (index != Constants.NOCONTAININDEX)
+								{
+										indexList.Add(index);
+								}
+
+								bCheck = true;
+						}
+
+						if (_skill_Two.currentSkillData.Count >= Constants.COLLABCNT)
+						{
+								int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == Constants.INDEX_TWO_THREE);
+								if (index != Constants.NOCONTAININDEX)
+								{
+										indexList.Add(index);
+								}
+
+								bCheck = true;
+						}
+				}
+				else if (skillCompany == _skill_Four)
+				{
+						// ì—°ê´€ëœ ê¸°ìˆ  íšŒì‚¬ ì¡°ê±´ ê²€ì‚¬
+						if (_skill_Five.currentSkillData.Count >= Constants.COLLABCNT)
+						{
+								int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == Constants.INDEX_FOUR_FIVE);
+								if (index != Constants.NOCONTAININDEX)
+								{
+										indexList.Add(index);
+								}
+
+								bCheck = true;
+						}
+
+						if (_skill_Three.currentSkillData.Count >= Constants.COLLABCNT)
+						{
+								int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == Constants.INDEX_THREE_FOUR);
+								if (index != Constants.NOCONTAININDEX)
+								{
+										indexList.Add(index);
+								}
+
+								bCheck = true;
+						}
+				}
+				else if (skillCompany == _skill_Five)
+				{
+						// ì—°ê´€ëœ ê¸°ìˆ  íšŒì‚¬ ì¡°ê±´ ê²€ì‚¬
+						if (_skill_Four.currentSkillData.Count >= Constants.COLLABCNT)
+						{
+								int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == Constants.INDEX_FOUR_FIVE);
+								if (index != Constants.NOCONTAININDEX)
+								{
+										indexList.Add(index);
+								}
+
+								bCheck = true;
+						}
+
+						if (_skill_One.currentSkillData.Count >= Constants.COLLABCNT)
+						{
+								int index = _skill_Collab.skillList.FindIndex(skillData => skillData.skillIdx == Constants.INDEX_FIVE_ONE);
+								if (index != Constants.NOCONTAININDEX)
+								{
+										indexList.Add(index);
+								}
+
+								bCheck = true;
+						}
+				}
+
+				// ì½œë¼ë³´ ìŠ¤í‚¬ ì¡°ê±´ ë§Œì¡±í•˜ëŠ”ì§€ ë°˜í™˜
+				return bCheck;
+		}
+
+
+#if UNITY_EDITOR
+		/// <summary>
+		/// ìŠ¤í‚¬ ì¸ë±ìŠ¤ë¡œ í•´ë‹¹ ìŠ¤í‚¬ì„ ì°¾ì•„ ActivateSkill ì‹¤í–‰
+		/// </summary>
+		public void ActivateSkillByIndex(int skillIdx)
+		{
+				SkillData targetSkill = null;
+				SkillBase owner = null;
+
+				// ëª¨ë“  íšŒì‚¬ ìŠ¤í‚¬ ë¦¬ìŠ¤íŠ¸ë¥¼ ìˆœíšŒí•˜ë©° í•´ë‹¹ ì¸ë±ìŠ¤ë¥¼ ê°€ì§„ ìŠ¤í‚¬ ì°¾ê¸°
+				List<SkillBase> allCompanies = new List<SkillBase>
+		{
+				_skill_One, _skill_Two, _skill_Three, _skill_Four, _skill_Five,
+				_skill_Collab, _skill_Mutant
+		};
+
+				foreach (var company in allCompanies)
+				{
+						foreach (var skill in company.skillList)
+						{
+								if (skill.skillIdx == skillIdx)
+								{
+										targetSkill = skill;
+										owner = company;
+										break;
+								}
+						}
+						if (targetSkill != null) break;
+				}
+
+				if (targetSkill != null && owner != null)
+				{
+						targetSkill.ChooseSkill();
+						owner.ActivateSkill(targetSkill);
+						Debug.Log($"âœ… ìŠ¤í‚¬ {skillIdx} í™œì„±í™” ì™„ë£Œ: {targetSkill.skillName}");
+				}
+				else
+				{
+						Debug.LogWarning($"âš ï¸ ìŠ¤í‚¬ ì¸ë±ìŠ¤ {skillIdx}ì— í•´ë‹¹í•˜ëŠ” ìŠ¤í‚¬ì„ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.");
+				}
+		}
+
+#endif
 
 }
