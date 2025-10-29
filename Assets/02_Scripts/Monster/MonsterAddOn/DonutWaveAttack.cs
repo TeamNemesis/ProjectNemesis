@@ -89,29 +89,6 @@ public class DonutWaveAttack : MonoBehaviour
         {
             planeMeshRenderer.material = waveMaterial;
         }
-        else
-        {
-            // 기본 반투명 Material 생성
-            Material mat = new Material(Shader.Find("Standard"));
-            mat.SetFloat("_Mode", 3); // Transparent
-            mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-            mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-            mat.SetInt("_ZWrite", 0);
-            mat.DisableKeyword("_ALPHATEST_ON");
-            mat.EnableKeyword("_ALPHABLEND_ON");
-            mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-            mat.renderQueue = 3000;
-            mat.color = waveColor;
-
-            // 발광 효과
-            mat.EnableKeyword("_EMISSION");
-            mat.SetColor("_EmissionColor", waveColor * 1.5f);
-
-            // 양면 렌더링
-            mat.SetInt("_Cull", (int)UnityEngine.Rendering.CullMode.Off);
-
-            planeMeshRenderer.material = mat;
-        }
 
         donutPlane.SetActive(false);
     }
