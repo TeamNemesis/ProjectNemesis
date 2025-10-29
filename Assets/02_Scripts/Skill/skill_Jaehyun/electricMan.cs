@@ -23,7 +23,7 @@ public class electricMan : MonoBehaviour
                 CharacterModelBase target = monster.GetComponent<CharacterModelBase>();
                 if (target != null)
                 {
-                    target.TakeDamage(damage);
+                    target.TakeDamage(damage, null);
                     Debug.Log("전기인간 데미지 적용!");
                 }
                 // 타이머 갱신(데미지 적용 시간)
