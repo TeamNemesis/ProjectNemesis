@@ -29,7 +29,7 @@ public static class EventBus
         Debug.LogError("이벤트 버스 호출");
         OnEvolution?.Invoke();
     }
-<
+
     public static void FailBuy(int price)
     {
         OnFailBuy?.Invoke(price);
