@@ -5,7 +5,6 @@ using UnityEngine;
 public abstract class SkillBase : MonoBehaviour
 {
 
-    protected Player player;
 
     protected SkillManager _skillManager;
     public SkillManager skillManager { get { return _skillManager; } }
@@ -59,13 +58,8 @@ public abstract class SkillBase : MonoBehaviour
 
     public virtual void InitializeSkill(SkillManager skillManager)
     {
-        if(player!=null)
-        {
-            return;
-        }
         Debug.Log("skill Initialize");
         ReadJsonFile();
-        player = GameManager.Instance.player;
         _skillManager = skillManager;
         _skillNum = 0;
     }

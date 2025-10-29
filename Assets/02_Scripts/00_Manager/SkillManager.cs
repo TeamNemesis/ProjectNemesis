@@ -26,12 +26,22 @@ public class SkillManager : MonoBehaviour
     public Skill_Mutant skill_Mutant { get { return _skill_Mutant; } }
     #endregion
 
-    Player _player;
-
-    public Player Player => _player;
+    private PlayScene _playerScenes;
+    public PlayScene playScene => _playerScenes;
 
     private PlayerStatManager _playerStatManager;
-    public PlayerStatManager playerStatManager{get { return _playerStatManager; }}
+    public PlayerStatManager playerStatManager { get { return _playerStatManager; } }
+
+
+
+    /// <summary>
+    /// 플레이어 할당
+    /// </summary>
+    /// <param name="player"></param>
+    public void SetPlayScene(PlayScene playScene)
+    {
+        _playerScenes = playScene;
+    }
 
 
 
@@ -103,7 +113,6 @@ public class SkillManager : MonoBehaviour
         _skill_Collab.InitializeSkill(this);
         _skill_Mutant.InitializeSkill(this);
 
-        _player = GameManager.Instance.player;
         _playerStatManager = GameManager.Instance.PlayerStatManager;
 
     }

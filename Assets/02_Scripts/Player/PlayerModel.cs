@@ -15,9 +15,9 @@ public class PlayerModel : CharacterModelBase
     ///// 테스트용 공격 실행 이벤트
     ///// </summary>
     //public event Action AttackTry;
-    ///// <summary>
-    ///// 테스트용 공격 적중시 이벤트
-    ///// </summary>
+    /// <summary>
+    /// 테스트용 공격 적중시 이벤트
+    /// </summary>
     //public event Action<Transform> AttackHit;
 
     ///// <summary>
@@ -35,18 +35,15 @@ public class PlayerModel : CharacterModelBase
     ///// </summary>
     //public event Action<Transform> SPAttackHit;
 
-    /// <summary>
-    /// 플레이어 피격시
-    /// </summary>
-    public event Action<Transform> PlayerHit;
 
+    //public Transform currentTarget;
 
     //public void Update()
     //{
     //    if (Input.GetKeyDown(KeyCode.U))
     //    {
 
-    //        currentTarget.GetComponent<MonsterBase>().KnockBackEnemy(Vector3.forward * 10f, 20, 5f);
+    //        AttackHit.Invoke(currentTarget);
     //    }
 
     //}
@@ -55,16 +52,90 @@ public class PlayerModel : CharacterModelBase
     #endregion
 
 
-    public override void TakeDamage(float damage)
+    /// <summary>
+    /// 플레이어 피격시
+    /// </summary>
+    public event Action<Transform> PlayerHit;
+
+    /// <summary>
+    /// 회피 가능한지
+    /// </summary>
+    private bool bIsAvoid;
+
+    /// <summary>
+    /// 회피율
+    /// </summary>
+    private float _avoidNum;
+    public float avoidNum { get { return _avoidNum; } }
+    public void SetAvoidNum(float avoidNum)
     {
-        base.TakeDamage(damage);
+        _avoidNum = avoidNum;
+    }
+
+    /// <summary>
+    /// 데미지 감소 효과 적용
+    /// </summary>
+    private bool BisReduceDamage;
+    private float _damageReducePercent;
+
+    public override void TakeDamage(float damage, Transform attacker)
+    {
+        if (bIsAvoid)
+        {
+            int tempNum = UnityEngine.Random.Range(0, 100);
+            if (tempNum < 100 * _avoidNum)
+            {
+                Debug.LogError("회피");
+                return;
+            }
+        }
+
+        if(BisReduceDamage)
+        {
+            damage*=(1f-_damageReducePercent);
+        }
+
+        if(attacker != null)
+        {
+            OnPlayerHit(attacker);
+        }
+
+        base.TakeDamage(damage, attacker);
     }
     public override void Initialize()
     {
         base.Initialize();
         SetCurrentHp(maxHealth); // 초기화 시 현재 체력을 최대 체력으로 설정
-        OnHpChangedEventPlay(currentHealth); // 초기 체력 이벤트 발행
         debuffHandler.InitializePlayer();
+        Debug.Log("연결");
+        GameManager.Instance.PlayerStatManager.OnplayerAvoidanceChange += OnPlayerAvoidanceChange;
+        GameManager.Instance.PlayerStatManager.OnplayerHitPercentChange += OnPlayerHitReducePercentChange;
+    }
+
+    private void OnPlayerHitReducePercentChange(float reducePercent)
+    {
+        if (reducePercent > 0)
+        {
+            BisReduceDamage = true;
+        }
+        else
+        {
+            BisReduceDamage = false;
+        }
+        _avoidNum = reducePercent;
+    }
+
+    private void OnPlayerAvoidanceChange(float avoidance)
+    {
+        if (avoidance > 0)
+        {
+            bIsAvoid = true;
+        }
+        else
+        {
+            bIsAvoid = false;
+        }
+        _avoidNum = avoidance;
     }
 
     public void OnPlayerHit(Transform monsterTransform)

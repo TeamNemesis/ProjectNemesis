@@ -10,7 +10,7 @@ using UnityEngine;
 /// </summary>
 public class MapController : MonoBehaviour
 {
-    [SerializeField] MonsterController _roomController;
+    [SerializeField] MonsterController _monsterController;
     [SerializeField] RoomSpawner _roomSpawner;
     [SerializeField] DoorSpawner _doorSpawner;
     [SerializeField] DoorDecider _doorDecider;
@@ -20,10 +20,20 @@ public class MapController : MonoBehaviour
     [SerializeField] int _currentRoomCount = -1;
     [SerializeField] bool _hasLabRoomAppeared = false;
 
+    public MonsterController MonsterController => _monsterController;
+    public RoomSpawner RoomSpawner => _roomSpawner;
+    public DoorSpawner DoorSpawner => _doorSpawner;
+    public DoorDecider DoorDecider => _doorDecider;
+
     public Room CurrentRoom => _currentRoom;
     public Door[] CurrentDoors => _currentDoors;
     public int CurrentRoomCount => _currentRoomCount;
     public bool HasLabRoomAppeared => _hasLabRoomAppeared;
+
+    /// <summary>
+    /// 룸 로딩이 끝나고 전투 시작시 발행하는 이벤트
+    /// </summary>
+    public event Action OnRoomStart;
 
     public void Initialize()
     {
@@ -33,9 +43,11 @@ public class MapController : MonoBehaviour
 
         _roomSpawner.OnRoomSpawned += OnRoomSpawned;
         _doorSpawner.DoorInteracted += OnDoorInteracted;
+        _monsterController.OnAllMonsterDefeated += StartReward;
 
         _roomSpawner.Initialize();
         _doorDecider.Initialize();
+        _monsterController.Initialize();
     }
 
     void OnDoorInteracted(IInteractable interactable)
@@ -43,7 +55,7 @@ public class MapController : MonoBehaviour
         if (interactable is DoorInteractor doorInteractor && doorInteractor.RoomInfo != null)
         {
             DestroyCurrentRoomObjects();
-            _roomSpawner.SpawnRoom(doorInteractor.RoomInfo);
+            Room room = _roomSpawner.SpawnRoom(doorInteractor.RoomInfo);
         }
         else
         {
@@ -71,12 +83,18 @@ public class MapController : MonoBehaviour
         
         if (room.RoomInfo.RoomType == RoomType.Normal)
         {
-            // 몬스터 스폰위치 갱신
-            _roomController.UpdateMonsterSpawnPoints(room.MonsterSpawnPoints);
-
+            int roomCost = _currentRoomCount * 10; // 예시: 방 번호에 비례하는 비용
             // 몬스터 스폰
-            _roomController.SpawnMonster();
+            NormalRoom normalRoom = room as NormalRoom;
+            if (normalRoom == null)
+            {
+                Debug.LogError("OnRoomSpawned: Current room is not a NormalRoom");
+                return;
+            }
+            Transform[] spawnPoints = normalRoom.MonsterSpawnPoints;
+            _monsterController.SpawnMonster(roomCost, spawnPoints);
         }
+        OnRoomStart?.Invoke();
     }
 
     void UpdateCurrentRoomState(Room room)
@@ -203,29 +221,34 @@ public class MapController : MonoBehaviour
             return null;
         }
 
-        // 반영 가능한 SpawnDoor overload가 있다면 사용, 없다면 기존 방식 사용 후 parent 지정
-        try
-        {
-            // 시도: SpawnDoor with parent (if implemented)
-            var spawnWithParent = _doorSpawner.GetType().GetMethod("SpawnDoor", new Type[] { typeof(Transform), typeof(RoomInfo), typeof(Transform) });
-            if (spawnWithParent != null)
-            {
-                var result = spawnWithParent.Invoke(_doorSpawner, new object[] { position, info, parent }) as Door;
-                return result;
-            }
+        //// 반영 가능한 SpawnDoor overload가 있다면 사용, 없다면 기존 방식 사용 후 parent 지정
+        //try
+        //{
+        //    // 시도: SpawnDoor with parent (if implemented)
+        //    var spawnWithParent = _doorSpawner.GetType().GetMethod("SpawnDoor", new Type[] { typeof(Transform), typeof(RoomInfo), typeof(Transform) });
+        //    if (spawnWithParent != null)
+        //    {
+        //        var result = spawnWithParent.Invoke(_doorSpawner, new object[] { position, info, parent }) as Door;
+        //        return result;
+        //    }
 
             // 기본 SpawnDoor(Transform, RoomInfo)
             Door door = _doorSpawner.SpawnDoor(position, info);
+        _currentRoom.OnRewardSelectionFinished += door.OnRewardSelectionCompleted;
+        if (_currentRoom.RoomInfo.RoomType == RoomType.Start)
+        {
+            door.OnRewardSelectionCompleted();
+        }
             if (door != null && parent != null)
                 door.transform.SetParent(parent, worldPositionStays: true);
 
             return door;
-        }
-        catch (Exception ex)
-        {
-            Debug.LogError($"TrySpawnDoor exception: {ex}");
-            return null;
-        }
+        //}
+        //catch (Exception ex)
+        //{
+        //    Debug.LogError($"TrySpawnDoor exception: {ex}");
+        //    return null;
+        //}
     }
 
     // doorTypes 배열을 요청 개수(count)만큼 채움: 마지막 값 또는 Normal로 채움
@@ -244,6 +267,14 @@ public class MapController : MonoBehaviour
 
     void DestroyCurrentRoomObjects()
     {
+
+        // PoolableObject 찾아서 반환 처리
+        var poolables = _currentRoom.PoolableObjectsInRoom;
+        foreach (var poolableObj in poolables)
+        {
+            GameManager.Instance.PoolManager.ReleaseToPool(poolableObj);
+        }
+
         // 먼저 문들 파괴
         if (_currentDoors != null)
         {
@@ -277,5 +308,10 @@ public class MapController : MonoBehaviour
             }
             _currentRoom = null;
         }
+    }
+
+    void StartReward()
+    {
+        _currentRoom.SpawnReward();
     }
 }

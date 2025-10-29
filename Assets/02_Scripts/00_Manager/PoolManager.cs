@@ -1,5 +1,6 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
+using System.Resources;
 using UnityEngine;
 
 public class PoolManager : MonoBehaviour
@@ -11,11 +12,18 @@ public class PoolManager : MonoBehaviour
     // 풀을 정리하는 Dictionary
     private Dictionary<string, GameObject> poolContainers = new Dictionary<string, GameObject>();
 
+    ResourceManager _resourceManager;
+
+    public void Initialize(ResourceManager resourceManager)
+    {
+        _resourceManager = resourceManager;
+    }
+
     #region 오브젝트풀 임시 생성
     /// <summary>
     /// 풀에서 오브젝트 가져오기
     /// </summary>
-    public GameObject GetFromPool(PoolableObject poolable, Vector3 position,Quaternion rotation, Transform parentTransform = null, object data = null)
+    public GameObject GetFromPool(PoolableObject poolable, Vector3 position, Quaternion rotation, Transform parentTransform = null, object data = null)
     {
         GameObject prefabObject = poolable.gameObject;
         if (!availablePools.ContainsKey(prefabObject.name))
@@ -30,24 +38,32 @@ public class PoolManager : MonoBehaviour
         if (availablePools[prefabObject.name].Count == 0)
         {
             Debug.LogWarning($"'{prefabObject.name}' 풀이 비어있습니다! 새로운 오브젝트를 생성합니다.");
-            return CreateNewObject(prefabObject, position,rotation,parentTransform);
+            GameObject newObj = CreateNewObject(prefabObject, position, rotation, parentTransform);
+
+            if (poolable is IInitializePoolable)
+            {
+                IInitializePoolable initializePoolable = newObj.GetComponent<PoolableObject>() as IInitializePoolable;
+                initializePoolable.Initialize(data);
+            }
+
+            return newObj;
         }
 
         GameObject obj = availablePools[prefabObject.name][availablePools[prefabObject.name].Count - 1];
         availablePools[prefabObject.name].RemoveAt(availablePools[prefabObject.name].Count - 1);
         obj.transform.position = position;
         obj.transform.rotation = rotation;
-        if(parentTransform!=null)
+        if (parentTransform != null)
         {
             obj.transform.SetParent(parentTransform);
         }
-        
+
         if (poolable is IInitializePoolable)
         {
             IInitializePoolable initializePoolable = obj.GetComponent<PoolableObject>() as IInitializePoolable;
             initializePoolable.Initialize(data);
-        } 
-                
+        }
+
         obj.SetActive(true);
         inUsePools[prefabObject.name].Add(obj);
 
@@ -55,9 +71,94 @@ public class PoolManager : MonoBehaviour
     }
 
     /// <summary>
+    /// 새 오버로드: prefabPath로 프리팹을 로드해서 풀에서 가져옵니다.
+    /// - ResourceManager가 Initialize로 설정되어 있으면 LoadResource를 사용하고,
+    ///   그렇지 않으면 Resources.Load로 폴백합니다.
+    /// - prefabPath는 Resources 폴더 기준 경로(확장자 제외) 또는 ResourceManager에서 기대하는 경로입니다.
+    /// </summary>
+    public GameObject GetFromPool(string prefabPath, Vector3 position, Quaternion rotation, Transform parentTransform = null, object data = null)
+    {
+        // 1) 프리팹 로드 시도 (ResourceManager 우선)
+        GameObject prefab = null;
+        if (_resourceManager != null)
+        {
+            try
+            {
+                prefab = _resourceManager.LoadResource<GameObject>(prefabPath);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"ResourceManager.LoadResource 실패: {ex.Message}");
+            }
+        }
+
+        // 2) ResourceManager가 없거나 로드 실패 시 Resources.Load로 폴백
+        if (prefab == null)
+        {
+            prefab = Resources.Load<GameObject>(prefabPath);
+        }
+
+        if (prefab == null)
+        {
+            Debug.LogError($"GetFromPool: 프리팹을 찾을 수 없습니다. 경로: {prefabPath}");
+            return null;
+        }
+
+        // 3) 기존 로직과 동일하게 pool key는 prefab.name 사용
+        string key = prefab.name;
+
+        if (!availablePools.ContainsKey(key))
+        {
+            availablePools.Add(key, new List<GameObject>());
+            if (!inUsePools.ContainsKey(key))
+            {
+                inUsePools.Add(key, new List<GameObject>());
+            }
+        }
+
+        if (availablePools[key].Count == 0)
+        {
+            Debug.LogWarning($"'{key}' 풀이 비어있습니다! 새로운 오브젝트를 생성합니다.");
+            GameObject newObj = CreateNewObject(prefab, position, rotation, parentTransform);
+
+            if (newObj != null && newObj.TryGetComponent<PoolableObject>(out var poolableComp))
+            {
+                if (poolableComp is IInitializePoolable initializePoolable)
+                {
+                    initializePoolable.Initialize(data);
+                }
+            }
+
+            return newObj;
+        }
+
+        GameObject obj = availablePools[key][availablePools[key].Count - 1];
+        availablePools[key].RemoveAt(availablePools[key].Count - 1);
+        obj.transform.position = position;
+        obj.transform.rotation = rotation;
+        if (parentTransform != null)
+        {
+            obj.transform.SetParent(parentTransform);
+        }
+
+        if (obj.TryGetComponent<PoolableObject>(out var existingPoolable2))
+        {
+            if (existingPoolable2 is IInitializePoolable initializePoolable2)
+            {
+                initializePoolable2.Initialize(data);
+            }
+        }
+
+        obj.SetActive(true);
+        inUsePools[key].Add(obj);
+
+        return obj;
+    }
+
+    /// <summary>
     /// 풀이 비어있을 때 새로운 오브젝트 생성
     /// </summary>
-    private GameObject CreateNewObject(GameObject prefabObject, Vector3 position,Quaternion rotation, Transform parentTransform = null)
+    private GameObject CreateNewObject(GameObject prefabObject, Vector3 position, Quaternion rotation, Transform parentTransform = null)
     {
         GameObject newObj;
         // 새 객체 생성
@@ -97,11 +198,11 @@ public class PoolManager : MonoBehaviour
     {
         GameObject obj = poolable.gameObject;
 
-        if(poolable is IReleasePoolable)
+        if (poolable is IReleasePoolable)
         {
-						IReleasePoolable releaseObject = obj.GetComponent<PoolableObject>() as IReleasePoolable;
-						releaseObject.ReleaseObjectPool();
-				}
+            IReleasePoolable releaseObject = obj.GetComponent<PoolableObject>() as IReleasePoolable;
+            releaseObject.ReleaseObjectPool();
+        }
 
         if (!inUsePools.ContainsKey(obj.name))
         {
@@ -109,8 +210,6 @@ public class PoolManager : MonoBehaviour
             Destroy(obj);
             return;
         }
-
-        
 
         int index = inUsePools[obj.name].IndexOf(obj);
         if (index >= 0)
@@ -128,9 +227,6 @@ public class PoolManager : MonoBehaviour
         }
     }
 
-	
-
-  
     #endregion
     /// <summary>
     /// 풀에 오브젝트 반환 (사용 완료)
@@ -171,7 +267,7 @@ public class PoolManager : MonoBehaviour
         return (available, inUse, available + inUse);
     }
 
-    
+
 
     /// <summary>
     /// 모든 풀 초기화

@@ -23,14 +23,9 @@ public class PlayerNormalAttackState : PlayerStateBase
         // 중복 구독 방지
         _attacker.OnAttackEnded -= HandleAttackEnded;
         _attacker.OnAttackEnded += HandleAttackEnded;
-
-        // 애니메이터 트리거(혹은 Player의 애니메이션 제어 메서드)로 애니메이션 시작
-        _player.Animator.OnNormalAttack(); // 구현된 메서드가 있다면 호출, 없으면 Animator.SetTrigger("Attack") 등
-
+        
         // 실제 Attack 로직 호출 (이 함수는 발사는 하지 않고 fallback 타이머만 설정하도록 설계됨)
-        _attacker.Attack();
-        // 또는: ((PlayerNormalAttacker)_attacker).Attack(); if Attack is public/protected accordingly
-        _player.SetIsNormalAttacking(true);
+        _attacker.RequestAttack();
     }
 
     public override void Update()

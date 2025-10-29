@@ -198,7 +198,7 @@ public class SkillChoose : MonoBehaviour
         {
             if (tagToWeaponType.TryGetValue(tag.Trim(), out WeaponType weaponType))
             {
-                if (weaponType == GameManager.Instance.player.CurrentWeaponSet.WeaponType || weaponType == WeaponType.None)
+                if (weaponType == GameManager.Instance.skillManager.playScene.player.CurrentWeaponSet.WeaponType || weaponType == WeaponType.None)
                 {
                     isTypeSame = true;
                     break;
@@ -238,7 +238,7 @@ public class SkillChoose : MonoBehaviour
                 Debug.Log(tag);
                 if (tagToWeaponType.TryGetValue(tag.Trim(), out WeaponType weaponType))
                 {
-                    if (weaponType == GameManager.Instance.player.CurrentWeaponSet.WeaponType || weaponType == WeaponType.None)
+                    if (weaponType == GameManager.Instance.skillManager.playScene.player.CurrentWeaponSet.WeaponType || weaponType == WeaponType.None)
                     {
                        return true;
                     }

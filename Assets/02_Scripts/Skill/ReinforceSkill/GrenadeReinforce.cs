@@ -6,8 +6,6 @@ using UnityEngine;
 /// </summary>
 public class Skill_One_Grenade : ActiveTech
 {
-
-
     /// <summary>
     /// 착탄 지점 독 프리팹
     /// </summary>
@@ -62,7 +60,7 @@ public class Skill_Two_Grenade : ActiveTech
 
         // 스킬 효과 적용 (플레이어 일반 공격력에 접근하여 공격력 추가)
         plusDamage = _skillData.skillBaseValue_1 + _skillData.skillLevelValue_1 * _skillData.skillLevel;
-        GameManager.Instance.PlayerStatManager.AddPlayerGrenadeDamage(plusDamage);
+        GameManager.Instance.PlayerStatManager.AddPlayerGrenadeDamageMulti(plusDamage);
     }
     public override void Deactivate(Player player, bool isSameSkill)
     {
@@ -70,12 +68,72 @@ public class Skill_Two_Grenade : ActiveTech
         base.Deactivate(player, isSameSkill);
 
         // 공격력 복귀
-        GameManager.Instance.PlayerStatManager.AddPlayerGrenadeDamage(-plusDamage);
+        GameManager.Instance.PlayerStatManager.AddPlayerGrenadeDamageMulti(-plusDamage);
 
     }
 
 
     public Skill_Two_Grenade(SkillData skillData) : base(skillData)
+    {
+    }
+}
+
+/// <summary>
+/// Gear 유탄 강화
+/// </summary>
+public class Skill_Three_Grenade: ActiveTech
+{
+    public override void Activate(SkillManager skillManager, Player player)
+    {
+        base.Activate(skillManager, player);
+    }
+
+    public override void Deactivate(Player player, bool isAnotherSkill)
+    {
+        base.Deactivate(player, isAnotherSkill);
+    }
+
+    public Skill_Three_Grenade(SkillData skillData) : base(skillData)
+    {
+    }
+}
+
+/// <summary>
+/// GridForge 유탄 강화
+/// </summary>
+public class Skill_Four_Grenade : ActiveTech
+{
+    public override void Activate(SkillManager skillManager, Player player)
+    {
+        base.Activate(skillManager, player);
+    }
+
+    public override void Deactivate(Player player, bool isAnotherSkill)
+    {
+        base.Deactivate(player, isAnotherSkill);
+    }
+
+    public Skill_Four_Grenade(SkillData skillData) : base(skillData)
+    {
+    }
+}
+
+/// <summary>
+/// Lux 제약 유탄 강화
+/// </summary>
+public class Skill_Five_Grenade : ActiveTech
+{
+    public override void Activate(SkillManager skillManager, Player player)
+    {
+        base.Activate(skillManager, player);
+    }
+
+    public override void Deactivate(Player player, bool isAnotherSkill)
+    {
+        base.Deactivate(player, isAnotherSkill);
+    }
+
+    public Skill_Five_Grenade(SkillData skillData) : base(skillData)
     {
     }
 }

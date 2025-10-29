@@ -13,6 +13,7 @@ public class DebuffHandler : MonoBehaviour
     private CharacterModelBase character;
     private NavMeshAgent agent;
     private float originalSpeed;
+    private float originalDamage;
     private MonsterBase monster;
 
     /// <summary>
@@ -28,6 +29,7 @@ public class DebuffHandler : MonoBehaviour
         this.agent = agent;
         originalSpeed = agent.speed;
         monster = character.GetComponent<MonsterBase>();
+        originalDamage = monster.GetAttackDamage();
 
     }
     public void InitializePlayer()
@@ -67,6 +69,16 @@ public class DebuffHandler : MonoBehaviour
             return new DebuffData(Constants.DEBUFF_SLOW, duration, 1 - slowValue / 100);
         }
 
+        /// <summary>
+        /// 약화 제작 함수
+        /// </summary>
+        /// <param name="duration">약화 지속시간</param>
+        /// <param name="weakValue">약화 수치%</param>
+        /// <returns></returns>
+        public static DebuffData CreateWeaken(float duration = 5f, float weakValue = 30f)
+        {
+            return new DebuffData(Constants.DEBUFF_WEAKEN, duration, 1 - weakValue / 100);
+        }
 
         /// <summary>
         /// 독 제작 함수
@@ -211,6 +223,8 @@ public class DebuffHandler : MonoBehaviour
                     }
                     existing.effectRoutine = StartCoroutine(BindCoroutine(newDebuff.debuffDuration));
                 }
+
+
             }
             OnDebuff?.Invoke(this);
             return;
@@ -240,6 +254,15 @@ public class DebuffHandler : MonoBehaviour
                 }
                 break;
 
+            // 약화
+            case Constants.DEBUFF_WEAKEN:
+                if (monster != null)
+                {
+                    monster.SetAttackDamage(originalDamage * active.totalValue);
+                    monster.isWeaken = true;
+                }
+                break;
+
             // 속박
             case Constants.DEBUFF_BINDING:
                 active.effectRoutine = StartCoroutine(BindCoroutine(debuff.debuffDuration));
@@ -264,7 +287,7 @@ public class DebuffHandler : MonoBehaviour
             {
                 case Constants.DEBUFF_POISON:
                 case Constants.DEBUFF_OVERLOAD:
-                    character.TakeDamage(active.totalValue);          // 플레이어 모댐증 적용 요망
+                    character.TakeDamage(active.totalValue, null);          // 플레이어 모댐증 적용 요망
                     break;
                 default:
                     break;
@@ -282,6 +305,14 @@ public class DebuffHandler : MonoBehaviour
                 if (agent != null)
                 {
                     agent.speed = originalSpeed;
+                }
+                break;
+            // 약화
+            case Constants.DEBUFF_WEAKEN:
+                if (monster != null)
+                {
+                    monster.SetAttackDamage(originalDamage);
+                    monster.isWeaken = false;
                 }
                 break;
             default:
@@ -512,6 +543,14 @@ public class DebuffHandler : MonoBehaviour
                     }
                     break;
 
+                case Constants.DEBUFF_WEAKEN:
+                    if (monster != null)
+                    {
+                        monster.SetAttackDamage(originalDamage);
+                        monster.isWeaken = false;
+                    }
+                    break;
+
                 case Constants.DEBUFF_STUN:
 
                     if (!character.isDead)
@@ -563,7 +602,7 @@ public class DebuffHandler : MonoBehaviour
     {
         while (debuffHandler.GetActiveDebuffCount() > 0)
         {
-            debuffHandler.character.TakeDamage(debuffHandler.GetActiveDebuffCount() * GameManager.Instance.PlayerStatManager.totalMultiDamage * 5f);
+            debuffHandler.character.TakeDamage(debuffHandler.GetActiveDebuffCount() * 5f, null);
             yield return new WaitForSeconds(Constants.DEBUFF_TIME);
         }
         _increasePain = null;

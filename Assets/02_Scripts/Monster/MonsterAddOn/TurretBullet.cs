@@ -11,6 +11,9 @@ public class TurretBullet : PoolableObject
     private GameObject owner;
     private Coroutine lifeTimeCoroutine;
 
+    //변경된 부분
+    private Vector3 moveDir = Vector3.forward;
+    private bool isReflected = false; 
     public void SetDamage(float damage)
     {
         this.damage = damage;
@@ -24,19 +27,19 @@ public class TurretBullet : PoolableObject
         this.lifeTime = lifeTime;
     }
 
-    public void Initialize(string targetTag, float damage, float lifeTime)
+    public void Initialize(string targetTag, float damage, float lifeTime, GameObject owner)
     {
         SetTarget(targetTag);
         SetDamage(damage);
         SetLifeTime(lifeTime);
-        this.owner = gameObject;
+        this.owner = owner;
         StartLifeTime();
     }
 
 
     private void Update()
     {
-        transform.Translate(Vector3.forward * speed * Time.deltaTime); 
+        transform.Translate(moveDir * speed * Time.deltaTime); 
     }
 
 
@@ -66,12 +69,19 @@ public class TurretBullet : PoolableObject
         if (other.CompareTag(targetTag))
         {
             IDamageable damageable = other.GetComponent<IDamageable>();
+            // 변경된 부분
+            reflect reflectable = other.GetComponent<reflect>();
+            if (reflectable != null && reflectable.isReflecting == true)
+            {
+                Reflect(other);
+                return;
+            }
+            //
             if (damageable != null)
             {
-                damageable.TakeDamage(damage);
+                damageable.TakeDamage(damage, transform);
             }
-
-           
+ 
             if (lifeTimeCoroutine != null)
             {
                 StopCoroutine(lifeTimeCoroutine);
@@ -89,4 +99,22 @@ public class TurretBullet : PoolableObject
             GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
         }
     }
+
+    //변경 부분
+    private void Reflect(Collider reflector)
+    {
+        moveDir = -moveDir; // 방향 전환
+
+        targetTag = "Monster"; // 타겟태그 변경
+        owner = reflector.gameObject; // 주인 변경
+
+    }
+
+    private void OnDisable()
+    {
+        moveDir = Vector3.forward;
+        targetTag = "Player";
+        owner = null;
+    }
+
 }

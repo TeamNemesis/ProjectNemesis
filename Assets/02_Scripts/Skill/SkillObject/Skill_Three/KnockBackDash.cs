@@ -5,11 +5,13 @@ public class KnockBackDashData
 {
     public float skillDamage;
     public float skillKnockBackDistance;
+    public float skillExtent;
 
-    public KnockBackDashData(float damage, float knockBackDistance)
+    public KnockBackDashData(float damage, float knockBackDistance,float extent)
     {
         skillDamage = damage;
         skillKnockBackDistance = knockBackDistance;
+        skillExtent = extent;
     }
 }
 
@@ -40,6 +42,7 @@ public class KnockBackDash : AreaDamageBase,IInitializePoolable
 
     public void Initialize()
     {
+        
         CheckTarget();
         StartCoroutine(ReleaseObjectCoroutine());
     }
@@ -48,8 +51,10 @@ public class KnockBackDash : AreaDamageBase,IInitializePoolable
     {
         if(data is  KnockBackDashData skillData)
         {
-            _damage = skillData.skillDamage * GameManager.Instance.PlayerStatManager.totalMultiDamage;
+            _damage = skillData.skillDamage;
             _knockBackDistance = skillData.skillKnockBackDistance * GameManager.Instance.PlayerStatManager.knockBackDistance;
+            _areaExtent = skillData.skillExtent * GameManager.Instance.PlayerStatManager.playerAreaExtent;
+            transform.localScale = Vector3.one * _areaExtent * 2;
         }
     }
 

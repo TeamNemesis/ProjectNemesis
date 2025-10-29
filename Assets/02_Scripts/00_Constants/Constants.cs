@@ -1,4 +1,6 @@
-﻿
+using System.Collections.Generic;
+using UnityEngine;
+
 public static class Constants
 {
     #region skill
@@ -41,11 +43,6 @@ public static class Constants
     /// 자동회복 힐량
     /// </summary>
     public static int HEAL_AMOUNT = 1;
-
-    /// <summary>
-    /// 범위 증가 스킬을 위한 계수
-    /// </summary>
-    public static float SKILL_EXTENT = 1f;
 
     /// <summary>
     /// 기술 분류를 위한 태그
@@ -184,6 +181,7 @@ public static class Constants
     public const string DEBUFF_CONFUSION = "confusion";
     public const string DEBUFF_BURN = "burn";
     public const string DEBUFF_BINDING = "bind";
+    public const string DEBUFF_WEAKEN = "weaken";
     #endregion
 
     #region layer
@@ -205,11 +203,179 @@ public static class Constants
 
     #region ResourcesPath
     public static string RESOURCES_PATH_PLAYER_WEAPONSET = "ScriptableObjects/Player/PlayerWeaponSets";
+    public static string RESOURCES_PATH_REWARD_DATA_SO = "ScriptableObjects/Rewards";
 
     #region Map
     public static string RESOURCES_PATH_ROOMDATASO = "ScriptableObjects/Map/Rooms";
     public static string RESOURCES_PATH_DOOR_PREFAB = "Prefabs/Map/Doors/Door";
+    public static string RESOURCES_PATH_REWARDS = "Prefabs/Rewards";
+    public static string RESOURCES_PATH_SHOPITEMS = "Prefabs/ShopItems";
     #endregion
 
     #endregion
+
+    #region knockBack
+    public const float KNOCKBACK_COOLTIME = 5f;
+    #endregion
+
+    #region Util
+
+    /// <summary>
+    /// origin과 가장 가까운 List의 요소 반환
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="origin"></param>
+    /// <param name="targetList"></param>
+    /// <returns></returns>
+    public static T GetNearestObject<T>(Transform origin, List<T> targetList)  where T : Component
+    {
+        if(targetList == null)
+        {
+            Debug.LogWarning("리스트가 null입니다.");
+            return null;
+        }
+
+
+        
+        if(targetList.Count == 0)
+        {
+            Debug.LogWarning("리스트가 비어있습니다.");
+            return null;
+        }
+
+
+        float minDistance = float.MaxValue;
+        T nearestObject = null;
+
+        foreach(T target in targetList)
+        {
+            if(target ==null)
+            {
+                continue;
+            }
+            float distance = Vector3.Distance(origin.position, target.transform.position);
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                nearestObject = target;
+            }
+        }
+
+        return nearestObject;
+
+    }
+
+
+    /// <summary>
+    /// GameObject를 담은 List용
+    /// </summary>
+    /// <param name="origin"></param>
+    /// <param name="targetList"></param>
+    /// <returns></returns>
+    public static GameObject GetNearestObject(Transform origin, List<GameObject> targetList) 
+    {
+        if (targetList == null)
+        {
+            Debug.LogWarning("리스트가 null입니다.");
+            return null;
+        }
+
+
+
+        if (targetList.Count == 0)
+        {
+            Debug.LogWarning("리스트가 비어있습니다.");
+            return null;
+        }
+
+
+        float minDistance = float.MaxValue;
+        GameObject nearestObject = null;
+
+        foreach (GameObject  target in targetList)
+        {
+            if (target == null)
+            {
+                continue;
+            }
+            float distance = Vector3.Distance(origin.position, target.transform.position);
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                nearestObject = target;
+            }
+        }
+
+        return nearestObject;
+
+    }
+
+    #endregion
+}
+
+public enum TechSelectPackType
+{
+    Company1,
+    Company2,
+    Company3,
+    Company4,
+    Company5,
+}
+
+public enum RoomType
+{
+    Start,
+    Normal,
+    Lab,
+    Colosseum,
+    Shop,
+    Boss,
+}
+
+public enum NormalRoomType
+{
+    Credit,
+    Heal,
+    Chrome,
+    TechSelect,
+    TechUpgrade,
+}
+
+public enum ShopItemType
+{
+    HealPack,
+    TechSelectPack,
+    TechUpgradePack,
+    MutantPack,
+}
+
+public enum RewardType
+{
+    Credit,
+    HealPack,
+    Chrome,
+    TechSelectPack,
+    TechUpgradePack,
+    MutantPack,
+}
+
+public enum InteractableType
+{
+    Door,
+    Reward,
+    ShopItem,
+    Weapon,
+}
+
+/// <summary>
+/// 플레이어 어택타입 enum
+/// </summary>
+public enum ATTACKTYPE
+{
+    NONE,
+    NORMAL,
+    GRENADE,
+    SPECIALATTACK,
+    DASH,
+    COUNT
 }

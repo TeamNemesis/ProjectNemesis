@@ -1,16 +1,10 @@
+using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
 
+
 public class Elite2 : MonsterBase
 {
-    [SerializeField]
-    private enum State
-    {
-        Idle,   // 플레이어를 아직 못 찾았거나 감지 범위 밖일 때
-        Move,   // 플레이어를 추격 중일 때
-        Attack, // 공격
-        Die     // 죽음
-    }
     [Header("Local Stats")]
     [SerializeField] private int laserAttackCount = 0; // 연속 공격 횟수
 
@@ -23,8 +17,6 @@ public class Elite2 : MonsterBase
     [SerializeField] float bulletLifeTime = 8f;
     [SerializeField] int maxBulletAttackCounter = 0;
 
-    [SerializeField] private bool _isAttacking = false;
-
     [Header("Prefabs")]
     [SerializeField] private PoolableObject squareDecalPrefab;
     [SerializeField] private PoolableObject attackDecalPrefab;
@@ -35,8 +27,6 @@ public class Elite2 : MonsterBase
     [SerializeField] private float bulletAttackCoolTime = 5f;
     [SerializeField] private float poisonLaserAttackCoolTime = 5f;
     [SerializeField] private float poisonFieldAttackCoolTime = 10f;
-
-    [Header("STATE"), SerializeField] private State currentState = State.Idle;
 
     private void Update()
     {
@@ -49,21 +39,21 @@ public class Elite2 : MonsterBase
             LookAtPlayer();
         }
 
-        switch (currentState)
+        switch (baseState)
         {
-            case State.Idle:
+            case MonsterState.Idle:
                 HandleIdle();
                 break;
-            case State.Move:
+            case MonsterState.Move:
                 HandleMove();
                 break;
-            case State.Attack:
+            case MonsterState.Attack:
                 if (!_isAttacking)
                 {
                     TryUseSkill();
                 }
                 break;
-            case State.Die:
+            case MonsterState.Die:
                 Die();
                 break;
         }
@@ -77,7 +67,7 @@ public class Elite2 : MonsterBase
         float distance = Vector3.Distance(transform.position, _target.position);
         if (distance <= detectionRange && CanSeePlayer())
         {
-            currentState = State.Move;
+            baseState = MonsterState.Move;
         }
     }
     private void HandleMove()
@@ -87,7 +77,7 @@ public class Elite2 : MonsterBase
         if (distance > detectionRange || !CanSeePlayer())
         {
             agent.ResetPath();
-            currentState = State.Idle;
+            baseState = MonsterState.Idle;
             return;
         }
 
@@ -96,7 +86,7 @@ public class Elite2 : MonsterBase
         if (distance <= attackRange && CanSeePlayer())
         {
             agent.ResetPath();
-            currentState = State.Attack;
+            baseState = MonsterState.Attack;
         }
     }
 
@@ -128,7 +118,7 @@ public class Elite2 : MonsterBase
             yield return new WaitForSeconds(attackDelay);
         }
         _isAttacking = false;
-        currentState = State.Move; // 공격 후 다시 추격 상태로 전환
+        baseState = MonsterState.Move; // 공격 후 다시 추격 상태로 전환
     }
 
     /// <summary>
@@ -179,7 +169,7 @@ public class Elite2 : MonsterBase
 
         _isAttacking = false;
         laserAttackCount = 0;
-        currentState = State.Move; // 공격 후 다시 추격 상태로 전환
+        baseState = MonsterState.Move; // 공격 후 다시 추격 상태로 전환
     }
 
 
@@ -198,10 +188,10 @@ public class Elite2 : MonsterBase
                     Quaternion rotation = Quaternion.Euler(0, angle, 0);
 
                     GameObject bullet = GameManager.Instance.PoolManager.GetFromPool(eliteBulletPrefab, transform.position, rotation);
-                    TurretBullet turretBullet = bullet.GetComponent<TurretBullet>();
-                    if (turretBullet != null)
+                    EliteBullet elitetBullet = bullet.GetComponent<EliteBullet>();
+                    if (elitetBullet != null)
                     {
-                        turretBullet.Initialize(targetTag, attackDamage, bulletLifeTime);
+                        elitetBullet.Initialize(targetTag, attackDamage, bulletLifeTime, gameObject);
                     }
                 }
                 maxBulletAttackCounter++;
@@ -210,7 +200,7 @@ public class Elite2 : MonsterBase
         }
         _isAttacking = false;
         maxBulletAttackCounter = 0;
-        currentState = State.Move; // 공격 후 다시 추격 상태로 전환
+        baseState = MonsterState.Move; // 공격 후 다시 추격 상태로 전환
     }
 
     private void CoolTimeController()
@@ -225,32 +215,32 @@ public class Elite2 : MonsterBase
 
     private void TryUseSkill()
     {
-        // 사용 가능한 스킬 리스트
-        System.Collections.Generic.List<System.Action> availableSkills = new System.Collections.Generic.List<System.Action>();
+        // 사용 가능한 스킬 코루틴 리스트
+        List<IEnumerator> availableSkills = new List<IEnumerator>();
 
         if (bulletAttackCoolTime <= 0)
         {
-            availableSkills.Add(() => StartCoroutine(BulletAttack()));
+            availableSkills.Add(BulletAttack());
         }
         if (poisonLaserAttackCoolTime <= 0)
         {
-            availableSkills.Add(() => StartCoroutine(PoisonLaserAttack()));
+            availableSkills.Add(PoisonLaserAttack());
         }
         if (poisonFieldAttackCoolTime <= 0)
         {
-            availableSkills.Add(() => StartCoroutine(PoisonFieldAttack()));
+            availableSkills.Add(PoisonFieldAttack());
         }
 
         // 사용 가능한 스킬이 있으면 랜덤으로 선택
         if (availableSkills.Count > 0)
         {
             int randomIndex = Random.Range(0, availableSkills.Count);
-            availableSkills[randomIndex].Invoke();
+            StartCoroutine(availableSkills[randomIndex]);
         }
         else
         {
             // 모든 스킬이 쿨타임이면 다시 추격
-            currentState = State.Move;
+            baseState = MonsterState.Move;
         }
     }
 }

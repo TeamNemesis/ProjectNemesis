@@ -10,9 +10,20 @@ public enum MonsterSize
 }
 
 
-public class MonsterBase : CharacterModelBase
+
+public class MonsterBase : CharacterModelBase, IInitializePoolable
 {
+    protected enum MonsterState
+    {
+        Idle,
+        Move,
+        Attack,
+        Die
+    }
+
+
     [Header("Base Stats")]
+    [SerializeField] private float maxEliteHealth;
     [SerializeField] protected float attackDamage = 10;
     [SerializeField] protected float attackRange = 2f;
     [SerializeField] protected float detectionRange = 10f;
@@ -21,6 +32,12 @@ public class MonsterBase : CharacterModelBase
     [SerializeField] public string targetTag = Constants.TAG_PLAYER;
     [SerializeField] protected MonsterSize monsterSize = MonsterSize.SMALL;
     [SerializeField] protected int cost;
+    [SerializeField] protected Rigidbody monsterRigidbody;
+    [SerializeField] protected Collider monsterCollider;
+    [SerializeField] protected bool _isAttacking = false;
+
+    [Header("Base State")]
+    [SerializeField] protected MonsterState baseState = MonsterState.Idle;
 
 
     #region 넉백
@@ -33,10 +50,36 @@ public class MonsterBase : CharacterModelBase
     [Header("Components")]
     [SerializeField] protected NavMeshAgent agent;
     [SerializeField] protected Transform _target;
+    
+    /// <summary>
+    /// 공격력 반환
+    /// </summary>
+    /// <returns></returns>
+    public float GetAttackDamage()
+    {
+        return attackDamage;
+    }
+    public MonsterSize GetMonsterSize()
+    {
+        return monsterSize;
+    }
+
+    /// <summary>
+    /// 공격력 설정
+    /// </summary>
+    /// <param name="attackDamage"></param>
+    public void SetAttackDamage(float attackDamage)
+    {
+        this.attackDamage = attackDamage;
+    }
 
     public Transform GetTarget()
     {
         return _target;
+    }
+    public int GetCost()
+    {
+        return cost;
     }
     public void SetTarget(Transform target)
     {
@@ -49,20 +92,54 @@ public class MonsterBase : CharacterModelBase
         Initialize();
     }
 
-
-    public override void Initialize()
+    public virtual void Initialize(object data = null)
     {
         base.Initialize();
-        agent = GetComponent<NavMeshAgent>();
-        originalSpeed = agent.speed;
 
+        // === 상태 초기화 ===
+        isDead = false;
+        isPushed = false;
+        isStunned = false;
+        isBindned = false;
+        isWeaken = false;
+        _isAttacking = false;
+
+        // === 상태 머신 초기화 ===
+        baseState = MonsterState.Idle;
+
+        // === 컴포넌트 초기화 ===
+        agent = GetComponent<NavMeshAgent>();
+        if (agent != null && agent.isOnNavMesh)
+        {
+            agent.enabled = true;
+            agent.isStopped = false;
+            agent.speed = originalSpeed;
+        }
+
+        // === 타겟 설정 ===
         GameObject targetObj = GameObject.FindGameObjectWithTag(targetTag);
         if (targetObj != null)
             _target = targetObj.transform;
 
+        // === 체력 초기화 ===
         SetCurrentHp(maxHealth);
 
+        // === 디버프 초기화 ===
         debuffHandler.InitializeMonster(agent);
+
+        // === 물리 초기화 (넉백 관련) ===
+        monsterRigidbody = GetComponent<Rigidbody>();
+        if (monsterRigidbody != null)
+        {
+            monsterRigidbody.isKinematic = true;
+        }
+
+        // === 코루틴 정리 ===
+        if (_knockBackCoroutine != null)
+        {
+            StopCoroutine(_knockBackCoroutine);
+            _knockBackCoroutine = null;
+        }
     }
 
     protected bool CanSeePlayer()
@@ -101,16 +178,30 @@ public class MonsterBase : CharacterModelBase
         }
     }
 
+    private void SetEliteMaxHealth(int roomCount)
+    {
+        maxEliteHealth = (float)_maxHealth * 1 + (0.1f * roomCount);
+        _maxHealth = (int)maxEliteHealth;
+    }
+
+    protected override void Die()
+    {
+        GameManager.Instance.CurrencyManager.AddCredit(cost);
+        base.Die();
+    }
+
+
     #region 넉백
 
-    private void OnCollisionEnter(Collision collision)
+    protected virtual void OnCollisionEnter(Collision collision)
     {
         if (isPushed)
         {
             if (collision.gameObject.layer == LayerMask.NameToLayer(Constants.LAYER_MASK_WALL))
             {
                 Debug.Log("충돌");
-                TakeDamage(GameManager.Instance.PlayerStatManager.knockBackDamage * GameManager.Instance.PlayerStatManager.knockBackDamageMulti * GameManager.Instance.PlayerStatManager.totalMultiDamage);
+                TakeDamage(GameManager.Instance.PlayerStatManager.knockBackDamage * GameManager.Instance.PlayerStatManager.knockBackDamageMulti, null);
+                EndKnockBack();
             }
 
         }
@@ -124,23 +215,27 @@ public class MonsterBase : CharacterModelBase
     /// <param name="damage"></param>
     public void KnockBackEnemy(Vector3 pushDirection, float damage, float knockBackDistance)
     {
-        TakeDamage(damage * GameManager.Instance.PlayerStatManager.totalMultiDamage);
-        if(monsterSize == MonsterSize.BIG)
-        {
-            return;
-        }
-        GetComponent<Collider>().isTrigger = false;
-        isPushed = true;
-        debuffHandler.ApplyDebuff(DebuffHandler.DebuffData.CreateStun(0.5f));
-        GetComponent<Rigidbody>().isKinematic = false;
-        GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
-        GetComponent<Rigidbody>().AddForce(pushDirection, ForceMode.VelocityChange);
+        TakeDamage(damage, null);
 
         if (_knockBackCoroutine != null)
         {
-            StopCoroutine(_knockBackCoroutine);
+            Debug.Log("넉백 중이므로 넉백 무시");
+            return;
         }
+        if (monsterSize == MonsterSize.BIG)
+        {
+            Debug.Log("대형이므로 넉백 무시");
+            return;
+        }
+        monsterCollider.isTrigger = false;
+        isPushed = true;
+        debuffHandler.ApplyDebuff(DebuffHandler.DebuffData.CreateStun(0.5f));
+        monsterRigidbody.isKinematic = false;
+        monsterRigidbody.linearVelocity = Vector3.zero;
+        monsterRigidbody.AddForce(pushDirection, ForceMode.VelocityChange);
+
         _knockBackCoroutine = StartCoroutine(KnockBackCoroutine(knockBackDistance));
+        StartCoroutine(KnockBackCoolTime());
     }
 
 
@@ -152,14 +247,33 @@ public class MonsterBase : CharacterModelBase
     /// <returns></returns>
     public IEnumerator KnockBackCoroutine(float knockBackDistance)
     {
+        float time=0;
+        float maxTime = 1f;
         Vector3 startPosition = transform.position;
         while (Vector3.Distance(transform.position, startPosition) < knockBackDistance)
         {
+            time += Time.deltaTime;
+            if(time > maxTime)
+            {
+                Debug.Log("속도가 너무 느려 강제 종료");
+                break;
+            }
             yield return null;
         }
-        GetComponent<Rigidbody>().isKinematic = true;
+        EndKnockBack();
+    }
+
+    public void EndKnockBack()
+    {
         isPushed = false;
-        GetComponent<Collider>().isTrigger = true;
+        monsterRigidbody.linearVelocity = Vector3.zero ;
+        monsterRigidbody.isKinematic = true;
+       monsterCollider.isTrigger = true;
+    }
+
+    public IEnumerator KnockBackCoolTime(float knockBackCoolTime = Constants.KNOCKBACK_COOLTIME)
+    {
+        yield return new WaitForSeconds(knockBackCoolTime);
         _knockBackCoroutine = null;
     }
     #endregion

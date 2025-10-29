@@ -1,19 +1,36 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
 
-public class TechUpgradePackInteractor : InteractableObject
+public class TechUpgradePackInteractor : RewardInteractableObject
 {
-    [SerializeField] Transform _guidePoint;
+    [SerializeField] TechItem _techItem;
 
-    public override Vector3 GuidePoint => _guidePoint.position;
+    public override event Action OnRewardGiven;
 
-    public override InteractableType InteractableType => InteractableType.TechUpgradePack;
-
-    public override event Action<IInteractable> OnInteracted;
-
-    public override void StartInteract(Transform subject)
+    public void Initialize()
     {
-        Debug.Log("업그레이드 팩과 상호작용 함");
-        OnInteracted?.Invoke(this);
+        GameManager.Instance.UIManager.onRewardSelect += RaiseRewardGivenEvent;
+    }
+
+    // 보상 플로우(예: UI열고 플레이어가 선택하면 확정되는 경우)
+    protected override IEnumerator RewardCoroutine()
+    {
+        // UI가 없으면 바로 적용 (폴백)
+        yield return new WaitForSeconds(0.2f);
+
+        // 실제 보상 적용
+        _techItem.SkillUpgrade();
+    }
+
+    void RaiseRewardGivenEvent()
+    {
+        OnRewardGiven?.Invoke();
+    }
+
+    protected override void OnDisable()
+    {
+        base.OnDisable();
+        GameManager.Instance.UIManager.onRewardSelect -= RaiseRewardGivenEvent;
     }
 }

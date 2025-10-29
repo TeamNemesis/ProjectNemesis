@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class EliteBullet : PoolableObject
 {
-    private float speed = 7f; // 총알 속도
-    private float lifeTime; // 총알 수명
+    private float speed = 7f;
+    private float lifeTime;
     private float damage;
     [SerializeField] private string targetTag;
 
@@ -24,19 +24,19 @@ public class EliteBullet : PoolableObject
         this.lifeTime = lifeTime;
     }
 
-    public void Initialize(string targetTag, float damage, float lifeTime)
+    public void Initialize(string targetTag, float damage, float lifeTime, GameObject owner)
     {
         SetTarget(targetTag);
         SetDamage(damage);
         SetLifeTime(lifeTime);
-        this.owner = gameObject;
+        this.owner = owner;
         StartLifeTime();
     }
 
 
     private void Update()
     {
-        transform.Translate(Vector3.forward * speed * Time.deltaTime); // 총알 이동
+        transform.Translate(Vector3.forward * speed * Time.deltaTime);
     }
 
 
@@ -68,11 +68,10 @@ public class EliteBullet : PoolableObject
             IDamageable damageable = other.GetComponent<IDamageable>();
             if (damageable != null)
             {
-                damageable.TakeDamage(damage);
-                Debug.Log("Player Hit! Damage: " + damage);
+                damageable.TakeDamage(damage, transform);
             }
 
-            // 코루틴 정리 후 반환
+
             if (lifeTimeCoroutine != null)
             {
                 StopCoroutine(lifeTimeCoroutine);

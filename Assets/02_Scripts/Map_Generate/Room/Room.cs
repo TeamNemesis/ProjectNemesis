@@ -2,48 +2,32 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum RoomType
-{
-    Start,
-    Normal,
-    Lab,
-    Colosseum,
-    Shop,
-    Boss,
-}
-
-public enum NormalRoomType
-{
-    Credit,
-    Heal,
-    Chrome,
-    TechSelect,
-    TechUpgrade,
-}
-
 /// <summary>
 /// Room 컴포넌트는 프리팹의 구조/런타임 동작을 담당.
 /// 타입/메타는 RoomDataSO에서 주입받아 InitializeFromRoomData로 설정한다.
 /// 초기화 진입점은 Initialize(RoomInfo) 로 통일된다.
 /// </summary>
-public class Room : MonoBehaviour
+public abstract class Room : MonoBehaviour
 {
-    [SerializeField] Transform[] _monsterSpawnPoints;
+    [SerializeField] protected Transform[] _rewardSpawnPoints;        // 보상 오브젝트 스폰 위치들 (프리팹에 세팅)
 
     [Header("Door spawn points (setup on prefab)")]
     [SerializeField] protected Transform[] _doorSpawnPointsLeft;
     [SerializeField] protected Transform[] _doorSpawnPointsRight;
 
-    RoomInfo _roomInfo;
-    RoomDataSO _roomData; // 런타임에 주입되는 SO 참조
+    protected RoomInfo _roomInfo;
+    protected List<GameObject> _poolableObjectsInRoom = new List<GameObject>();
 
     // 구조적 데이터는 프리팹에 보관 (인스펙터에서 볼 수 있음)
-    public Transform[] MonsterSpawnPoints => _monsterSpawnPoints;
+    public Transform[] RewardSpawnPoints => _rewardSpawnPoints;
     public Transform[] DoorSpawnPointsLeft => _doorSpawnPointsLeft;
     public Transform[] DoorSpawnPointsRight => _doorSpawnPointsRight;
 
     // 런타임에서 RoomData로부터 필요한 값 접근
     public RoomInfo RoomInfo => _roomInfo;
+    public List<GameObject> PoolableObjectsInRoom => _poolableObjectsInRoom;    
+
+    public event Action OnRewardSelectionFinished;
 
     /// <summary>
     /// 단일화된 진입점: RoomInfo를 받아 초기화한다.
@@ -174,5 +158,22 @@ public class Room : MonoBehaviour
         }
 
         return results.ToArray();
+    }
+
+    public abstract IInteractable[] SpawnReward();
+
+    public List<GameObject> GetPoolableObjectsInRoom()
+    {
+        return _poolableObjectsInRoom;
+    }
+
+    public void RewardSelectionFinished()
+    {
+        OnRewardSelectionFinished?.Invoke();
+
+        Debug.LogError("방 끝 호출");
+
+        // 스킬 진화 발동용 메서드
+        EventBus.Evolution();
     }
 }

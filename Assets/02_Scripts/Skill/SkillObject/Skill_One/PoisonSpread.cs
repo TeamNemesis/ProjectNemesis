@@ -1,7 +1,17 @@
 using System.Collections;
 using UnityEngine;
 
-public class PoisonSpread : AreaDamageBase
+
+public class PoisonSpreadData
+{
+    public float extent;
+
+    public PoisonSpreadData(float extent)
+    {
+        this.extent = extent;
+    }
+}
+public class PoisonSpread : AreaDamageBase,IInitializePoolable
 {
 
 
@@ -23,17 +33,19 @@ public class PoisonSpread : AreaDamageBase
         GameManager.Instance.PoolManager.ReleaseToPoolByInterface(this);
     }
 
-    public GameObject GetGameObject()
-    {
-        return gameObject;
-    }
 
     public void Initialize()
     {
-        transform.SetParent(GameManager.Instance.player.transform);
         CheckTarget();
         StartCoroutine(DestroyPoisonSpreadCoroutine());
     }
 
-  
+    public void Initialize(object data)
+    {
+        if(data is PoisonSpreadData skillData)
+        {
+               _areaExtent = skillData.extent * GameManager.Instance.PlayerStatManager.playerAreaExtent;
+            transform.localScale = Vector3.one * _areaExtent * 2f;
+        }
+    }
 }
