@@ -2489,6 +2489,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 605253879375314054, guid: 926b1bbd08fdeee4c9b07a99cc1ff7c4, type: 3}
+      propertyPath: _groundLayer.m_Bits
+      value: 512
+      objectReference: {fileID: 0}
     - target: {fileID: 4091405947727495476, guid: 926b1bbd08fdeee4c9b07a99cc1ff7c4, type: 3}
       propertyPath: m_Name
       value: InputHandler
@@ -6603,18 +6607,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e11405ac3bb6b34d8bf1bbf8d173135, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  grenadePrefab: {fileID: 0}
-  explodeCircle: {fileID: 0}
+  grenadePrefab: {fileID: 7415121532549683166, guid: 1c7d30e5d20219c41b7b4a9bce3fb1ce, type: 3}
+  explodeCircle: {fileID: 6298418274070478015, guid: e9533182fc155184b8e3c2820b798f2d, type: 3}
   travelTime: 1
   travelSpeed: 30
   explosionRadius: 3
   explosionDamage: 30
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 0
   enemyLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 1024
   maxParabolaHeight: 15
   minParabolaHeight: 10
   closeDistance: 2
