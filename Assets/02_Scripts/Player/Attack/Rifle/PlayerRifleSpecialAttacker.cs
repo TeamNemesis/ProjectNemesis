@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
 /// <summary>
@@ -11,8 +10,6 @@ public class PlayerRifleSpecialAttacker : PlayerSpecialAttacker
 {
     [Header("Charge")]
     public float maxChargeTime = 3f;
-    public float minDamage = 20f;
-    public float maxDamage = 150f;
     public float minWidth = 0.05f;
     public float maxWidth = 0.6f;
 
@@ -123,7 +120,7 @@ public class PlayerRifleSpecialAttacker : PlayerSpecialAttacker
 
         Debug.Log($"PlayerRifleSpecialAttacker.FireWithCharge ratio={ratio} frame={Time.frameCount}");
 
-        float damage = Mathf.Lerp(minDamage, maxDamage, ratio);
+
         float width = Mathf.Lerp(minWidth, maxWidth, ratio);
 
         Vector3 origin = _player.transform.position + Vector3.up * 1.0f; // 보정
@@ -143,7 +140,7 @@ public class PlayerRifleSpecialAttacker : PlayerSpecialAttacker
                 return;
             }
 
-            laser.Initialize(origin, dir, maxDistance, damage, width, wallMask, enemyMask, _player.gameObject);
+            laser.Initialize(origin, dir, maxDistance, width, wallMask, enemyMask, _player.gameObject);
             laser.lifeTime = visualLifetime;
             laser.Fire();
 
@@ -162,7 +159,10 @@ public class PlayerRifleSpecialAttacker : PlayerSpecialAttacker
             foreach (var h in hits)
             {
                 var dmg = h.collider.GetComponentInParent<IDamageable>();
-                if (dmg != null) dmg.TakeDamage(damage, null);
+                if (dmg != null)
+                {
+                    EventBus.MonsterHit(WeaponType.Rifle, ATTACKTYPE.SPECIALATTACK, h.transform, _player.transform);
+                }
             }
         }
     }
