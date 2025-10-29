@@ -2,12 +2,13 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class DonutWaveAttack : MonoBehaviour
+public class DonutWaveAttack : PoolableObject
 {
     [Header("Wave Settings")]
     [SerializeField] private float maxRadius = 50f;      // 최대 크기
     [SerializeField] private float expandSpeed = 5f;     // 확장 속도
     [SerializeField] private float ringThickness = 2f;   // 링 두께
+    [SerializeField] private float attackDelay = 1f;    // 공격 간격
 
     [Header("Visual Settings")]
     [SerializeField] private Color waveColor = new Color(1f, 0f, 0f, 0.8f);
@@ -148,7 +149,7 @@ public class DonutWaveAttack : MonoBehaviour
 
             isExpanding = false;
 
-            yield return new WaitForSeconds(15f);
+            yield return new WaitForSeconds(attackDelay);
         }
     }
 

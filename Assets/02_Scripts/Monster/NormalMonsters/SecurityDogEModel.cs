@@ -236,31 +236,7 @@ public class SecurityDogEModel : MonsterBase
                     playerHealth.TakeDamage(attackDamage, transform);
                 }
             }
-            else
-            {
-                // 타겟이 아닌 대상과 충돌 시 해당 대상의 충돌을 무시
-                Collider otherCollider = collision.collider;
-                Collider myCollider = GetComponent<Collider>();
-                if (otherCollider != null && myCollider != null)
-                {
-                    Physics.IgnoreCollision(myCollider, otherCollider, true);
-
-                    // 공격이 끝나면 충돌 무시 해제 (코루틴으로 처리)
-                    StartCoroutine(ResetCollisionIgnore(myCollider, otherCollider));
-                }
-            }
         }
     }
 
-    private IEnumerator ResetCollisionIgnore(Collider myCollider, Collider otherCollider)
-    {
-        // 공격이 끝날 때까지 대기
-        yield return new WaitUntil(() => !_isAttacking);
-
-        // 충돌 무시 해제
-        if (myCollider != null && otherCollider != null)
-        {
-            Physics.IgnoreCollision(myCollider, otherCollider, false);
-        }
-    }
 }
