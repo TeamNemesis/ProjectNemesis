@@ -6,16 +6,15 @@ public class TechSelectPackInteractor : RewardInteractableObject
 {
     [SerializeField] TechItem _techItem;
 
-    [Header("----- 읽기 전용 -----")]
+    [Header("----- 설정값 -----")]
     [SerializeField] TechSelectPackType _packType;
 
     public TechSelectPackType PackType => _packType;
 
     public override event Action OnRewardGiven;
 
-    public void Initialize(TechSelectPackType packType)
+    public void Initialize()
     {
-        _packType = packType;
         GameManager.Instance.UIManager.onRewardSelect += RaiseRewardGivenEvent;
     }
 

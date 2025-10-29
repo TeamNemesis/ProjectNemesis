@@ -15,29 +15,84 @@ public class ShopRoom : Room
     [SerializeField] float _upgradePackChance = 0.4f; // 업그레이드 팩 보상이 나올 확률
     [SerializeField] float _mutantChance = 0.1f; // 돌연변이 보상이 나올 확률
 
-    //Dictionary<ShopItemType, string> _shopItemMap = new Dictionary<ShopItemType, string>()
-    //{
-    //    {ShopItemType.HealPack, Constants.RESOURCES_PATH_REWARDS + "/HealPack" },
-    //    {ShopItemType.TechSelectPack_Company1, Constants.RESOURCES_PATH_REWARDS + "/TechSelectPack_Company1" },
-    //    {ShopItemType.TechSelectPack_Company2, Constants.RESOURCES_PATH_REWARDS + "/TechSelectPack_Company2" },
-    //    {ShopItemType.TechSelectPack_Company3, Constants.RESOURCES_PATH_REWARDS + "/TechSelectPack_Company3" },
-    //    {ShopItemType.TechSelectPack_Company4, Constants.RESOURCES_PATH_REWARDS + "/TechSelectPack_Company4" },
-    //    {ShopItemType.TechSelectPack_Company5, Constants.RESOURCES_PATH_REWARDS + "/TechSelectPack_Company5" },
-    //    {ShopItemType.UpgradePack, Constants.RESOURCES_PATH_REWARDS + "/UpgradePack" },
-    //    {ShopItemType.Mutant, Constants.RESOURCES_PATH_REWARDS + "/Mutant" },
-    //};
+    List<ShopItem> _decidedShopItems = new();
+
+    Dictionary<ShopItemType, string> _shopItemMap = new Dictionary<ShopItemType, string>()
+    {
+        {ShopItemType.HealPack, Constants.RESOURCES_PATH_SHOPITEMS + "/HealPack" },
+        {ShopItemType.TechSelectPack, Constants.RESOURCES_PATH_SHOPITEMS + "/TechSelectPack" },
+        {ShopItemType.TechUpgradePack, Constants.RESOURCES_PATH_SHOPITEMS + "/UpgradePack" },
+        {ShopItemType.MutantPack, Constants.RESOURCES_PATH_SHOPITEMS + "/Mutant" },
+    };
+
+    Dictionary<TechSelectPackType, string> _techSelectPackMap = new Dictionary<TechSelectPackType, string>()
+    {
+        {TechSelectPackType.Company1, Constants.RESOURCES_PATH_SHOPITEMS + "/TechSelectPack_Company1" },
+        {TechSelectPackType.Company2, Constants.RESOURCES_PATH_SHOPITEMS + "/TechSelectPack_Company2" },
+        {TechSelectPackType.Company3, Constants.RESOURCES_PATH_SHOPITEMS + "/TechSelectPack_Company3" },
+        {TechSelectPackType.Company4, Constants.RESOURCES_PATH_SHOPITEMS + "/TechSelectPack_Company4" },
+        {TechSelectPackType.Company5, Constants.RESOURCES_PATH_SHOPITEMS + "/TechSelectPack_Company5" },
+    };
 
     public override IInteractable[] SpawnReward()
     {
-        throw new System.NotImplementedException();
+        DecideRewards(4);
+        IInteractable[] interactables = new IInteractable[_decidedShopItems.Count];
+
+        for(int i = 0; i < _decidedShopItems.Count; i++)
+        {
+            interactables[i] = _decidedShopItems[i];
+        }
+        return interactables;
     }
 
-    RewardInteractableObject[] DecideRewards(int count)
+    List<ShopItem> DecideRewards(int count)
     {
-        //// 보상 count개를 담을 배열 생성
-        //RewardInteractableObject[] rewards = new RewardInteractableObject[count];
+        if(count < 4)
+        {
+            Debug.LogWarning("ShopRoom.DecideRewards: 보상 개수는 최소 4개여야 합니다.");
+            return null;
+        }
+        // 초기화
+        _decidedShopItems.Clear();
+        // 체력회복 키트는 무조건 1개 포함
+        GameObject healObj = GameManager.Instance.PoolManager.GetFromPool(_shopItemMap[ShopItemType.HealPack], _rewardSpawnPoints[0].position, Quaternion.identity, transform);
+        ShopItem healItem = healObj.GetComponent<ShopItem>();
+        healItem.Initialize();
+        _decidedShopItems.Add(healItem);
 
-        throw new System.NotImplementedException();
+        // 기술 선택 팩 1개 반드시 포함
+        float randomTechPackIndex = Random.Range(0, _techSelectPackMap.Count);
+        GameObject techObj = GameManager.Instance.PoolManager.GetFromPool(_techSelectPackMap[(TechSelectPackType)randomTechPackIndex], _rewardSpawnPoints[1].position, Quaternion.identity, transform);
+        ShopItem techItem = techObj.GetComponent<ShopItem>();
+        techItem.Initialize();
+        _decidedShopItems.Add(techItem);
 
+        float total = _techSelectChance + _upgradePackChance + _mutantChance;
+
+        // 확률에 따라 나머지 보상 결정
+        for (int i = 0; i < count - 2; i++)
+        {
+            float random = Random.Range(0f, total);
+            if (random < _techSelectChance)
+            {
+                GameObject techPack = GameManager.Instance.PoolManager.GetFromPool(_techSelectPackMap[(TechSelectPackType)randomTechPackIndex], _rewardSpawnPoints[i + 2].position, Quaternion.identity, transform);
+            }
+            else if(random < _techSelectChance + _upgradePackChance)
+            {
+                GameObject upgradeObj = GameManager.Instance.PoolManager.GetFromPool(_shopItemMap[ShopItemType.TechUpgradePack], _rewardSpawnPoints[i + 2].position, Quaternion.identity, transform);
+                ShopItem upgradeItem = upgradeObj.GetComponent<ShopItem>();
+                upgradeItem.Initialize();
+                _decidedShopItems.Add(upgradeItem);
+            }
+            else
+            {
+                GameObject mutantObj = GameManager.Instance.PoolManager.GetFromPool(_shopItemMap[ShopItemType.MutantPack], _rewardSpawnPoints[i + 2].position, Quaternion.identity, transform);
+                ShopItem mutantItem = mutantObj.GetComponent<ShopItem>();
+                mutantItem.Initialize();
+                _decidedShopItems.Add(mutantItem);
+            }
+        }
+        return _decidedShopItems;
     }
 }
