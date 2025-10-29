@@ -46,6 +46,7 @@ GameObject:
   - component: {fileID: 6921048623593060265}
   - component: {fileID: 1313568458826878174}
   - component: {fileID: 4902301421288065852}
+  - component: {fileID: -5572141730628754283}
   m_Layer: 6
   m_Name: TechSelectPack_Company3
   m_TagString: Untagged
@@ -157,7 +158,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _guidePoint: {fileID: 705330111615677073}
   _techItem: {fileID: 4902301421288065852}
-  _packType: 0
+  _packType: 2
 --- !u!114 &1313568458826878174
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -180,5 +181,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c5d943ea9d6f9d04c82a4ac8eeb7a397, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-5572141730628754283
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5550562927031180116}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc722e1497ebce346b87739747660c61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

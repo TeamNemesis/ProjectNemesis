@@ -45,11 +45,6 @@ public static class Constants
     public static int HEAL_AMOUNT = 1;
 
     /// <summary>
-    /// 범위 증가 스킬을 위한 계수
-    /// </summary>
-    public static float SKILL_EXTENT = 1f;
-
-    /// <summary>
     /// 기술 분류를 위한 태그
     /// </summary>
     public const string SKILL_TAG_ATTACK = "기본공격";
@@ -253,6 +248,51 @@ public static class Constants
         foreach(T target in targetList)
         {
             if(target ==null)
+            {
+                continue;
+            }
+            float distance = Vector3.Distance(origin.position, target.transform.position);
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                nearestObject = target;
+            }
+        }
+
+        return nearestObject;
+
+    }
+
+
+    /// <summary>
+    /// GameObject를 담은 List용
+    /// </summary>
+    /// <param name="origin"></param>
+    /// <param name="targetList"></param>
+    /// <returns></returns>
+    public static GameObject GetNearestObject(Transform origin, List<GameObject> targetList) 
+    {
+        if (targetList == null)
+        {
+            Debug.LogWarning("리스트가 null입니다.");
+            return null;
+        }
+
+
+
+        if (targetList.Count == 0)
+        {
+            Debug.LogWarning("리스트가 비어있습니다.");
+            return null;
+        }
+
+
+        float minDistance = float.MaxValue;
+        GameObject nearestObject = null;
+
+        foreach (GameObject  target in targetList)
+        {
+            if (target == null)
             {
                 continue;
             }

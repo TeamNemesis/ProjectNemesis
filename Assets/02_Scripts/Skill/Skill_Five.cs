@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using UnityEngine;
 
 /// <summary>
@@ -5,6 +7,14 @@ using UnityEngine;
 /// </summary>
 public class Skill_Five : SkillBase
 {
+    // 캐터민 드래프트
+    private Coroutine _draftCoroutine;
+    private float _draftMoveSpeed;
+    private float _draftTime;
+
+
+    // 정제
+    private float _addTotalDamage;
     public override void ActivateSkill(SkillData choosedSkill)
     {
         switch (choosedSkill.skillIdx)
@@ -69,13 +79,25 @@ public class Skill_Five : SkillBase
             // 케타민 드리프트
             case 56:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
-
+                if(_draftCoroutine!=null)
+                {
+                    StopCoroutine(_draftCoroutine );
+                    skillManager.playerStatManager.AddPlayerMoveSpeed(_draftMoveSpeed);
+                }
+                _draftCoroutine = null;
+                skillManager.playScene.player.playerModel.PlayerHit -= Draft;
+                _draftMoveSpeed = choosedSkill.skillBaseValue_1 + choosedSkill.skillLevelValue_1 * choosedSkill.skillLevel;
+                _draftTime = choosedSkill.skillBaseValue_2+ choosedSkill.skillLevelValue_2*choosedSkill.skillLevel;
+                skillManager.playScene.player.playerModel.PlayerHit += Draft;
                 break;
 
             // 정제
             case 57:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
 
+                _addTotalDamage = choosedSkill.skillBaseValue_1+ choosedSkill.skillLevelValue_1*choosedSkill.skillLevel;
+                skillManager.playScene.MapController.MonsterController.MonsterSpawner.OnMonsterSpawned -= ConnectRefinement;
+                skillManager.playScene.MapController.MonsterController.MonsterSpawner.OnMonsterSpawned += ConnectRefinement;
                 break;
 
 
@@ -113,6 +135,49 @@ public class Skill_Five : SkillBase
         {
             _skillManager.playerStatManager.AddWeakenPlusDamage(skill.skillLevelValue_1);
         }
+    }
+    #endregion
+
+    #region 캐타민 드래프트
+    public void Draft(Transform monster)
+    {
+        if(_draftCoroutine != null)
+        {
+            StopCoroutine( _draftCoroutine );
+            _draftCoroutine = StartCoroutine(StartDraftCoroutine(_draftMoveSpeed, _draftTime));
+        }
+        else
+        {
+            skillManager.playerStatManager.AddPlayerMoveSpeed(_draftMoveSpeed);
+            _draftCoroutine = StartCoroutine(StartDraftCoroutine(_draftMoveSpeed, _draftTime));
+        }
+    }
+
+    public IEnumerator StartDraftCoroutine(float moveSpeed,float time)
+    {
+        yield return new WaitForSeconds(time);
+        skillManager.playerStatManager.AddPlayerMoveSpeed(-moveSpeed);
+        _draftCoroutine = null;
+    }
+    #endregion
+
+    #region 정제
+    public void ConnectRefinement(MonsterBase monster)
+    {
+        Action handler = null;
+        handler = () =>
+        {
+            monster.OnDieEvent -= handler;
+            AddTotalDamageWhenMonsterDie();
+        };
+
+        monster.OnDieEvent += handler;
+    }
+
+    public void AddTotalDamageWhenMonsterDie()
+    {
+        skillManager.playerStatManager.AddTotalMultiDamage(_addTotalDamage);
+        Debug.Log(skillManager.playerStatManager.totalMultiDamage);
     }
     #endregion
 }

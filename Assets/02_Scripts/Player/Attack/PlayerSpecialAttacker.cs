@@ -40,6 +40,7 @@ public abstract class PlayerSpecialAttacker : MonoBehaviour
     public virtual void Initialize(Player player)
     {
         _player = player;
+        OnSpecialChargeUpdated += GameManager.Instance.PlayerStatManager.SetPlayerRifleChargeRatio;
     }
 
     // 외부에서 호출하는 진입점: 큐잉/쿨타임 로직을 파생클래스에서 구현 가능

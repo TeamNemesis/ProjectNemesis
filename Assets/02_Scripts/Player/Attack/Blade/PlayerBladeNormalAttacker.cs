@@ -50,8 +50,16 @@ public class PlayerBladeNormalAttacker : PlayerNormalAttacker
 
     protected override void StartAttack()
     {
-        IsAttacking = true;
-        _currentCombo = 1;
+        if (IsAttacking == false)
+        {
+            IsAttacking = true;
+            _currentCombo = 1;
+        }
+        else
+        {
+            IsAttacking = true;
+            _currentCombo++;
+        }
         OnAttackStarted?.Invoke();
         PlayComboAnimation(_currentCombo);
     }
@@ -67,7 +75,7 @@ public class PlayerBladeNormalAttacker : PlayerNormalAttacker
         {
             Debug.Log("PlayerBladeNormalAttacker.PlayComboAnimation: Animator is null.");
         }
-        _player.Animator.OnNormalAttack(comboIndex);
+        _player.Animator.OnNormalAttack();
     }
 
     //// 애니메이션 이벤트: 실제 히트 타이밍

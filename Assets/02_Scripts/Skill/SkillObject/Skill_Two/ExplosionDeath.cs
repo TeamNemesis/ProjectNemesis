@@ -1,9 +1,20 @@
 using System.Collections;
 using UnityEngine;
 
-public class ExplosionDeath : AreaDamageBase
+public class ExplosionDeathData
 {
-
+    public float damage;
+    public float extent;
+    
+    public ExplosionDeathData(float damage, float extent)
+    {
+        this.damage = damage;
+        this.extent = extent;
+    }
+}
+public class ExplosionDeath : AreaDamageBase,IInitializePoolable
+{
+    private float _damage;
 
     public GameObject GetGameObject()
     {
@@ -30,4 +41,13 @@ public class ExplosionDeath : AreaDamageBase
         GameManager.Instance.PoolManager.ReleaseToPoolByInterface(gameObject);
     }
 
+    public void Initialize(object data)
+    {
+        if(data is ExplosionDeathData skillData)
+        {
+            _damage = skillData.damage;
+            _areaExtent = skillData.extent;
+            transform.localScale = Vector3.one * _areaExtent * 2f;
+        }
+    }
 }

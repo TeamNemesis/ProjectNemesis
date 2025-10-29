@@ -170,5 +170,10 @@ public abstract class Room : MonoBehaviour
     public void RewardSelectionFinished()
     {
         OnRewardSelectionFinished?.Invoke();
+
+        Debug.LogError("방 끝 호출");
+
+        // 스킬 진화 발동용 메서드
+        EventBus.Evolution();
     }
 }

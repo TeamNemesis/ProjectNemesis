@@ -36,7 +36,7 @@ public class PlayerRifleNormalAttacker : PlayerNormalAttacker
     {
         IsAttacking = true;
         OnAttackStarted?.Invoke();
-        _player.Animator.OnNormalAttack(1);
+        _player.Animator.OnNormalAttack();
 
         if (_endRoutine != null)
         {
