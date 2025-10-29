@@ -23,8 +23,12 @@ public interface IInteractable
 
     event Action<IInteractable> OnInteracted;
 
-    /// <summary>
-    /// 상호작용을 실행하는 함수
-    /// </summary>
-    void StartInteract(Transform subject);
+   /// <summary>
+   /// 상호작용을 시도하는 함수
+   /// </summary>
+   /// <param name="subject">상호작용 하는 객체의 Transform</param>
+   /// <returns></returns>
+    bool TryInteract(Transform subject);
+
+    void GetInteractionMessage(out string title, out string instruction);
 }

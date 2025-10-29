@@ -36,8 +36,7 @@ public class DashReinforcePrefab : AreaDamageBase, IInitializePoolable
 	{
 		if (data is DashReinforceData skillData)
 		{
-			_areaExtent = skillData.skillExtent * GameManager.Instance.PlayerStatManager.playerAreaExtent;
-			transform.localScale = Vector3.one * _areaExtent * 2;
+			SetAreaExtent(skillData.skillExtent);
 		}
 	}
 

@@ -19,8 +19,7 @@ public class WeakenArea : AreaDamageBase, IInitializePoolable
     {
         if (data is WeakenAreaData skillData)
         {
-            _areaExtent = skillData.extent;
-            transform.localScale = Vector3.one * _areaExtent * 2f;
+            SetAreaExtent(skillData.extent);
         }
     }
 

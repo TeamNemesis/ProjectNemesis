@@ -1,163 +1,138 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// NormalRoom: 보상 생성 로직을 단순화하고 안전성 검사를 추가한 버전
+/// NormalRoom: 풀링을 사용하는 보상 생성 로직 (정리 및 안전성 강화)
 /// </summary>
 public class NormalRoom : Room
 {
     [SerializeField] Transform[] _monsterSpawnPoints;
 
+    // NormalRoomType -> Pool/Resource 키 매핑 (프로젝트 규칙에 맞춰 값 설정)
+    Dictionary<NormalRoomType, string> _normalRewardMap = new Dictionary<NormalRoomType, string>()
+    {
+        {NormalRoomType.Heal, Constants.RESOURCES_PATH_REWARDS + "/HealPack" },
+        {NormalRoomType.Credit, Constants.RESOURCES_PATH_REWARDS + "/Credit" },
+        {NormalRoomType.TechUpgrade, Constants.RESOURCES_PATH_REWARDS + "/TechUpgradePack" },
+        {NormalRoomType.Chrome, Constants.RESOURCES_PATH_REWARDS + "/Chrome" },
+        {NormalRoomType.TechSelect, Constants.RESOURCES_PATH_REWARDS + "/TechSelectPack" },
+    };
+    Dictionary<TechSelectPackType, string> _techSelectPackMap = new Dictionary<TechSelectPackType, string>()
+    {
+        {TechSelectPackType.Company1, Constants.RESOURCES_PATH_REWARDS + "/TechSelectPack_Company1" },
+        {TechSelectPackType.Company2, Constants.RESOURCES_PATH_REWARDS + "/TechSelectPack_Company2" },
+        {TechSelectPackType.Company3, Constants.RESOURCES_PATH_REWARDS + "/TechSelectPack_Company3" },
+        {TechSelectPackType.Company4, Constants.RESOURCES_PATH_REWARDS + "/TechSelectPack_Company4" },
+        {TechSelectPackType.Company5, Constants.RESOURCES_PATH_REWARDS + "/TechSelectPack_Company5" },
+    };
+
     public Transform[] MonsterSpawnPoints => _monsterSpawnPoints;
 
-    public override RewardInteractableObject[] SpawnReward()
+    public override IInteractable[] SpawnReward()
     {
-        // 안전 검사: 스폰 포인트가 없으면 빈 배열 반환
+        // 보상 스폰 포인트 유효성 검사
         if (_rewardSpawnPoints == null || _rewardSpawnPoints.Length == 0)
         {
-            Debug.LogWarning("NormalRoom.SpawnReward: reward spawn points are not set.");
-            return System.Array.Empty<RewardInteractableObject>();
+            Debug.LogWarning($"NormalRoom.SpawnReward: reward spawn points are not set. (room={name})");
+            return System.Array.Empty<IInteractable>();
         }
 
-        // DataManager 캐시
-        var dataManager = GameManager.Instance?.DataManager;
-        if (dataManager == null)
+        // Normal 타입인지 확인하고 NormalType 값 획득
+        if (!_roomInfo.TryGetNormal(out var normalType))
         {
-            Debug.LogError("NormalRoom.SpawnReward: DataManager is null.");
-            return System.Array.Empty<RewardInteractableObject>();
+            // Normal 타입이 아니면 보상 없음
+            return System.Array.Empty<IInteractable>();
         }
 
-        var prefab = GetPrefabForRoomType(dataManager);
-        Debug.Log($"Spawning prefab: {(prefab != null ? prefab.name : "null")} for type {_roomInfo.NormalType}");
+        Vector3 spawnPos = _rewardSpawnPoints[0].position;
+        Quaternion spawnRot = Quaternion.identity;
+        GameObject instance = null;
 
-        var instantiated = Instantiate(prefab, _rewardSpawnPoints[0].position, Quaternion.identity, transform);
-        Debug.Log($"Instantiated root name: {instantiated.name}");
+        var poolMgr = GameManager.Instance?.PoolManager;
+        var resourceMgr = GameManager.Instance?.ResourceManager;
 
-        // 시도 1: 루트에서 찾기
-        var rewardRoot = instantiated.GetComponent<RewardInteractableObject>();
-        Debug.Log($"GetComponent<RewardInteractableObject>() => {(rewardRoot == null ? "null" : rewardRoot.GetType().FullName)}");
+        // TechSelect은 별도 매핑 처리
+        if (normalType == NormalRoomType.TechSelect)
+        {
+            if (!_roomInfo.TryGetTechSelect(out var packType))
+            {
+                Debug.LogWarning($"NormalRoom.SpawnReward: TechSelectPackType이 설정되지 않았습니다. (room={name})");
+                return System.Array.Empty<IInteractable>();
+            }
 
-        // 시도 2: 자식까지 검색
-        var rewardChild = instantiated.GetComponentInChildren<RewardInteractableObject>(true);
-        Debug.Log($"GetComponentInChildren<RewardInteractableObject>(true) => {(rewardChild == null ? "null" : rewardChild.GetType().FullName)}");
+            if (_techSelectPackMap.TryGetValue(packType, out var techKey) && !string.IsNullOrEmpty(techKey))
+            {
+                if (poolMgr != null)
+                {
+                    instance = poolMgr.GetFromPool(techKey, spawnPos, spawnRot, transform);
+                }
 
-        // 전체 MonoBehaviour 목록 출력(무엇이 붙어있는지 확인)
-        var monos = instantiated.GetComponentsInChildren<MonoBehaviour>(true);
-        foreach (var m in monos)
-            Debug.Log($"Component on instantiated: {m.GetType().FullName}");
+                // 풀에서 못가져오면 폴백(리소스매니저/Instantiate 등)을 여기서 추가할 수 있음
+                if (instance == null && resourceMgr != null)
+                {
+                    var prefab = resourceMgr.LoadResource<GameObject>(techKey);
+                    if (prefab != null)
+                        instance = Instantiate(prefab, spawnPos, spawnRot, transform);
+                }
 
-        //GameObject prefab = GetPrefabForRoomType(dataManager);
-        //if (prefab == null)
-        //{
-        //    Debug.LogWarning($"NormalRoom.SpawnReward: No prefab mapped for NormalType {_roomInfo.NormalType}.");
-        //    return System.Array.Empty<RewardInteractableObject>();
-        //}
+                if (instance == null)
+                {
+                    Debug.LogWarning($"NormalRoom.SpawnReward: Failed to spawn TechSelectPack for key '{techKey}' (room={name})");
+                    return System.Array.Empty<IInteractable>();
+                }
+            }
+            else
+            {
+                Debug.LogWarning($"NormalRoom.SpawnReward: No mapping for TechSelectPackType {packType} (room={name})");
+                return System.Array.Empty<IInteractable>();
+            }
+        }
+        else
+        {
+            // 일반 매핑 처리
+            if (!_normalRewardMap.TryGetValue(normalType, out var prefabKey) || string.IsNullOrEmpty(prefabKey))
+            {
+                Debug.LogWarning($"NormalRoom.SpawnReward: No prefab key mapped for NormalRoomType {normalType}. (room={name})");
+                return System.Array.Empty<IInteractable>();
+            }
 
-        //var instantiated = Instantiate(prefab, _rewardSpawnPoints[0].position, Quaternion.identity, transform);
-        var reward = instantiated.GetComponent<RewardInteractableObject>();
+            if (poolMgr != null)
+            {
+                instance = poolMgr.GetFromPool(prefabKey, spawnPos, spawnRot, transform);
+            }
+
+            if (instance == null && resourceMgr != null)
+            {
+                var prefab = resourceMgr.LoadResource<GameObject>(prefabKey);
+                if (prefab != null)
+                    instance = Instantiate(prefab, spawnPos, spawnRot, transform);
+            }
+
+            if (instance == null)
+            {
+                Debug.LogWarning($"NormalRoom.SpawnReward: Failed to spawn reward for key '{prefabKey}' (room={name})");
+                return System.Array.Empty<IInteractable>();
+            }
+        }
+
+        // Spawn 성공: RewardInteractableObject 찾기 (루트 또는 자식)
+        var reward = instance.GetComponent<RewardInteractableObject>()
+                     ?? instance.GetComponentInChildren<RewardInteractableObject>(true);
+
         if (reward == null)
         {
-            Debug.LogError("NormalRoom.SpawnReward: Prefab does not contain RewardInteractableObject component.");
-            Destroy(instantiated);
-            return System.Array.Empty<RewardInteractableObject>();
+            Debug.LogError($"NormalRoom.SpawnReward: Spawned instance '{instance.name}' does not contain RewardInteractableObject. Releasing/destroying instance. (room={name})");
+            if (poolMgr != null)
+                poolMgr.ReleaseToPool(instance);
+            else
+                Destroy(instance);
+
+            return System.Array.Empty<IInteractable>();
         }
+
         reward.OnRewardGiven += RewardSelectionFinished;
 
-        // Tech 초기화가 필요한 경우 인터페이스로 안전하게 초기화
-        if (reward is TechSelectPackInteractor techSelectPackInteractor &&
-            _roomInfo.TechType.HasValue)
-        {
-            techSelectPackInteractor.Initialize(_roomInfo.TechType.Value);
-        }
-
-        return new RewardInteractableObject[] { reward };
-    }
-
-    // NormalRoomType -> prefab 선택을 중앙화
-    GameObject GetPrefabForRoomType(DataManager dataManager)
-    {
-        switch (_roomInfo.NormalType)
-        {
-            case NormalRoomType.TechSelect:
-                if (_roomInfo.TechType.HasValue)
-                    return dataManager.TechPackDataMap[_roomInfo.TechType.Value].RewardPrefab;
-                return null;
-            case NormalRoomType.Credit:
-                return dataManager.RewardDataMap[RewardType.Credit].RewardPrefab;
-            case NormalRoomType.Heal:
-                return dataManager.RewardDataMap[RewardType.HealPack].RewardPrefab;
-            case NormalRoomType.Chrome:
-                return dataManager.RewardDataMap[RewardType.Chrome].RewardPrefab;
-            case NormalRoomType.TechUpgrade:
-                return dataManager.RewardDataMap[RewardType.TechUpgradePack].RewardPrefab;
-            default:
-                Debug.LogWarning("NormalRoom.GetPrefabForRoomType: Invalid NormalType.");
-                return null;
-        }
+        // 마지막으로 보상 참조를 배열로 담아 반환 (이 배열이 '새로운 오브젝트 생성'을 의미하는 것은 아님)
+        return new IInteractable[] { reward };
     }
 }
-
-//using UnityEngine;
-
-//public class NormalRoom : Room
-//{
-//    [SerializeField] Transform[] _monsterSpawnPoints;
-
-//    public Transform[] MonsterSpawnPoints => _monsterSpawnPoints;
-//    public override RewardInteractableObject[] SpawnReward()
-//    {
-//        RewardInteractableObject[] rewardInteractableObjects = new RewardInteractableObject[1];
-//        switch (_roomInfo.NormalType)
-//        {
-//            case NormalRoomType.TechSelect:
-//                {
-//                    GameObject obj = GameManager.Instance.DataManager.TechPackDataMap[_roomInfo.TechType.Value].RewardPrefab;
-//                    RewardInteractableObject reward = Instantiate(obj, _rewardSpawnPoints[0].position, Quaternion.identity, transform).GetComponent<RewardInteractableObject>();
-//                    rewardInteractableObjects[0] = reward;
-//                    TechSelectPackInteractor techSelectPackInteractor = reward as TechSelectPackInteractor;
-//                    techSelectPackInteractor.Initialize(_roomInfo.TechType.Value);
-//                    return rewardInteractableObjects;
-//                }
-//            case NormalRoomType.Credit:
-//                {
-//                    GameObject obj = GameManager.Instance.DataManager.RewardDataMap[RewardType.Credit].RewardPrefab;
-//                    RewardInteractableObject reward = Instantiate(obj, _rewardSpawnPoints[0].position, Quaternion.identity, transform).GetComponent<RewardInteractableObject>();
-//                    rewardInteractableObjects[0] = reward;
-//                    TechSelectPackInteractor techSelectPackInteractor = reward as TechSelectPackInteractor;
-//                    techSelectPackInteractor.Initialize(_roomInfo.TechType.Value);
-//                    return rewardInteractableObjects;
-//                }
-//            case NormalRoomType.Heal:
-//                {
-//                    GameObject obj = GameManager.Instance.DataManager.RewardDataMap[RewardType.HealPack].RewardPrefab;
-//                    RewardInteractableObject reward = Instantiate(obj, _rewardSpawnPoints[0].position, Quaternion.identity, transform).GetComponent<RewardInteractableObject>();
-//                    rewardInteractableObjects[0] = reward;
-//                    TechSelectPackInteractor techSelectPackInteractor = reward as TechSelectPackInteractor;
-//                    techSelectPackInteractor.Initialize(_roomInfo.TechType.Value);
-//                    return rewardInteractableObjects;
-//                }
-//            case NormalRoomType.Chrome:
-//                {
-//                    GameObject obj = GameManager.Instance.DataManager.RewardDataMap[RewardType.Chrome].RewardPrefab;
-//                    RewardInteractableObject reward = Instantiate(obj, _rewardSpawnPoints[0].position, Quaternion.identity, transform).GetComponent<RewardInteractableObject>();
-//                    rewardInteractableObjects[0] = reward;
-//                    TechSelectPackInteractor techSelectPackInteractor = reward as TechSelectPackInteractor;
-//                    techSelectPackInteractor.Initialize(_roomInfo.TechType.Value);
-//                    return rewardInteractableObjects;
-//                }
-//            case NormalRoomType.TechUpgrade:
-//                {
-//                    GameObject obj = GameManager.Instance.DataManager.RewardDataMap[RewardType.TechUpgradePack].RewardPrefab;
-//                    RewardInteractableObject reward = Instantiate(obj, _rewardSpawnPoints[0].position, Quaternion.identity, transform).GetComponent<RewardInteractableObject>();
-//                    rewardInteractableObjects[0] = reward;
-//                    TechSelectPackInteractor techSelectPackInteractor = reward as TechSelectPackInteractor;
-//                    techSelectPackInteractor.Initialize(_roomInfo.TechType.Value);
-//                    return rewardInteractableObjects;
-//                }
-//            default:
-//                {
-//                    Debug.Log("NormalRoom SpawnReward: NormalType이 유효하지 않습니다.");
-//                    return null;
-//                }
-//        }
-//    }
-//}

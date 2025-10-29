@@ -54,4 +54,17 @@ public class CurrencyManager : MonoBehaviour
         _currentChrome += amount;
         OnChromeChanged?.Invoke(_currentChrome);
     }
+
+    public bool TrySpendCredit(int amount)
+    {
+        if (_currentCredit < amount)
+        {
+            Debug.Log("돈이 부족합니다.");
+            return false;
+        }
+
+        _currentCredit -= amount;
+        OnCreditChanged?.Invoke(_currentCredit);
+        return true;
+    }
 }

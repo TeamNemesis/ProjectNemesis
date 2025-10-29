@@ -47,8 +47,10 @@ public class Player : MonoBehaviour
 
     [Header("----- 상태 플래그 (Player가 소유) -----")]
     [SerializeField] bool _canMove;                        // 플레이어 이동 가능 여부
-    [SerializeField] bool _isDashing;                      // 플레이어 대시 중 여부
-    [SerializeField] bool _isNormalAttacking;              // 플레이어 일반공격 중 여부
+    // NOTE: _isDashing 및 _isNormalAttacking 필드는 컴포넌트(예: PlayerDasher, PlayerNormalAttacker)가 실제 소유자일 때
+    // UI / 에디터에서 확인하려고 남겨둘 수 있으나 런타임 로직은 컴포넌트의 상태를 우선 참조하도록 변경했습니다.
+    [SerializeField] bool _isDashing;                      // 플레이어 대시 중 여부 (동기화됨)
+    [SerializeField] bool _isNormalAttacking;              // (동기화됨)
     [SerializeField] bool _isSpecialAttacking;             // 플레이어 특수공격 중 여부
 
     // 읽기 전용 프로퍼티로 외부 접근 제공
@@ -56,6 +58,7 @@ public class Player : MonoBehaviour
     public PlayerSpecialAttacker SpecialAttacker => _specialAttacker;
     public PlayerAnimator Animator => _animator;
     public PlayerModel playerModel => _playerModel;
+    public PlayerDasher Dasher => _dasher;
     public PlayerWeaponSet CurrentWeaponSet => _currentWeaponSet;
 
     public Vector2 MoveInput => _moveInput;
@@ -65,14 +68,18 @@ public class Player : MonoBehaviour
     public bool SpecialAttackPressed => _specialAttackPressed;
 
     public bool CanMove => _canMove;
-    public bool IsDashing => _isDashing;
-    public bool IsNormalAttacking => _normalAttacker.IsAttacking;
+
+    // 변경: IsDashing/IsNormalAttacking는 해당 컴포넌트(실제 소유자)를 우선 참조하도록 함.
+    public bool IsDashing => _dasher != null ? _dasher.IsDashing : _isDashing;
+    public bool IsNormalAttacking => _normalAttacker != null ? _normalAttacker.IsAttacking : _isNormalAttacking;
     public bool IsSpecialAttacking => _isSpecialAttacking;
 
     #region 이벤트
     public event Action OnNormalAttackStarted;
     public event Action OnSpecialAttackStarted;
     public event Action OnDashStarted;
+    public event Action<IInteractable> OnInteractableDetected;
+    public event Action OnInteractableMissed;
     #endregion
 
     [Header("----- 상태 캐시 -----")]
@@ -129,10 +136,44 @@ public class Player : MonoBehaviour
         _weaponController.Initialize();
 
         _interactionController.Initialize();
-        _interactableGuideView.Initialize();
+        //_interactableGuideView.Initialize();
+
+        // 중요한 변경: Dasher의 시작/종료 이벤트로 Player의 플래그를 동기화합니다.
+        // 이렇게 하면 Player.IsDashing가 Dasher의 실 상태를 반영하게 되어 상태 전환(예: Move로 가는 것)에서 불일치가 나지 않습니다.
+        if (_dasher != null)
+        {
+            _dasher.DashStarted += OnDasherStarted;
+            _dasher.DashEnded += OnDasherEnded;
+        }
 
         // 상태 맵 초기화 및 상태머신 설정
         _stateMachine = new StateMachine(this);
+    }
+
+    void OnDestroy()
+    {
+        if (_dasher != null)
+        {
+            _dasher.DashStarted -= OnDasherStarted;
+            _dasher.DashEnded -= OnDasherEnded;
+        }
+
+        if (_normalAttacker != null)
+        {
+            UnsubscribeNormalAttacker(_normalAttacker);
+        }
+    }
+
+    void OnDasherStarted()
+    {
+        // 동기화: 에디터에서 값 확인용으로도 남겨둠
+        _isDashing = true;
+        OnDashStarted?.Invoke();
+    }
+
+    void OnDasherEnded()
+    {
+        _isDashing = false;
     }
 
     #region 입력 플래그 Setters (InputHandler -> Player)
@@ -146,7 +187,7 @@ public class Player : MonoBehaviour
     #region 상태 플래그 Setters (상태 Enter/Exit에서 호출)
     // 상태(Enter/Exit)에서 호출하여 Player가 소유한 플래그를 변경
     public void SetCanMove(bool canMove) => _canMove = canMove;
-    public void SetIsDashing(bool isDashing) => _isDashing = isDashing;
+    public void SetIsDashing(bool isDashing) => _isDashing = isDashing; // 유지하되 Dasher가 권한자
     public void SetIsNormalAttacking(bool isNormalAttacking) => _isNormalAttacking = isNormalAttacking;
     public void SetIsSpecialAttacking(bool isSpecialAttacking) => _isSpecialAttacking = isSpecialAttacking;
     #endregion
@@ -161,13 +202,13 @@ public class Player : MonoBehaviour
         // 1) 일반 공격 입력 처리
         if (_normalAttackPressed && TryConsumeNormalAttack())
         {
-            if (_normalAttacker != null && !_isDashing && !_isSpecialAttacking)
+            if (_normalAttacker != null && !IsDashing && !_isSpecialAttacking)
             {
                 // 요청만 보냄. 실제 상태 전환은 AttackStarted 이벤트에서 수행
                 bool accepted = false;
                 try
                 {
-                    accepted = _normalAttacker.RequestAttack();
+                    accepted = _stateMachine.ChangeState(PlayerStateType.NormalAttack);
                 }
                 catch (Exception ex)
                 {
@@ -187,7 +228,7 @@ public class Player : MonoBehaviour
         // 2) 대시
         if (_dashPressed && TryConsumeDash())
         {
-            if (!IsNormalAttacking && !IsSpecialAttacking && !IsDashing)
+            if (!IsNormalAttacking && !_isSpecialAttacking && !IsDashing)
             {
                 _stateMachine.ChangeState(PlayerStateType.Dash);
                 return;
@@ -195,7 +236,7 @@ public class Player : MonoBehaviour
         }
 
         // 3) 이동
-        if (_moveInput.sqrMagnitude > 0.01f && !IsNormalAttacking && !IsSpecialAttacking && !IsDashing)
+        if (_moveInput.sqrMagnitude > 0.01f && !IsNormalAttacking && !_isSpecialAttacking && !IsDashing)
         {
             if (_stateMachine.CurrentType != PlayerStateType.Move)
             {
@@ -205,7 +246,7 @@ public class Player : MonoBehaviour
         }
 
         // 4) 기본 Idle
-        if (_stateMachine.CurrentType != PlayerStateType.Idle && !IsNormalAttacking && !IsDashing && !IsSpecialAttacking)
+        if (_stateMachine.CurrentType != PlayerStateType.Idle && !IsNormalAttacking && !IsDashing && !_isSpecialAttacking)
         {
             _stateMachine.ChangeState(PlayerStateType.Idle);
         }
@@ -220,11 +261,11 @@ public class Player : MonoBehaviour
     }
 
     bool TryConsumeSpecialAttack()
-{
-    if (!_specialAttackPressed) return false;
-    _specialAttackPressed = false;
-    return true;
-}
+    {
+        if (!_specialAttackPressed) return false;
+        _specialAttackPressed = false;
+        return true;
+    }
 
     bool TryConsumeDash()
     {
@@ -241,9 +282,8 @@ public class Player : MonoBehaviour
     public void SetToIdle()
     {
         _stateMachine.ChangeState(PlayerStateType.Idle);
-        SetIsNormalAttacking(false);
     }
-    
+
     public void Move(Vector2 moveDir)
     {
         _mover.Move(moveDir);
@@ -254,13 +294,6 @@ public class Player : MonoBehaviour
     {
         _mover.Move(Vector2.zero);
         _animator.OnMove(0f);
-    }
-
-    public void Dash()
-    {
-        _dasher.Dash(transform.forward, _statManager.playerDashDistance, 0.5f);
-        OnDashStarted?.Invoke();
-        _animator.OnDash();
     }
     #endregion
 
@@ -296,20 +329,17 @@ public class Player : MonoBehaviour
 
             playerBladeNormalAttacker.Initialize(this);
         }
-        //_grenadeAttacker = _currentWeaponSet.GrenadeAttacker;
 
         _animator.SetAnimator(_currentWeaponSet.AnimController);
-        // 만약 이펙트가 바뀌거나 사운드 등 효과가 필요해서 이벤트가 필요하다면
-        // 무기변경 이벤트를 만들어서 여기에 추가
     }
-    // 애니메이션 이벤트에서 Player의 메서드를 호출하도록 설정하세요.
-    // 예: 애니메이션 클립의 이벤트에서 "OnAttackFireEvent" 와 "OnAttackEndEvent"를 호출.
 
     void SubscribeNormalAttacker(PlayerNormalAttacker attacker)
     {
         if (attacker == null) return;
+        
         attacker.AttackStarted += OnAttackerStarted;
         attacker.AttackEnded += OnAttackerEnded;
+        Debug.Log("이벤트 구독 완료");
     }
 
     void UnsubscribeNormalAttacker(PlayerNormalAttacker attacker)
@@ -324,8 +354,9 @@ public class Player : MonoBehaviour
         Debug.Log("Player: attacker started -> change to NormalAttack state");
         // 상태 전환은 여기서 확실히 수행
         _stateMachine.ChangeState(PlayerStateType.NormalAttack);
-        // 필요하면 플레이어 플래그 동기화 (권장: 제거하고 attacker.IsAttacking에 의존)
+        // 동기화: 컴포넌트가 권한자이지만 편의를 위해 에디터용 필드도 업데이트
         _isNormalAttacking = true;
+        // 외부 알림용 이벤트 호출
         OnNormalAttackStarted?.Invoke();
     }
 
@@ -356,16 +387,12 @@ public class Player : MonoBehaviour
         }
 
         // 블레이드 계열은 Animation_OnComboWindowOpen 호출
-        if( _normalAttacker is PlayerBladeNormalAttacker blade)
+        if (_normalAttacker is PlayerBladeNormalAttacker blade)
         {
             blade.Animation_OnComboWindowOpen();
             OnNormalAttackStarted?.Invoke();
             return;
         }
-
-        // 근접 콤보 타입은 그 컴포넌트에 맞게 애니메이션 이벤트를 연결하거나
-        // Player에서 melee-specific 메서드를 호출하도록 구성하세요.
-        // 예: if (_normalAttacker is MeleeComboAttacker melee) melee.OnComboHit();
     }
 
     /// <summary>
@@ -405,7 +432,6 @@ public class Player : MonoBehaviour
 
         if (_specialAttacker != null && _specialAttacker.RequestSpecial())
         {
-            // StateMachine으로 전환하면 State에서 StartCharge를 호출하도록 하는 방식(권장)
             _stateMachine.ChangeState(PlayerStateType.SpecialAttack);
             OnSpecialAttackStarted?.Invoke();
         }
@@ -413,15 +439,17 @@ public class Player : MonoBehaviour
 
     public void HandleSpecialCanceled()
     {
-        // 만약 StateMachine에서 취급한다면 State에 전달하거나 직접 호출
         if (_specialAttacker != null && _specialAttacker.IsCharging)
         {
             _specialAttacker.StopChargeAndFire();
         }
-
-        // State 전환(Idle 등)은 _specialAttacker 이벤트 또는 State에서 하도록 설계
     }
     #endregion
+
+    public void HandleGrenade(Vector3 mousePos)
+    {
+        _grenadeAttacker.SetMousePos(mousePos);
+    }
 
     #region 상호작용 처리 (기존 로직)
     public void OnWeaponInteracted(WeaponType newWeaponType)
@@ -431,13 +459,12 @@ public class Player : MonoBehaviour
 
     public void OnDoorInteracted(RoomInfo roomInfo)
     {
-        if(roomInfo == null)
+        if (roomInfo == null)
         {
             Debug.LogError("Player.OnDoorInteracted 호출 시 roomInfo가 null입니다! 호출자 스택을 확인하세요.");
             return;
         }
         Debug.Log(roomInfo.RoomType + " 방으로 가는 문과 상호작용 함");
-        // OnDoorInteract?.Invoke(roomInfo);
     }
 
     /// <summary>
@@ -446,34 +473,25 @@ public class Player : MonoBehaviour
     /// </summary>
     public void ExecuteInteraction()
     {
-        // 상호작용 불가능 상태라면 함수 종료
         if (!_isInteractable) return;
 
-        // 상호작용 감지기가 감지한 IInteractable과 상호작용 수행
         _interactableDetector.ExecuteInteraction();
 
         InteractableMissed(); //상호작용 한번 하면 UI 사라지게
     }
-    
-    /// <summary>
-    /// 플레이어가 상호작용가능한 물체를 감지했을 때 호출되는 함수
-    /// </summary>
-    /// <param name="interactable"></param>
+
     public void InteractableDetected(IInteractable interactable)
     {
         _isInteractable = true;
-        _interactableGuideView.ShowUI(interactable);
+        //_interactableGuideView.ShowUI(interactable);
+        OnInteractableDetected?.Invoke(interactable);
     }
 
-    /// <summary>
-    /// 플레이어가 상호작용가능한 물체를 
-    /// </summary>
     public void InteractableMissed()
     {
         _isInteractable = false;
-        _interactableGuideView.HideUI();
+        //_interactableGuideView.HideUI();
+        OnInteractableMissed?.Invoke();
     }
-
-    
     #endregion
 }

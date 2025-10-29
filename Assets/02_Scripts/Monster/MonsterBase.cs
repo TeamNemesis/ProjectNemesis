@@ -134,6 +134,8 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
             monsterRigidbody.isKinematic = true;
         }
 
+        monsterCollider = GetComponent<Collider>();
+
         // === 코루틴 정리 ===
         if (_knockBackCoroutine != null)
         {
@@ -287,5 +289,14 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
         yield return new WaitForSeconds(knockBackCoolTime);
         _knockBackCoroutine = null;
     }
-    #endregion
+		#endregion
+
+#if UNITY_EDITOR
+		public void SetDebugStats(int hp, float speed)
+		{
+				_maxHealth = hp;
+				_currentHealth= hp;
+				_moveSpeed = speed;
+		}
+#endif
 }

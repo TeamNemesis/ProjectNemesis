@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Linq;
+using UnityEngine;
 
 /// <summary>
 /// 플레이어의 애니메이션을 담당하는클래스
@@ -41,5 +43,26 @@ public class PlayerAnimator : MonoBehaviour
     public void OnSpecialAttackEnd()
     {
         _animator.SetTrigger(Constants.ANIPARAM_ONSPECIALATTACKEND);
+    }
+
+    /// <summary>
+    /// runtimeAnimatorController (또는 AnimatorOverrideController)를 검색하여 clipName에 해당하는 AnimationClip.length를 반환합니다.
+    /// 찾지 못하면 0을 반환합니다.
+    /// </summary>
+    public float GetClipLengthByName(string clipName)
+    {
+        if (_animator == null || _animator.runtimeAnimatorController == null || string.IsNullOrEmpty(clipName))
+            return 0f;
+
+        // 일반 컨트롤러의 모든 클립 탐색
+        var clips = _animator.runtimeAnimatorController.animationClips;
+        if (clips != null && clips.Length > 0)
+        {
+            var c = clips.FirstOrDefault(x => x != null && x.name.Equals(clipName, StringComparison.OrdinalIgnoreCase));
+            if (c != null) return c.length;
+        }
+
+        // 못 찾음
+        return 0f;
     }
 }

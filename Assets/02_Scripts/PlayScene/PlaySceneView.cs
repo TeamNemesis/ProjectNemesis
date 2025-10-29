@@ -13,9 +13,14 @@ public class PlaySceneView : MonoBehaviour
     [SerializeField] TextMeshProUGUI _goldText;
     [SerializeField] TextMeshProUGUI _chromeText;
 
+    [SerializeField] GameObject _interactionPanel;
+    [SerializeField] TextMeshProUGUI _interactionTitleText;
+    [SerializeField] TextMeshProUGUI _interactionInstructionText;
+
     public void Initialize()
     {
         GameManager.Instance.CurrencyManager.GetCurrentCurrency();
+        HideInteractionUI();
     }
 
     public void UpdateHPBar(int currentHp, int maxHp)
@@ -33,5 +38,23 @@ public class PlaySceneView : MonoBehaviour
     public void UpdateChromeText(int currentChrome)
     {
         _chromeText.text = $"{currentChrome}";
+    }
+
+    public void ShowInteractionUI(IInteractable interactable)
+    {
+        UpdateInteractionText(interactable);
+        _interactionPanel.SetActive(true);
+    }
+
+    public void HideInteractionUI()
+    {
+        _interactionPanel.SetActive(false);
+    }
+
+    void UpdateInteractionText(IInteractable interactable)
+    {
+        interactable.GetInteractionMessage(out string title, out string instruction);
+        _interactionTitleText.text = title;
+        _interactionInstructionText.text = instruction;
     }
 }

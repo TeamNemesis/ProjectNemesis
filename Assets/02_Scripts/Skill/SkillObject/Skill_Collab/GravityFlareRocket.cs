@@ -6,13 +6,13 @@ using UnityEngine;
 
 public class GravityFlareRocketData
 {
-    public Vector3 dir;
+    
     public GravityFlareRocketExplosionData explosionData;
     public GravityFlareRocketExplosion explosionPrefab;
 
-    public GravityFlareRocketData(Vector3 dir, GravityFlareRocketExplosionData data, GravityFlareRocketExplosion explosionPrefab)
+    public GravityFlareRocketData(GravityFlareRocketExplosionData data, GravityFlareRocketExplosion explosionPrefab)
     {
-        this.dir = dir;
+        
         this.explosionData = data;
         this.explosionPrefab = explosionPrefab;
     }
@@ -20,7 +20,7 @@ public class GravityFlareRocketData
 
 public class GravityFlareRocket : PoolableObject,IInitializePoolable
 {
-    private Vector3 dir;
+   
     [SerializeField]
     private float moveSpeed;
 
@@ -31,7 +31,6 @@ public class GravityFlareRocket : PoolableObject,IInitializePoolable
     {
        if(data is GravityFlareRocketData rocketData)
         {
-            dir = rocketData.dir;
             explosionData = rocketData.explosionData;
             _explosionPrefab = rocketData.explosionPrefab;
         }
@@ -39,7 +38,7 @@ public class GravityFlareRocket : PoolableObject,IInitializePoolable
 
     private void Update()
     {
-        transform.Translate(dir * moveSpeed * Time.deltaTime);
+        transform.Translate(Vector3.forward * moveSpeed * Time.deltaTime);
     }
 
     private void OnTriggerEnter(Collider other)

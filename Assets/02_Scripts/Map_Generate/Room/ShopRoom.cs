@@ -1,6 +1,6 @@
 public class ShopRoom : Room
 {
-    public override RewardInteractableObject[] SpawnReward()
+    public override IInteractable[] SpawnReward()
     {
         throw new System.NotImplementedException();
     }

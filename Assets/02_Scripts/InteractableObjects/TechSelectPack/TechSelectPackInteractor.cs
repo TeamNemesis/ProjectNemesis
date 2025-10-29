@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections;
 using UnityEngine;
 
@@ -6,27 +6,38 @@ public class TechSelectPackInteractor : RewardInteractableObject
 {
     [SerializeField] TechItem _techItem;
 
-    [Header("----- ÀĞ±â Àü¿ë -----")]
+    [Header("----- ì„¤ì •ê°’ -----")]
     [SerializeField] TechSelectPackType _packType;
 
     public TechSelectPackType PackType => _packType;
 
     public override event Action OnRewardGiven;
 
-    public void Initialize(TechSelectPackType packType)
+    public void Initialize()
     {
-        //_packType = packType;
         GameManager.Instance.UIManager.onRewardSelect += RaiseRewardGivenEvent;
     }
 
     protected override IEnumerator RewardCoroutine()
     {
-        yield return new WaitForSeconds(0.5f); // º¸»ó ¼±ÅÃ UI ¿­¸®´Â ½Ã°£ ´ë±â
+        yield return new WaitForSeconds(0.5f); // ë³´ìƒ ì„ íƒ UI ì—´ë¦¬ëŠ” ì‹œê°„ ëŒ€ê¸°
         _techItem.GetSkill(_packType);
     }
 
     void RaiseRewardGivenEvent()
     {
         OnRewardGiven?.Invoke();
+    }
+
+    protected override void OnDisable()
+    {
+        base.OnDisable();
+        GameManager.Instance.UIManager.onRewardSelect -= RaiseRewardGivenEvent;
+    }
+
+    public override void GetInteractionMessage(out string title, out string instruction)
+    {
+        title = _packType.ToString();
+        instruction = _rewardInstruction;
     }
 }

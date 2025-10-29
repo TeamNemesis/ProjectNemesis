@@ -203,7 +203,7 @@ public class MonsterSpawner : MonoBehaviour
 
             activeMonsters.Add(spawnedMonster);
 
-            
+
             if (monsterbase != null)
             {
                 monsterbase.OnDieEvent += () => OnMonsterDeath(spawnedMonster);
@@ -238,5 +238,63 @@ public class MonsterSpawner : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
         StartNextWave();
+    }
+
+#if UNITY_EDITOR
+    /// <summary>
+    /// 현재 필드에 있는 모든 몬스터 제거
+    /// </summary>
+    public void KillAllActiveMonsters()
+    {
+        if (activeMonsters == null || activeMonsters.Count == 0)
+        {
+            Debug.Log("KillAllActiveMonsters: 제거할 몬스터 없음");
+            return;
+        }
+
+        foreach (var monsterObj in new List<GameObject>(activeMonsters))
+        {
+            if (monsterObj != null)
+            {
+                MonsterBase monsterBase = monsterObj.GetComponent<MonsterBase>();
+                if (monsterBase != null)
+                {
+                    monsterBase.TakeDamage(9999f); // 또는 monsterBase.TakeDamage(9999)
+                }
+                else
+                {
+                    Debug.LogWarning($"KillAllActiveMonsters: MonsterBase 없음 - {monsterObj.name}");
+                }
+            }
+        }
+
+        activeMonsters.Clear();
+        isWaveActive = false;
+        Debug.Log("KillAllActiveMonsters: 모든 몬스터 제거 완료");
+    }
+    public List<PoolableObject> GetMonsterPrefabs()
+    {
+        return monsterPrefabs;
+    }
+
+    public void SpawnSpecificMonster(PoolableObject prefab, Vector3 position)
+    {
+        if (prefab == null)
+        {
+            Debug.LogWarning("SpawnSpecificMonster: prefab이 null입니다.");
+            return;
+        }
+
+        GameObject spawned = GameManager.Instance.PoolManager.GetFromPool(prefab, position, Quaternion.identity);
+        MonsterBase monsterBase = spawned.GetComponent<MonsterBase>();
+        if (monsterBase != null)
+        {
+            activeMonsters.Add(spawned);
+            OnMonsterSpawned?.Invoke(monsterBase);
+            monsterBase.OnDieEvent += () => OnMonsterDeath(spawned);
+        }
+#endif
+
+
     }
 }

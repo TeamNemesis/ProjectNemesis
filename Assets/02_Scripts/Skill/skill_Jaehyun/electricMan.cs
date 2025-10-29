@@ -9,7 +9,6 @@ public class electricMan : MonoBehaviour
     // 각 몬스터별 마지막 데미지 시간 저장
     private Dictionary<GameObject, float> lastDamageTime = new Dictionary<GameObject, float>();
 
-
     private void OnTriggerStay(Collider other)
     {
         if (other.tag == "Monster")
@@ -24,15 +23,12 @@ public class electricMan : MonoBehaviour
                 CharacterModelBase target = monster.GetComponent<CharacterModelBase>();
                 if (target != null)
                 {
-                    target.TakeDamage(damage);
-                    Debug.Log("데미지 적용!");
+                    target.TakeDamage(damage, null);
+                    Debug.Log("전기인간 데미지 적용!");
                 }
-                // 타이머 갱신
+                // 타이머 갱신(데미지 적용 시간)
                 lastDamageTime[monster] = Time.time;
             }
         }
     }
-
-
-
 }

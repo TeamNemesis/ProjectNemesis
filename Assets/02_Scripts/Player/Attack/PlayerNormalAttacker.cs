@@ -8,6 +8,7 @@ using UnityEngine;
 /// </summary>
 public abstract class PlayerNormalAttacker : MonoBehaviour, IAttacker
 {
+    [SerializeField] protected bool _isAttacking = false;
     public abstract WeaponType WeaponType { get; }
 
     public virtual event Action OnAttackStarted;
@@ -16,7 +17,7 @@ public abstract class PlayerNormalAttacker : MonoBehaviour, IAttacker
     public event Action AttackEnded;
 
     // 공격 중인지 표시 (파생 클래스에서 보호 수준으로 변경 가능)
-    public bool IsAttacking { get; protected set; }
+    public bool IsAttacking => _isAttacking;
 
     /// <summary>
     /// Player가 호출하는 진입점.
@@ -33,7 +34,7 @@ public abstract class PlayerNormalAttacker : MonoBehaviour, IAttacker
     // 내부 시작 절차 (파생 클래스는 Attack()을 구현)
     protected virtual void StartAttack()
     {
-        IsAttacking = true;
+        _isAttacking = true;
         OnAttackStarted?.Invoke();
         Attack();
     }
@@ -46,14 +47,14 @@ public abstract class PlayerNormalAttacker : MonoBehaviour, IAttacker
     /// </summary>
     public virtual void EndAttack()
     {
-        if (!IsAttacking) return;
-        IsAttacking = false;
+        if (!_isAttacking) return;
+        _isAttacking = false;
         Debug.Log("PlayerNormalAttacker.EndAttack: Attack ended.");
         OnAttackEnded?.Invoke();
     }
 
     // 기본 조건: 현재 공격 중이 아니면 시작 가능
-    protected virtual bool CanStartAttack() => !IsAttacking;
+    protected virtual bool CanStartAttack() => !_isAttacking;
 
     public void OnAnimationFire()
     {

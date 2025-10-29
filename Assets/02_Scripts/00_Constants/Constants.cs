@@ -70,10 +70,6 @@ public static class Constants
     /// </summary>
     public static float SKILL_ONE_SPATTACK_STACKTIME = 1f;
 
-    /// <summary>
-    /// 장판 지속 시간
-    /// </summary>
-    public static float SKILL_ONE_SPATTACK_TIME = 3f;
 
     /// <summary>
     /// 피의 갈증 힐량
@@ -179,6 +175,7 @@ public static class Constants
     public const string LAYER_MASK_INTERACTABLE = "Interactable";
     public const string LAYER_MASK_PLAYER = "Player";
     public const string LAYER_MASK_WALL = "Wall";
+    public const string LAYER_MASK_GROUND = "Ground";
 
     #endregion
 
@@ -198,6 +195,8 @@ public static class Constants
     #region Map
     public static string RESOURCES_PATH_ROOMDATASO = "ScriptableObjects/Map/Rooms";
     public static string RESOURCES_PATH_DOOR_PREFAB = "Prefabs/Map/Doors/Door";
+    public static string RESOURCES_PATH_REWARDS = "Prefabs/Rewards";
+    public static string RESOURCES_PATH_SHOPITEMS = "Prefabs/ShopItems";
     #endregion
 
     #endregion
@@ -330,6 +329,14 @@ public enum NormalRoomType
     TechUpgrade,
 }
 
+public enum ShopItemType
+{
+    HealPack,
+    TechSelectPack,
+    TechUpgradePack,
+    MutantPack,
+}
+
 public enum RewardType
 {
     Credit,
@@ -344,6 +351,7 @@ public enum InteractableType
 {
     Door,
     Reward,
+    ShopItem,
     Weapon,
 }
 

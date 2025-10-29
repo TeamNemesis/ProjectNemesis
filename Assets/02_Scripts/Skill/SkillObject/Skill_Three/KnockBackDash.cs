@@ -53,8 +53,7 @@ public class KnockBackDash : AreaDamageBase,IInitializePoolable
         {
             _damage = skillData.skillDamage;
             _knockBackDistance = skillData.skillKnockBackDistance * GameManager.Instance.PlayerStatManager.knockBackDistance;
-            _areaExtent = skillData.skillExtent * GameManager.Instance.PlayerStatManager.playerAreaExtent;
-            transform.localScale = Vector3.one * _areaExtent * 2;
+            SetAreaExtent(skillData.skillExtent);
         }
     }
 

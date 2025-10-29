@@ -46,8 +46,7 @@ public class ExplosionDeath : AreaDamageBase,IInitializePoolable
         if(data is ExplosionDeathData skillData)
         {
             _damage = skillData.damage;
-            _areaExtent = skillData.extent;
-            transform.localScale = Vector3.one * _areaExtent * 2f;
+            SetAreaExtent(skillData.extent);
         }
     }
 }

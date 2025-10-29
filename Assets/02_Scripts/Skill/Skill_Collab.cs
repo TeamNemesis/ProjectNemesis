@@ -214,15 +214,17 @@ public class Skill_Collab : SkillBase
 
     public void ShotRocketToKnockBackMonster(Vector3 position)
     {
-        Debug.LogError("로켓 발사");
+
         Vector3 playerPosition = skillManager.playScene.player.transform.position;
+        Debug.LogError("playerPosition : " + playerPosition + " position : " + position);
+        position.y = 0;
+        playerPosition.y = 0;
         Vector3 direction = position - playerPosition;
-        direction.y = 0;
         direction.Normalize();
         playerPosition.y += Constants.MISSILIE_HEIGHT;
 
-        _rocketData = new GravityFlareRocketData(direction, _explosionData, _explosionPrefab);
-
+        _rocketData = new GravityFlareRocketData( _explosionData, _explosionPrefab);
+        Debug.LogError(direction);
         GameManager.Instance.PoolManager.GetFromPool(_rocketPrefab, playerPosition, Quaternion.LookRotation(direction), null, _rocketData);
     }
     #endregion
