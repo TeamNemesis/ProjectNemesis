@@ -42,6 +42,7 @@ public class PlaySceneView : MonoBehaviour
 
     public void ShowInteractionUI(IInteractable interactable)
     {
+        if(interactable is DoorInteractor)
         UpdateInteractionText(interactable);
         _interactionPanel.SetActive(true);
     }
@@ -53,6 +54,16 @@ public class PlaySceneView : MonoBehaviour
 
     void UpdateInteractionText(IInteractable interactable)
     {
+        if (interactable is DoorInteractor)
+        {
+            DoorInteractor doorInteractor = interactable as DoorInteractor;
+            if(doorInteractor.CanInteract == false)
+            {
+                _interactionTitleText.text = "???";
+                _interactionInstructionText.text = "문이 잠겨져 있습니다.";
+                return;
+            }
+        }
         interactable.GetInteractionMessage(out string title, out string instruction);
         _interactionTitleText.text = title;
         _interactionInstructionText.text = instruction;

@@ -4,119 +4,93 @@ using UnityEngine;
 
 /// <summary>
 /// 최소 책임: Resources 폴더에서 에셋을 로드해서 보관만 한다.
-/// - 딕셔너리/매핑은 만들지 않음.
-/// - 나중에 Addressables로 교체할 수 있게 구현부만 수정하면 됨.
+/// - 단일 에셋은 LoadResource<T>(path)
+/// - 여러 에셋(배열)은 LoadAllResources<T>(path)
+/// - 나중에 Addressables로 교체 가능하도록 분리
 /// </summary>
 public class ResourceManager : MonoBehaviour
 {
-    [Header("Editor Assignment (옵션)")]
-    [SerializeField] GameObject _doorPrefab;
-
-    [Header("Runtime Loaded (Resources 폴더에서 로드)")]
     public GameObject DoorPrefab { get; private set; }
 
     public PlayerWeaponSet[] PlayerWeaponSets { get; private set; }
     public RoomDataSO[] RoomDataSOs { get; private set; }
-    public RewardDataSO[] rewardDataSOs { get; private set; }
-    public RewardDataSO_TechPack[] rewardDataSO_TechPacks { get; private set; }
+    public RewardDataSO[] RewardDataSOs { get; private set; }
 
     // 호출: 게임 시작 시 한 번만
     public void Initialize()
     {
-        DoorPrefab = _doorPrefab != null
-            ? _doorPrefab
-            : Resources.Load<GameObject>(Constants.RESOURCES_PATH_DOOR_PREFAB); // 경로 규칙 예시
+        // 단일 에셋 로드
+        DoorPrefab = LoadResource<GameObject>(Constants.RESOURCES_PATH_DOOR_PREFAB);
 
-        PlayerWeaponSets = Resources.LoadAll<PlayerWeaponSet>(Constants.RESOURCES_PATH_PLAYER_WEAPONSET);
-        RoomDataSOs = Resources.LoadAll<RoomDataSO>(Constants.RESOURCES_PATH_ROOMDATASO);
-        rewardDataSOs = Resources.LoadAll<RewardDataSO>(Constants.RESOURCES_PATH_REWARD_DATA_SO);
+        // 배열(폴더) 로드: Resources.LoadAll 사용
+        PlayerWeaponSets = LoadAllResources<PlayerWeaponSet>(Constants.RESOURCES_PATH_PLAYER_WEAPONSET);
+        RoomDataSOs = LoadAllResources<RoomDataSO>(Constants.RESOURCES_PATH_ROOMDATASO);
+        RewardDataSOs = LoadAllResources<RewardDataSO>(Constants.RESOURCES_PATH_REWARD_DATA_SO);
 
         // (선택) 간단한 검증 로그
         if (DoorPrefab == null)
             Debug.LogWarning("ResourceManager: DoorPrefab이 비어있습니다.");
     }
 
-    Dictionary<Type, Dictionary<string, UnityEngine.Object>> _resourceCache = new();
+    readonly Dictionary<Type, Dictionary<string, UnityEngine.Object>> _singleCache = new();
+    readonly Dictionary<Type, Dictionary<string, UnityEngine.Object[]>> _allCache = new();
+
     /// <summary>
     /// 리소스를 로드합니다. 이미 캐시에 있다면 캐시에서 반환합니다.
+    /// 단일 에셋용: Resources.Load<T>(path)
     /// </summary>
-    /// <typeparam name="T">로드할 리소스의 타입</typeparam>
-    /// <param name="path">Resources 폴더 내 리소스의 경로</param>
-    /// <returns>로드된 리소스 객체</returns>
     public T LoadResource<T>(string path) where T : UnityEngine.Object
     {
-        // 타입별 캐시 확인
-        if (_resourceCache.TryGetValue(typeof(T), out var cache) == false)
+        if (string.IsNullOrEmpty(path)) return null;
+        var type = typeof(T);
+
+        // 1) 해당 타입의 하위 캐시가 있고, 그 하위 캐시에 path가 있으면 바로 반환
+        if (_singleCache.TryGetValue(type, out var cache) && cache.TryGetValue(path, out var cachedObj))
         {
-            cache = new Dictionary<string, UnityEngine.Object>();
-            _resourceCache[typeof(T)] = cache;
+            if (cachedObj is T tObj) return tObj;
+            // 캐시에 잘못된 타입이 들어있다면 경고하고 제거(또는 덮어쓰기)
+            Debug.LogWarning($"ResourceManager: cached object at '{path}' is not of expected type {type.Name}. Reloading.");
+            cache.Remove(path);
         }
 
-        // 경로(폴더 경로 포함한 이름)에 따른 캐시 확인
-        if (cache.ContainsKey(path) == true)
-        {
-            return cache[path] as T;
-        }
-
-        // 캐시에 없으면 Resources.Load로 로드
+        // 2) 캐시가 없거나 엔트리가 없으면 Resources.Load로 로드
         T resource = Resources.Load<T>(path);
         if (resource == null)
         {
-            Debug.LogError($"{path} 경로의 리소스를 Resources 폴더에서 찾을 수 없습니다.");
+            Debug.LogWarning($"ResourceManager: Resources.Load<{type.Name}> failed for path: {path}");
+            return null;
         }
-        else
+
+        // 3) 하위 캐시가 아직 없으면 생성하고 저장
+        if (!_singleCache.TryGetValue(type, out cache))
         {
-            cache[path] = resource;
+            cache = new Dictionary<string, UnityEngine.Object>();
+            _singleCache[type] = cache;
         }
+
+        // 4) 캐시에 넣고 반환
+        cache[path] = resource;
         return resource;
+    }
 
-        //    // 딕셔너리에서 먼저 Type으로 필터링하고 필터링했을 때 그 Type이 있으면
-        //    // 내부 딕셔너리에서 또 path를 Key로써 필터링해서 해당하는 Value가 있는지 확인한다.
-        //    // 만약 있다면 해당 Value를 resource변수로 out한다.
-        //    if (_resourceCache.ContainsKey(typeof(T)) && _resourceCache[typeof(T)].TryGetValue(path, out var resource))
-        //    {
-        //        // resource가 T 타입인지 확인하고
-        //        if (resource is T cachedResource)
-        //        {
-        //            // 맞다면 반환
-        //            return cachedResource;
-        //        }
-        //        else
-        //        {
-        //            // 아니라면 로그띄우기
-        //            Debug.LogWarning($"Resource at path '{path}' is not of type {typeof(T)}.");
-        //            return null;
-        //        }
+    /// <summary>
+    /// 여러 에셋을 배열로 로드합니다. Resources.LoadAll<T>(path) 사용.
+    /// 캐시 key는 타입 + "::ALL::" + path 로 관리.
+    /// </summary>
+    public T[] LoadAllResources<T>(string path) where T : UnityEngine.Object
+    {
+        if (string.IsNullOrEmpty(path)) return Array.Empty<T>();
+        var type = typeof(T);
+        if (!_allCache.TryGetValue(type, out var cache))
+        {
+            cache = new Dictionary<string, UnityEngine.Object[]>();
+            _allCache[type] = cache;
+        }
+        if (cache.TryGetValue(path, out var cached)) return cached as T[] ?? Array.Empty<T>();
 
-        //        // 처음에 이렇게하면 될줄알았는데 위가 더 안전한 방법이라는듯?
-        //        //return resource as T;
-        //    }
-
-        //    // 리소스가 캐시에 없으면 Resources.Load를 사용하여 로드
-        //    T loadedResource = Resources.Load<T>(path);
-
-        //    // 만약 로드한 리소스가 null이라면 
-        //    if (loadedResource == null)
-        //    {
-        //        // 로드 실패 로그 출력
-        //        Debug.Log("Resource를 로드할 수 없습니다.");
-        //        // null 반환
-        //        return null;
-        //    }
-
-        //    // 만약에 내가 로드한 타입이 딕셔너리에 없었다면
-        //    // 즉 처음 로드하는 타입일 경우
-        //    if (!_resourceCache.ContainsKey(typeof(T)))
-        //    {
-        //        // 해당 타입으로 딕셔너리를 하나 만든다.
-        //        _resourceCache[typeof(T)] = new Dictionary<string, UnityEngine.Object>();
-        //    }
-
-        //    // 로드한 리소스를 캐시에 저장
-        //    _resourceCache[typeof(T)][path] = loadedResource;
-
-        //    // 그리고 방금 저장한 리소스를 반환
-        //    return loadedResource;
-        //
+        var results = Resources.LoadAll<T>(path) ?? Array.Empty<T>();
+        cache[path] = results;
+        if (results.Length == 0) Debug.LogWarning($"ResourceManager: Resources.LoadAll<{type.Name}> returned empty for path: {path}");
+        return results;
     }
 }

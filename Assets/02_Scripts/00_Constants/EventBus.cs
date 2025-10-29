@@ -12,7 +12,6 @@ public static class EventBus
     /// 몬스터 적중시 이벤트 <무기 타입,공격 타입, 적 트랜스폼, 공격자 트랜스폼(플레이어, 총알 드론 등)
     /// </summary>
     public static event Action<WeaponType, ATTACKTYPE, Transform,Transform> OnMonsterHit;
-    public static event Action<int> OnFailBuy;
 
     public static void MonsterHit(WeaponType weaponType, ATTACKTYPE attackType,Transform monster,Transform attacker)
     {
@@ -30,6 +29,7 @@ public static class EventBus
         OnEvolution?.Invoke();
     }
 
+    public static event Action<int> OnFailBuy;
     public static void FailBuy(int price)
     {
         OnFailBuy?.Invoke(price);
@@ -46,6 +46,11 @@ public static class EventBus
         OnMonsterKnockBack?.Invoke(monsterPosition);
     }
 
+    public static event Action<IInteractable> OnInteracted;
+    public static void RaiseInteracted(IInteractable interactable)
+    {
+        OnInteracted?.Invoke(interactable);
+    }
 }
 
 

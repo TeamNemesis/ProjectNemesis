@@ -17,6 +17,7 @@ public class DoorInteractor : InteractableObject
     bool _isInteracting = false;
 
     public RoomInfo RoomInfo => _roomInfo;
+    public bool CanInteract => _canInteract;
     public override InteractableType InteractableType => _interactableType;
 
     // 파생에서 event를 다시 선언하지 마세요; base.OnInteracted를 그대로 사용합니다.

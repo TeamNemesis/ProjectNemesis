@@ -10,18 +10,12 @@ public class RoomSpawner : MonoBehaviour
     public event Action<Room> OnRoomSpawned; // 방이 생성될 때 발생하는 이벤트
     public event Action OnRewardSelectionFinished;  // 보상 선택이 완료되었을 때 발생하는 이벤트
 
-    public void Initialize()
-    {
-        // 시작 시 StartRoom 생성 (예시)
-        var startInfo = new RoomInfo(RoomType.Start, null, null);
-        SpawnRoom(startInfo);
-    }
-
     /// <summary>
     /// RoomInfo를 받아 해당 Room을 생성한다. position/parent를 지정하지 않으면 (0,0,0)과 씬 루트에 생성된다.
     /// </summary>
-    public Room SpawnRoom(RoomInfo roomInfo, Vector3 position = default, Transform parent = null)
+    public Room SpawnRoom(RoomInfo roomInfo)
     {
+        #region null 체크
         if (roomInfo == null)
         {
             Debug.LogError("RoomSpawner.SpawnRoom: roomInfo is null.");
@@ -41,13 +35,16 @@ public class RoomSpawner : MonoBehaviour
             Debug.LogError("RoomSpawner: DataManager is null on GameManager.");
             return null;
         }
+        #endregion
 
+        // RoomDataSO 조회
         if (!dataManager.TryGetRoomData(roomInfo.RoomType, out var roomData) || roomData == null)
         {
             Debug.LogError($"RoomSpawner: RoomData not found for RoomType {roomInfo.RoomType}.");
             return null;
         }
 
+        // RoomDataSo에서 프리팹 가져오기
         var prefab = roomData.RoomPrefab;
         if (prefab == null)
         {
@@ -55,11 +52,11 @@ public class RoomSpawner : MonoBehaviour
             return null;
         }
 
-        // Instantiate
+        // 기본 위치에 인스턴스화
         GameObject roomObj = null;
         try
         {
-            roomObj = Instantiate(prefab, position, Quaternion.identity, parent);
+            roomObj = Instantiate(prefab, Vector3.zero, Quaternion.identity);
         }
         catch (Exception ex)
         {
@@ -69,6 +66,7 @@ public class RoomSpawner : MonoBehaviour
 
         // Room 컴포넌트 검사 및 초기화
         var room = roomObj.GetComponent<Room>();
+        // Room 컴포넌트가 없으면 오류 로그 출력 후 인스턴스 파괴
         if (room == null)
         {
             Debug.LogError($"RoomSpawner: Instantiated prefab '{prefab.name}' has no Room component. Destroying instance.");

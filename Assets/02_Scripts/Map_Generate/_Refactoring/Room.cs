@@ -3,14 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Room 컴포넌트는 프리팹의 구조/런타임 동작을 담당.
-/// 타입/메타는 RoomDataSO에서 주입받아 InitializeFromRoomData로 설정한다.
-/// 초기화 진입점은 Initialize(RoomInfo) 로 통일된다.
+/// 
 /// </summary>
-public abstract class Room : MonoBehaviour
+[RequireComponent(typeof(Transform))]
+public abstract class Room : MonoBehaviour, IRoom
 {
-    [SerializeField] protected Transform[] _rewardSpawnPoints;        // 보상 오브젝트 스폰 위치들 (프리팹에 세팅)
-
     [Header("Door spawn points (setup on prefab)")]
     [SerializeField] protected Transform[] _doorSpawnPointsLeft;
     [SerializeField] protected Transform[] _doorSpawnPointsRight;
@@ -18,33 +15,51 @@ public abstract class Room : MonoBehaviour
     protected RoomInfo _roomInfo;
     protected List<GameObject> _poolableObjectsInRoom = new List<GameObject>();
 
-    // 구조적 데이터는 프리팹에 보관 (인스펙터에서 볼 수 있음)
-    public Transform[] RewardSpawnPoints => _rewardSpawnPoints;
+    // 기존 프로퍼티 노출 (호환성 유지)
     public Transform[] DoorSpawnPointsLeft => _doorSpawnPointsLeft;
     public Transform[] DoorSpawnPointsRight => _doorSpawnPointsRight;
 
-    // 런타임에서 RoomData로부터 필요한 값 접근
+    // IRoom 계약
     public RoomInfo RoomInfo => _roomInfo;
-    public List<GameObject> PoolableObjectsInRoom => _poolableObjectsInRoom;    
+    public abstract event Action<IRoom> OnEntered;
+    public event Action<IRoom> OnExited;
 
-    public event Action OnRewardSelectionFinished;
+    // Room이 보유한 풀 오브젝트 목록을 읽기 전용으로 제공
+    public IReadOnlyList<GameObject> PoolableObjectsInRoom => _poolableObjectsInRoom.AsReadOnly();
+
+    #region Initialization / lifecycle
 
     /// <summary>
-    /// 단일화된 진입점: RoomInfo를 받아 초기화한다.
-    /// 호출부는 이 메서드를 메인으로 사용하세요.
+    /// 기존 Initialize(RoomInfo)와 동일한 진입점.
+    /// 필요하면 서브클래스에서 base.Initialize(roomInfo) 호출 후 추가 초기화 수행.
     /// </summary>
     public virtual void Initialize(RoomInfo roomInfo)
     {
         if (roomInfo == null)
         {
-            Debug.LogWarning($"{nameof(Room)}.Initialize called with null RoomInfo on '{name}'.");
-            _roomInfo = new RoomInfo(RoomType.Start, null, null);
+            Debug.LogWarning($"{nameof(Room)}.Initialize called with null RoomInfo on '{name}'. Defaulting to Start room info.");
+            return;
         }
         else
         {
             _roomInfo = roomInfo;
         }
     }
+
+    /// <summary>
+    /// 룸 시작(입장). 기본 구현은 즉시 OnEntered를 호출합니다.
+    /// 서브클래스는 입장 연출(애니/타이머)이 필요하면 오버라이드하여 준비가 끝났을 때 OnEntered?.Invoke(this) 호출하세요.
+    /// </summary>
+    public abstract void Enter();
+
+    /// <summary>
+    /// 룸 종료(퇴장). 서브클래스는 필요한 정리 동작을 오버라이드하여 수행하세요.
+    /// </summary>
+    public abstract void Exit();
+
+    #endregion
+
+    #region Door point helpers (unchanged)
 
     /// <summary>
     /// 입력받은 count 수만큼 다음 문들이 생성될 위치들을 Transform배열로 반환
@@ -59,7 +74,6 @@ public abstract class Room : MonoBehaviour
             return Array.Empty<Transform>();
         }
 
-        // 방어적 접근자: 지정 인덱스가 없으면 가능한 대체 점을 선택
         Transform GetPointSafe(Transform[] arr, int idx)
         {
             if (arr == null || arr.Length == 0) return null;
@@ -160,20 +174,15 @@ public abstract class Room : MonoBehaviour
         return results.ToArray();
     }
 
-    public abstract IInteractable[] SpawnReward();
+    #endregion
 
+    #region Poolable helpers and reward finish
+
+    // Room이 스폰한/소유한 풀 오브젝트 목록을 반환(원래 GetPoolableObjectsInRoom과 호환성 유지)
     public List<GameObject> GetPoolableObjectsInRoom()
     {
         return _poolableObjectsInRoom;
     }
 
-    public void RewardSelectionFinished()
-    {
-        OnRewardSelectionFinished?.Invoke();
-
-        Debug.LogError("방 끝 호출");
-
-        // 스킬 진화 발동용 메서드
-        EventBus.Evolution();
-    }
+    #endregion
 }
