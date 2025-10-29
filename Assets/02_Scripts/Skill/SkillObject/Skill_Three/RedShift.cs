@@ -6,7 +6,17 @@ public class RedShiftData
     public Vector3 moveDir;
     public float moveSpeed;
     public float shiftExtend;
+    public float knockBackDistance;
     public float collisionDamage;
+
+    public RedShiftData(Vector3 dir, float speed, float shiftExtend,float knockBackDistance ,float collisionDamage)
+    {
+        moveDir = dir;
+        moveSpeed = speed;
+        this.shiftExtend = shiftExtend;
+        this.knockBackDistance = knockBackDistance;
+        this.collisionDamage = collisionDamage;
+    }
 }
 
 public class RedShift : AreaDamageBase, IInitializePoolable
@@ -29,6 +39,13 @@ public class RedShift : AreaDamageBase, IInitializePoolable
     [SerializeField]
     private float _damage = 20f;
 
+    /// <summary>
+    /// ³Ë¹é °Å¸®
+    /// </summary>
+    private float _knockBackDistance;
+
+    private float _currentTime;
+    private float _endTime = 5f;
     public void Initialize(object data)
     {
         if(data is RedShiftData redShiftData)
@@ -36,15 +53,24 @@ public class RedShift : AreaDamageBase, IInitializePoolable
             direction = redShiftData.moveDir;
             speed = redShiftData.moveSpeed;
             SetAreaExtent(redShiftData.shiftExtend* GameManager.Instance.PlayerStatManager.playerAreaExtent);
+            _knockBackDistance = redShiftData.knockBackDistance;
             _damage = redShiftData.collisionDamage;
-        }
+            transform.localScale = Vector3.one * areaExtent * 2f;
 
-        transform.localScale = Vector3.one * areaExtent;
+        }
+        _currentTime = 0f;
+
     }
 
     void Update()
     {
         transform.Translate(direction * speed * Time.deltaTime, Space.World);
+        _currentTime += Time.deltaTime;
+        if(_currentTime> _endTime)
+        {
+            _currentTime = 0f;
+            GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
+        }
     }
 
     void OnTriggerEnter(Collider other)
@@ -65,7 +91,7 @@ public class RedShift : AreaDamageBase, IInitializePoolable
                 direction.Normalize();
 
 
-                monster.KnockBackEnemy(direction, _damage, 5f);
+                monster.KnockBackEnemy(direction, _damage, _knockBackDistance);
 
             }
         }

@@ -2556,6 +2556,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d275a53a0d5f21747b98724b7c533980, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _isAttacking: 0
   fallbackEnd: 0.05
   _firePoint: {fileID: 0}
   _bulletPrefab: {fileID: -8901218431766360776, guid: 753ae3df63cb2b34886c16993b63cd3a, type: 3}
@@ -5410,6 +5411,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a7ceaed8ab002c4c8bf91a329a9ec1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _isAttacking: 0
+  _player: {fileID: 0}
+  _maxCombo: 3
+  _comboInputWindow: 0.5
+  _currentCombo: 0
+  _waitingForNext: 0
+  _queued: 0
 --- !u!1 &2527673186981617727
 GameObject:
   m_ObjectHideFlags: 0
@@ -12713,6 +12721,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a68aac929387c6479cd349d26dd843c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _isAttacking: 0
 --- !u!1 &6592843661023637782
 GameObject:
   m_ObjectHideFlags: 0
@@ -17126,7 +17135,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _detectPoint: {fileID: 7780520282912648580}
-  _radius: 5
+  _radius: 2
   _targetLayerMask:
     serializedVersion: 2
     m_Bits: 64
@@ -17143,7 +17152,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _characterController: {fileID: 8109413294957839125}
-  _moveSpeed: 30
+  _moveSpeed: 10
 --- !u!114 &1484459335462496411
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17156,6 +17165,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 575e8feae5697da4a8d9a38a7fdc532a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _isDashing: 0
 --- !u!114 &8793683881695727164
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17168,7 +17178,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4dd914b0022246a47a8ce199a9933656, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxHealth: 10000
+  _maxHealth: 200
   _currentHealth: 0
   _moveSpeed: 5
   isStunned: 0

@@ -62,13 +62,14 @@ public class GameManager : MonoBehaviour
         if (_skillManger==null)
         {
             _skillManger = Resources.Load<SkillManager>("Prefabs/Skill/SkillManager");
-        
+            _skillManger = Instantiate(_skillManger,transform);
+            _skillManger.name = "SkillManager";
         }
 
         if(_uiManager==null)
         {
             _uiManager = Resources.Load<UIManager>("Prefabs/Skill/UIManager");
-            _uiManager = Instantiate(_uiManager);
+            _uiManager = Instantiate(_uiManager,transform);
             _uiManager.name = "UIManager";
             
         }
@@ -85,6 +86,7 @@ public class GameManager : MonoBehaviour
         _uiManager.InitializeManager();
         _currencyManager.Initialize();
         _playerStatManager.Initialize();
+        _poolManager.Initialize(_instance._resourceManager);
     }
 
     [SerializeField] ResourceManager _resourceManager;      // 리소스 매니저

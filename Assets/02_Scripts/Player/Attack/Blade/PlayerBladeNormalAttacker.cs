@@ -25,7 +25,7 @@ public class PlayerBladeNormalAttacker : PlayerNormalAttacker
 
     public override WeaponType WeaponType => WeaponType.Blade;
 
-    protected override bool CanStartAttack() => !IsAttacking || (IsAttacking && _waitingForNext);
+    protected override bool CanStartAttack() => !_isAttacking || (_isAttacking && _waitingForNext);
 
     public void Initialize(Player player)
     {
@@ -36,7 +36,7 @@ public class PlayerBladeNormalAttacker : PlayerNormalAttacker
     {
         if (!CanStartAttack()) return false;
 
-        if (!IsAttacking)
+        if (!_isAttacking)
         {
             StartAttack();
         }
@@ -50,8 +50,19 @@ public class PlayerBladeNormalAttacker : PlayerNormalAttacker
 
     protected override void StartAttack()
     {
-        IsAttacking = true;
-        _currentCombo = 1;
+        if (_isAttacking == false)
+        {
+            _isAttacking = true;
+            _currentCombo = 1;
+
+
+            Debug.Log("PlayerBladeNormalAttacker.StartAttack: Starting new combo.");
+        }
+        else
+        {
+            _isAttacking = true;
+            _currentCombo++;
+        }
         OnAttackStarted?.Invoke();
         PlayComboAnimation(_currentCombo);
     }
@@ -67,7 +78,7 @@ public class PlayerBladeNormalAttacker : PlayerNormalAttacker
         {
             Debug.Log("PlayerBladeNormalAttacker.PlayComboAnimation: Animator is null.");
         }
-        _player.Animator.OnNormalAttack(comboIndex);
+        _player.Animator.OnNormalAttack();
     }
 
     //// 애니메이션 이벤트: 실제 히트 타이밍
@@ -81,6 +92,7 @@ public class PlayerBladeNormalAttacker : PlayerNormalAttacker
     {
         _waitingForNext = true;
         StartCoroutine(ComboWindowTimer());
+        Debug.Log(" PlayerBladeNormalAttacker.Animation_OnComboWindowOpen: Combo window opened. Waiting for next input.");
     }
 
     // 애니메이션 이벤트: 콤보 윈도우가 닫히거나 애니메이션이 끝났을 때 호출
@@ -92,10 +104,12 @@ public class PlayerBladeNormalAttacker : PlayerNormalAttacker
             _queued = false;
             _currentCombo++;
             PlayComboAnimation(_currentCombo);
+            Debug.Log("PlayerBladeNormalAttacker.Animation_OnComboWindowClose: Combo continued to " + _currentCombo);
         }
         else
         {
             EndAttack();
+            Debug.Log("PlayerBladeNormalAttacker.Animation_OnComboWindowClose: Combo ended.");
         }
     }
 
@@ -121,5 +135,6 @@ public class PlayerBladeNormalAttacker : PlayerNormalAttacker
         _currentCombo = 0;
         _waitingForNext = false;
         _queued = false;
+        Debug.Log("PlayerBladeNormalAttacker.EndAttack: Attack ended and combo reset.");
     }
 }

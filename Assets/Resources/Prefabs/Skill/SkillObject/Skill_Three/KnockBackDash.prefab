@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 288143500925555075}
   - component: {fileID: 6362435323990349585}
   - component: {fileID: 5679507140044092599}
-  - component: {fileID: 727936494378501935}
+  - component: {fileID: 4636809497778054958}
   m_Layer: 0
   m_Name: KnockBackDash
   m_TagString: Untagged
@@ -66,7 +66,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 45531d7b9b0b28b4f87dd14fe6ef6218, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -109,7 +109,7 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &727936494378501935
+--- !u!114 &4636809497778054958
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -118,10 +118,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 6969342270677871941}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1978b9d9b3d234241af061d7b1b9faa2, type: 3}
+  m_Script: {fileID: 11500000, guid: a83cecb49078f6a45b9b0e3943979a6b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _areaExtent: 5
+  _areaExtent: 0
   _checkTargetTag: Monster
   _results:
   - {fileID: 0}
@@ -134,4 +134,3 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  _dashDamage: 0

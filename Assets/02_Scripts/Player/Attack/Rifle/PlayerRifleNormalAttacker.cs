@@ -34,9 +34,9 @@ public class PlayerRifleNormalAttacker : PlayerNormalAttacker
     // 애니메이션 이벤트에서 FireNow()와 OnAnimationAttackEnd()를 호출합니다.
     public override void Attack()
     {
-        IsAttacking = true;
+        _isAttacking = true;
         OnAttackStarted?.Invoke();
-        _player.Animator.OnNormalAttack(1);
+        _player.Animator.OnNormalAttack();
 
         if (_endRoutine != null)
         {
