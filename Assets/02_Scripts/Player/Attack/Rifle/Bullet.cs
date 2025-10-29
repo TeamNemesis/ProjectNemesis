@@ -14,7 +14,6 @@ public class Bullet : PoolableObject
     [Header("----- 데이터로 빼기 전 임시 -----")]
     [SerializeField] float _moveSpeed = 20f; // 탄환의 이동 속도
     [SerializeField] float _lifeTime = 2f;   // 탄환의 생존 시간
-    [SerializeField] float _damage = 10f;    // 탄환의 데미지 값
 
     [Header("----- 읽기 전용 -----")]
     [SerializeField] float _lifeTimer;              // 생존 시간 타이머
@@ -57,10 +56,8 @@ public class Bullet : PoolableObject
     {
         if(other.CompareTag(Constants.TAG_MONSTER))
         {
-            GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
-            MonsterBase monsterBase= other.GetComponent<MonsterBase>();
             EventBus.MonsterHit(WeaponType.Rifle, ATTACKTYPE.NORMAL, other.transform,transform);
-            //monsterBase.TakeDamage(_damage, null); // 예시로 10의 데미지를 입힘
+            GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
         }
         else if(other.CompareTag("Environment"))
         {

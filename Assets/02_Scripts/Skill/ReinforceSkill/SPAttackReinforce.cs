@@ -22,7 +22,7 @@ public class Skill_One_SPAttack : ActiveTech
         _player = player;
         _AttackTry = () => ActiveTry(player);
         player.OnSpecialAttackStarted += _AttackTry;
-        //player.SPAttackHit += HitEnemy;
+        EventBus.OnMonsterHit += HitEnemy;
 
     }
     public override void Deactivate(Player player, bool isSameSkill)
@@ -31,7 +31,8 @@ public class Skill_One_SPAttack : ActiveTech
         base.Deactivate(player, isSameSkill);
         // 이벤트 해제
         player.OnSpecialAttackStarted -= _AttackTry;
-        // player.SPAttackHit -= HitEnemy;
+        EventBus.OnMonsterHit -= HitEnemy;
+
 
 
     }
@@ -46,6 +47,11 @@ public class Skill_One_SPAttack : ActiveTech
 
     public override void HitEnemy(WeaponType weapon, ATTACKTYPE attack, Transform transform,Transform attackerTransform)
     {
+        if(attack!=ATTACKTYPE.SPECIALATTACK)
+        {
+            return;
+        }    
+
         // 이미 효과가 발동했었다면 return;
         if (isHit) return;
 
@@ -66,14 +72,14 @@ public class Skill_One_SPAttack : ActiveTech
 /// </summary>
 public class Skill_Two_SPAttack : ActiveTech
 {
-    private float plusDamage;
+    private float plusValue;
     public override void Activate(SkillManager skillManager, Player player)
     {
         base.Activate(skillManager, player);
 
         // 스킬 효과 적용 (플레이어 일반 공격력에 접근하여 공격력 추가)
-        plusDamage = _skillData.skillBaseValue_1 + _skillData.skillLevelValue_1 * _skillData.skillLevel;
-        GameManager.Instance.PlayerStatManager.AddPlayerSPAttackDamage(plusDamage);
+        plusValue = _skillData.skillBaseValue_1 + _skillData.skillLevelValue_1 * _skillData.skillLevel;
+        GameManager.Instance.PlayerStatManager.AddPlayerSPAttackValue(plusValue);
     }
     public override void Deactivate(Player player, bool isSameSkill)
     {
@@ -81,7 +87,7 @@ public class Skill_Two_SPAttack : ActiveTech
         base.Deactivate(player, isSameSkill);
 
         // 공격력 복귀
-        GameManager.Instance.PlayerStatManager.AddPlayerSPAttackDamage(-plusDamage);
+        GameManager.Instance.PlayerStatManager.AddPlayerSPAttackValue(-plusValue);
 
     }
 
@@ -141,6 +147,7 @@ public class Skill_Five_SPAttack : ActiveTech
     {
         base.Activate(skillManager, player);
         //TODO 특수공격 적중시 이벤트에 연결
+        EventBus.OnMonsterHit += HitEnemy;
 
     }
 
@@ -148,10 +155,18 @@ public class Skill_Five_SPAttack : ActiveTech
     {
         base.Deactivate(player, isAnotherSkill);
         //TODO 특수공격 적중시 이벤트에 해제
+        EventBus.OnMonsterHit -= HitEnemy;
+
     }
 
     public override void HitEnemy(WeaponType weapon, ATTACKTYPE attack, Transform transform, Transform attackerTransform)
     {
+        if (attack != ATTACKTYPE.SPECIALATTACK)
+        {
+            return;
+        }
+
+
         MonsterBase monster = transform.GetComponent<MonsterBase>();
 
         if (monster.GetMonsterSize() == MonsterSize.BIG)
