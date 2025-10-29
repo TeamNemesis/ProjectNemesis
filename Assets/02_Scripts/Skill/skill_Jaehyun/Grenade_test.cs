@@ -52,6 +52,8 @@ public class Grenade_test : MonoBehaviour
         Destroy(explodeRange, travelTime);
     }
 
+    
+
     private IEnumerator ParabolaMove(GameObject grenade, Vector3 target)
     {
         Vector3 start = grenade.transform.position;

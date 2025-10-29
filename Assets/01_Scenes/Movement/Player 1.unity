@@ -330,63 +330,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &1192410555
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 1932610531064372317, guid: e9533182fc155184b8e3c2820b798f2d, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1932610531064372317, guid: e9533182fc155184b8e3c2820b798f2d, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1932610531064372317, guid: e9533182fc155184b8e3c2820b798f2d, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1932610531064372317, guid: e9533182fc155184b8e3c2820b798f2d, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 1932610531064372317, guid: e9533182fc155184b8e3c2820b798f2d, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 1932610531064372317, guid: e9533182fc155184b8e3c2820b798f2d, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1932610531064372317, guid: e9533182fc155184b8e3c2820b798f2d, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1932610531064372317, guid: e9533182fc155184b8e3c2820b798f2d, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 90
-      objectReference: {fileID: 0}
-    - target: {fileID: 1932610531064372317, guid: e9533182fc155184b8e3c2820b798f2d, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1932610531064372317, guid: e9533182fc155184b8e3c2820b798f2d, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6298418274070478015, guid: e9533182fc155184b8e3c2820b798f2d, type: 3}
-      propertyPath: m_Name
-      value: GrenadeCircle
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: e9533182fc155184b8e3c2820b798f2d, type: 3}
 --- !u!1 &1437012125
 GameObject:
   m_ObjectHideFlags: 0
@@ -641,6 +584,8 @@ MonoBehaviour:
   _obstacleMask:
     serializedVersion: 2
     m_Bits: 4294967295
+  _useBoxOverlap: 1
+  _paddingFactor: 1.05
   _target: {fileID: 0}
 --- !u!114 &1780337995 stripped
 MonoBehaviour:
@@ -676,6 +621,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a68aac929387c6479cd349d26dd843c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _isAttacking: 0
 --- !u!4 &52398689873250060
 Transform:
   m_ObjectHideFlags: 0
@@ -2543,6 +2489,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 605253879375314054, guid: 926b1bbd08fdeee4c9b07a99cc1ff7c4, type: 3}
+      propertyPath: _groundLayer.m_Bits
+      value: 512
+      objectReference: {fileID: 0}
     - target: {fileID: 4091405947727495476, guid: 926b1bbd08fdeee4c9b07a99cc1ff7c4, type: 3}
       propertyPath: m_Name
       value: InputHandler
@@ -6657,6 +6607,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e11405ac3bb6b34d8bf1bbf8d173135, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  grenadePrefab: {fileID: 7415121532549683166, guid: 1c7d30e5d20219c41b7b4a9bce3fb1ce, type: 3}
+  explodeCircle: {fileID: 6298418274070478015, guid: e9533182fc155184b8e3c2820b798f2d, type: 3}
+  travelTime: 1
+  travelSpeed: 30
+  explosionRadius: 3
+  explosionDamage: 30
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 1024
+  maxParabolaHeight: 15
+  minParabolaHeight: 10
+  closeDistance: 2
+  farDistance: 10
 --- !u!1 &3060092927478432868
 GameObject:
   m_ObjectHideFlags: 0
@@ -8964,6 +8927,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a7ceaed8ab002c4c8bf91a329a9ec1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _isAttacking: 0
   _player: {fileID: 0}
   _maxCombo: 3
   _comboInputWindow: 0.5
@@ -11719,8 +11683,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxChargeTime: 3
-  minDamage: 20
-  maxDamage: 150
   minWidth: 0.05
   maxWidth: 0.6
   laserPrefab: {fileID: 4218594688661822969, guid: 6d1137ed252299f41b0dcf9d3e2a4e5c, type: 3}
@@ -12151,6 +12113,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d275a53a0d5f21747b98724b7c533980, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _isAttacking: 0
   fallbackEnd: 0.05
   _firePoint: {fileID: 0}
   _bulletPrefab: {fileID: -8901218431766360776, guid: 753ae3df63cb2b34886c16993b63cd3a, type: 3}
@@ -13910,6 +13873,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 575e8feae5697da4a8d9a38a7fdc532a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _isDashing: 0
 --- !u!4 &6811916325885415637
 Transform:
   m_ObjectHideFlags: 0
@@ -14961,7 +14925,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3901659171979225846}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 10a61bc553821044bb361bf7f642bb0e, type: 3}
   m_Name: 
@@ -14969,6 +14933,7 @@ MonoBehaviour:
   grenadePrefab: {fileID: 7415121532549683166, guid: 1c7d30e5d20219c41b7b4a9bce3fb1ce, type: 3}
   explodeCircle: {fileID: 6298418274070478015, guid: e9533182fc155184b8e3c2820b798f2d, type: 3}
   travelTime: 1
+  travelSpeed: 5
   explosionRadius: 3
   explosionDamage: 30
   groundLayer:
@@ -14977,6 +14942,10 @@ MonoBehaviour:
   enemyLayer:
     serializedVersion: 2
     m_Bits: 1024
+  maxParabolaHeight: 4
+  minParabolaHeight: 1
+  closeDistance: 2
+  farDistance: 20
 --- !u!1 &7116088274207201622
 GameObject:
   m_ObjectHideFlags: 0
@@ -18875,4 +18844,3 @@ SceneRoots:
   - {fileID: 391148804683465816}
   - {fileID: 3384748609208589157}
   - {fileID: 2968732484149550858}
-  - {fileID: 1192410555}

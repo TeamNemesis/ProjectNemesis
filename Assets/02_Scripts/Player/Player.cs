@@ -446,6 +446,11 @@ public class Player : MonoBehaviour
     }
     #endregion
 
+    public void HandleGrenade(Vector3 mousePos)
+    {
+        _grenadeAttacker.SetMousePos(mousePos);
+    }
+
     #region 상호작용 처리 (기존 로직)
     public void OnWeaponInteracted(WeaponType newWeaponType)
     {
