@@ -155,20 +155,20 @@ MonoBehaviour:
   cost: 0
   monsterRigidbody: {fileID: 0}
   monsterCollider: {fileID: 0}
+  _isAttacking: 0
   baseState: 0
   _knockBackDamage: 0
   player: {fileID: 0}
   agent: {fileID: 0}
   _target: {fileID: 0}
-  laserAttackCount: 0
   missileAttackCounter: 0
   maxMissileAttackCount: 5
   bulletLifeTime: 8
-  maxBulletAttackCounter: 0
-  _isAttacking: 0
   missilePrefab: {fileID: 4000084810688762653, guid: 219ec46691175364e941b76c03edd393, type: 3}
   eliteBulletPrefab: {fileID: 5248596736412313402, guid: d48011a799ce2aa49b2e2b81fc593843, type: 3}
+  waveAttackPrefab: {fileID: 4242838699840875074, guid: 0fb610a28f1f8e24e8eb969bfaaaa728, type: 3}
   bulletAttackCoolTime: 5
+  missileAttackCoolTime: 5
 --- !u!195 &4490352548413922801
 NavMeshAgent:
   m_ObjectHideFlags: 0
