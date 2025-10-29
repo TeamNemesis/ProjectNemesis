@@ -15,7 +15,7 @@ public class DebuffHandler : MonoBehaviour
     private float originalSpeed;
     private float originalDamage;
     private MonsterBase monster;
-
+    private PlayerModel player;
     /// <summary>
     /// 점진되는 고통
     /// </summary>
@@ -36,6 +36,7 @@ public class DebuffHandler : MonoBehaviour
     {
         character = GetComponent<CharacterModelBase>();
         originalSpeed = character.moveSpeed;
+        player = GetComponent<PlayerModel>();
     }
 
     public class DebuffData
@@ -161,6 +162,16 @@ public class DebuffHandler : MonoBehaviour
     {
         if (character == null || character.isDead)
             return;
+
+        if(player!=null)
+        {
+            if(player.bIsInvincibility)
+            {
+                return;
+            }
+        }
+       
+
         if (activeDebuffs.ContainsKey(newDebuff.debuffName))
         {
             ActiveDebuff existing = activeDebuffs[newDebuff.debuffName];
@@ -168,6 +179,8 @@ public class DebuffHandler : MonoBehaviour
             // 스택형 디버프들 독 / 과부하
             if (newDebuff.debuffName == Constants.DEBUFF_POISON || newDebuff.debuffName == Constants.DEBUFF_OVERLOAD)
             {
+                
+                
                 if (existing.stackCount < newDebuff.maxStack)
                 {
                     existing.stackCount++;

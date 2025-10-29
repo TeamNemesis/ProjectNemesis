@@ -126,11 +126,35 @@ public class Skill_Four_SPAttack : ActiveTech
     public override void Activate(SkillManager skillManager, Player player)
     {
         base.Activate(skillManager, player);
+        EventBus.OnMonsterHit += HitEnemy;
+
     }
 
     public override void Deactivate(Player player, bool isAnotherSkill)
     {
         base.Deactivate(player, isAnotherSkill);
+        EventBus.OnMonsterHit -= HitEnemy;
+
+    }
+
+    public override void HitEnemy(WeaponType weapon, ATTACKTYPE attack, Transform transform, Transform attackerTransform)
+    {
+        if (attack != ATTACKTYPE.SPECIALATTACK)
+        {
+            return;
+        }
+
+
+        MonsterBase monster = transform.GetComponent<MonsterBase>();
+
+        if (monster.GetMonsterSize() == MonsterSize.BIG)
+        {
+            return;
+        }
+        else
+        {
+            monster.GetDebuffHandler().ApplyDebuff(DebuffHandler.DebuffData.CreateBinding(2f));
+        }
     }
 
     public Skill_Four_SPAttack(SkillData skillData) : base(skillData)
