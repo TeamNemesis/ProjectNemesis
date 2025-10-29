@@ -40,14 +40,36 @@ public class PlayerStatManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 원거리 특수 공격력
+    /// 원거리 특수 최소 공격력
     /// </summary>
-    private float _playerRifleSPAttackDamage = 100;
-    public float playerRifleSPAttackDamage { get { return _playerRifleSPAttackDamage; } }
-    public void AddPlayerRifleSPAttackDamage(float plusPlayerRifleSPAttackDamage)
+    private float _playerRifleSPAttackMinDamage = 100;
+    public float playerRifleSPAttackMinDamage { get { return _playerRifleSPAttackMinDamage; } }
+    public void AddPlayerRifleSPAttackMinDamage(float plusPlayerRifleSPAttackDamage)
     {
-        _playerRifleSPAttackDamage += plusPlayerRifleSPAttackDamage;
+        _playerRifleSPAttackMinDamage += plusPlayerRifleSPAttackDamage;
     }
+
+    /// <summary>
+    /// 원거리 특수 공격 차지 비율
+    /// </summary>
+    private float _playerRifleChargeRatio = 0f;
+    public float playerRifleChargeRatio { get { return _playerRifleChargeRatio; } }   
+    public void SetPlayerRifleChargeRatio(float chargeRatio)
+    {
+        _playerRifleChargeRatio = chargeRatio;
+    }
+
+    /// <summary>
+    /// 원거리 특수 공격 최대 차지 데미지
+    /// </summary>
+    private float _playerRifleMaxChargeDamage = 150f;
+    public float playerRifleMaxChargeDamage { get { return _playerRifleMaxChargeDamage; } }
+    public void SetPlayerRifleMaxChargeDamage(float maxChargeDamage)
+    {
+        _playerRifleMaxChargeDamage = maxChargeDamage;
+        OnPlayerRifleMaxChargeDamage?.Invoke(_playerRifleMaxChargeDamage);
+    }
+    public event Action<float> OnPlayerRifleMaxChargeDamage;
 
     /// <summary>
     /// 플레이어 블렛 이동 속도
@@ -99,32 +121,44 @@ public class PlayerStatManager : MonoBehaviour
     public void AddPlayerAttackDamage(float plusDamage)
     {
         _playerAttackDamage += plusDamage;
-        OnPlayerAttackDamageChange?.Invoke();
+        OnPlayerAttackDamageChange?.Invoke(_playerAttackDamage);
     }
-    public event Action OnPlayerAttackDamageChange;
+    public event Action<float> OnPlayerAttackDamageChange;
 
 
 
     /// <summary>
     /// 플레이어 유탄 공격 데미지 계수
     /// </summary>
-    private float _playerGrenadeDamageMulti;
+    private float _playerGrenadeDamageMulti=1f;
     public float playerGrenadeDamageMulti { get { return _playerGrenadeDamageMulti; } }
     public void AddPlayerGrenadeDamageMulti(float plusGrenadeDamage)
     {
         _playerGrenadeDamageMulti += plusGrenadeDamage;
     }
-  
+    
 
     /// <summary>
     /// 플레이어 특수 공격 데미지 계수
     /// </summary>
-    private float _playerSPAttackDamage;
+    private float _playerSPAttackDamage = 1f;
     public float playerSPAttackDamage { get { return _playerSPAttackDamage; } }
-    public void AddPlayerSPAttackDamage(float plusSPDamage)
+    public void AddPlayerSPAttackDamage(float plusSPAttackDamage)
     {
-        _playerSPAttackDamage += plusSPDamage;
+        _playerSPAttackDamage += plusSPAttackDamage;
     }
+
+    /// <summary>
+    /// 플레이어 특수 효과 계수
+    /// </summary>
+    private float _playerSPAttackValue=1f;
+    public float playerSPAttackValue { get { return _playerSPAttackValue; } }
+    public void AddPlayerSPAttackValue(float plusSPValue)
+    {
+        _playerSPAttackValue += plusSPValue;
+        OnPlayerSPAttackValueChange?.Invoke(_playerSPAttackValue);
+    }
+    public event Action<float> OnPlayerSPAttackValueChange;
 
     /// <summary>
     /// 플레이어 대쉬 공격력
@@ -393,7 +427,8 @@ public class PlayerStatManager : MonoBehaviour
                         damage = _bladeSPAttackDamage * playerSPAttackDamage;
                         break;
                     case WeaponType.Rifle:
-                        damage = _playerRifleSPAttackDamage * playerSPAttackDamage;
+                        damage = Mathf.Lerp(playerRifleSPAttackMinDamage,playerRifleMaxChargeDamage,playerRifleChargeRatio) * playerSPAttackDamage * playerSPAttackValue;
+
                         break;
                     case WeaponType.HackingDevice:
                         damage = _playerHackSPAttackDamage * playerSPAttackDamage;

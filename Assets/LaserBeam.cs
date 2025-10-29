@@ -15,7 +15,6 @@ public class LaserBeam : MonoBehaviour
     Vector3 _origin;
     Vector3 _dir;
     float _maxDistance;
-    float _damage;
     float _width;
     LayerMask _wallMask;
     LayerMask _enemyMask;
@@ -32,13 +31,13 @@ public class LaserBeam : MonoBehaviour
         _lr.useWorldSpace = true;
     }
 
-    public void Initialize(Vector3 origin, Vector3 dir, float maxDist, float damage, float width,
+    public void Initialize(Vector3 origin, Vector3 dir, float maxDist, float width,
                            LayerMask wallMask, LayerMask enemyMask, GameObject owner)
     {
         _origin = origin;
         _dir = dir.normalized;
         _maxDistance = maxDist;
-        _damage = damage;
+        
         _width = width;
         _wallMask = wallMask;
         _enemyMask = enemyMask;
@@ -84,7 +83,7 @@ public class LaserBeam : MonoBehaviour
             var dmg = h.collider.GetComponentInParent<IDamageable>();
             if (dmg != null)
             {
-                dmg.TakeDamage(_damage, null);
+                EventBus.MonsterHit(WeaponType.Rifle, ATTACKTYPE.SPECIALATTACK, h.collider.gameObject.transform, _owner.transform);
             }
             else
             {

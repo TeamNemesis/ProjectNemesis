@@ -36,6 +36,9 @@ public class PlayerGrenadeAttacker : MonoBehaviour, IAttacker
 
     public bool RequestAttack()
     {
+
+        GrenadeAttack();
+        return true;
         throw new NotImplementedException();
     }
 }

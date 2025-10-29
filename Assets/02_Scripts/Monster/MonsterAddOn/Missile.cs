@@ -1,21 +1,53 @@
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.AI;
 
 public class Missile : MonsterBase
 {
 
     [Header("Local Stats"), SerializeField]
     private float _explosionRadius = 2f;      // 실제 폭발 범위
+    private float lifeTime = 15f;               // 미사일 생존 시간
+    private float elapsedTime;
+
+    private bool onPhase2 = false;
 
     // attackDamage, attackRange, attackDelay, isDead 등은 MonsterBase에서 상속됨
 
     [Header("Effects"), SerializeField]
     private PoolableObject circlePrefab;     // AttackDecalEffect 프리팹 (Inspector에서 지정)
 
+    [Header("Bullet"), SerializeField]
+    private PoolableObject bulletPrefab;      // 총알 프리팹
+
+    public override void Initialize(object data = null)
+    {
+        base.Initialize(data); // 부모 클래스의 Initialize 호출
+
+        // 미사일 전용 초기화
+        if (data is bool phase2)
+        {
+            onPhase2 = phase2;
+        }
+        elapsedTime = 0f;
+        baseState = MonsterState.Idle;
+        _isAttacking = false;
+        StopAllCoroutines();
+    }
+
+
     private void Update()
     {
+        if (!isDead)
+        {
+            elapsedTime += Time.deltaTime;
+
+            if (elapsedTime >= lifeTime)
+            {
+                baseState = MonsterState.Die;
+                Die();
+                return;
+            }
+        }
         if (isDead || _target == null) return;
         if (isStunned) return;
 
@@ -107,13 +139,34 @@ public class Missile : MonsterBase
             }
         }
     }
-    public override void Initialize(object data = null)
-    {
-        base.Initialize(data); // 부모 클래스의 Initialize 호출
 
-        // 미사일 전용 초기화
-        baseState = MonsterState.Idle;
-        _isAttacking = false;
-        StopAllCoroutines();
+    private void DieAttack()
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            SpawnBulletAtAngle(i * 120f);
+        }
+    }
+
+    private void SpawnBulletAtAngle(float angle)
+    {
+        Quaternion bulletRotation = Quaternion.Euler(0, angle, 0);
+        GameObject bullet = GameManager.Instance.PoolManager.GetFromPool(bulletPrefab, transform.position, bulletRotation);
+        TurretBullet turretBullet = bullet.GetComponent<TurretBullet>();
+        if (turretBullet != null)
+        {
+            turretBullet.Initialize(targetTag, attackDamage, 5f, gameObject); // 생명 시간 5초로 설정
+        }
+    }
+
+
+
+    protected override void Die()
+    {
+        if (onPhase2)
+        {
+            DieAttack();
+        }
+        base.Die();
     }
 }
