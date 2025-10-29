@@ -4,14 +4,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class Elite3 : MonsterBase
+public class Omega_X7 : MonsterBase
 {
     [Header("Local Stats")]
 
 
     [Header("Missile")]
-    [SerializeField]private int missileAttackCounter = 0;
-    [SerializeField]private int maxMissileAttackCount = 5;
+    [SerializeField] private int missileAttackCounter = 0;
+    [SerializeField] private int maxMissileAttackCount = 5;
 
     [Header("Bullet")]
     [SerializeField] float bulletLifeTime = 8f;
@@ -19,7 +19,6 @@ public class Elite3 : MonsterBase
     [Header("Prefabs")]
     [SerializeField] private PoolableObject missilePrefab;
     [SerializeField] private PoolableObject eliteBulletPrefab;
-    [SerializeField] private PoolableObject waveAttackPrefab;
 
     [Header("CoolTimes")]
     [SerializeField] private float bulletAttackCoolTime = 5f;
@@ -43,7 +42,7 @@ public class Elite3 : MonsterBase
             case MonsterState.Attack:
                 if (!_isAttacking)
                 {
-                    TryUseSkill();
+                    StartCoroutine(MissileAttack());
                 }
                 break;
             case MonsterState.Die:
@@ -66,40 +65,10 @@ public class Elite3 : MonsterBase
     private IEnumerator BulletAttack()
     {
         _isAttacking = true;
-        bulletAttackCoolTime = 5f; // 총알 공격 쿨타임 초기화
-        if (_target != null && Vector3.Distance(transform.position, _target.position) <= attackRange)
         {
-            float angleOffset = 0f; // 회전 각도 오프셋
-            int maxRotations = 20; // 총 회전 수
-
-            for (int rotation = 0; rotation < maxRotations; rotation++)
-            {
-                // 10방향으로 총알 발사
-                for (int i = 0; i < 10; i++)
-                {
-                    float angle = i * 36f + angleOffset;
-                    Quaternion bulletRotation = Quaternion.Euler(0, angle, 0);
-                    GameObject bullet = GameManager.Instance.PoolManager.GetFromPool(eliteBulletPrefab, transform.position, bulletRotation);
-                    EliteBullet elitetBullet = bullet.GetComponent<EliteBullet>();
-                    if (elitetBullet != null)
-                    {
-                        elitetBullet.Initialize(targetTag, attackDamage, bulletLifeTime, gameObject);
-                    }
-                }
-
-                angleOffset += 10f; // 매 회전마다 10도씩 회전
-
-                // 360도를 넘으면 초기화 (한 바퀴 완성)
-                if (angleOffset >= 360f)
-                {
-                    angleOffset -= 360f;
-                }
-
-                yield return new WaitForSeconds(attackDelay);
-            }
+            yield return null;
         }
         _isAttacking = false;
-        baseState = MonsterState.Attack;
     }
     #endregion
 
@@ -107,25 +76,26 @@ public class Elite3 : MonsterBase
     private IEnumerator MissileAttack()
     {
         _isAttacking = true;
-        missileAttackCoolTime = 5f;
-        while (missileAttackCounter < maxMissileAttackCount) 
+
+        // 4방향 벡터 정의 (X-Z 평면)
+        Vector3[] directions = new Vector3[]
+        { Vector3.right, Vector3.left};
+
+        while (!isDead)
         {
-            Vector3 spawnPos = transform.position + new Vector3(0, 0, -transform.localScale.z);
+            // 랜덤하게 방향 선택
+            Vector3 randomDirection = directions[Random.Range(0, directions.Length)];
+
+            // 선택된 방향으로 스폰 위치 계산
+            Vector3 spawnPos = transform.position + randomDirection * transform.localScale.z;
             spawnPos.y = 0;
+
             GameObject missileObj = GameManager.Instance.PoolManager.GetFromPool(missilePrefab, spawnPos, Quaternion.identity);
 
-            if (missileObj != null)
-            {
-                Missile missile = missileObj.GetComponent<Missile>();
-                missile?.Initialize(_isPhase2);
-            }
-
-            yield return new WaitForSeconds(1f);
-            missileAttackCounter++;
+            yield return new WaitForSeconds(3f);
         }
 
         _isAttacking = false;
-        missileAttackCounter = 0;
         baseState = MonsterState.Attack;
     }
     #endregion
@@ -165,7 +135,7 @@ public class Elite3 : MonsterBase
         {
             baseState = MonsterState.Attack;
         }
-}
+    }
     #endregion
 
     public override void TakeDamage(float damage, Transform attacker)
@@ -178,9 +148,6 @@ public class Elite3 : MonsterBase
         if (!_isPhase2 && healthRatio <= 0.7f && lastHealthCheckThreshold > 0.7f)
         {
             _isPhase2 = true;
-            Vector3 pos = transform.position;
-            pos.y = 0;
-            GameManager.Instance.PoolManager.GetFromPool(waveAttackPrefab, pos, Quaternion.identity);
         }
 
         lastHealthCheckThreshold = healthRatio;

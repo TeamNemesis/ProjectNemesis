@@ -188,10 +188,10 @@ public class Elite2 : MonsterBase
                     Quaternion rotation = Quaternion.Euler(0, angle, 0);
 
                     GameObject bullet = GameManager.Instance.PoolManager.GetFromPool(eliteBulletPrefab, transform.position, rotation);
-                    EliteBullet turretBullet = bullet.GetComponent<EliteBullet>();
-                    if (turretBullet != null)
+                    EliteBullet elitetBullet = bullet.GetComponent<EliteBullet>();
+                    if (elitetBullet != null)
                     {
-                        turretBullet.Initialize(targetTag, attackDamage, bulletLifeTime, gameObject);
+                        elitetBullet.Initialize(targetTag, attackDamage, bulletLifeTime, gameObject);
                     }
                 }
                 maxBulletAttackCounter++;

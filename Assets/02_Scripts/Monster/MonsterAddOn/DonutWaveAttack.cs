@@ -2,12 +2,13 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class DonutWaveAttack : MonoBehaviour
+public class DonutWaveAttack : PoolableObject
 {
     [Header("Wave Settings")]
     [SerializeField] private float maxRadius = 50f;      // 최대 크기
     [SerializeField] private float expandSpeed = 5f;     // 확장 속도
     [SerializeField] private float ringThickness = 2f;   // 링 두께
+    [SerializeField] private float attackDelay = 1f;    // 공격 간격
 
     [Header("Visual Settings")]
     [SerializeField] private Color waveColor = new Color(1f, 0f, 0f, 0.8f);
@@ -89,29 +90,6 @@ public class DonutWaveAttack : MonoBehaviour
         {
             planeMeshRenderer.material = waveMaterial;
         }
-        else
-        {
-            // 기본 반투명 Material 생성
-            Material mat = new Material(Shader.Find("Standard"));
-            mat.SetFloat("_Mode", 3); // Transparent
-            mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-            mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-            mat.SetInt("_ZWrite", 0);
-            mat.DisableKeyword("_ALPHATEST_ON");
-            mat.EnableKeyword("_ALPHABLEND_ON");
-            mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-            mat.renderQueue = 3000;
-            mat.color = waveColor;
-
-            // 발광 효과
-            mat.EnableKeyword("_EMISSION");
-            mat.SetColor("_EmissionColor", waveColor * 1.5f);
-
-            // 양면 렌더링
-            mat.SetInt("_Cull", (int)UnityEngine.Rendering.CullMode.Off);
-
-            planeMeshRenderer.material = mat;
-        }
 
         donutPlane.SetActive(false);
     }
@@ -171,7 +149,7 @@ public class DonutWaveAttack : MonoBehaviour
 
             isExpanding = false;
 
-            yield return new WaitForSeconds(15f);
+            yield return new WaitForSeconds(attackDelay);
         }
     }
 

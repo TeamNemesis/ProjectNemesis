@@ -355,7 +355,7 @@ public class DebuffHandler : MonoBehaviour
         yield return new WaitForSeconds(duration);
 
 
-        if (agent != null && !character.isDead)
+        if (agent != null && !character.isDead && !character.isBindned)
         {
             agent.isStopped = false;
         }

@@ -14,6 +14,9 @@ public class NebulaChemicalDisease : MonsterBase
     [Header("AttackDecalPrefab"),SerializeField]
     private PoolableObject attackDecalPrefab; // °ø°Ý ÀåÆÇ ÇÁ¸®ÆÕ
 
+    [Header("AttackDecalPrefab"), SerializeField]
+    private PoolableObject strayBullet; // À¯Åº ÇÁ¸®Æé
+
     private void Update()
     {
         if (isDead || _target == null) return;

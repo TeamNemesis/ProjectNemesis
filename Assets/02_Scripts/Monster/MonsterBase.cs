@@ -134,12 +134,6 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
             monsterRigidbody.isKinematic = true;
         }
 
-        monsterCollider = GetComponent<Collider>();
-        if (monsterCollider != null)
-        {
-            monsterCollider.isTrigger = true;
-        }
-
         // === 코루틴 정리 ===
         if (_knockBackCoroutine != null)
         {
