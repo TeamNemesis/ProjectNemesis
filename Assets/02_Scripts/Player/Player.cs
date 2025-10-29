@@ -78,6 +78,8 @@ public class Player : MonoBehaviour
     public event Action OnNormalAttackStarted;
     public event Action OnSpecialAttackStarted;
     public event Action OnDashStarted;
+    public event Action<IInteractable> OnInteractableDetected;
+    public event Action OnInteractableMissed;
     #endregion
 
     [Header("----- 상태 캐시 -----")]
@@ -134,7 +136,7 @@ public class Player : MonoBehaviour
         _weaponController.Initialize();
 
         _interactionController.Initialize();
-        _interactableGuideView.Initialize();
+        //_interactableGuideView.Initialize();
 
         // 중요한 변경: Dasher의 시작/종료 이벤트로 Player의 플래그를 동기화합니다.
         // 이렇게 하면 Player.IsDashing가 Dasher의 실 상태를 반영하게 되어 상태 전환(예: Move로 가는 것)에서 불일치가 나지 않습니다.
@@ -476,13 +478,15 @@ public class Player : MonoBehaviour
     public void InteractableDetected(IInteractable interactable)
     {
         _isInteractable = true;
-        _interactableGuideView.ShowUI(interactable);
+        //_interactableGuideView.ShowUI(interactable);
+        OnInteractableDetected?.Invoke(interactable);
     }
 
     public void InteractableMissed()
     {
         _isInteractable = false;
-        _interactableGuideView.HideUI();
+        //_interactableGuideView.HideUI();
+        OnInteractableMissed?.Invoke();
     }
     #endregion
 }

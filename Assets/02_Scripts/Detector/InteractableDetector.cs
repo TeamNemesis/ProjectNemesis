@@ -89,7 +89,7 @@ public class InteractableDetector : MonoBehaviour
         // 감지된 IInteractable이 없으면 함수 종료
         if (_detectedInteractable == null) return;
 
-        _detectedInteractable.StartInteract(transform);
+        _detectedInteractable.TryInteract(transform);
     }
 
     /// <summary>

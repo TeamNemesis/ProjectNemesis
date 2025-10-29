@@ -8,15 +8,18 @@ public class TechUpgradePackInteractor : RewardInteractableObject
 
     public override event Action OnRewardGiven;
 
-    public override void StartInteract(Transform subject)
+    public void Initialize()
     {
-        base.StartInteract(subject);
         GameManager.Instance.UIManager.onRewardSelect += RaiseRewardGivenEvent;
     }
 
+    // 보상 플로우(예: UI열고 플레이어가 선택하면 확정되는 경우)
     protected override IEnumerator RewardCoroutine()
     {
-        yield return new WaitForSeconds(0.5f); // 보상 선택 UI 열리는 시간 대기
+        // UI가 없으면 바로 적용 (폴백)
+        yield return new WaitForSeconds(0.2f);
+
+        // 실제 보상 적용
         _techItem.SkillUpgrade();
     }
 
@@ -25,8 +28,9 @@ public class TechUpgradePackInteractor : RewardInteractableObject
         OnRewardGiven?.Invoke();
     }
 
-    private void OnDisable()
+    protected override void OnDisable()
     {
+        base.OnDisable();
         GameManager.Instance.UIManager.onRewardSelect -= RaiseRewardGivenEvent;
     }
 }

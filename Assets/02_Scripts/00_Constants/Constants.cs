@@ -208,6 +208,8 @@ public static class Constants
     #region Map
     public static string RESOURCES_PATH_ROOMDATASO = "ScriptableObjects/Map/Rooms";
     public static string RESOURCES_PATH_DOOR_PREFAB = "Prefabs/Map/Doors/Door";
+    public static string RESOURCES_PATH_REWARDS = "Prefabs/Rewards";
+    public static string RESOURCES_PATH_SHOPITEMS = "Prefabs/ShopItems";
     #endregion
 
     #endregion
@@ -339,6 +341,14 @@ public enum NormalRoomType
     TechUpgrade,
 }
 
+public enum ShopItemType
+{
+    HealPack,
+    TechSelectPack,
+    TechUpgradePack,
+    MutantPack,
+}
+
 public enum RewardType
 {
     Credit,
@@ -353,6 +363,7 @@ public enum InteractableType
 {
     Door,
     Reward,
+    ShopItem,
     Weapon,
 }
 

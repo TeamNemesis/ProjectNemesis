@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Resources;
 using UnityEngine;
 
 public class PoolManager : MonoBehaviour
@@ -9,6 +11,13 @@ public class PoolManager : MonoBehaviour
     private Dictionary<string, List<GameObject>> inUsePools = new Dictionary<string, List<GameObject>>();
     // 풀을 정리하는 Dictionary
     private Dictionary<string, GameObject> poolContainers = new Dictionary<string, GameObject>();
+
+    ResourceManager _resourceManager;
+
+    public void Initialize(ResourceManager resourceManager)
+    {
+        _resourceManager = resourceManager;
+    }
 
     #region 오브젝트풀 임시 생성
     /// <summary>
@@ -57,6 +66,91 @@ public class PoolManager : MonoBehaviour
 
         obj.SetActive(true);
         inUsePools[prefabObject.name].Add(obj);
+
+        return obj;
+    }
+
+    /// <summary>
+    /// 새 오버로드: prefabPath로 프리팹을 로드해서 풀에서 가져옵니다.
+    /// - ResourceManager가 Initialize로 설정되어 있으면 LoadResource를 사용하고,
+    ///   그렇지 않으면 Resources.Load로 폴백합니다.
+    /// - prefabPath는 Resources 폴더 기준 경로(확장자 제외) 또는 ResourceManager에서 기대하는 경로입니다.
+    /// </summary>
+    public GameObject GetFromPool(string prefabPath, Vector3 position, Quaternion rotation, Transform parentTransform = null, object data = null)
+    {
+        // 1) 프리팹 로드 시도 (ResourceManager 우선)
+        GameObject prefab = null;
+        if (_resourceManager != null)
+        {
+            try
+            {
+                prefab = _resourceManager.LoadResource<GameObject>(prefabPath);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"ResourceManager.LoadResource 실패: {ex.Message}");
+            }
+        }
+
+        // 2) ResourceManager가 없거나 로드 실패 시 Resources.Load로 폴백
+        if (prefab == null)
+        {
+            prefab = Resources.Load<GameObject>(prefabPath);
+        }
+
+        if (prefab == null)
+        {
+            Debug.LogError($"GetFromPool: 프리팹을 찾을 수 없습니다. 경로: {prefabPath}");
+            return null;
+        }
+
+        // 3) 기존 로직과 동일하게 pool key는 prefab.name 사용
+        string key = prefab.name;
+
+        if (!availablePools.ContainsKey(key))
+        {
+            availablePools.Add(key, new List<GameObject>());
+            if (!inUsePools.ContainsKey(key))
+            {
+                inUsePools.Add(key, new List<GameObject>());
+            }
+        }
+
+        if (availablePools[key].Count == 0)
+        {
+            Debug.LogWarning($"'{key}' 풀이 비어있습니다! 새로운 오브젝트를 생성합니다.");
+            GameObject newObj = CreateNewObject(prefab, position, rotation, parentTransform);
+
+            if (newObj != null && newObj.TryGetComponent<PoolableObject>(out var poolableComp))
+            {
+                if (poolableComp is IInitializePoolable initializePoolable)
+                {
+                    initializePoolable.Initialize(data);
+                }
+            }
+
+            return newObj;
+        }
+
+        GameObject obj = availablePools[key][availablePools[key].Count - 1];
+        availablePools[key].RemoveAt(availablePools[key].Count - 1);
+        obj.transform.position = position;
+        obj.transform.rotation = rotation;
+        if (parentTransform != null)
+        {
+            obj.transform.SetParent(parentTransform);
+        }
+
+        if (obj.TryGetComponent<PoolableObject>(out var existingPoolable2))
+        {
+            if (existingPoolable2 is IInitializePoolable initializePoolable2)
+            {
+                initializePoolable2.Initialize(data);
+            }
+        }
+
+        obj.SetActive(true);
+        inUsePools[key].Add(obj);
 
         return obj;
     }

@@ -160,7 +160,7 @@ public abstract class Room : MonoBehaviour
         return results.ToArray();
     }
 
-    public abstract RewardInteractableObject[] SpawnReward();
+    public abstract IInteractable[] SpawnReward();
 
     public List<GameObject> GetPoolableObjectsInRoom()
     {

@@ -34,6 +34,8 @@ public class PlayScene : MonoBehaviour
         GameManager.Instance.CurrencyManager.OnCreditChanged += _playSceneView.UpdateGoldText;
         GameManager.Instance.CurrencyManager.OnChromeChanged += _playSceneView.UpdateChromeText;
         _player.playerModel.OnHpChanged += _playSceneView.UpdateHPBar;
+        _player.OnInteractableDetected += _playSceneView.ShowInteractionUI;
+        _player.OnInteractableMissed += _playSceneView.HideInteractionUI;
     }
 
     private void Start()
