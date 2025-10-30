@@ -3162,8 +3162,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxChargeTime: 3
-  minDamage: 20
-  maxDamage: 150
   minWidth: 0.05
   maxWidth: 0.6
   laserPrefab: {fileID: 4218594688661822969, guid: 6d1137ed252299f41b0dcf9d3e2a4e5c, type: 3}
@@ -3378,6 +3376,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e11405ac3bb6b34d8bf1bbf8d173135, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  grenadePrefab: {fileID: 0}
+  explodeCircle: {fileID: 0}
+  travelTime: 1
+  travelSpeed: 30
+  explosionRadius: 3
+  explosionDamage: 30
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  maxParabolaHeight: 15
+  minParabolaHeight: 10
+  closeDistance: 2
+  farDistance: 10
 --- !u!1 &1701970611488711744
 GameObject:
   m_ObjectHideFlags: 0
@@ -17152,7 +17163,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _characterController: {fileID: 8109413294957839125}
-  _moveSpeed: 10
+  _moveSpeed: 20
 --- !u!114 &1484459335462496411
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17178,7 +17189,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4dd914b0022246a47a8ce199a9933656, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxHealth: 200
+  _maxHealth: 10000
   _currentHealth: 0
   _moveSpeed: 5
   isStunned: 0
@@ -17187,6 +17198,7 @@ MonoBehaviour:
   isWeaken: 0
   isDead: 0
   debuffHandler: {fileID: 0}
+  _bIsInvincibility: 0
 --- !u!114 &2918574613242863231
 MonoBehaviour:
   m_ObjectHideFlags: 0
