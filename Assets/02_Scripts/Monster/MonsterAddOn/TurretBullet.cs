@@ -13,7 +13,7 @@ public class TurretBullet : PoolableObject
 
     //변경된 부분
     private Vector3 moveDir = Vector3.forward;
-    private bool isReflected = false; 
+    
     public void SetDamage(float damage)
     {
         this.damage = damage;
@@ -105,15 +105,16 @@ public class TurretBullet : PoolableObject
     {
         moveDir = -moveDir; // 방향 전환
 
-        targetTag = "Monster"; // 타겟태그 변경
+        targetTag = Constants.TAG_MONSTER; // 타겟태그 변경
         owner = reflector.gameObject; // 주인 변경
 
     }
 
+    //초기화
     private void OnDisable()
     {
         moveDir = Vector3.forward;
-        targetTag = "Player";
+        targetTag = Constants.TAG_PLAYER;
         owner = null;
     }
 
