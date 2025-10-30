@@ -171,13 +171,17 @@ MonoBehaviour:
   debuffHandler: {fileID: 0}
   maxEliteHealth: 0
   attackDamage: 10
-  attackRange: 100
-  detectionRange: 100
+  attackRange: 1000
+  detectionRange: 1000
   attackDelay: 0.5
   originalSpeed: 10
   targetTag: Player
   monsterSize: 2
   cost: 100
+  monsterRigidbody: {fileID: 0}
+  monsterCollider: {fileID: 0}
+  _isAttacking: 0
+  baseState: 0
   _knockBackDamage: 0
   player: {fileID: 0}
   agent: {fileID: 0}
@@ -188,7 +192,6 @@ MonoBehaviour:
   _poisonFieldDelay: 2
   bulletLifeTime: 8
   maxBulletAttackCounter: 0
-  _isAttacking: 0
   squareDecalPrefab: {fileID: 7619084252263834349, guid: e795736bd1fa44849baa7ed701aeb454, type: 3}
   attackDecalPrefab: {fileID: 4171473842588414540, guid: e1cdcf7ba7eac0445a237bf39c1ee586, type: 3}
   poisonFieldPrefab: {fileID: 294633856658633526, guid: c6fc3eaefac9ff8438430d7b62ef1a5e, type: 3}
@@ -196,7 +199,6 @@ MonoBehaviour:
   bulletAttackCoolTime: 5
   poisonLaserAttackCoolTime: 5
   poisonFieldAttackCoolTime: 10
-  currentState: 0
 --- !u!54 &9123246349965142061
 Rigidbody:
   m_ObjectHideFlags: 0
