@@ -16,7 +16,8 @@ public class AreaDamageBase : PoolableObject
     public float areaExtent { get { return _areaExtent; } }
     public void SetAreaExtent(float areaExtent)
     {
-        _areaExtent = areaExtent;
+        _areaExtent = areaExtent * GameManager.Instance.PlayerStatManager.playerAreaExtent;
+        transform.localScale = Vector3.one * _areaExtent * 2f;
     }
 
     [SerializeField]

@@ -252,7 +252,7 @@ public class PlayerStatManager : MonoBehaviour
     /// <summary>
     /// 유탄 공격력
     /// </summary>
-    private float _playerGrenadeDamage;
+    private float _playerGrenadeDamage=30f;
     public float playerGrenadeDamage { get { return _playerGrenadeDamage; } }
     public void AddPlayerGreneadeDamage(float plusGreneadeDamage)
     {
@@ -445,6 +445,7 @@ public class PlayerStatManager : MonoBehaviour
                 break;
         }
         Debug.LogError("현재 데미지 : " + damage + attackType + weaponType);
+        
         monster.GetComponent<MonsterBase>().TakeDamage(damage, attackerTransform);
     }
 

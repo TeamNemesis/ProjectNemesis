@@ -26,8 +26,6 @@ public class PlayerNormalAttackState : PlayerStateBase
         
         // 실제 Attack 로직 호출 (이 함수는 발사는 하지 않고 fallback 타이머만 설정하도록 설계됨)
         _attacker.RequestAttack();
-        // 또는: ((PlayerNormalAttacker)_attacker).Attack(); if Attack is public/protected accordingly
-        _player.SetIsNormalAttacking(true);
     }
 
     public override void Update()

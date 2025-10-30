@@ -1,28 +1,54 @@
+using System;
+using System.Collections;
 using UnityEngine;
 
 public class Skill_Collab : SkillBase
 {
     /// <summary>
+    /// 폭군 데미지
+    /// </summary>
+    private float _tyrantDamage = 0;
+
+    /// <summary>
+    /// 최상위 포식자 계수
+    /// </summary>
+    private float _predatorHeal = 0f;
+    private float _predatorTime = 0f;
+    private WeakenArea _predatorPrefab;
+    private WeakenAreaData _predatorData;
+
+    private GravityFlareRocketData _rocketData;
+    private GravityFlareRocketExplosionData _explosionData;
+    private GravityFlareRocket _rocketPrefab;
+    private GravityFlareRocketExplosion _explosionPrefab;
+
+    public override void InitializeSkill(SkillManager skillManager)
+    {
+        base.InitializeSkill(skillManager);
+
+    }
+
+    /// <summary>
     /// 콜라보 스킬의 경우 해당하는 회사 개수 up
     /// </summary>
     /// <param name="skilldata"></param>
     /// <param name="num"></param>
-    public override void SkillNumUp(SkillData skilldata,int num)
+    public override void SkillNumUp(SkillData skilldata, int num)
     {
-        switch(skilldata.skillIdx)
+        switch (skilldata.skillIdx)
         {
             case Constants.INDEX_FIVE_ONE:
-                _skillManager.skill_One.SkillNumUp(skilldata,num);
-                _skillManager.skill_Five.SkillNumUp(skilldata,num);
+                _skillManager.skill_One.SkillNumUp(skilldata, num);
+                _skillManager.skill_Five.SkillNumUp(skilldata, num);
                 Debug.Log("collab" + _skillManager.skill_One.skillNum);
                 break;
             case Constants.INDEX_ONE_TWO:
                 _skillManager.skill_One.SkillNumUp(skilldata, num);
-                _skillManager.skill_Two.SkillNumUp(skilldata,num);
+                _skillManager.skill_Two.SkillNumUp(skilldata, num);
                 break;
             case Constants.INDEX_TWO_THREE:
                 _skillManager.skill_Two.SkillNumUp(skilldata, num);
-                _skillManager.skill_Three.SkillNumUp(skilldata,num);
+                _skillManager.skill_Three.SkillNumUp(skilldata, num);
                 break;
             case Constants.INDEX_THREE_FOUR:
                 _skillManager.skill_Three.SkillNumUp(skilldata, num);
@@ -33,7 +59,7 @@ public class Skill_Collab : SkillBase
                 _skillManager.skill_Four.SkillNumUp(skilldata, num);
                 break;
         }
-        
+
     }
 
 
@@ -44,36 +70,162 @@ public class Skill_Collab : SkillBase
             // 폭군
             case 60:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
-
+                ActiveTyrant(choosedSkill);
                 break;
 
-                // 최상위 포식자
+            // 최상위 포식자
             case 61:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
-
+                skillManager.playScene.MapController.MonsterController.MonsterSpawner.OnMonsterSpawned -= ConnectWeakneHeal;
+                ActivePredator(choosedSkill);
+                skillManager.playScene.MapController.MonsterController.MonsterSpawner.OnMonsterSpawned += ConnectWeakneHeal;
                 break;
 
-                // GravityFlare
+            // GravityFlare
             case 62:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
-
+                ActiveGravityFlare(choosedSkill);
                 break;
 
-                // 전자기 폭풍
+            // 전자기 폭풍
             case 63:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 break;
 
-                // 전기 인간
+            // 전기 인간
             case 64:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
 
                 break;
-        
+
             default:
                 Debug.Log("에러, 배정되지 않은 idx");
                 break;
 
         }
     }
+
+    #region 폭군
+    public void ActiveTyrant(SkillData skill)
+    {
+        if (skill.skillLevel == 1)
+        {
+            // 모든 피해 증가
+            skillManager.playerStatManager.AddTotalMultiDamage(skill.skillBaseValue_1 + skill.skillLevelValue_1);
+        }
+        else
+        {
+            // 모든 피해 증가
+            skillManager.playerStatManager.AddTotalMultiDamage(skill.skillLevelValue_1);
+        }
+        skillManager.playScene.player.playerModel.OnHeal -= DamageNearestMonster;
+        _tyrantDamage = skill.skillLevelValue_2 * skill.skillLevel + skill.skillBaseValue_2;
+        skillManager.playScene.player.playerModel.OnHeal += DamageNearestMonster;
+
+    }
+
+    public void DamageNearestMonster(int currentHp, int MaxHp)
+    {
+        GameObject nearestObject = Constants.GetNearestObject(skillManager.playScene.player.transform, skillManager.playScene.MapController.MonsterController.MonsterSpawner.ActiveMonsters);
+        if (nearestObject != null)
+        {
+            MonsterBase nearestMonster = nearestObject.GetComponent<MonsterBase>();
+            if (nearestMonster != null)
+            {
+                nearestMonster.TakeDamage(_tyrantDamage);
+                Debug.LogError("폭군 데미지");
+            }
+            else
+            {
+                Debug.LogError("몬스터 베이스가 없음");
+            }
+        }
+        else
+        {
+            Debug.LogError("게임 오브젝트가 없음");
+        }
+    }
+    #endregion
+
+    #region 최상위 포식자
+    public void ActivePredator(SkillData skill)
+    {
+        _predatorHeal = (skill.skillBaseValue_1 + skill.skillLevelValue_1 * skill.skillLevel);
+        _predatorTime = (skill.skillBaseValue_3 + skill.skillLevelValue_3 * skill.skillLevel);
+        _predatorData = new WeakenAreaData(skill.skillBaseValue_2 + skill.skillLevelValue_2 * skill.skillLevel);
+  
+        if (_predatorPrefab == null)
+        {
+            _predatorPrefab = Resources.Load<WeakenArea>("Prefabs/Skill/SkillObject/Skill_Collab/PredatorPrefab");
+        }
+
+
+
+
+    }
+
+    public void ConnectWeakneHeal(MonsterBase monster)
+    {
+        Action handler = null;
+        handler = () =>
+        {
+            monster.OnDieEvent -= handler;
+            WeakenMonsterKill(monster);
+        };
+
+        monster.OnDieEvent += handler;
+    }
+
+    public void WeakenMonsterKill(MonsterBase monster)
+    {
+        if (!monster.isWeaken) return;
+        skillManager.playScene.player.playerModel.Heal((int)_predatorHeal);
+        MakeWeakenArea(monster);
+        skillManager.playScene.player.playerModel.PlayerInvincibility(_predatorTime);
+    }
+
+    public void MakeWeakenArea(MonsterBase monster)
+    {
+        Vector3 position = monster.transform.position;
+        position.y = 0;
+        GameManager.Instance.PoolManager.GetFromPool(_predatorPrefab, position, Quaternion.identity, null, _predatorData).GetComponent<WeakenArea>().Initialize();
+        
+    }
+    #endregion
+
+    #region GravityFlare
+    public void ActiveGravityFlare(SkillData skill)
+    {
+        Debug.LogError("연결");
+        if(_explosionPrefab == null)
+        {
+            _explosionPrefab = Resources.Load<GravityFlareRocketExplosion>("Prefabs/Skill/SkillObject/Skill_Collab/GravityFlareRocketExplosion");
+        }
+        if(_rocketPrefab == null)
+        {
+            _rocketPrefab = Resources.Load<GravityFlareRocket>("Prefabs/Skill/SkillObject/Skill_Collab/GravityFlareRocket");
+        }
+
+        _explosionData = new GravityFlareRocketExplosionData(skill.skillBaseValue_2 + skill.skillLevelValue_2 * skill.skillLevel,
+            skill.skillBaseValue_1 + skill.skillLevelValue_1 * skill.skillLevel);
+        EventBus.OnMonsterKnockBack -= ShotRocketToKnockBackMonster;
+        EventBus.OnMonsterKnockBack += ShotRocketToKnockBackMonster;
+    }
+
+    public void ShotRocketToKnockBackMonster(Vector3 position)
+    {
+
+        Vector3 playerPosition = skillManager.playScene.player.transform.position;
+        Debug.LogError("playerPosition : " + playerPosition + " position : " + position);
+        position.y = 0;
+        playerPosition.y = 0;
+        Vector3 direction = position - playerPosition;
+        direction.Normalize();
+        playerPosition.y += Constants.MISSILIE_HEIGHT;
+
+        _rocketData = new GravityFlareRocketData( _explosionData, _explosionPrefab);
+        Debug.LogError(direction);
+        GameManager.Instance.PoolManager.GetFromPool(_rocketPrefab, playerPosition, Quaternion.LookRotation(direction), null, _rocketData);
+    }
+    #endregion
 }

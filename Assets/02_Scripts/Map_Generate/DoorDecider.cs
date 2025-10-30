@@ -181,13 +181,27 @@ public class DoorDecider : MonoBehaviour
     /// </summary>
     Dictionary<RoomType, float> BuildCandidateMap()
     {
-        return new Dictionary<RoomType, float>
+        // DataManager의 RoomDataMap에서 확률 정보를 가져오기
+        DataManager dataManager = GameManager.Instance?.DataManager;
+
+        if (dataManager == null)
         {
-            { RoomType.Normal, 0.7f },
-            { RoomType.Shop, 0.15f },
-            { RoomType.Lab, 0.1f },
-            { RoomType.Colosseum, 0.05f }
-        };
+            Debug.LogWarning("[DoorDecider] DataManager is null, using default candidate weights.");
+        }
+
+        var candidate = new Dictionary<RoomType, float>();
+        foreach (var kv in dataManager?.RoomDataMap)
+        {
+            var roomType = kv.Key;
+            var roomData = kv.Value;
+            if (roomData == null)
+            {
+                Debug.LogWarning($"[DoorDecider] RoomData for {roomType} is null, skipping.");
+                continue;
+            }
+            candidate[roomType] = roomData.BaseChance;
+        }
+        return candidate;
     }
 
     /// <summary>

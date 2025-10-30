@@ -50,7 +50,7 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
     [Header("Components")]
     [SerializeField] protected NavMeshAgent agent;
     [SerializeField] protected Transform _target;
-    
+
     /// <summary>
     /// 공격력 반환
     /// </summary>
@@ -134,6 +134,8 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
             monsterRigidbody.isKinematic = true;
         }
 
+        monsterCollider = GetComponent<Collider>();
+
         // === 코루틴 정리 ===
         if (_knockBackCoroutine != null)
         {
@@ -216,7 +218,11 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
     public void KnockBackEnemy(Vector3 pushDirection, float damage, float knockBackDistance)
     {
         TakeDamage(damage, null);
-
+        
+        if(isDead)
+        {
+            return;
+        }
         if (_knockBackCoroutine != null)
         {
             Debug.Log("넉백 중이므로 넉백 무시");
@@ -229,11 +235,14 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
         }
         monsterCollider.isTrigger = false;
         isPushed = true;
-        debuffHandler.ApplyDebuff(DebuffHandler.DebuffData.CreateStun(0.5f));
+        //debuffHandler.ApplyDebuff(DebuffHandler.DebuffData.CreateStun(0.5f));
+        agent.isStopped = true;
         monsterRigidbody.isKinematic = false;
         monsterRigidbody.linearVelocity = Vector3.zero;
-        monsterRigidbody.AddForce(pushDirection, ForceMode.VelocityChange);
+        Vector3 push = pushDirection * Constants.KNOCKBACK_POWER;
+        monsterRigidbody.AddForce(push, ForceMode.VelocityChange);
 
+        EventBus.MonsterKnockBack(transform.position);
         _knockBackCoroutine = StartCoroutine(KnockBackCoroutine(knockBackDistance));
         StartCoroutine(KnockBackCoolTime());
     }
@@ -247,13 +256,13 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
     /// <returns></returns>
     public IEnumerator KnockBackCoroutine(float knockBackDistance)
     {
-        float time=0;
+        float time = 0;
         float maxTime = 1f;
         Vector3 startPosition = transform.position;
         while (Vector3.Distance(transform.position, startPosition) < knockBackDistance)
         {
             time += Time.deltaTime;
-            if(time > maxTime)
+            if (time > maxTime)
             {
                 Debug.Log("속도가 너무 느려 강제 종료");
                 break;
@@ -266,9 +275,13 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
     public void EndKnockBack()
     {
         isPushed = false;
-        monsterRigidbody.linearVelocity = Vector3.zero ;
+        monsterRigidbody.linearVelocity = Vector3.zero;
         monsterRigidbody.isKinematic = true;
-       monsterCollider.isTrigger = true;
+        monsterCollider.isTrigger = true;
+        if (!isBindned)
+        {
+            agent.isStopped = false;
+        }
     }
 
     public IEnumerator KnockBackCoolTime(float knockBackCoolTime = Constants.KNOCKBACK_COOLTIME)
@@ -276,5 +289,14 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
         yield return new WaitForSeconds(knockBackCoolTime);
         _knockBackCoroutine = null;
     }
-    #endregion
+		#endregion
+
+#if UNITY_EDITOR
+		public void SetDebugStats(int hp, float speed)
+		{
+				_maxHealth = hp;
+				_currentHealth= hp;
+				_moveSpeed = speed;
+		}
+#endif
 }

@@ -314,4 +314,13 @@ public class MapController : MonoBehaviour
     {
         _currentRoom.SpawnReward();
     }
+
+#if UNITY_EDITOR
+		public void KillAllMonsters()
+		{
+				_monsterController.MonsterSpawner?.KillAllActiveMonsters();
+		}
+
+#endif
+
 }

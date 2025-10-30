@@ -54,9 +54,7 @@ public class PoisonDash : AreaDamageBase,IInitializePoolable
             _player = dashData.player;
             _dashDamage = dashData.damage;
             _dashHeal = dashData.healAmount;
-            _areaExtent = dashData.extent * GameManager.Instance.PlayerStatManager.playerAreaExtent;
-            transform.localScale = Vector3.one * _areaExtent * 2;
-
+            SetAreaExtent(dashData.extent);
         }
     }
 }

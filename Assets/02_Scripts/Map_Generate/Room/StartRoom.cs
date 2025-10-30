@@ -13,12 +13,6 @@ public class StartRoom : Room
         CheatReward();
     }
 
-    public override RewardInteractableObject[] SpawnReward()
-    {
-        // 시작방은 보상이 없다.
-        return new RewardInteractableObject[0];
-    }
-
     public void SpawnInteractableWeapons()
     {
         if (_weapons.Length != _rewardSpawnPoints.Length)
@@ -33,6 +27,12 @@ public class StartRoom : Room
             weaponObj.transform.SetParent(_rewardSpawnPoints[i]);
             _poolableObjectsInRoom.Add(weaponObj);
         }
+    }
+
+    public override IInteractable[] SpawnReward()
+    {
+        // 시작 방은 보상을 생성하지 않음
+        return System.Array.Empty<IInteractable>();
     }
 
     void CheatReward()

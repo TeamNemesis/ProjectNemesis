@@ -84,7 +84,7 @@ public class Skill_Two_Dash : ActiveTech
         {
             _dashReinforcePrefab = Resources.Load<DashReinforcePrefab>("Prefabs/Skill/SkillObject/Skill_Two/SkillTwoDash");
         }
-            
+
         _dashReinforceData = new DashReinforceData(
             skillData.skillBaseValue_1 + skillData.skillLevelValue_1 * skillData.skillLevel // 스킬 범위
             );
@@ -106,7 +106,7 @@ public class Skill_Two_Dash : ActiveTech
     {
         Vector3 position = player.transform.position;
         position.y = 0;
-        GameManager.Instance.PoolManager.GetFromPool(_dashReinforcePrefab, position, _dashReinforcePrefab.transform.rotation,null,_dashReinforceData).GetComponent<DashReinforcePrefab>().Initialize();
+        GameManager.Instance.PoolManager.GetFromPool(_dashReinforcePrefab, position, _dashReinforcePrefab.transform.rotation, null, _dashReinforceData).GetComponent<DashReinforcePrefab>().Initialize();
     }
 
     public Skill_Two_Dash(SkillData skillData) : base(skillData)
@@ -203,49 +203,58 @@ public class Skill_Five_Dash : ActiveTech
 
     private float _attackReinForce;
     private Action _dashAction;
-    private Action _attackAction;
 
     public override void Activate(SkillManager skillManager, Player player)
     {
         base.Activate(skillManager, player);
         _dashAction = () => ActiveTry(player);
-        _attackAction = () => AttackTry();
         _attackReinForce = _skillData.skillLevel * _skillData.skillLevelValue_1 + _skillData.skillBaseValue_1;
         player.OnDashStarted += _dashAction;
-        player.OnNormalAttackStarted += _attackAction;
+        EventBus.OnMonsterHit += HitEnemy;
     }
 
     public override void Deactivate(Player player, bool isAnotherSkill)
     {
         base.Deactivate(player, isAnotherSkill);
-        AttackTry();
+        if (bIsAttackReinForce)
+        {
+            GameManager.Instance.PlayerStatManager.AddPlayerAttackDamage(-_attackReinForce);
+            Debug.LogError(GameManager.Instance.PlayerStatManager.playerAttackDamage);
+            bIsAttackReinForce = false;
+        }
         player.OnDashStarted -= _dashAction;
-        player.OnNormalAttackStarted -= _attackAction;
+        EventBus.OnMonsterHit -= HitEnemy;
 
     }
 
     public override void ActiveTry(Player player)
     {
+        Debug.LogError("대쉬 시작");
         if (!bIsAttackReinForce)
         {
-
+            Debug.LogError("공격력 증가");
             GameManager.Instance.PlayerStatManager.AddPlayerAttackDamage(_attackReinForce);
-            Debug.Log(GameManager.Instance.PlayerStatManager.playerAttackDamage);
+            Debug.LogError(GameManager.Instance.PlayerStatManager.playerAttackDamage);
 
             bIsAttackReinForce = true;
         }
     }
 
-    public void AttackTry()
+    public override void HitEnemy(WeaponType weaponType, ATTACKTYPE attackType, Transform monster, Transform attacker = null)
     {
         if (bIsAttackReinForce)
         {
-            GameManager.Instance.PlayerStatManager.AddPlayerAttackDamage(-_attackReinForce);
-            Debug.Log(GameManager.Instance.PlayerStatManager.playerAttackDamage);
-            bIsAttackReinForce = false;
-        }
+            if (attackType == ATTACKTYPE.NORMAL)
+            {
 
+                GameManager.Instance.PlayerStatManager.AddPlayerAttackDamage(-_attackReinForce);
+                Debug.LogError(GameManager.Instance.PlayerStatManager.playerAttackDamage);
+                bIsAttackReinForce = false;
+            }
+        }
     }
+
+
 
     public Skill_Five_Dash(SkillData skillData) : base(skillData)
     {

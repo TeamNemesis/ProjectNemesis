@@ -2,17 +2,31 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+public class GrenadePoisonData
+{
+		public float time;
+		public float extent;
+
+		public GrenadePoisonData(float time, float extent)
+		{
+				this.time = time;
+				this.extent = extent;
+		}
+}
+
 /// <summary>
 /// 비브르 모션 특수 공격 강화 시 유탄 공격 지점에 생성할 프리팹 클래스
 /// </summary>
-public class GrenadePoison : AreaDotBase
+public class GrenadePoison : AreaDotBase,IInitializePoolable
 {
 		/// <summary>
 		/// 실행 중인 코루틴 목록
 		/// </summary>
 		private Dictionary<int, Coroutine> poisonStackCoroutine = new Dictionary<int, Coroutine>();
 
-
+		private float _time;
+		
 
 		public override void ActiveSkill(Transform target)
 		{
@@ -78,8 +92,17 @@ public class GrenadePoison : AreaDotBase
 
 		public IEnumerator ReleasePoisonArea()
 		{
-				yield return new WaitForSeconds(Constants.SKILL_ONE_SPATTACK_TIME);
+				yield return new WaitForSeconds(_time);
 		ReleaseObject();
 				GameManager.Instance.PoolManager.ReleaseToPoolByInterface(this);
+		}
+
+		public void Initialize(object data)
+		{
+				if(data is GrenadePoisonData skillData)
+				{
+						_time = skillData.time;
+						SetAreaExtent(skillData.extent);
+				}
 		}
 }

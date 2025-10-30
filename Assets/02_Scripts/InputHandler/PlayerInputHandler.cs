@@ -12,6 +12,8 @@ public class PlayerInputHandler : MonoBehaviour
     [SerializeField] float _normalAttackInterval = 0.2f; // 일반공격 입력 반복 간격
 
     [SerializeField] PlayerInput _playerInput;       // PlayerInput 컴포넌트 참조
+    [SerializeField] Camera mainCam;               // 메인 카메라 참조
+    [SerializeField] LayerMask _groundLayer;        // Ground 레이어 마스크
 
     public event Action<Vector2> OnMoveInput;        // 이동 입력 이벤트
     
@@ -19,7 +21,7 @@ public class PlayerInputHandler : MonoBehaviour
     public event Action OnInteractInput;             // 상호작용 입력 이벤트
 
     public event Action OnNomralAttackInput;         // 일반공격 입력 이벤트
-    public event Action OnGrenadeAttackInput;        // 유탄공격 입력 이벤트
+    public event Action<Vector3> OnGrenadeAttackInput;        // 유탄공격 입력 이벤트
     public event Action OnGrenadeAttackInputEnded;   // 유탄공격 입력 종료 이벤트
     public event Action OnSpecialAttackInput;        // 특수공격 입력 이벤트
     public event Action OnSpecialAttackInputCanceled;   // 특수공격 입력 종료 이벤트
@@ -29,6 +31,7 @@ public class PlayerInputHandler : MonoBehaviour
 
     private void Awake()
     {
+        mainCam = Camera.main;
         // 현재 액션 맵 가져오기
         var actionMap = _playerInput.actions.FindActionMap("Player");
         var normal = actionMap["NormalAttack"];
@@ -149,15 +152,36 @@ public class PlayerInputHandler : MonoBehaviour
     {
         if (value.started)
         {
-            Debug.Log("유탄공격 입력받음");
-            OnGrenadeAttackInput?.Invoke();
+            // 우클릭 시작 시
+            Vector3? target = GetMouseGroundPoint();
+            if (target.HasValue)
+            {
+                
+                OnGrenadeAttackInput?.Invoke(target.Value);
+            }
         }
         else if (value.canceled)
         {
-            Debug.Log("유탄공격 입력끝남");
+            
             OnGrenadeAttackInputEnded?.Invoke();
         }
     }
+
+    /// <summary>
+    /// 마우스로 Ground 지점 감지
+    /// </summary>
+    private Vector3? GetMouseGroundPoint()
+    {
+        Ray ray = mainCam.ScreenPointToRay(Mouse.current.position.ReadValue());
+        if (Physics.Raycast(ray, out RaycastHit hit, 200f, _groundLayer ))
+        {
+            return hit.point;
+        }
+
+        return null; // 맞은게 없으면 null 반환
+    }
+
+
 
     /// <summary>
     /// 특수공격 입력을 받아오는 함수

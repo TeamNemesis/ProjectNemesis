@@ -70,10 +70,6 @@ public static class Constants
     /// </summary>
     public static float SKILL_ONE_SPATTACK_STACKTIME = 1f;
 
-    /// <summary>
-    /// 장판 지속 시간
-    /// </summary>
-    public static float SKILL_ONE_SPATTACK_TIME = 3f;
 
     /// <summary>
     /// 피의 갈증 힐량
@@ -121,6 +117,8 @@ public static class Constants
 
     #endregion
 
+    public const float MISSILIE_HEIGHT = 0.5f;
+
     #region Drone
 
     /// <summary>
@@ -155,18 +153,6 @@ public static class Constants
     public static int DRONE_SEARCHNUM = 10;
 
     #endregion
-    #region Bullet
-    /// <summary>
-    /// 드론 총알 속도
-    /// </summary>
-    public static float DRONE_BULLET_SPEED = 7f;
-
-    /// <summary>
-    /// 드론 총알 존재 시간
-    /// </summary>
-    public static float DRONE_BULLET_TIME = 5f;
-
-    #endregion
 
     #region debuff
     /// <summary>
@@ -189,6 +175,7 @@ public static class Constants
     public const string LAYER_MASK_INTERACTABLE = "Interactable";
     public const string LAYER_MASK_PLAYER = "Player";
     public const string LAYER_MASK_WALL = "Wall";
+    public const string LAYER_MASK_GROUND = "Ground";
 
     #endregion
 
@@ -208,12 +195,15 @@ public static class Constants
     #region Map
     public static string RESOURCES_PATH_ROOMDATASO = "ScriptableObjects/Map/Rooms";
     public static string RESOURCES_PATH_DOOR_PREFAB = "Prefabs/Map/Doors/Door";
+    public static string RESOURCES_PATH_REWARDS = "Prefabs/Rewards";
+    public static string RESOURCES_PATH_SHOPITEMS = "Prefabs/ShopItems";
     #endregion
 
     #endregion
 
     #region knockBack
     public const float KNOCKBACK_COOLTIME = 5f;
+    public const float KNOCKBACK_POWER = 10f;
     #endregion
 
     #region Util
@@ -339,6 +329,14 @@ public enum NormalRoomType
     TechUpgrade,
 }
 
+public enum ShopItemType
+{
+    HealPack,
+    TechSelectPack,
+    TechUpgradePack,
+    MutantPack,
+}
+
 public enum RewardType
 {
     Credit,
@@ -353,6 +351,7 @@ public enum InteractableType
 {
     Door,
     Reward,
+    ShopItem,
     Weapon,
 }
 
