@@ -79,18 +79,9 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "New action",
-                    "type": "Button",
-                    "id": "e519b972-80ed-4566-b9a2-b3d92860acf5",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "New action1",
+                    "name": "Look",
                     "type": "Value",
-                    "id": "9ec42a3f-a54b-4bfc-b444-6fe5ea3d98a6",
+                    "id": "315c9a1b-a09b-436f-b1b2-60cc437309b2",
                     "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
@@ -320,23 +311,12 @@
                 },
                 {
                     "name": "",
-                    "id": "c99e05e0-ff74-4f91-a38d-10afe84eb1ee",
-                    "path": "<Pointer>/press",
+                    "id": "ab96a154-62b7-4275-9805-43bf52e9b9bd",
+                    "path": "<Mouse>/delta",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
-                    "action": "New action",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "dd6a975d-d078-4b75-bbf3-83934d11adcd",
-                    "path": "<Pointer>/position",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "New action1",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Look",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

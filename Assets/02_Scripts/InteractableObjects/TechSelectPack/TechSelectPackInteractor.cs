@@ -15,18 +15,20 @@ public class TechSelectPackInteractor : RewardInteractableObject
 
     public override void Initialize()
     {
-        GameManager.Instance.UIManager.onRewardSelect += RaiseRewardGivenEvent;
+        base.Initialize();
     }
 
     protected override IEnumerator RewardCoroutine()
     {
+        GameManager.Instance.UIManager.onRewardSelect += RaiseRewardGivenEvent;
         yield return new WaitForSeconds(0.5f); // 보상 선택 UI 열리는 시간 대기
         _techItem.GetSkill(_packType);
     }
 
-    void RaiseRewardGivenEvent()
+    protected void RaiseRewardGivenEvent()
     {
         OnRewardGiven?.Invoke();
+        GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
     }
 
     protected override void OnDisable()

@@ -20,86 +20,121 @@ public class ShopRoom : Room
         {TechSelectPackType.Company5, "Prefabs/ShopItems/TechSelectPack_Company5" },
     };
 
-    public override void Initialize(RoomInfo roomInfo)
-    {
-        base.Initialize(roomInfo);
-        SpawnReward();
-        RewardSelectionFinished();
-    }
-
     public override IInteractable[] SpawnReward()
     {
-        ShopItemType[] selectedTypes = DecideShopItems(4);
-        List<IInteractable> spawnedItems = new List<IInteractable>();
-        for (int i = 0; i < selectedTypes.Length; i++)
+        int count = 4;
+        var types = DecideShopItemsAllowDuplicates(count);
+        var spawned = new List<IInteractable>();
+
+        // _spawnPoints 배열이 유효하면 그것을 사용, 아니면 기존 가운데 정렬된 spacing 방식으로 폴백
+        bool useSpawnPoints = _rewardSpawnPoints != null && _rewardSpawnPoints.Length >= count;
+
+        float spacing = 1.8f;
+        float startX = -spacing * (count - 1) / 2f;
+
+        for (int i = 0; i < types.Length; i++)
         {
-            ShopItemType itemType = selectedTypes[i];
-            if (!_shopItemPathMap.TryGetValue(itemType, out string prefabPath))
+            ShopItemType type = types[i];
+            string prefabPath = null;
+            object initData = null;
+
+            if (type == ShopItemType.TechSelectPack)
             {
-                Debug.LogWarning($"ShopRoom.SpawnReward: 아이템 타입 {itemType}에 대한 프리팹 경로를 찾을 수 없습니다.");
-                continue;
-            }
-            GameObject itemPrefab = Resources.Load<GameObject>(prefabPath);
-            if (itemPrefab == null)
-            {
-                Debug.LogWarning($"ShopRoom.SpawnReward: 경로 '{prefabPath}'에서 아이템 프리팹을 로드할 수 없습니다.");
-                continue;
-            }
-            Transform spawnPoint = _rewardSpawnPoints.Length > i ? _rewardSpawnPoints[i] : _rewardSpawnPoints[0];
-            GameObject itemInstance = Instantiate(itemPrefab, spawnPoint.position, spawnPoint.rotation, this.transform);
-            ShopItem shopItem = itemInstance.GetComponent<ShopItem>();
-            if (shopItem == null)
-            {
-                Debug.LogWarning($"ShopRoom.SpawnReward: 인스턴스화된 오브젝트에 ShopItem 컴포넌트가 없습니다.");
-                continue;
-            }
-            // TechSelectPack인 경우, 랜덤 회사 팩으로 초기화
-            if (itemType == ShopItemType.TechSelectPack)
-            {
-                TechSelectPackType randomPackType = (TechSelectPackType)Random.Range(0, System.Enum.GetValues(typeof(TechSelectPackType)).Length);
-                if (_techSelectPackPathMap.TryGetValue(randomPackType, out string techPackPath))
+                var keys = new List<TechSelectPackType>(_techSelectPackPathMap.Keys);
+                if (keys.Count == 0)
                 {
-                    GameObject techPackPrefab = Resources.Load<GameObject>(techPackPath);
-                    if (techPackPrefab != null)
-                    {
-                        Destroy(itemInstance);
-                        itemInstance = Instantiate(techPackPrefab, spawnPoint.position, spawnPoint.rotation, this.transform);
-                        shopItem = itemInstance.GetComponent<ShopItem>();
-                    }
+                    Debug.LogError("ShopRoom: _techSelectPackPathMap이 비어있습니다.");
+                    continue;
+                }
+                var chosenSubtype = keys[Random.Range(0, keys.Count)];
+                prefabPath = _techSelectPackPathMap[chosenSubtype];
+                initData = chosenSubtype; // 프리팹 내부 초기화에 서브타입 정보 전달
+            }
+            else
+            {
+                if (!_shopItemPathMap.TryGetValue(type, out prefabPath))
+                {
+                    Debug.LogError($"ShopRoom: _shopItemPathMap에 경로가 없습니다. Type={type}");
+                    continue;
                 }
             }
-            shopItem.Initialize();
-            spawnedItems.Add(shopItem);
 
+            Vector3 spawnPos;
+            Quaternion spawnRot = Quaternion.identity;
+            Transform parentTransform = null;
 
+            if (useSpawnPoints)
+            {
+                var sp = _rewardSpawnPoints[i];
+                if (sp == null)
+                {
+                    // 안전장치: 해당 인덱스가 null이면 폴백 위치 사용
+                    spawnPos = transform.position + new Vector3(startX + i * spacing, 0f, 0f);
+                    spawnRot = Quaternion.identity;
+                    parentTransform = transform;
+                }
+                else
+                {
+                    spawnPos = sp.position;
+                    spawnRot = sp.rotation;
+                    parentTransform = sp;
+                }
+            }
+            else
+            {
+                spawnPos = transform.position + new Vector3(startX + i * spacing, 0f, 0f);
+                spawnRot = Quaternion.identity;
+                parentTransform = transform;
+            }
+
+            // 사용자가 제공한 GetFromPool(prefabPath, position, rotation, parent, data) 사용
+            GameObject obj = GameManager.Instance.PoolManager.GetFromPool(prefabPath, spawnPos, spawnRot, parentTransform, initData);
+            if (obj == null)
+            {
+                Debug.LogError($"ShopRoom: 프리팹 소환 실패. 경로={prefabPath}");
+                continue;
+            }
+
+            var interact = obj.GetComponent<IInteractable>();
+            if (interact == null)
+            {
+                Debug.LogWarning($"ShopRoom: 소환된 오브젝트에 IInteractable 없음. prefabPath={prefabPath}, name={obj.name}");
+                // 필요시 obj를 다시 풀에 반환하거나 비활성화 처리할 수 있음
+                continue;
+            }
+            RewardInteractableObject rewardInteractableObject = interact as RewardInteractableObject;
+            Debug.Log("상점방에서 보상 초기화 호출");
+            rewardInteractableObject.Initialize();
+
+            spawned.Add(interact);
         }
-        return spawnedItems.ToArray();
+
+        RewardSelectionFinished();
+        return spawned.ToArray();
     }
 
-    ShopItemType[] DecideShopItems(int count = 4)
+    ShopItemType[] DecideShopItemsAllowDuplicates(int count = 4)
     {
-        List<ShopItemType> selectedTypes = new List<ShopItemType>();
-        // 4개 중 한개는 무조건 체력 회복
-        selectedTypes.Add(ShopItemType.HealPack);
+        var selected = new List<ShopItemType>
+    {
+        ShopItemType.HealPack,
+        ShopItemType.TechSelectPack
+    };
 
-        // 4개 중 한개는 무조건 기술 선택 팩
-        selectedTypes.Add(ShopItemType.TechSelectPack);
-
-        // 나머지 2개는 체력 회복팩을 제외한 나머지 아이템들 중에서 랜덤 선택
         ShopItemType[] possibleTypes = new ShopItemType[]
         {
-            ShopItemType.TechUpgradePack,
-            ShopItemType.MutantPack,
-            ShopItemType.TechSelectPack,
+        ShopItemType.TechUpgradePack,
+        ShopItemType.MutantPack,
+        ShopItemType.TechSelectPack, // 중복을 허용하려면 포함
+                                     // 필요하면 HealPack도 포함 가능
         };
-        while (selectedTypes.Count < count)
+
+        while (selected.Count < count)
         {
-            ShopItemType randomType = possibleTypes[Random.Range(0, possibleTypes.Length)];
-            if (!selectedTypes.Contains(randomType))
-            {
-                selectedTypes.Add(randomType);
-            }
+            var randomType = possibleTypes[Random.Range(0, possibleTypes.Length)];
+            selected.Add(randomType);
         }
-        return selectedTypes.ToArray();
+
+        return selected.ToArray();
     }
 }

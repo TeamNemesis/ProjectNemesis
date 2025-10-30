@@ -11,5 +11,6 @@ public class CreditInteractor : RewardInteractableObject
         yield return new WaitForSeconds(0.01f);
         GameManager.Instance.CurrencyManager.AddCredit(500);
         OnRewardGiven?.Invoke();
+        GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
     }
 }

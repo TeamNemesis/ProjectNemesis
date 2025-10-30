@@ -80,20 +80,18 @@ public class MapController : MonoBehaviour
         // 여기서 방 타입별로 스폰할 몬스터 정해주고
         // 스폰위치 업데이트 해주고 몬스터 스폰해야함.
         // 지금은 테스트용으로 노말 방에서만 생성
-        
-        if (room.RoomInfo.RoomType == RoomType.Normal)
+
+        int roomCost = _currentRoomCount * 10; // 예시: 방 번호에 비례하는 비용
+        Transform[] spawnPoints = room.MonsterSpawnPoints;
+        if (room.RoomInfo.RoomType == RoomType.Colosseum)
         {
-            int roomCost = _currentRoomCount * 10; // 예시: 방 번호에 비례하는 비용
-            // 몬스터 스폰
-            NormalRoom normalRoom = room as NormalRoom;
-            if (normalRoom == null)
-            {
-                Debug.LogError("OnRoomSpawned: Current room is not a NormalRoom");
-                return;
-            }
-            Transform[] spawnPoints = normalRoom.MonsterSpawnPoints;
+            _monsterController.SpawnElite(CurrentRoomCount, spawnPoints);
+        }
+        else
+        {
             _monsterController.SpawnMonster(roomCost, spawnPoints);
         }
+
         OnRoomStart?.Invoke();
     }
 
@@ -105,6 +103,10 @@ public class MapController : MonoBehaviour
 
         if (room.RoomInfo?.RoomType == RoomType.Lab)
             _hasLabRoomAppeared = true;
+        if (room.RoomInfo?.RoomType == RoomType.Colosseum)
+        {
+
+        }
     }
 
     void CreateDoorsForCurrentRoom()
@@ -112,6 +114,15 @@ public class MapController : MonoBehaviour
         if (_currentRoom == null)
         {
             Debug.LogError("CreateDoorsForCurrentRoom: _currentRoom is null");
+            return;
+        }
+
+        if (_currentRoomCount == 1)
+        {
+            // TechSelectPackType을 랜덤으로 선택하여 TechSelect 방 생성
+            int rand = UnityEngine.Random.Range(0, (int)TechSelectPackType.Count);
+            TechSelectPackType randomTechPackType = (TechSelectPackType)rand;
+            Door door = TrySpawnDoor(_currentRoom.GetNextDoorPositions(1)[0], new RoomInfo(RoomType.Normal, NormalRoomType.TechSelect, randomTechPackType), _currentRoom?.transform);
             return;
         }
 
@@ -221,29 +232,18 @@ public class MapController : MonoBehaviour
             return null;
         }
 
-        //// 반영 가능한 SpawnDoor overload가 있다면 사용, 없다면 기존 방식 사용 후 parent 지정
-        //try
-        //{
-        //    // 시도: SpawnDoor with parent (if implemented)
-        //    var spawnWithParent = _doorSpawner.GetType().GetMethod("SpawnDoor", new Type[] { typeof(Transform), typeof(RoomInfo), typeof(Transform) });
-        //    if (spawnWithParent != null)
-        //    {
-        //        var result = spawnWithParent.Invoke(_doorSpawner, new object[] { position, info, parent }) as Door;
-        //        return result;
-        //    }
-
-            // 기본 SpawnDoor(Transform, RoomInfo)
-            Door door = _doorSpawner.SpawnDoor(position, info);
-        Debug.LogError("문 활성화 연결");
+        // 기본 SpawnDoor(Transform, RoomInfo)
+        Door door = _doorSpawner.SpawnDoor(position, info);
         _currentRoom.OnRewardSelectionFinished += door.OnRewardSelectionCompleted;
-        if (_currentRoom.RoomInfo.RoomType == RoomType.Start)
+        Debug.Log("OnRewardSelectionFinished event subscribed to door.OnRewardSelectionCompleted");
+        if (_currentRoom.RoomInfo.RoomType == RoomType.Start || _currentRoom.RoomInfo.RoomType == RoomType.Shop)
         {
             door.OnRewardSelectionCompleted();
         }
-            if (door != null && parent != null)
-                door.transform.SetParent(parent, worldPositionStays: true);
+        if (door != null && parent != null)
+            door.transform.SetParent(parent, worldPositionStays: true);
 
-            return door;
+        return door;
         //}
         //catch (Exception ex)
         //{
@@ -317,10 +317,10 @@ public class MapController : MonoBehaviour
     }
 
 #if UNITY_EDITOR
-		public void KillAllMonsters()
-		{
-				_monsterController.MonsterSpawner?.KillAllActiveMonsters();
-		}
+    public void KillAllMonsters()
+    {
+        _monsterController.MonsterSpawner?.KillAllActiveMonsters();
+    }
 
 #endif
 

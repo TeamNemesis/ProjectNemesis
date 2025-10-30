@@ -24,6 +24,12 @@ public class MonsterController : MonoBehaviour
         _monsterSpawner.InitializeAndSpawn(roomCost, tempList);
     }
 
+    public void SpawnElite(int currentRoomCount, Transform[] monsterSpawnPoints)
+    {
+        List<Transform> tempList = new List<Transform>(monsterSpawnPoints);
+        _monsterSpawner.EliteSpawner(tempList, currentRoomCount);
+    }
+
     public void AllMonsterDefeated()
     {
         OnAllMonsterDefeated?.Invoke();
