@@ -28,7 +28,7 @@ public class NormalRoom : Room
 
     public Transform[] MonsterSpawnPoints => _monsterSpawnPoints;
 
-    public override IInteractable[] SpawnRewards()
+    public override IInteractable[] SpawnReward()
     {
         // 보상 스폰 포인트 유효성 검사
         if (_rewardSpawnPoints == null || _rewardSpawnPoints.Length == 0)

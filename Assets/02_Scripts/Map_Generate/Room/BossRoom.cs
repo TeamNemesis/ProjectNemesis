@@ -1,7 +1,8 @@
 public class BossRoom : Room
 {
-    public override IInteractable[] SpawnRewards()
+    public override IInteractable[] SpawnReward()
     {
-        throw new System.NotImplementedException();
+        // BossRoom은 보상을 생성하지 않음
+        return System.Array.Empty<IInteractable>();
     }
 }

@@ -36,7 +36,7 @@ public class DataManager : MonoBehaviour
         var roomDatas = resources.RoomDataSOs ?? _roomDatasFromInspector;
         BuildRoomDataMap(roomDatas);
         BuildWeaponSetMap(resources.PlayerWeaponSets);
-        BuildRewardMap(resources.RewardDataSOs);
+        BuildRewardMap(resources.rewardDataSOs);
     }
 
     void BuildRoomDataMap(RoomDataSO[] roomDatas)
@@ -122,6 +122,4 @@ public class DataManager : MonoBehaviour
     // 조회 API
     public bool TryGetRoomData(RoomType type, out RoomDataSO roomData) => _roomDataMap.TryGetValue(type, out roomData);
     public bool TryGetWeaponSet(WeaponType wt, out PlayerWeaponSet set) => _weaponSetMap.TryGetValue(wt, out set);
-    public bool TryGetRewardData(RewardType rt, out RewardDataSO rewardData) => _rewardDataMap.TryGetValue(rt, out rewardData);
-    public bool TryGetTechPackData(TechSelectPackType tpt, out RewardDataSO_TechPack techPackData) => _techPackDataMap.TryGetValue(tpt, out techPackData);
 }
