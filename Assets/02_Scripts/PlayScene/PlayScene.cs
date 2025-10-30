@@ -58,7 +58,7 @@ public class PlayScene : MonoBehaviour
             Debug.LogError("맵 컨트롤러가 할당되지 않았습니다!");
             return;
         }
-        _mapController.Initialize();
+        _mapController.Initialize(_player);
 
         if( _playSceneView == null)
         {
