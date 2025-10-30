@@ -22,11 +22,6 @@ public abstract class RewardInteractableObject : InteractableObject
     public abstract event Action OnRewardGiven;
     public override event Action<IInteractable> OnInteracted;
 
-    public virtual void Initialize()
-    {
-
-    }
-
     // TryInteract은 호출자에게 상호작용이 시작되었는지 알려주는 동기적 bool 반환
     public override bool TryInteract(Transform subject)
     {

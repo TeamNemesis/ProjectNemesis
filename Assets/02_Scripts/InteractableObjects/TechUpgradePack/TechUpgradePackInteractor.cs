@@ -8,7 +8,7 @@ public class TechUpgradePackInteractor : RewardInteractableObject
 
     public override event Action OnRewardGiven;
 
-    public override void Initialize()
+    public void Initialize()
     {
         GameManager.Instance.UIManager.onRewardSelect += RaiseRewardGivenEvent;
     }
