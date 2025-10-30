@@ -56,6 +56,14 @@ public static class EventBus
         OnGrenadeBomb?.Invoke(bombPosition);
     }
 
+    public static bool IsColosseumRoom = false;
+    public static event Action<bool> OnColosseumRoomSet;
+    public static void SetColosseumRoom(bool isColosseum)
+    {
+        IsColosseumRoom = isColosseum;
+        Debug.Log("IsColosseumRoom set to: " + isColosseum);
+        OnColosseumRoomSet?.Invoke(isColosseum);
+    }
 }
 
 

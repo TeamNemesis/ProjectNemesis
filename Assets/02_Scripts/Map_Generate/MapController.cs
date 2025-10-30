@@ -56,6 +56,11 @@ public class MapController : MonoBehaviour
         {
             DestroyCurrentRoomObjects();
             Room room = _roomSpawner.SpawnRoom(doorInteractor.RoomInfo);
+            // 콜로세움 방 진입 시 처리
+            if (doorInteractor.RoomInfo.RoomType == RoomType.Colosseum)
+            {
+                EventBus.SetColosseumRoom(true);
+            }
         }
         else
         {
@@ -103,10 +108,6 @@ public class MapController : MonoBehaviour
 
         if (room.RoomInfo?.RoomType == RoomType.Lab)
             _hasLabRoomAppeared = true;
-        if (room.RoomInfo?.RoomType == RoomType.Colosseum)
-        {
-
-        }
     }
 
     void CreateDoorsForCurrentRoom()
