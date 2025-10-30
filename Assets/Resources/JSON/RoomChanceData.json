@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "doorCountWeights": {
+    "one": 0.1,
+    "two": 0.6,
+    "three": 0.3
+  },
+  "roomTypeWeights": {
+    "Start": 0.0,
+    "Boss": 0.0,
+    "Normal": 1.0,
+    "Colosseum": 0.2,
+    "Lab": 0.2,
+    "Shop": 0.1
+  },
+  "normalRoomTypeWeights": {
+    "Credit": 0.2,
+    "Heal": 0.2,
+    "TechUpgrade": 0.2,
+    "Chrome": 0.2,
+    "SkillPack": 0.2
+  },
+  "specialRules": {
+    "forceOneDoorAtIndices": [ 1, 13 ],
+    "forceZeroDoorAtIndices": [ 14 ]
+  }
+}

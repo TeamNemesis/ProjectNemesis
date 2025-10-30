@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEditor;
 #endif
 
-[CreateAssetMenu(fileName = "RoomData", menuName = "ScriptableObjects/Map/RoomData")]
+[CreateAssetMenu(fileName = "RoomDataSO", menuName = "ScriptableObjects/Map/RoomDataSO")]
 public class RoomDataSO : ScriptableObject
 {
     [Header("Identification")]
@@ -11,17 +11,14 @@ public class RoomDataSO : ScriptableObject
 
     [Header("Prefab / Visuals")]
     [SerializeField] GameObject _roomPrefab;
+    [SerializeField] string _roomName;
     [SerializeField] Sprite _previewIcon;
-
-    [Header("Gameplay Metadata")]
-    [SerializeField, Min(0f)] float _baseChance = 1f; // 기본 등장 확률 등
-
     [TextArea][SerializeField] string _description;
 
     public RoomType RoomType => _roomType;
     public GameObject RoomPrefab => _roomPrefab;
+    public string RoomName => _roomName;
     public Sprite PreviewIcon => _previewIcon;
-    public float BaseChance => _baseChance;
     public string Description => _description;
 
 #if UNITY_EDITOR

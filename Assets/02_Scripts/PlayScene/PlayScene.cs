@@ -5,11 +5,11 @@ public class PlayScene : MonoBehaviour
     [Header("----- 컴포넌트 참조 -----")]
     [SerializeField] Player _player;                               // 플레이어
     [SerializeField] PlayerInputHandler _inputHandler;             // 플레이어 입력 핸들러
-    [SerializeField] MapController _mapController;                 // 맵 컨트롤러
+    [SerializeField] StageController _stageController;
     [SerializeField] PlaySceneView _playSceneView;                 // 플레이 씬 뷰
     [SerializeField] CameraMover _cameraMover;                     // 카메라 무버
 
-    public MapController MapController => _mapController;
+    public StageController StageController => _stageController;
     public Player player => _player;
 
     private void Awake()
@@ -47,12 +47,12 @@ public class PlayScene : MonoBehaviour
         }
         _player.Initialize();
 
-        if (MapController == null)
+        if (_stageController == null)
         {
             Debug.LogError("맵 컨트롤러가 할당되지 않았습니다!");
             return;
         }
-        _mapController.Initialize();
+        _stageController.Initialize();
 
         if( _playSceneView == null)
         {
