@@ -135,6 +135,7 @@ GameObject:
   - component: {fileID: 225830422}
   - component: {fileID: 225830421}
   - component: {fileID: 225830423}
+  - component: {fileID: 225830424}
   m_Layer: 0
   m_Name: LaserTurret
   m_TagString: Untagged
@@ -254,8 +255,8 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
+  m_UseGravity: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
@@ -282,10 +283,10 @@ MonoBehaviour:
   debuffHandler: {fileID: 0}
   maxEliteHealth: 0
   attackDamage: 10
-  attackRange: 2
-  detectionRange: 10
+  attackRange: 1000
+  detectionRange: 1000
   attackDelay: 0.5
-  originalSpeed: 10
+  originalSpeed: 0
   targetTag: Player
   monsterSize: 2
   cost: 0
@@ -321,6 +322,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 725c1c87d9a2e3346bd4c5a3c364f518, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!195 &225830424
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 225830415}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 1
+  m_BaseOffset: 0.5
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &604537716
 GameObject:
   m_ObjectHideFlags: 0
