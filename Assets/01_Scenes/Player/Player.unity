@@ -371,35 +371,35 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2639110958980148813, guid: 640f7220942f4c54a9058c35735d0eb9, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3730596070807635039, guid: 640f7220942f4c54a9058c35735d0eb9, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 14.608209
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3730596070807635039, guid: 640f7220942f4c54a9058c35735d0eb9, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 12.111918
+      value: 4.65
       objectReference: {fileID: 0}
     - target: {fileID: 3730596070807635039, guid: 640f7220942f4c54a9058c35735d0eb9, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -49.163517
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3730596070807635039, guid: 640f7220942f4c54a9058c35735d0eb9, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.9976948
+      value: 0.9396927
       objectReference: {fileID: 0}
     - target: {fileID: 3730596070807635039, guid: 640f7220942f4c54a9058c35735d0eb9, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.007482786
+      value: 0.3420201
       objectReference: {fileID: 0}
     - target: {fileID: 3730596070807635039, guid: 640f7220942f4c54a9058c35735d0eb9, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.06744612
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3730596070807635039, guid: 640f7220942f4c54a9058c35735d0eb9, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.0005058645
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3730596070807635039, guid: 640f7220942f4c54a9058c35735d0eb9, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -544,7 +544,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 1518028902}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1694783945}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f952f8878a15d3a40a0a0f58bde84f89, type: 3}
   m_Name: 
@@ -556,7 +556,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1694783945}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 72ece51f2901e7445ab60da3685d6b5f, type: 3}
   m_Name: 
@@ -957,6 +957,50 @@ PrefabInstance:
       propertyPath: m_Name
       value: MapController
       objectReference: {fileID: 0}
+    - target: {fileID: 8999976014532792861, guid: e457f452ef592394cae17c6b529b0a2f, type: 3}
+      propertyPath: eliteMonsterPrefabs.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8999976014532792861, guid: e457f452ef592394cae17c6b529b0a2f, type: 3}
+      propertyPath: normalMonsterPrefabs.Array.size
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8999976014532792861, guid: e457f452ef592394cae17c6b529b0a2f, type: 3}
+      propertyPath: 'eliteMonsterPrefabs.Array.data[0]'
+      value: 
+      objectReference: {fileID: 4414383118390511999, guid: a67148d98238ea146aac255bda110338, type: 3}
+    - target: {fileID: 8999976014532792861, guid: e457f452ef592394cae17c6b529b0a2f, type: 3}
+      propertyPath: 'eliteMonsterPrefabs.Array.data[1]'
+      value: 
+      objectReference: {fileID: 6221192173117420515, guid: 5c7f3702c4549a940bc88c593a3260d1, type: 3}
+    - target: {fileID: 8999976014532792861, guid: e457f452ef592394cae17c6b529b0a2f, type: 3}
+      propertyPath: 'eliteMonsterPrefabs.Array.data[2]'
+      value: 
+      objectReference: {fileID: 7566073503906103748, guid: 53657baafd1877f429405d5ec0e6e50c, type: 3}
+    - target: {fileID: 8999976014532792861, guid: e457f452ef592394cae17c6b529b0a2f, type: 3}
+      propertyPath: 'normalMonsterPrefabs.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2821671262608775679, guid: 31d9d065d60ebc543aa9a7c07609ba6a, type: 3}
+    - target: {fileID: 8999976014532792861, guid: e457f452ef592394cae17c6b529b0a2f, type: 3}
+      propertyPath: 'normalMonsterPrefabs.Array.data[1]'
+      value: 
+      objectReference: {fileID: 7539578067776936276, guid: 69a152d5ffcc54b43951b3258fab8a37, type: 3}
+    - target: {fileID: 8999976014532792861, guid: e457f452ef592394cae17c6b529b0a2f, type: 3}
+      propertyPath: 'normalMonsterPrefabs.Array.data[2]'
+      value: 
+      objectReference: {fileID: 4891787988556077794, guid: 3c786e0e126f3c04aac997196a100f79, type: 3}
+    - target: {fileID: 8999976014532792861, guid: e457f452ef592394cae17c6b529b0a2f, type: 3}
+      propertyPath: 'normalMonsterPrefabs.Array.data[3]'
+      value: 
+      objectReference: {fileID: 900541771517750140, guid: bcae6f7357fac65468003be58c7ce711, type: 3}
+    - target: {fileID: 8999976014532792861, guid: e457f452ef592394cae17c6b529b0a2f, type: 3}
+      propertyPath: 'normalMonsterPrefabs.Array.data[4]'
+      value: 
+      objectReference: {fileID: 5829316648119766581, guid: 62dc2018ab6d11846bb1126a063a0f5c, type: 3}
+    - target: {fileID: 8999976014532792861, guid: e457f452ef592394cae17c6b529b0a2f, type: 3}
+      propertyPath: 'normalMonsterPrefabs.Array.data[5]'
+      value: 
+      objectReference: {fileID: 6741232429851390812, guid: 6f189b3983160024da34cf72ae75aa8a, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

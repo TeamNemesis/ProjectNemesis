@@ -83,7 +83,14 @@ public class MapController : MonoBehaviour
 
         int roomCost = _currentRoomCount * 10; // 예시: 방 번호에 비례하는 비용
         Transform[] spawnPoints = room.MonsterSpawnPoints;
-        _monsterController.SpawnMonster(roomCost, spawnPoints);
+        if (room.RoomInfo.RoomType == RoomType.Colosseum)
+        {
+            _monsterController.SpawnElite(CurrentRoomCount, spawnPoints);
+        }
+        else
+        {
+            _monsterController.SpawnMonster(roomCost, spawnPoints);
+        }
 
         OnRoomStart?.Invoke();
     }
