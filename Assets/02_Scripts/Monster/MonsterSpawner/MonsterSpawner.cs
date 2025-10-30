@@ -69,7 +69,7 @@ public class MonsterSpawner : MonoBehaviour
         spawnPositions = positions;
     }
 
-    public void EliteSpawner(List<Transform> positions, int roomNumber)
+    public void EliteSpawner(List<Transform> positions, int roomNumber = 1)
     {
         EliteSpawnerSetting(positions);
         SpawnSolo(eliteMonsterPrefabs, roomNumber);
