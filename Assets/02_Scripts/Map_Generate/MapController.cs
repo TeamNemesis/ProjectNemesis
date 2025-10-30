@@ -19,6 +19,7 @@ public class MapController : MonoBehaviour
     [SerializeField] Door[] _currentDoors;
     [SerializeField] int _currentRoomCount = -1;
     [SerializeField] bool _hasLabRoomAppeared = false;
+    [SerializeField] Player _player;
 
     public MonsterController MonsterController => _monsterController;
     public RoomSpawner RoomSpawner => _roomSpawner;
@@ -35,8 +36,9 @@ public class MapController : MonoBehaviour
     /// </summary>
     public event Action OnRoomStart;
 
-    public void Initialize()
+    public void Initialize(Player player)
     {
+        _player = player;
         if (_roomSpawner == null) Debug.LogError("MapController.Initialize: _roomSpawner is null");
         if (_doorSpawner == null) Debug.LogError("MapController.Initialize: _doorSpawner is null");
         if (_doorDecider == null) Debug.LogError("MapController.Initialize: _doorDecider is null");
@@ -56,6 +58,11 @@ public class MapController : MonoBehaviour
         {
             DestroyCurrentRoomObjects();
             Room room = _roomSpawner.SpawnRoom(doorInteractor.RoomInfo);
+            // 콜로세움 방 진입 시 처리
+            if (doorInteractor.RoomInfo.RoomType == RoomType.Colosseum)
+            {
+                EventBus.SetColosseumRoom(true);
+            }
         }
         else
         {
@@ -71,11 +78,19 @@ public class MapController : MonoBehaviour
             return;
         }
 
+        // 플레이어 스폰 위치를 정해주자
+        _player.gameObject.SetActive(false);
+        _player.transform.position = new Vector3(10f, 0.1f, 10f);
+        _player.gameObject.SetActive(true);
+        Debug.Log($"{_player.transform.position} 위치로 플레이어 이동 완료");
+
         // 상태 갱신 (작은 메서드로 분리)
         UpdateCurrentRoomState(room);
+        Debug.Log($"{_player.transform.position} 위치로 플레이어 이동 완료");
 
         // 문 생성 처리
         CreateDoorsForCurrentRoom();
+        Debug.Log($"{_player.transform.position} 위치로 플레이어 이동 완료");
 
         // 여기서 방 타입별로 스폰할 몬스터 정해주고
         // 스폰위치 업데이트 해주고 몬스터 스폰해야함.
@@ -93,6 +108,8 @@ public class MapController : MonoBehaviour
         }
 
         OnRoomStart?.Invoke();
+        Debug.Log($"{_player.transform.position} 위치로 플레이어 이동 완료");
+
     }
 
     void UpdateCurrentRoomState(Room room)
@@ -103,10 +120,6 @@ public class MapController : MonoBehaviour
 
         if (room.RoomInfo?.RoomType == RoomType.Lab)
             _hasLabRoomAppeared = true;
-        if (room.RoomInfo?.RoomType == RoomType.Colosseum)
-        {
-
-        }
     }
 
     void CreateDoorsForCurrentRoom()

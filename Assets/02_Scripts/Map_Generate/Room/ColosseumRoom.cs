@@ -4,4 +4,9 @@ public class ColosseumRoom : Room
     {
         throw new System.NotImplementedException();
     }
+
+    private void OnDisable()
+    {
+        EventBus.SetColosseumRoom(false);
+    }
 }
