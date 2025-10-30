@@ -4,7 +4,7 @@ using UnityEngine;
 
 /// <summary>
 /// Room 컴포넌트는 프리팹의 구조/런타임 동작을 담당.
-/// 타입/메타는 RoomDataSO에서 주입받아 Initialize로 설정한다.
+/// 타입/메타는 RoomDataSO에서 주입받아 InitializeFromRoomData로 설정한다.
 /// 초기화 진입점은 Initialize(RoomInfo) 로 통일된다.
 /// </summary>
 public abstract class Room : MonoBehaviour
