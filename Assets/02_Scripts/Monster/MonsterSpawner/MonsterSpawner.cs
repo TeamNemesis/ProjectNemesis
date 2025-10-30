@@ -5,8 +5,11 @@ using UnityEngine;
 
 public class MonsterSpawner : MonoBehaviour
 {
-    [Header("Monster Prefabs"), SerializeField]
-    private List<PoolableObject> monsterPrefabs = new List<PoolableObject>(6);
+    [Header("Normal Monster Prefabs"), SerializeField]
+    private List<PoolableObject> normalMonsterPrefabs = new List<PoolableObject>(6);
+
+    [Header("Elite Monster Prefabs"), SerializeField]
+    private List<PoolableObject> eliteMonsterPrefabs = new List<PoolableObject>(3);
 
     [Header("Spawn Settings")]
     // 방의 최대 스폰 포인트
@@ -56,12 +59,23 @@ public class MonsterSpawner : MonoBehaviour
         spawnPositions = positions;
     }
 
+    public void EliteSpawnerSetting(List<Transform> positions)
+    {
+        spawnPositions = positions;
+    }
+
+    public void EliteSpawner(List<Transform> positions, int roomNumber)
+    {
+        EliteSpawnerSetting(positions);
+        SpawnSolo(eliteMonsterPrefabs, roomNumber);
+    }
+
     /// <summary>
     /// 몬스터 스폰 시작
     /// </summary>
     public void StartSpawn()
     {
-        if (monsterPrefabs == null)
+        if (normalMonsterPrefabs == null)
         {
             return;
         }
@@ -86,7 +100,7 @@ public class MonsterSpawner : MonoBehaviour
         int currentTotalCost = 0;
 
         List<MonsterSpawnInfo> availableMonsters = new List<MonsterSpawnInfo>();
-        foreach (var prefab in monsterPrefabs)
+        foreach (var prefab in normalMonsterPrefabs)
         {
             MonsterBase monsterBase = prefab.GetComponent<MonsterBase>();
             if (monsterBase != null)
@@ -212,6 +226,33 @@ public class MonsterSpawner : MonoBehaviour
     }
 
     /// <summary>
+    /// 단일 몬스터 스폰
+    /// </summary>
+    private void SpawnSolo(List<PoolableObject> monster, int roomNumber)
+    {
+        if (spawnPositions == null)
+        {
+            return;
+        }
+        
+        PoolableObject spawnRandomElite = monster[UnityEngine.Random.Range(0, monster.Count)];
+        // 랜덤 스폰 위치 선택
+        Transform spawnPos = spawnPositions[UnityEngine.Random.Range(0, spawnPositions.Count)];
+
+        GameObject spawnedMonster = GameManager.Instance.PoolManager.GetFromPool(spawnRandomElite, spawnPos.position, spawnPos.rotation);
+        OnMonsterSpawned?.Invoke(spawnedMonster.GetComponent<MonsterBase>());
+        MonsterBase monsterbase = spawnedMonster.GetComponent<MonsterBase>();
+
+        activeMonsters.Add(spawnedMonster);
+
+        if (monsterbase != null)
+        {
+            monsterbase.SetEliteMaxHealth(roomNumber);
+            monsterbase.OnDieEvent += () => OnMonsterDeath(spawnedMonster);
+        }
+    }
+
+    /// <summary>
     /// 몬스터 사망 시 호출
     /// </summary>
     private void OnMonsterDeath(GameObject monster)
@@ -274,7 +315,7 @@ public class MonsterSpawner : MonoBehaviour
     }
     public List<PoolableObject> GetMonsterPrefabs()
     {
-        return monsterPrefabs;
+        return normalMonsterPrefabs;
     }
 
     public void SpawnSpecificMonster(PoolableObject prefab, Vector3 position)
