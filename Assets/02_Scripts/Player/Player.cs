@@ -433,6 +433,7 @@ public class Player : MonoBehaviour
         if (_specialAttacker != null && _specialAttacker.RequestSpecial())
         {
             _stateMachine.ChangeState(PlayerStateType.SpecialAttack);
+            Debug.LogError("특수공격 사용");
             OnSpecialAttackStarted?.Invoke();
         }
     }

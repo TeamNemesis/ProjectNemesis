@@ -234,6 +234,7 @@ public class MapController : MonoBehaviour
 
             // 기본 SpawnDoor(Transform, RoomInfo)
             Door door = _doorSpawner.SpawnDoor(position, info);
+        Debug.LogError("문 활성화 연결");
         _currentRoom.OnRewardSelectionFinished += door.OnRewardSelectionCompleted;
         if (_currentRoom.RoomInfo.RoomType == RoomType.Start)
         {

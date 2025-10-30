@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 
@@ -103,15 +105,43 @@ public class Skill_Two_SPAttack : ActiveTech
 /// </summary>
 public class Skill_Three_SPAttack: ActiveTech
 {
+    private float _reflectionTime;
+    private reflect _playerReflect;
+    
     public override void Activate(SkillManager skillManager, Player player)
     {
         base.Activate(skillManager, player);
+        _reflectionTime = _skillData.skillBaseValue_1 + _skillData.skillLevelValue_1*_skillData.skillLevel;
+
+        _playerReflect = player.GetComponent<reflect>();
+        if (_playerReflect == null)
+        {
+            Debug.LogWarning("Reflect component not found on player.");
+            _playerReflect = player.AddComponent<reflect>();    
+        }
+        player.OnSpecialAttackStarted -= ActiveTry;
+        player.OnSpecialAttackStarted += ActiveTry;
     }
 
     public override void Deactivate(Player player, bool isAnotherSkill)
     {
         base.Deactivate(player, isAnotherSkill);
+        player.OnSpecialAttackStarted -= ActiveTry;
+
     }
+
+    public void ActiveTry()
+    {
+        if (_playerReflect == null)
+        {
+            Debug.LogWarning("Reflect component not found on player.");
+            return;
+        }
+        
+        _playerReflect.StartReflectCoroutine(_reflectionTime);
+    }
+
+    
 
     public Skill_Three_SPAttack(SkillData skillData) : base(skillData)
     {

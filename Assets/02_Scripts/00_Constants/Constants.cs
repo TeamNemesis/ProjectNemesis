@@ -176,6 +176,7 @@ public static class Constants
     public const string LAYER_MASK_PLAYER = "Player";
     public const string LAYER_MASK_WALL = "Wall";
     public const string LAYER_MASK_GROUND = "Ground";
+    public const string LAYER_MASK_MONSTER = "Monster";
 
     #endregion
 

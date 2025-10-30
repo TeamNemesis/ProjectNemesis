@@ -142,14 +142,16 @@ MonoBehaviour:
   targetTag: Player
   monsterSize: 0
   cost: 2
+  monsterRigidbody: {fileID: 0}
+  monsterCollider: {fileID: 0}
+  _isAttacking: 0
+  baseState: 0
   _knockBackDamage: 0
   player: {fileID: 0}
   agent: {fileID: 0}
   _target: {fileID: 0}
   bulletLifeTime: 8
-  _isAttacking: 0
   turretbullet: {fileID: 433645739003782474, guid: 32e7cbcd5d4ee5c498508d5492575fdb, type: 3}
-  currentState: 0
 --- !u!195 &8993511308398464980
 NavMeshAgent:
   m_ObjectHideFlags: 0

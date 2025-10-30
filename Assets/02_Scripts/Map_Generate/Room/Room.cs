@@ -33,6 +33,7 @@ public abstract class Room : MonoBehaviour
     /// </summary>
     public virtual void Initialize(RoomInfo roomInfo)
     {
+        Debug.LogError("룸 이니");
         if (roomInfo == null)
         {
             Debug.LogWarning($"{nameof(Room)}.Initialize called with null RoomInfo on '{name}'.");
