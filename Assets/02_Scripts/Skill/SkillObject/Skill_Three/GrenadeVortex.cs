@@ -24,7 +24,6 @@ public class GrenadeVortex : vortex, IInitializePoolable
         {
             _time = vortexData.time;
             SetRadius(vortexData.extent);
-            layer = LayerMask.NameToLayer(Constants.LAYER_MASK_MONSTER);
         }
     }
 

@@ -1,5 +1,3 @@
-using Unity.AppUI.Core;
-using UnityEditor.Search;
 using UnityEngine;
 
 /// <summary>
@@ -13,6 +11,9 @@ public class Skill_Three : SkillBase
     private float _redshiftDamage;
     private float _redshiftKnockBackDistance;
     private float _redshiftExtent;
+
+    private horizon _horizonPrefab;
+    private GameObject _playerHorizon;
 
     public override void InitializeSkill(SkillManager skillManager)
     {
@@ -104,7 +105,7 @@ public class Skill_Three : SkillBase
             // 사건의 지평선
             case 37:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
-
+                ActivateHorizon(choosedSkill);
                 break;
 
             default:
@@ -149,7 +150,7 @@ public class Skill_Three : SkillBase
         Vector3 direction = monsterTransform.position - playerPosition;
         direction.y = 0;
         direction.Normalize();
-        if(direction == Vector3.zero)
+        if (direction == Vector3.zero)
         {
             direction =
             Constants.GetNearestObject(_skillManager.playScene.player.transform, skillManager.playScene.MapController.MonsterController.MonsterSpawner.ActiveMonsters).transform.position
@@ -176,6 +177,30 @@ public class Skill_Three : SkillBase
             skillManager.playerStatManager.AddKnockBackDistance(choosedSkill.skillLevelValue_1);
 
         }
+    }
+    #endregion
+    #region 사건의 지평선
+    public void ActivateHorizon(SkillData skill)
+    {
+        if (_playerHorizon != null)
+        {
+            GameManager.Instance.PoolManager.ReleaseToPool(_playerHorizon);
+        }
+
+        if (_horizonPrefab == null)
+        {
+            _horizonPrefab = Resources.Load<horizon>("Prefabs/Skill/SkillObject/Skill_Three/horizon");
+        }
+
+        Transform player = skillManager.playScene.player.transform;
+
+
+        _playerHorizon = GameManager.Instance.PoolManager.GetFromPool(
+            _horizonPrefab, player.position, Quaternion.identity,
+            player,
+            new horizonData(skill.skillBaseValue_1 + skill.skillLevelValue_1 * skill.skillLevel, skillManager.playScene.player));
+        
+
     }
     #endregion
 }
