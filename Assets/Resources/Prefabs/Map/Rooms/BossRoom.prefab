@@ -160,6 +160,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a3ae69ef59389c478e6abe2bc165a92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _rewardSpawnPoints: []
   _doorSpawnPointsLeft:
   - {fileID: 5070005899930269489}
   - {fileID: 8070936424600537892}
@@ -168,9 +169,6 @@ MonoBehaviour:
   - {fileID: 4225915783712879804}
   - {fileID: 6603088015633446796}
   - {fileID: 9216614586368139845}
-  _roomName: 
-  _roomChance: 0.05
-  _roomType: 5
 --- !u!1 &640034064905465257
 GameObject:
   m_ObjectHideFlags: 0

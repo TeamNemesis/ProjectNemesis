@@ -180,7 +180,7 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
         }
     }
 
-    private void SetEliteMaxHealth(int roomCount)
+    public void SetEliteMaxHealth(int roomCount)
     {
         maxEliteHealth = (float)_maxHealth * 1 + (0.1f * roomCount);
         _maxHealth = (int)maxEliteHealth;
