@@ -308,6 +308,7 @@ public enum TechSelectPackType
     Company3,
     Company4,
     Company5,
+    Count,
 }
 
 public enum RoomType

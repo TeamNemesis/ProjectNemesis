@@ -6,8 +6,6 @@ using UnityEngine;
 /// </summary>
 public class NormalRoom : Room
 {
-    [SerializeField] Transform[] _monsterSpawnPoints;
-
     // NormalRoomType -> Pool/Resource 키 매핑 (프로젝트 규칙에 맞춰 값 설정)
     Dictionary<NormalRoomType, string> _normalRewardMap = new Dictionary<NormalRoomType, string>()
     {
@@ -25,8 +23,6 @@ public class NormalRoom : Room
         {TechSelectPackType.Company4, Constants.RESOURCES_PATH_REWARDS + "/TechSelectPack_Company4" },
         {TechSelectPackType.Company5, Constants.RESOURCES_PATH_REWARDS + "/TechSelectPack_Company5" },
     };
-
-    public Transform[] MonsterSpawnPoints => _monsterSpawnPoints;
 
     public override IInteractable[] SpawnReward()
     {
@@ -131,6 +127,7 @@ public class NormalRoom : Room
         }
 
         reward.OnRewardGiven += RewardSelectionFinished;
+        Debug.Log("NormalRoom.SpawnReward: Reward spawned successfully.");
         reward.Initialize();
 
         // 마지막으로 보상 참조를 배열로 담아 반환 (이 배열이 '새로운 오브젝트 생성'을 의미하는 것은 아님)
