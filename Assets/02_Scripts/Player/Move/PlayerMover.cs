@@ -32,6 +32,7 @@ public class PlayerMover : MonoBehaviour
         if (_controller == null)
             _controller = GetComponent<CharacterController>();
         _targetRotation = transform.rotation;
+        GameManager.Instance.PlayerStatManager.OnPlayerMoveSpeedChange += SetMoveSpeed;
     }
 
     void Update()

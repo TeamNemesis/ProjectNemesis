@@ -193,18 +193,18 @@ public class Skill_Four : SkillBase
 
 
         //TODO 대쉬 끝 이벤트에 연결
-        //player.dashEnd += plusMoveSpeedAfterDash;
+        _skillManager.playScene.player.OnDashStarted += plusMoveSpeedAfterDash;
     }
 
     private void plusMoveSpeedAfterDash()
     {
-        skillManager.playerStatManager.AddPlayerMoveSpeed(plusMoveSpeed);
+        skillManager.playerStatManager.AddPlayerMoveSpeedMulti(plusMoveSpeed);
         StartCoroutine(MinusMoveSpeedAfterDash());
     }
     IEnumerator  MinusMoveSpeedAfterDash()
     {
         yield return new WaitForSeconds(plusMoveSpeedTime);
-        skillManager.playerStatManager.AddPlayerMoveSpeed(-plusMoveSpeed);
+        skillManager.playerStatManager.AddPlayerMoveSpeedMulti(-plusMoveSpeed);
     }
     #endregion
 }
