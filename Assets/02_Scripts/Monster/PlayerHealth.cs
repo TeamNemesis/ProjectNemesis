@@ -21,7 +21,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         transform.Translate(h * Time.deltaTime * 5, 0, v * Time.deltaTime * 5);
     }
 
-    public void TakeDamage(float damage, Transform attacker)
+    public void TakeDamage(float damage, Transform attacker = null)
     {
         currentHealth -= (int)damage; 
         Debug.Log("Player Health: " + currentHealth);
