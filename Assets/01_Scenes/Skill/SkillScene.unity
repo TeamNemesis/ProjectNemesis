@@ -972,7 +972,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 2
   m_TargetDisplay: 0
 --- !u!224 &1568837112
 RectTransform:
@@ -2973,7 +2973,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 818862181}
         m_TargetAssemblyTypeName: SkillChoose, Assembly-CSharp
         m_MethodName: OnClick_ListBtn
         m_Mode: 1
