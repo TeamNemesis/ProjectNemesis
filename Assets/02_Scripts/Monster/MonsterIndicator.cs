@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+Ôªøusing System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -83,12 +83,12 @@ public class EnemyIndicator : MonoBehaviour
                 Vector3 screenCenter = new(Screen.width / 2f, Screen.height / 2f);
                 Vector3 dir = (enemyScreenPos - screenCenter).normalized;
 
-                // »≠∏È ≥° ±‚¡ÿ ∞≈∏Æ ∞ËªÍ
+                // ÌôîÎ©¥ ÎÅù Í∏∞Ï§Ä Í±∞Î¶¨ Í≥ÑÏÇ∞
                 float maxX = (Screen.width / 2f) - edgeBuffer;
                 float maxY = (Screen.height / 2f) - edgeBuffer;
                 Vector3 arrowScreenPos = screenCenter + new Vector3(dir.x * maxX, dir.y * maxY, 0f);
 
-                // »≠∏È ∞Ê∞Ë ≥ª∑Œ ¡¶«—
+                // ÌôîÎ©¥ Í≤ΩÍ≥Ñ ÎÇ¥Î°ú Ï†úÌïú
                 arrowScreenPos.x = Mathf.Clamp(arrowScreenPos.x, edgeBuffer, Screen.width - edgeBuffer);
                 arrowScreenPos.y = Mathf.Clamp(arrowScreenPos.y, edgeBuffer, Screen.height - edgeBuffer);
 

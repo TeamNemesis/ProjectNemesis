@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 public class TechSelectPackInteractor_Shop : TechSelectPackInteractor, IShopItem
 {
     [SerializeField] int _price = 150;
@@ -9,7 +9,7 @@ public class TechSelectPackInteractor_Shop : TechSelectPackInteractor, IShopItem
         {
             return base.TryInteract(subject);
         }
-        Debug.Log("Tech Select PackÀ» ±¸¸ÅÇÒ ¼ö ÀÖ´Â Å©·¹µ÷ÀÌ ºÎÁ·ÇÕ´Ï´Ù.");
+        Debug.Log("Tech Select Packì„ êµ¬ë§¤í•  ìˆ˜ ìˆëŠ” í¬ë ˆë”§ì´ ë¶€ì¡±í•©ë‹ˆë‹¤.");
         return false;
     }
     public bool Purchase()

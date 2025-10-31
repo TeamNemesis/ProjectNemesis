@@ -1,20 +1,20 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
 public class DonutWaveAttack : PoolableObject
 {
     [Header("Wave Settings")]
-    [SerializeField] private float maxRadius = 50f;      // ÃÖ´ë Å©±â
-    [SerializeField] private float expandSpeed = 5f;     // È®Àå ¼Óµµ
-    [SerializeField] private float ringThickness = 2f;   // ¸µ µÎ²²
-    [SerializeField] private float attackDelay = 1f;    // °ø°İ °£°İ
+    [SerializeField] private float maxRadius = 50f;      // ìµœëŒ€ í¬ê¸°
+    [SerializeField] private float expandSpeed = 5f;     // í™•ì¥ ì†ë„
+    [SerializeField] private float ringThickness = 2f;   // ë§ ë‘ê»˜
+    [SerializeField] private float attackDelay = 1f;    // ê³µê²© ê°„ê²©
 
     [Header("Visual Settings")]
     [SerializeField] private Color waveColor = new Color(1f, 0f, 0f, 0.8f);
     [SerializeField] private Material waveMaterial;
     [SerializeField] private int segments = 50;
-    [SerializeField] private bool useFillMesh = true;    // Æò¸é ¸Ş½¬·Î Ã¤¿ì±â
+    [SerializeField] private bool useFillMesh = true;    // í‰ë©´ ë©”ì‰¬ë¡œ ì±„ìš°ê¸°
 
     [Header("Damage Settings")]
     [SerializeField] private float damage = 10f;
@@ -40,13 +40,13 @@ public class DonutWaveAttack : PoolableObject
 
     void SetupRings()
     {
-        // ¾ÈÂÊ ¸µ »ı¼º
+        // ì•ˆìª½ ë§ ìƒì„±
         GameObject innerObj = new GameObject("InnerRing");
         innerObj.transform.SetParent(transform);
         innerObj.transform.localPosition = Vector3.zero;
         innerRing = innerObj.AddComponent<LineRenderer>();
 
-        // ¹Ù±ùÂÊ ¸µ »ı¼º
+        // ë°”ê¹¥ìª½ ë§ ìƒì„±
         GameObject outerObj = new GameObject("OuterRing");
         outerObj.transform.SetParent(transform);
         outerObj.transform.localPosition = Vector3.zero;
@@ -76,16 +76,16 @@ public class DonutWaveAttack : PoolableObject
 
     void SetupDonutPlane()
     {
-        // Æò¸é µµ³Ó ¿ÀºêÁ§Æ® »ı¼º
+        // í‰ë©´ ë„ë„› ì˜¤ë¸Œì íŠ¸ ìƒì„±
         donutPlane = new GameObject("DonutPlane");
         donutPlane.transform.SetParent(transform);
-        donutPlane.transform.localPosition = Vector3.up * 0.1f; // ¾à°£ À§¿¡ ¶ç¿ö¼­ °ãÄ¡Áö ¾Ê°Ô
+        donutPlane.transform.localPosition = Vector3.up * 0.1f; // ì•½ê°„ ìœ„ì— ë„ì›Œì„œ ê²¹ì¹˜ì§€ ì•Šê²Œ
 
-        // Mesh ÄÄÆ÷³ÍÆ® Ãß°¡
+        // Mesh ì»´í¬ë„ŒíŠ¸ ì¶”ê°€
         planeMeshFilter = donutPlane.AddComponent<MeshFilter>();
         planeMeshRenderer = donutPlane.AddComponent<MeshRenderer>();
 
-        // Material ¼³Á¤
+        // Material ì„¤ì •
         if (waveMaterial != null)
         {
             planeMeshRenderer.material = waveMaterial;
@@ -117,24 +117,24 @@ public class DonutWaveAttack : PoolableObject
                 donutPlane.SetActive(true);
             }
 
-            // ÀÌ¹Ì Å¸°İÇÑ ÀûÀ» ÃßÀû
+            // ì´ë¯¸ íƒ€ê²©í•œ ì ì„ ì¶”ì 
             HashSet<Collider> hitTargets = new HashSet<Collider>();
 
             while (currentRadius < maxRadius)
             {
                 currentRadius += expandSpeed * Time.deltaTime;
 
-                // ¸µ ¸ğ¾ç ¾÷µ¥ÀÌÆ®
+                // ë§ ëª¨ì–‘ ì—…ë°ì´íŠ¸
                 UpdateRingShape(innerRing, currentRadius);
                 UpdateRingShape(outerRing, currentRadius + ringThickness);
 
-                // Æò¸é µµ³Ó ¸Ş½¬ ¾÷µ¥ÀÌÆ®
+                // í‰ë©´ ë„ë„› ë©”ì‰¬ ì—…ë°ì´íŠ¸
                 if (useFillMesh && donutPlane != null)
                 {
                     UpdateDonutPlaneMesh(currentRadius, currentRadius + ringThickness);
                 }
 
-                // Ãæµ¹ °¨Áö (µµ³Ó ¿µ¿ª ³»ÀÇ Àû)
+                // ì¶©ëŒ ê°ì§€ (ë„ë„› ì˜ì—­ ë‚´ì˜ ì )
                 CheckCollisions(hitTargets);
                 yield return null;
             }
@@ -174,34 +174,34 @@ public class DonutWaveAttack : PoolableObject
         List<int> triangles = new List<int>();
         List<Vector2> uvs = new List<Vector2>();
 
-        // Á¤Á¡ »ı¼º (XZ Æò¸é)
+        // ì •ì  ìƒì„± (XZ í‰ë©´)
         for (int i = 0; i <= segments; i++)
         {
             float angle = (2 * Mathf.PI * i) / segments;
             float cos = Mathf.Cos(angle);
             float sin = Mathf.Sin(angle);
 
-            // ¾ÈÂÊ ¿øÀÇ Á¤Á¡
+            // ì•ˆìª½ ì›ì˜ ì •ì 
             vertices.Add(new Vector3(cos * innerRadius, 0, sin * innerRadius));
             uvs.Add(new Vector2(0, (float)i / segments));
 
-            // ¹Ù±ùÂÊ ¿øÀÇ Á¤Á¡
+            // ë°”ê¹¥ìª½ ì›ì˜ ì •ì 
             vertices.Add(new Vector3(cos * outerRadius, 0, sin * outerRadius));
             uvs.Add(new Vector2(1, (float)i / segments));
         }
 
-        // »ï°¢Çü »ı¼º
+        // ì‚¼ê°í˜• ìƒì„±
         for (int i = 0; i < segments; i++)
         {
             int current = i * 2;
             int next = (i + 1) * 2;
 
-            // Ã¹ ¹øÂ° »ï°¢Çü
+            // ì²« ë²ˆì§¸ ì‚¼ê°í˜•
             triangles.Add(current);
             triangles.Add(next);
             triangles.Add(current + 1);
 
-            // µÎ ¹øÂ° »ï°¢Çü
+            // ë‘ ë²ˆì§¸ ì‚¼ê°í˜•
             triangles.Add(current + 1);
             triangles.Add(next);
             triangles.Add(next + 1);
@@ -217,17 +217,17 @@ public class DonutWaveAttack : PoolableObject
 
     void CheckCollisions(HashSet<Collider> hitTargets)
     {
-        // 3D Physics »ç¿ë
+        // 3D Physics ì‚¬ìš©
         Collider[] colliders = Physics.OverlapSphere(transform.position, currentRadius + ringThickness, targetLayer);
 
         foreach (Collider col in colliders)
         {
-            // XZ Æò¸é¿¡¼­ °Å¸® °è»ê (Å¾ºäÀÌ¹Ç·Î YÃà Á¦¿Ü)
+            // XZ í‰ë©´ì—ì„œ ê±°ë¦¬ ê³„ì‚° (íƒ‘ë·°ì´ë¯€ë¡œ Yì¶• ì œì™¸)
             Vector3 targetPos = col.transform.position;
             Vector3 sourcePos = transform.position;
             float distance = Vector2.Distance(new Vector2(sourcePos.x, sourcePos.z), new Vector2(targetPos.x, targetPos.z));
 
-            // µµ³Ó ¿µ¿ª ¾È¿¡ ÀÖ´ÂÁö È®ÀÎ
+            // ë„ë„› ì˜ì—­ ì•ˆì— ìˆëŠ”ì§€ í™•ì¸
             if (distance >= currentRadius && distance <= currentRadius + ringThickness)
             {
                 if (!hitTargets.Contains(col))
@@ -241,7 +241,7 @@ public class DonutWaveAttack : PoolableObject
 
     void DealDamage(GameObject target)
     {
-        // Àû¿¡°Ô µ¥¹ÌÁö Àû¿ë
+        // ì ì—ê²Œ ë°ë¯¸ì§€ ì ìš©
         var health = target.GetComponent<IDamageable>();
         if (health != null)
         {

@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class PlayerAnimationEventForwarder : MonoBehaviour
 {
@@ -9,11 +9,11 @@ public class PlayerAnimationEventForwarder : MonoBehaviour
         _player = player;
     }
 
-    // ¾Ö´Ï¸ŞÀÌ¼Ç ÀÌº¥Æ®¿¡¼­ ÀÌ ¸Ş¼­µå¸¦ È£ÃâÇÏµµ·Ï ¼³Á¤
+    // ì• ë‹ˆë©”ì´ì…˜ ì´ë²¤íŠ¸ì—ì„œ ì´ ë©”ì„œë“œë¥¼ í˜¸ì¶œí•˜ë„ë¡ ì„¤ì •
     public void OnAttackFireEvent()
     {
         if (_player == null) return;
-        _player.OnAttackFireEvent(); // Player ÂÊ¿¡ ÇØ´ç public ¸Ş¼­µå°¡ ÀÖ¾î¾ß ÇÔ
+        _player.OnAttackFireEvent(); // Player ìª½ì— í•´ë‹¹ public ë©”ì„œë“œê°€ ìˆì–´ì•¼ í•¨
         Debug.Log("OnAttackFireEvent forwarded to Player.");
     }
 

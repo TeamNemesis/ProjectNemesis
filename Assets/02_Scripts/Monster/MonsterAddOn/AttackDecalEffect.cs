@@ -1,20 +1,20 @@
-using System.Collections;
+ï»¿using System.Collections;
 using UnityEngine;
 
 public class AttackDecalEffect : PoolableObject
 {
     [Header("Components")]
-    public GameObject countCircle;  // ÀÚ½Ä CountCircle ¿ÀºêÁ§Æ®
+    public GameObject countCircle;  // ìì‹ CountCircle ì˜¤ë¸Œì íŠ¸
 
-    private Vector3 targetScale;    // ¸ñÇ¥ ½ºÄÉÀÏ
-    private Coroutine growRoutine;  // ÄÚ·çÆ¾ Áßº¹ ¹æÁö¿ë
+    private Vector3 targetScale;    // ëª©í‘œ ìŠ¤ì¼€ì¼
+    private Coroutine growRoutine;  // ì½”ë£¨í‹´ ì¤‘ë³µ ë°©ì§€ìš©
 
 
     public void Initialize()
     {
         if (countCircle == null)
         {
-            // ÀÚ½Ä¿¡¼­ CountCircle ÀÚµ¿ Å½»ö
+            // ìì‹ì—ì„œ CountCircle ìë™ íƒìƒ‰
             Transform child = transform.Find("CountCircle");
             if (child != null)
                 countCircle = child.gameObject;
@@ -22,27 +22,27 @@ public class AttackDecalEffect : PoolableObject
     }
 
     /// <summary>
-    /// ¿ÜºÎ¿¡¼­ È£Ãâ: ¿øÀ» duration µ¿¾È 0 ¡æ targetScale ·Î Ä¿Áö°Ô ÇÏ°í, ³¡³ª¸é ÆÄ±«µÊ
+    /// ì™¸ë¶€ì—ì„œ í˜¸ì¶œ: ì›ì„ duration ë™ì•ˆ 0 â†’ targetScale ë¡œ ì»¤ì§€ê²Œ í•˜ê³ , ëë‚˜ë©´ íŒŒê´´ë¨
     /// </summary>
     public void Play(float duration, float radius)
     {
         Initialize();
         if (countCircle == null) return;
 
-        // ÃÖÁ¾ ½ºÄÉÀÏÀ» ¹İÁö¸§ ±âÁØÀ¸·Î ¼³Á¤ (x,y,z µ¿ÀÏ)
+        // ìµœì¢… ìŠ¤ì¼€ì¼ì„ ë°˜ì§€ë¦„ ê¸°ì¤€ìœ¼ë¡œ ì„¤ì • (x,y,z ë™ì¼)
         targetScale = Vector3.one * radius * 2f;
-        gameObject.transform.localScale = targetScale; // BaseCircleµµ ¸ÂÃçÁÜ
-        // ±âÁ¸ ÄÚ·çÆ¾ ÁßÁö
+        gameObject.transform.localScale = targetScale; // BaseCircleë„ ë§ì¶°ì¤Œ
+        // ê¸°ì¡´ ì½”ë£¨í‹´ ì¤‘ì§€
         if (growRoutine != null)
         {
             StopCoroutine(growRoutine);
         }
 
-        // ÃÊ±âÈ­
+        // ì´ˆê¸°í™”
         countCircle.transform.localScale = Vector3.zero;
         countCircle.SetActive(true);
 
-        // ÄÚ·çÆ¾ ½ÃÀÛ
+        // ì½”ë£¨í‹´ ì‹œì‘
         growRoutine = StartCoroutine(GrowAndRelease(duration));
     }
 
@@ -62,7 +62,7 @@ public class AttackDecalEffect : PoolableObject
 
         countCircle.transform.localScale = Vector3.one;
 
-        // BaseCircle ÇÁ¸®ÆÕ ¹İÈ¯
+        // BaseCircle í”„ë¦¬íŒ¹ ë°˜í™˜
         GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
     }
 }

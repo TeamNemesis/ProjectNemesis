@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class HealPackInteractor_Shop : HealPackInteractor, IShopItem
 {
@@ -11,7 +11,7 @@ public class HealPackInteractor_Shop : HealPackInteractor, IShopItem
         {
             return base.TryInteract(subject);
         }
-        Debug.Log("Heal PackÀ» ±¸¸ÅÇÒ ¼ö ÀÖ´Â Å©·¹µ÷ÀÌ ºÎÁ·ÇÕ´Ï´Ù.");
+        Debug.Log("Heal Packì„ êµ¬ë§¤í•  ìˆ˜ ìˆëŠ” í¬ë ˆë”§ì´ ë¶€ì¡±í•©ë‹ˆë‹¤.");
         return false;
     }
 

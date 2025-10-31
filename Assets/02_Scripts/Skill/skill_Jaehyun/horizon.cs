@@ -1,4 +1,4 @@
-using Unity.VisualScripting;
+ï»¿using Unity.VisualScripting;
 using UnityEngine;
 
 public class horizonData
@@ -25,21 +25,21 @@ public class horizon : PoolableObject,IInitializePoolable
     [SerializeField] private int ConstHeight = 5;
 
     [SerializeField] private GameObject player;
-    [SerializeField] private float damage;           // ÃÊ´ç µ¥¹ÌÁö
-    [SerializeField] private float damageInterval = 1f; // 1ÃÊ °£°İÀ¸·Î µ¥¹ÌÁö
+    [SerializeField] private float damage;           // ì´ˆë‹¹ ë°ë¯¸ì§€
+    [SerializeField] private float damageInterval = 1f; // 1ì´ˆ ê°„ê²©ìœ¼ë¡œ ë°ë¯¸ì§€
     private float damageTimer = 0f;
 
 
 
     void Update()
     {
-        // Ä¸½¶ ¹üÀ§ °è»ê
+        // ìº¡ìŠ ë²”ìœ„ ê³„ì‚°
         Vector3 pos1 = new Vector3(transform.position.x, transform.position.y - ConstHeight, transform.position.z);
         Vector3 pos2 = new Vector3(transform.position.x, transform.position.y + ConstHeight, transform.position.z);
 
         colliders = Physics.OverlapCapsule(pos2, pos1, radius, layer);
 
-        //µ¥¹ÌÁö Å¸ÀÌ¸Ó
+        //ë°ë¯¸ì§€ íƒ€ì´ë¨¸
         damageTimer += Time.deltaTime;
         if (damageTimer >= damageInterval)
         {
@@ -55,14 +55,14 @@ public class horizon : PoolableObject,IInitializePoolable
 
             float distance = Vector3.Distance(player.transform.position, col.transform.position);
 
-            // ÇÃ·¹ÀÌ¾î¿ÍÀÇ °Å¸®°¡ 3 ÀÌ»óÀÏ ¶§¸¸
+            // í”Œë ˆì´ì–´ì™€ì˜ ê±°ë¦¬ê°€ 3 ì´ìƒì¼ ë•Œë§Œ
             if (distance >= 6f)
             {
                 CharacterModelBase target = col.GetComponent<CharacterModelBase>();
                 if (target != null)
                 {
                     target.TakeDamage(damage, null);
-                    Debug.Log("µ¥¹ÌÁö Àû¿ë!");
+                    Debug.Log("ë°ë¯¸ì§€ ì ìš©!");
                 }
             }
         }

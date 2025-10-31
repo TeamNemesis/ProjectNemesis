@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class MutantPackInteractor_Shop : MutantPackInteractor, IShopItem
 {
@@ -10,7 +10,7 @@ public class MutantPackInteractor_Shop : MutantPackInteractor, IShopItem
         {
             return base.TryInteract(subject);
         }
-        Debug.Log("Mutant PackÀ» ±¸¸ÅÇÒ ¼ö ÀÖ´Â Å©·¹µ÷ÀÌ ºÎÁ·ÇÕ´Ï´Ù.");
+        Debug.Log("Mutant Packì„ êµ¬ë§¤í•  ìˆ˜ ìˆëŠ” í¬ë ˆë”§ì´ ë¶€ì¡±í•©ë‹ˆë‹¤.");
         return false;
     }
     public bool Purchase()

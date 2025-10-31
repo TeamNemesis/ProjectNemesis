@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
@@ -7,12 +7,12 @@ public class BallSecurityRobot : MonsterBase
 {
 
     [Header("Local Stats"), SerializeField]
-    private float _explosionRadius = 3f;      // ½ÇÁ¦ Æø¹ß ¹üÀ§
+    private float _explosionRadius = 3f;      // ì‹¤ì œ í­ë°œ ë²”ìœ„
 
-    // attackDamage, attackRange, attackDelay, isDead µîÀº MonsterBase¿¡¼­ »ó¼ÓµÊ
+    // attackDamage, attackRange, attackDelay, isDead ë“±ì€ MonsterBaseì—ì„œ ìƒì†ë¨
 
     [Header("Effects"), SerializeField]
-    private PoolableObject circlePrefab;     // AttackDecalEffect ÇÁ¸®ÆÕ (Inspector¿¡¼­ ÁöÁ¤)
+    private PoolableObject circlePrefab;     // AttackDecalEffect í”„ë¦¬íŒ¹ (Inspectorì—ì„œ ì§€ì •)
 
     private void Update()
     {
@@ -75,7 +75,7 @@ public class BallSecurityRobot : MonsterBase
         {
             _isAttacking = true;
 
-            // ÀÚÆø Ä«¿îÆ®´Ù¿î ¿ø »ı¼º (·Îº¿ÀÇ ÀÚ½ÄÀ¸·Î ºÙÀÓ)
+            // ìí­ ì¹´ìš´íŠ¸ë‹¤ìš´ ì› ìƒì„± (ë¡œë´‡ì˜ ìì‹ìœ¼ë¡œ ë¶™ì„)
             if (circlePrefab != null)
             {
                 GameObject circle = GameManager.Instance.PoolManager.GetFromPool(circlePrefab, transform.position, circlePrefab.transform.rotation);
@@ -86,7 +86,7 @@ public class BallSecurityRobot : MonsterBase
                 }
             }
 
-            // ÀÚÆø±îÁö µô·¹ÀÌ
+            // ìí­ê¹Œì§€ ë”œë ˆì´
             yield return new WaitForSeconds(attackDelay);
 
             CheckTarget();
@@ -97,7 +97,7 @@ public class BallSecurityRobot : MonsterBase
 
     public void CheckTarget()
     {
-        // Äİ¶óÀÌ´õ Å½»ö
+        // ì½œë¼ì´ë” íƒìƒ‰
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, _explosionRadius);
 
         foreach (Collider collider in hitColliders)

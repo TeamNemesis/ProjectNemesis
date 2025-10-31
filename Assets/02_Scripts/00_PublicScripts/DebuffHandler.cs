@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,7 +17,7 @@ public class DebuffHandler : MonoBehaviour
     private MonsterBase monster;
     private PlayerModel player;
     /// <summary>
-    /// Á¡ÁøµÇ´Â °íÅë
+    /// ì ì§„ë˜ëŠ” ê³ í†µ
     /// </summary>
     private Coroutine _increasePain;
 
@@ -41,10 +41,10 @@ public class DebuffHandler : MonoBehaviour
 
     public class DebuffData
     {
-        public string debuffName;      // µğ¹öÇÁ ÀÌ¸§
-        public float debuffDuration;   // Áö¼Ó½Ã°£
-        public float debuffValue;      // ÃÊ´ç ´ë¹ÌÁö³ª ¹è¼ö°ª
-        public int maxStack = 1;           // ÃÖ´ë ½ºÅÃ
+        public string debuffName;      // ë””ë²„í”„ ì´ë¦„
+        public float debuffDuration;   // ì§€ì†ì‹œê°„
+        public float debuffValue;      // ì´ˆë‹¹ ëŒ€ë¯¸ì§€ë‚˜ ë°°ìˆ˜ê°’
+        public int maxStack = 1;           // ìµœëŒ€ ìŠ¤íƒ
 
         public DebuffData(string name, float duration, float value, int Maxstack = 1)
         {
@@ -60,10 +60,10 @@ public class DebuffHandler : MonoBehaviour
         }
 
         /// <summary>
-        /// ½½·Î¿ì Á¦ÀÛ ÇÔ¼ö
+        /// ìŠ¬ë¡œìš° ì œì‘ í•¨ìˆ˜
         /// </summary>
-        /// <param name="duration"> ½½·Î¿ì Áö¼Ó½Ã°£</param>
-        /// <param name="slowValue"> ½½·Î¿ì ¼öÄ¡ %´ÜÀ§·Î ÀÔ·ÂÇÒ°Í (¿¹ : 30% ½½·Î¿ì = 30 ÀÔ·Â)</param>
+        /// <param name="duration"> ìŠ¬ë¡œìš° ì§€ì†ì‹œê°„</param>
+        /// <param name="slowValue"> ìŠ¬ë¡œìš° ìˆ˜ì¹˜ %ë‹¨ìœ„ë¡œ ì…ë ¥í• ê²ƒ (ì˜ˆ : 30% ìŠ¬ë¡œìš° = 30 ì…ë ¥)</param>
         /// <returns></returns>
         public static DebuffData CreateSlow(float duration = 3f, float slowValue = 30f)
         {
@@ -71,10 +71,10 @@ public class DebuffHandler : MonoBehaviour
         }
 
         /// <summary>
-        /// ¾àÈ­ Á¦ÀÛ ÇÔ¼ö
+        /// ì•½í™” ì œì‘ í•¨ìˆ˜
         /// </summary>
-        /// <param name="duration">¾àÈ­ Áö¼Ó½Ã°£</param>
-        /// <param name="weakValue">¾àÈ­ ¼öÄ¡%</param>
+        /// <param name="duration">ì•½í™” ì§€ì†ì‹œê°„</param>
+        /// <param name="weakValue">ì•½í™” ìˆ˜ì¹˜%</param>
         /// <returns></returns>
         public static DebuffData CreateWeaken(float duration = 5f, float weakValue = 30f)
         {
@@ -82,10 +82,10 @@ public class DebuffHandler : MonoBehaviour
         }
 
         /// <summary>
-        /// µ¶ Á¦ÀÛ ÇÔ¼ö
+        /// ë… ì œì‘ í•¨ìˆ˜
         /// </summary>
-        /// <param name="duration"> µ¶ Áö¼Ó½Ã°£</param>
-        /// <param name="damagePerSecond"> µ¶ ÃÊ´ç ´ë¹ÌÁö</param>
+        /// <param name="duration"> ë… ì§€ì†ì‹œê°„</param>
+        /// <param name="damagePerSecond"> ë… ì´ˆë‹¹ ëŒ€ë¯¸ì§€</param>
         /// <returns></returns>
         public static DebuffData CreatePoison(float duration = 5f, float damagePerSecond = 10f)
         {
@@ -93,10 +93,10 @@ public class DebuffHandler : MonoBehaviour
         }
 
         /// <summary>
-        /// °úºÎÇÏ Á¦ÀÛ ÇÔ¼ö
+        /// ê³¼ë¶€í•˜ ì œì‘ í•¨ìˆ˜
         /// </summary>
-        /// <param name="duration"> °úºÎÇÏ Áö¼Ó ½Ã°£</param>
-        /// <param name="damagePerSecond"> °úºÎÇÏ ÃÊ´ç ´ë¹ÌÁö</param>
+        /// <param name="duration"> ê³¼ë¶€í•˜ ì§€ì† ì‹œê°„</param>
+        /// <param name="damagePerSecond"> ê³¼ë¶€í•˜ ì´ˆë‹¹ ëŒ€ë¯¸ì§€</param>
         /// <returns></returns>
         public static DebuffData CreateOverload(float duration = 4f, float damagePerSecond = 15f)
         {
@@ -104,9 +104,9 @@ public class DebuffHandler : MonoBehaviour
         }
 
         /// <summary>
-        /// ½ºÅÏ Á¦ÀÛ ÇÔ¼ö
+        /// ìŠ¤í„´ ì œì‘ í•¨ìˆ˜
         /// </summary>
-        /// <param name="duration"> ½ºÅÏ Áö¼Ó½Ã°£</param>
+        /// <param name="duration"> ìŠ¤í„´ ì§€ì†ì‹œê°„</param>
         /// <returns></returns>
         public static DebuffData CreateStun(float duration = 2f)
         {
@@ -114,18 +114,18 @@ public class DebuffHandler : MonoBehaviour
         }
 
         /// <summary>
-        /// È¥¶õ Á¦ÀÛ ÇÔ¼ö.
+        /// í˜¼ë€ ì œì‘ í•¨ìˆ˜.
         /// </summary>
-        /// <param name="duration"> È¥¶õ Áö¼Ó½Ã°£ </param>
+        /// <param name="duration"> í˜¼ë€ ì§€ì†ì‹œê°„ </param>
         public static DebuffData CreateConfusion(float duration = 3f)
         {
             return new DebuffData(Constants.DEBUFF_CONFUSION, duration, 0f);
         }
 
         /// <summary>
-        /// ¼Ó¹Ú Á¦ÀÛ ÇÔ¼ö.
+        /// ì†ë°• ì œì‘ í•¨ìˆ˜.
         /// </summary>
-        /// <param name="duration"> ¼Ó¹Ú Áö¼Ó ½Ã°£</param>
+        /// <param name="duration"> ì†ë°• ì§€ì† ì‹œê°„</param>
         /// <returns></returns>
         public static DebuffData CreateBinding(float duration = 3f)
         {
@@ -141,7 +141,7 @@ public class DebuffHandler : MonoBehaviour
         public float totalValue;
         public int stackCount;
         public Coroutine routine;
-        public Coroutine effectRoutine; // ½ºÅÏ, È¥¶õ, ¼Ó¹Ú Æ¯º° °ü¸®¿ë ÄÚ·çÆ¾ ÀúÀå º¯¼ö
+        public Coroutine effectRoutine; // ìŠ¤í„´, í˜¼ë€, ì†ë°• íŠ¹ë³„ ê´€ë¦¬ìš© ì½”ë£¨í‹´ ì €ì¥ ë³€ìˆ˜
 
         public ActiveDebuff(DebuffData data)
         {
@@ -156,7 +156,7 @@ public class DebuffHandler : MonoBehaviour
 
 
     /// <summary>
-    /// µğ¹öÇÁ Àû¿ë ÇÔ¼ö
+    /// ë””ë²„í”„ ì ìš© í•¨ìˆ˜
     /// </summary>
     public void ApplyDebuff(DebuffData newDebuff)
     {
@@ -176,7 +176,7 @@ public class DebuffHandler : MonoBehaviour
         {
             ActiveDebuff existing = activeDebuffs[newDebuff.debuffName];
 
-            // ½ºÅÃÇü µğ¹öÇÁµé µ¶ / °úºÎÇÏ
+            // ìŠ¤íƒí˜• ë””ë²„í”„ë“¤ ë… / ê³¼ë¶€í•˜
             if (newDebuff.debuffName == Constants.DEBUFF_POISON || newDebuff.debuffName == Constants.DEBUFF_OVERLOAD)
             {
                 
@@ -189,18 +189,18 @@ public class DebuffHandler : MonoBehaviour
                 existing.remainingTime = newDebuff.debuffDuration;
             }
 
-            // ±× ¿Ü µğ¹öÇÁµé ½Ã°£ °»½Å. ½ºÅÏ, È¥¶õÀÏ °æ¿ì ±âÁ¸ ÄÚ·çÆ¾ Áß´Ü ÈÄ »õ ÄÚ·çÆ¾À¸·Î ´Ù½Ã ½ÃÀÛ
+            // ê·¸ ì™¸ ë””ë²„í”„ë“¤ ì‹œê°„ ê°±ì‹ . ìŠ¤í„´, í˜¼ë€ì¼ ê²½ìš° ê¸°ì¡´ ì½”ë£¨í‹´ ì¤‘ë‹¨ í›„ ìƒˆ ì½”ë£¨í‹´ìœ¼ë¡œ ë‹¤ì‹œ ì‹œì‘
             else
             {
                 if (existing.remainingTime > newDebuff.debuffDuration)
                 {
-                    Debug.Log("Áö¼Ó½Ã°£");
+                    Debug.Log("ì§€ì†ì‹œê°„");
                     return;
                 }
                 existing.remainingTime = newDebuff.debuffDuration;
                 existing.totalValue = newDebuff.debuffValue;
 
-                // ½ºÅÏ
+                // ìŠ¤í„´
                 if (newDebuff.debuffName == Constants.DEBUFF_STUN)
                 {
                     if (existing.effectRoutine != null)
@@ -210,24 +210,24 @@ public class DebuffHandler : MonoBehaviour
                     existing.effectRoutine = StartCoroutine(StunCoroutine(newDebuff.debuffDuration));
                 }
 
-                // È¥¶õ
+                // í˜¼ë€
                 else if (newDebuff.debuffName == Constants.DEBUFF_CONFUSION)
                 {
                     if (existing.effectRoutine != null)
                     {
                         StopCoroutine(existing.effectRoutine);
                     }
-                    // ±âÁ¸ È¥¶õ »óÅÂ¸¦ ¸ÕÀú Á¤¸®
+                    // ê¸°ì¡´ í˜¼ë€ ìƒíƒœë¥¼ ë¨¼ì € ì •ë¦¬
                     if (monster != null)
                     {
                         monster.targetTag = Constants.TAG_PLAYER;
                         monster.SetTarget(null);
                     }
-                    // »õ È¥¶õ ÄÚ·çÆ¾ ½ÃÀÛ
+                    // ìƒˆ í˜¼ë€ ì½”ë£¨í‹´ ì‹œì‘
                     existing.effectRoutine = StartCoroutine(ConfuseCoroutine(newDebuff.debuffDuration));
                 }
 
-                // ¼Ó¹Ú
+                // ì†ë°•
                 else if (newDebuff.debuffName == Constants.DEBUFF_BINDING)
                 {
                     if (existing.effectRoutine != null)
@@ -251,15 +251,15 @@ public class DebuffHandler : MonoBehaviour
 
     private IEnumerator HandleDebuff(DebuffData debuff)
     {
-        // È¤½Ã¸ğ¸¦ Å¸ÀÌ¹Ö ¿À·ù ¹æÁö¿ë °Çµå¸®Áö ¸»°Í
+        // í˜¹ì‹œëª¨ë¥¼ íƒ€ì´ë° ì˜¤ë¥˜ ë°©ì§€ìš© ê±´ë“œë¦¬ì§€ ë§ê²ƒ
         yield return null;
 
         ActiveDebuff active = activeDebuffs[debuff.debuffName];
 
-        // ½ÃÀÛ ½Ã 1È¸¸¸ ¹Ş´Â È¿°úµé
+        // ì‹œì‘ ì‹œ 1íšŒë§Œ ë°›ëŠ” íš¨ê³¼ë“¤
         switch (debuff.debuffName)
         {
-            // ½½·Î¿ì
+            // ìŠ¬ë¡œìš°
             case Constants.DEBUFF_SLOW:
                 if (agent != null)
                 {
@@ -267,7 +267,7 @@ public class DebuffHandler : MonoBehaviour
                 }
                 break;
 
-            // ¾àÈ­
+            // ì•½í™”
             case Constants.DEBUFF_WEAKEN:
                 if (monster != null)
                 {
@@ -276,17 +276,17 @@ public class DebuffHandler : MonoBehaviour
                 }
                 break;
 
-            // ¼Ó¹Ú
+            // ì†ë°•
             case Constants.DEBUFF_BINDING:
                 active.effectRoutine = StartCoroutine(BindCoroutine(debuff.debuffDuration));
                 break;
 
-            // ½ºÅÏ
+            // ìŠ¤í„´
             case Constants.DEBUFF_STUN:
                 active.effectRoutine = StartCoroutine(StunCoroutine(debuff.debuffDuration));
                 break;
 
-            // È¥¶õ
+            // í˜¼ë€
             case Constants.DEBUFF_CONFUSION:
                 active.effectRoutine = StartCoroutine(ConfuseCoroutine(debuff.debuffDuration));
                 break;
@@ -300,7 +300,7 @@ public class DebuffHandler : MonoBehaviour
             {
                 case Constants.DEBUFF_POISON:
                 case Constants.DEBUFF_OVERLOAD:
-                    character.TakeDamage(active.totalValue, null);          // ÇÃ·¹ÀÌ¾î ¸ğ´ïÁõ Àû¿ë ¿ä¸Á
+                    character.TakeDamage(active.totalValue, null);          // í”Œë ˆì´ì–´ ëª¨ëŒì¦ ì ìš© ìš”ë§
                     break;
                 default:
                     break;
@@ -310,17 +310,17 @@ public class DebuffHandler : MonoBehaviour
             yield return new WaitForSeconds(1f);
         }
 
-        // ÇØÁ¦ ½Ã º¹¿ø - ÇöÀç ½½·Î¿ì ÀÌ¿ÜÀÇ ´Ù¸¥ º¹¿ø ¿ä¼Ò ¾øÀ½
+        // í•´ì œ ì‹œ ë³µì› - í˜„ì¬ ìŠ¬ë¡œìš° ì´ì™¸ì˜ ë‹¤ë¥¸ ë³µì› ìš”ì†Œ ì—†ìŒ
         switch (debuff.debuffName)
         {
-            // ½½·Î¿ì
+            // ìŠ¬ë¡œìš°
             case Constants.DEBUFF_SLOW:
                 if (agent != null)
                 {
                     agent.speed = originalSpeed;
                 }
                 break;
-            // ¾àÈ­
+            // ì•½í™”
             case Constants.DEBUFF_WEAKEN:
                 if (monster != null)
                 {
@@ -336,9 +336,9 @@ public class DebuffHandler : MonoBehaviour
     }
 
     /// <summary>
-    /// ½ºÅÏ ÄÚ·çÆ¾
+    /// ìŠ¤í„´ ì½”ë£¨í‹´
     /// </summary>
-    /// <param name="duration"> Áö¼Ó½Ã°£ </param>
+    /// <param name="duration"> ì§€ì†ì‹œê°„ </param>
     private IEnumerator StunCoroutine(float duration)
     {
         character.isStunned = true;
@@ -364,9 +364,9 @@ public class DebuffHandler : MonoBehaviour
     }
 
     /// <summary>
-    /// ¼Ó¹Ú ÄÚ·çÆ¾
+    /// ì†ë°• ì½”ë£¨í‹´
     /// </summary>
-    /// <param name="duration"> Áö¼Ó½Ã°£ </param>
+    /// <param name="duration"> ì§€ì†ì‹œê°„ </param>
     private IEnumerator BindCoroutine(float duration)
     {
         character.isBindned = true;
@@ -387,28 +387,28 @@ public class DebuffHandler : MonoBehaviour
     }
 
     /// <summary>
-    /// È¥¶õ ÄÚ·çÆ¾
+    /// í˜¼ë€ ì½”ë£¨í‹´
     /// </summary>
-    /// <param name="duration"> Áö¼Ó½Ã°£ </param>
+    /// <param name="duration"> ì§€ì†ì‹œê°„ </param>
     private IEnumerator ConfuseCoroutine(float duration)
     {
         if (monster == null) yield break;
 
-        // È¥¶õ »óÅÂ¿¡ µé¾î°¡±â Àü¿¡ ¿ø·¡ »óÅÂ ÀúÀå
-        // ÀÌ¹Ì È¥¶õ »óÅÂ¸é °Ç³Ê¶Ù±â
+        // í˜¼ë€ ìƒíƒœì— ë“¤ì–´ê°€ê¸° ì „ì— ì›ë˜ ìƒíƒœ ì €ì¥
+        // ì´ë¯¸ í˜¼ë€ ìƒíƒœë©´ ê±´ë„ˆë›°ê¸°
         bool wasAlreadyConfused = monster.targetTag == Constants.TAG_MONSTER;
         string originalTag = wasAlreadyConfused ? Constants.TAG_PLAYER : monster.targetTag;
         Transform originalTarget = wasAlreadyConfused ? null : monster.GetTarget();
 
         float elapsedTime = 0f;
 
-        // È¥¶õ »óÅÂ ½ÃÀÛ
+        // í˜¼ë€ ìƒíƒœ ì‹œì‘
         monster.targetTag = Constants.TAG_MONSTER;
         monster.SetTarget(null);
 
         while (elapsedTime < duration)
         {
-            // ³²Àº ½Ã°£ È®ÀÎ
+            // ë‚¨ì€ ì‹œê°„ í™•ì¸
             if (activeDebuffs.ContainsKey(Constants.DEBUFF_CONFUSION))
             {
                 ActiveDebuff activeDebuff = activeDebuffs[Constants.DEBUFF_CONFUSION];
@@ -422,7 +422,7 @@ public class DebuffHandler : MonoBehaviour
                 break;
             }
 
-            // ÇöÀç Å¸°ÙÀÌ Á×¾ú°Å³ª ¾øÀ¸¸é »õ·Î Ã£±â
+            // í˜„ì¬ íƒ€ê²Ÿì´ ì£½ì—ˆê±°ë‚˜ ì—†ìœ¼ë©´ ìƒˆë¡œ ì°¾ê¸°
             Transform currentTarget = monster.GetTarget();
             if (currentTarget == null || !currentTarget.gameObject.activeSelf)
             {
@@ -453,12 +453,12 @@ public class DebuffHandler : MonoBehaviour
             yield return null;
         }
 
-        // È¥¶õ »óÅÂ º¹±¸
+        // í˜¼ë€ ìƒíƒœ ë³µêµ¬
         if (!character.isDead && monster != null)
         {
             monster.targetTag = originalTag;
 
-            // originalTargetÀÌ nullÀÌ¸é ÇÃ·¹ÀÌ¾î¸¦ ÀÚµ¿À¸·Î Ã£±â
+            // originalTargetì´ nullì´ë©´ í”Œë ˆì´ì–´ë¥¼ ìë™ìœ¼ë¡œ ì°¾ê¸°
             if (originalTarget == null)
             {
                 GameObject playerObj = GameObject.FindGameObjectWithTag(Constants.TAG_PLAYER);
@@ -479,25 +479,25 @@ public class DebuffHandler : MonoBehaviour
     }
 
     /// <summary>
-    /// °¡Áö°íÀÖ´Â µğ¹öÇÁ¸¦ È®ÀÎÇÏ´Â ÇÔ¼ö (µğ¹öÇÁ µ¥ÀÌÅÍ·Î È®ÀÎ)
+    /// ê°€ì§€ê³ ìˆëŠ” ë””ë²„í”„ë¥¼ í™•ì¸í•˜ëŠ” í•¨ìˆ˜ (ë””ë²„í”„ ë°ì´í„°ë¡œ í™•ì¸)
     /// </summary>
-    /// <param name="data"> µğ¹öÇÁ Á¤º¸ </param>
+    /// <param name="data"> ë””ë²„í”„ ì •ë³´ </param>
     public bool CheckDebuff(DebuffData data)
     {
         return activeDebuffs.ContainsKey(data.debuffName);
     }
 
     /// <summary>
-    /// °¡Áö°íÀÖ´Â µğ¹öÇÁ¸¦ È®ÀÎÇÏ´Â ÇÔ¼ö (ÀÌ¸§À¸·Î È®ÀÎ)
+    /// ê°€ì§€ê³ ìˆëŠ” ë””ë²„í”„ë¥¼ í™•ì¸í•˜ëŠ” í•¨ìˆ˜ (ì´ë¦„ìœ¼ë¡œ í™•ì¸)
     /// </summary>
-    /// <param name="debuffName"> µğ¹öÇÁ ÀÌ¸§ </param>
+    /// <param name="debuffName"> ë””ë²„í”„ ì´ë¦„ </param>
     public bool HasDebuff(string debuffName)
     {
         return activeDebuffs.ContainsKey(debuffName);
     }
 
     /// <summary>
-    /// °¡Áö°íÀÖ´Â µğ¹öÇÁÀÇ °¹¼ö¸¦ ¹İÈ¯ÇÏ´Â ÇÔ¼ö
+    /// ê°€ì§€ê³ ìˆëŠ” ë””ë²„í”„ì˜ ê°¯ìˆ˜ë¥¼ ë°˜í™˜í•˜ëŠ” í•¨ìˆ˜
     /// </summary>
     public int GetActiveDebuffCount()
     {
@@ -516,7 +516,7 @@ public class DebuffHandler : MonoBehaviour
 
 
     /// <summary>
-    /// °¡Áö°íÀÖ´Â µğ¹öÇÁÀÇ ÇöÀç ½ºÅÃÀ» ¹İÈ¯ÇÏ´Â ÇÔ¼ö
+    /// ê°€ì§€ê³ ìˆëŠ” ë””ë²„í”„ì˜ í˜„ì¬ ìŠ¤íƒì„ ë°˜í™˜í•˜ëŠ” í•¨ìˆ˜
     /// </summary>
     public int GetStackCount(string debuffName)
     {
@@ -528,7 +528,7 @@ public class DebuffHandler : MonoBehaviour
     }
 
     /// <summary>
-    /// ÇöÀç °É¸° µğ¹öÇÁ¸¦ Á¦°ÅÇÏ´Â ÇÔ¼ö.µğ¹öÇÁ ÀÌ¸§À» ¹Ş¾Æ activeDebuffs¿¡¼­ È°¼ºÈ­ÁßÀÎ ÄÚ·çÆ¾À» Á¦°Å.
+    /// í˜„ì¬ ê±¸ë¦° ë””ë²„í”„ë¥¼ ì œê±°í•˜ëŠ” í•¨ìˆ˜.ë””ë²„í”„ ì´ë¦„ì„ ë°›ì•„ activeDebuffsì—ì„œ í™œì„±í™”ì¤‘ì¸ ì½”ë£¨í‹´ì„ ì œê±°.
     /// </summary>
     public void RemoveDebuff(string debuffName)
     {
@@ -546,7 +546,7 @@ public class DebuffHandler : MonoBehaviour
                 StopCoroutine(debuff.effectRoutine);
             }
 
-            // ¼öµ¿ º¹¿ø
+            // ìˆ˜ë™ ë³µì›
             switch (debuffName)
             {
                 case Constants.DEBUFF_SLOW:
@@ -595,7 +595,7 @@ public class DebuffHandler : MonoBehaviour
 
 
     /// <summary>
-    /// ½ºÅ³ Á¡ÁøµÇ´Â °íÅë Àû¿ë ÇÔ¼ö
+    /// ìŠ¤í‚¬ ì ì§„ë˜ëŠ” ê³ í†µ ì ìš© í•¨ìˆ˜
     /// </summary>
     public void IncreasePain(DebuffHandler debuffHandler)
     {
@@ -604,7 +604,7 @@ public class DebuffHandler : MonoBehaviour
             return;
         }
 
-        // Á¡ÁøµÇ´Â °íÅëÀÌ Àû¿ë ÁßÀÌ ¾Æ´Ï¶ó¸é
+        // ì ì§„ë˜ëŠ” ê³ í†µì´ ì ìš© ì¤‘ì´ ì•„ë‹ˆë¼ë©´
         if (debuffHandler._increasePain == null)
         {
             debuffHandler._increasePain = StartCoroutine(IncreasePainCoroutine(debuffHandler));

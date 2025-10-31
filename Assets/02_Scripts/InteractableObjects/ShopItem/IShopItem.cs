@@ -1,9 +1,9 @@
-public interface IShopItem
+ï»¿public interface IShopItem
 {
     int Price { get; }
     /// <summary>
-    /// »óÁ¡¿¡¼­ ¾ÆÀÌÅÛÀ» ±¸¸ÅÇÒ ¶§ È£ÃâµÇ´Â ¸Þ¼­µå
+    /// ìƒì ì—ì„œ ì•„ì´í…œì„ êµ¬ë§¤í•  ë•Œ í˜¸ì¶œë˜ëŠ” ë©”ì„œë“œ
     /// </summary>
-    /// <returns>±¸¸Å ¼º°ø ¿©ºÎ</returns>
+    /// <returns>êµ¬ë§¤ ì„±ê³µ ì—¬ë¶€</returns>
     bool Purchase();
 }

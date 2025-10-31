@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 
 public class RedShiftData
@@ -22,25 +22,25 @@ public class RedShiftData
 public class RedShift : AreaDamageBase, IInitializePoolable
 {
     /// <summary>
-    /// ¹æÇâ
+    /// ë°©í–¥
     /// </summary>
     [SerializeField]
     private Vector3 direction;
 
     /// <summary>
-    /// ¼Óµµ
+    /// ì†ë„
     /// </summary>
     [SerializeField]
     private float speed = 10f;
 
     /// <summary>
-    /// ½ºÅ³ µ¥¹ÌÁö
+    /// ìŠ¤í‚¬ ë°ë¯¸ì§€
     /// </summary>
     [SerializeField]
     private float _damage = 20f;
 
     /// <summary>
-    /// ³Ë¹é °Å¸®
+    /// ë„‰ë°± ê±°ë¦¬
     /// </summary>
     private float _knockBackDistance;
 
@@ -75,7 +75,7 @@ public class RedShift : AreaDamageBase, IInitializePoolable
     {
         if (other.gameObject.layer == LayerMask.NameToLayer(Constants.LAYER_MASK_WALL))
         {
-            // º®¿¡ ´êÀ¸¸é ÆÄµ¿ Á¾·á
+            // ë²½ì— ë‹¿ìœ¼ë©´ íŒŒë™ ì¢…ë£Œ
             GameManager.Instance.PoolManager.ReleaseToPoolByInterface(this);
         }
 

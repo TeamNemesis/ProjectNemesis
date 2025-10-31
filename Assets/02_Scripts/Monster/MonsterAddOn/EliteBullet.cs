@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using UnityEngine;
 
 public class EliteBullet : PoolableObject
@@ -12,7 +12,7 @@ public class EliteBullet : PoolableObject
     private Coroutine lifeTimeCoroutine;
 
 
-    //º¯°æµÈ ºÎºĞ
+    //ë³€ê²½ëœ ë¶€ë¶„
     private Vector3 moveDir = Vector3.forward;
 
 
@@ -70,7 +70,7 @@ public class EliteBullet : PoolableObject
         if (other.CompareTag(targetTag))
         {
             IDamageable damageable = other.GetComponent<IDamageable>();
-            // º¯°æµÈ ºÎºĞ
+            // ë³€ê²½ëœ ë¶€ë¶„
             reflect reflectable = other.GetComponent<reflect>();
             if (reflectable != null && reflectable.isReflecting == true)
             {
@@ -106,17 +106,17 @@ public class EliteBullet : PoolableObject
         }
     }
 
-    //º¯°æ ºÎºĞ
+    //ë³€ê²½ ë¶€ë¶„
     private void Reflect(Collider reflector)
     {
-        moveDir = -moveDir; // ¹æÇâ ÀüÈ¯
+        moveDir = -moveDir; // ë°©í–¥ ì „í™˜
 
-        targetTag = Constants.TAG_MONSTER; // Å¸°ÙÅÂ±× º¯°æ
-        owner = reflector.gameObject; // ÁÖÀÎ º¯°æ
+        targetTag = Constants.TAG_MONSTER; // íƒ€ê²Ÿíƒœê·¸ ë³€ê²½
+        owner = reflector.gameObject; // ì£¼ì¸ ë³€ê²½
 
     }
 
-    //ÃÊ±âÈ­
+    //ì´ˆê¸°í™”
     private void OnDisable()
     {
         moveDir = Vector3.forward;

@@ -1,4 +1,4 @@
-public enum PlayerStateType
+ï»¿public enum PlayerStateType
 {
     Idle,
     Move,
@@ -11,7 +11,7 @@ public enum PlayerStateType
 }
 
 /// <summary>
-/// »óÅÂ ¸Ó½Å¿¡¼­ »ç¿ëÇÏ´Â »óÅÂ ÀÎÅÍÆäÀÌ½º
+/// ìƒíƒœ ë¨¸ì‹ ì—ì„œ ì‚¬ìš©í•˜ëŠ” ìƒíƒœ ì¸í„°í˜ì´ìŠ¤
 /// </summary>
 public interface IState
 {

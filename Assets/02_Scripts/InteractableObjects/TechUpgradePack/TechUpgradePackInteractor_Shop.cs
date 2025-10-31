@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class TechUpgradePackInteractor_Shop : TechUpgradePackInteractor, IShopItem
 {
@@ -10,7 +10,7 @@ public class TechUpgradePackInteractor_Shop : TechUpgradePackInteractor, IShopIt
         {
             return base.TryInteract(subject);
         }
-        Debug.Log("Tech Upgrade PackÀ» ±¸¸ÅÇÒ ¼ö ÀÖ´Â Å©·¹µ÷ÀÌ ºÎÁ·ÇÕ´Ï´Ù.");
+        Debug.Log("Tech Upgrade Packì„ êµ¬ë§¤í•  ìˆ˜ ìˆëŠ” í¬ë ˆë”§ì´ ë¶€ì¡±í•©ë‹ˆë‹¤.");
         return false;
     }
     public bool Purchase()

@@ -1,8 +1,8 @@
-public class BossRoom : Room
+ï»¿public class BossRoom : Room
 {
     public override IInteractable[] SpawnReward()
     {
-        // BossRoomÀº º¸»óÀ» »ı¼ºÇÏÁö ¾ÊÀ½
+        // BossRoomì€ ë³´ìƒì„ ìƒì„±í•˜ì§€ ì•ŠìŒ
         return System.Array.Empty<IInteractable>();
     }
 }

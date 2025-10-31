@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 [CreateAssetMenu(fileName = "RewardDataSO", menuName = "ScriptableObjects/Reward/RewardDataSO")]
 public class RewardDataSO : ScriptableObject
