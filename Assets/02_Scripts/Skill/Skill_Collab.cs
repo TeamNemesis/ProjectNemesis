@@ -30,6 +30,11 @@ public class Skill_Collab : SkillBase
     /// </summary>
     private elecVortex _elecVortexPrefab;
 
+    /// <summary>
+    /// 전기인간 관련 필드
+    /// </summary>
+    private electricMan _electricManPrefab;
+
 
     public override void InitializeSkill(SkillManager skillManager)
     {
@@ -105,7 +110,7 @@ public class Skill_Collab : SkillBase
             // 전기 인간
             case 64:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
-
+                ActivateElectricMan(choosedSkill);
                 break;
 
             default:
@@ -252,6 +257,19 @@ public class Skill_Collab : SkillBase
             skill.skillBaseValue_1 + skill.skillLevelValue_1 * skill.skillLevel,
             skillManager.playScene.MapController);
 
+    }
+    #endregion
+
+    #region 전기 인간
+    public void ActivateElectricMan(SkillData skill)
+    {
+        if(_electricManPrefab == null)
+        {
+            _electricManPrefab = Resources.Load<electricMan>("Prefabs/Skill/SkillObject/Skill_Collab/ElectricMan");
+        }
+
+        electricMan electric =  Instantiate(_electricManPrefab, skillManager.playScene.player.transform);
+        skillManager.playScene.MapController.MonsterController.MonsterSpawner.OnAllWavesCompleted += electric.ClearDictionary;
     }
     #endregion
 }
