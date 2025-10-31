@@ -13,8 +13,6 @@ public abstract class PlayerNormalAttacker : MonoBehaviour, IAttacker
 
     public virtual event Action OnAttackStarted;
     public virtual event Action OnAttackEnded;
-    public event Action AttackStarted;
-    public event Action AttackEnded;
 
     // 공격 중인지 표시 (파생 클래스에서 보호 수준으로 변경 가능)
     public bool IsAttacking => _isAttacking;

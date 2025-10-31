@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEditor;
 using UnityEngine;
 
 
@@ -95,5 +96,23 @@ public class PlayerWeaponController : MonoBehaviour
             WeaponType.HackingDevice => _hackingDeviceHoldParent,
             _ => null
         };
+    }
+}
+
+[CustomEditor(typeof(Player))]
+public class WeaponControllerEditor : Editor
+{
+    public override void OnInspectorGUI()
+    {
+        DrawDefaultInspector();
+        Player player = (Player)target;
+        if (GUILayout.Button("라이플 장착"))
+        {
+            player.WeaponController.ChangeWeapon(WeaponType.Rifle);
+        }
+        if (GUILayout.Button("블레이드 장착"))
+        {
+            player.WeaponController.ChangeWeapon(WeaponType.Blade);
+        }
     }
 }
