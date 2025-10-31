@@ -137,4 +137,10 @@ public class PlayerBladeNormalAttacker : PlayerNormalAttacker
         _queued = false;
         Debug.Log("PlayerBladeNormalAttacker.EndAttack: Attack ended and combo reset.");
     }
+    //
+    public void Animation_OnAttackEnd()
+    {
+        EndAttack(); // _isAttacking = false
+        Debug.Log("PlayerBladeNormalAttacker.Animation_OnAttackEnd: Attack animation ended.");
+    }
 }
