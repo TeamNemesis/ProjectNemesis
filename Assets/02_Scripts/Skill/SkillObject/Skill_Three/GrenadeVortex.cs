@@ -14,12 +14,13 @@ public class GrenadeVortexData
 }
 
 
-public class GrenadeVortex : vortex, IInitializePoolable
+public class GrenadeVortex : vortex
 {
     private float _time;
 
-    public void Initialize(object data)
+    public override void Initialize(object data)
     {
+        base.Initialize(data);
         if(data is GrenadeVortexData vortexData)
         {
             _time = vortexData.time;

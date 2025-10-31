@@ -19,8 +19,8 @@ public class horizon : PoolableObject,IInitializePoolable
     [SerializeField] private LayerMask layer;    // Enemy Layer
     [SerializeField] private Collider[] colliders;
     [SerializeField] private Collider[] colliders_range;
-    [SerializeField] private float radius = 8f;
-    [SerializeField] private float inRadius = 6f;
+    [SerializeField] private float radius;
+    [SerializeField] private float inRadius;
     [SerializeField] private float height = 2f;
     [SerializeField] private int ConstHeight = 5;
 

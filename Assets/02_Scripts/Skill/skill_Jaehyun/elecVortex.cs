@@ -3,146 +3,136 @@ using UnityEngine.AI;
 
 public class elecVortex : MonoBehaviour
 {
-    [SerializeField] private GameObject[] monsters;     // 임시 설정
-    [SerializeField] private float speed;               // 따라갈 속도
+    [SerializeField] private float speed = 10f;
+    [SerializeField] private LayerMask layer;
 
-    [SerializeField] private LayerMask layer;           // 아마 달렸있을 Enemy Layer
-    [SerializeField] private Collider[] colliders;      // 감지한 Collder배열(끌어당길)
+    [SerializeField] private float originPullRadius;
+    [SerializeField] private float pullRadius;
+    [SerializeField] private float originDamageRadius;
+    [SerializeField] private float damageRadius;
 
-    [SerializeField] private float radius = 5f;         // 반지름(끌어당길 범위)
-    [SerializeField] private float height = 2f;         // 범위 높이
-
-    private Transform Tr;
+    [SerializeField] private float height = 2f;
     [SerializeField] private int ConstHeight = 5;
-    [SerializeField] private float power = 10f;         // 적용할 힘의 세기
+    [SerializeField] private float power = 10f;
 
-    [SerializeField] private int damage = 20;           // 초당 데미지
+    [SerializeField] private float damage;
+    [SerializeField] private float damageInterval = 1f;
 
-    [SerializeField] private float damageInterval = 1f; // 1초 간격으로 데미지
-
+    private MapController _mapController;
     private float damageTimer = 0f;
 
-    public float Radius
+    [SerializeField] private Transform point;
+
+    private Collider[] pullColliders;
+    private Collider[] damageColliders;
+
+    public float PullRadius { get => pullRadius; set => pullRadius = value; }
+    public float DamageRadius { get => damageRadius; set => damageRadius = value; }
+    public float Damage { get => damage; set => damage = value; }
+    public float Speed { get => speed; set => speed = value; }
+
+    public void Initialize(float damage, float pullRadius, float damageRadius, MapController mapController)
     {
-        get => radius;
-        set => radius = value;
-    }
-    public int Damage
-    {
-        get => damage;
-        set => damage = value;
-    }
-    public float Speed
-    {
-        get => speed;
-        set => speed = value;
-    }
-    void Start()
-    {
-        Tr = GetComponent<Transform>();
+        this.damage = damage;
+        originPullRadius = pullRadius;
+        originDamageRadius = damageRadius;
+        _mapController = mapController;
+        damageTimer = 0f;
+
+        GameManager.Instance.PlayerStatManager.OnAreaExtentChange -= SetRadius;
+        GameManager.Instance.PlayerStatManager.OnAreaExtentChange += SetRadius;
+        SetRadius(GameManager.Instance.PlayerStatManager.playerAreaExtent);
     }
 
-  
     void Update()
     {
-        Vector3 pos1 = new Vector3(Tr.position.x, Tr.position.y - ConstHeight, Tr.position.z);
-        Vector3 pos2 = new Vector3(Tr.position.x, Tr.position.y + ConstHeight, Tr.position.z);
-        colliders = Physics.OverlapCapsule(pos2, pos1, radius, layer);
+        Vector3 pos1 = transform.position - Vector3.up * ConstHeight;
+        Vector3 pos2 = transform.position + Vector3.up * ConstHeight;
 
-        Transform point = transform.Find("Point");
-
-        foreach (var col in colliders)
+        // 끌어당김
+        pullColliders = Physics.OverlapCapsule(pos2, pos1, pullRadius, layer);
+        foreach (var col in pullColliders)
         {
+            MonsterBase monster = col.GetComponent<MonsterBase>();
+            if (monster == null || monster.GetMonsterSize() == MonsterSize.BIG) continue;
+
             NavMeshAgent agent = col.GetComponent<NavMeshAgent>();
             if (agent == null) continue;
 
-            Vector3 targetPos = point.position;
-            //targetPos.y = col.transform.position.y; // y값 고정
-
-            // 당기기(lerp사용)
-            //Vector3 newPos = Vector3.Lerp(col.transform.position, targetPos, Time.deltaTime * power);
-            Vector3 newPos = (point.position - col.transform.position).normalized;
-
-            //agent.Warp(newPos);
-            //agent.Move(newPos);
-            agent.Move(newPos * Time.deltaTime * power);
+            Vector3 dir = (point.position - col.transform.position).normalized;
+            agent.Move(dir * Time.deltaTime * power);
         }
 
-        // 가장 가까운 몬스터로
-        GameObject nearest = GetNearMonster();
-        if (nearest != null)
-        {
-            Vector3 targetPos = nearest.transform.position;
-            targetPos.y = transform.position.y; // y값 고정
-
-            // lerp
-            //transform.position = Vector3.Lerp(transform.position, targetPos, Time.deltaTime * speed);
-            // 균등하게
-            transform.position = Vector3.MoveTowards(transform.position, targetPos, speed * Time.deltaTime);
-        }
-
-        //데미지 타이머
+        // 데미지
         damageTimer += Time.deltaTime;
-        if (damageTimer >= damageInterval)  
+        if (damageTimer >= damageInterval)
         {
-            ApplyDamage();
+            ApplyDamage(pos1, pos2);
             damageTimer = 0f;
         }
 
-    }
-    //주변몬스터 
-    private GameObject GetNearMonster()
-    {
-        GameObject nearest = null;
-        float minDist = float.MaxValue;
-
-        foreach (var monster in monsters)   
+        // 가장 가까운 몬스터 추적
+        if (_mapController != null)
         {
-            if (monster == null) continue;
-
-            float dist = Vector3.Distance(transform.position, monster.transform.position);
-            if (dist < minDist) //최소값 갱신
+            GameObject nearest = Constants.GetNearestObject(transform, _mapController.MonsterController.MonsterSpawner.ActiveMonsters);
+            if (nearest != null)
             {
-                minDist = dist;
-                nearest = monster;
+                Vector3 targetPos = nearest.transform.position;
+                targetPos.y = transform.position.y;
+                transform.position = Vector3.MoveTowards(transform.position, targetPos, speed * Time.deltaTime);
             }
         }
-        return nearest;
     }
 
-    private void ApplyDamage()
+    private void ApplyDamage(Vector3 pos1, Vector3 pos2)
     {
-        foreach (var col in colliders)
+        damageColliders = Physics.OverlapCapsule(pos2, pos1, damageRadius, layer);
+        foreach (var col in damageColliders)
         {
             CharacterModelBase target = col.GetComponent<CharacterModelBase>();
-            target.TakeDamage(damage, null);
-            Debug.Log("데미지 적용!");
+            if (target != null)
+            {
+                target.TakeDamage(damage, null);
+                Debug.Log("데미지 적용!");
+            }
         }
     }
-    void OnDrawGizmosSelected() //실린더 모양 기즈모
-    {
-        // 기즈모 색상 설정
-        Gizmos.color = Color.red;
 
-        // 기즈모의 변환 행렬을 현재 오브젝트에 맞게 설정
-        // 이렇게 하면 기즈모가 오브젝트의 위치, 회전, 스케일을 따라갑니다.
+    private void OnDisable()
+    {
+        GameManager.Instance.PlayerStatManager.OnAreaExtentChange -= SetRadius;
+    }
+
+    public void SetRadius(float radiusMulti)
+    {
+        pullRadius = originPullRadius * radiusMulti;
+        damageRadius = originDamageRadius * radiusMulti;
+        transform.localScale = Vector3.one * pullRadius * 2f;
+    }
+
+    void OnDrawGizmosSelected()
+    {
         Gizmos.matrix = transform.localToWorldMatrix;
 
-        // 원통의 상단과 하단 원 그리기
-        Vector3 top = Vector3.up * height * 0.5f;
-        Vector3 bottom = Vector3.down * height * 0.5f;
-        Gizmos.DrawWireSphere(top, radius);
-        Gizmos.DrawWireSphere(bottom, radius);
+        Vector3 top = Vector3.up * ConstHeight;
+        Vector3 bottom = Vector3.down * ConstHeight;
 
-        // 상단과 하단 원을 잇는 4개의 선 그리기
-        Vector3 forward = Vector3.forward * radius;
-        Vector3 back = Vector3.back * radius;
-        Vector3 right = Vector3.right * radius;
-        Vector3 left = Vector3.left * radius;
+        // 끌어당김 범위 (빨강)
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(top, pullRadius);
+        Gizmos.DrawWireSphere(bottom, pullRadius);
+        Gizmos.DrawLine(top + Vector3.forward * pullRadius, bottom + Vector3.forward * pullRadius);
+        Gizmos.DrawLine(top + Vector3.back * pullRadius, bottom + Vector3.back * pullRadius);
+        Gizmos.DrawLine(top + Vector3.right * pullRadius, bottom + Vector3.right * pullRadius);
+        Gizmos.DrawLine(top + Vector3.left * pullRadius, bottom + Vector3.left * pullRadius);
 
-        Gizmos.DrawLine(top + forward, bottom + forward);
-        Gizmos.DrawLine(top + back, bottom + back);
-        Gizmos.DrawLine(top + right, bottom + right);
-        Gizmos.DrawLine(top + left, bottom + left);
+        // 데미지 범위 (노랑)
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(top, damageRadius);
+        Gizmos.DrawWireSphere(bottom, damageRadius);
+        Gizmos.DrawLine(top + Vector3.forward * damageRadius, bottom + Vector3.forward * damageRadius);
+        Gizmos.DrawLine(top + Vector3.back * damageRadius, bottom + Vector3.back * damageRadius);
+        Gizmos.DrawLine(top + Vector3.right * damageRadius, bottom + Vector3.right * damageRadius);
+        Gizmos.DrawLine(top + Vector3.left * damageRadius, bottom + Vector3.left * damageRadius);
     }
 }

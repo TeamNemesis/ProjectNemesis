@@ -1,15 +1,16 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
 
-public class vortex : PoolableObject
+public class vortex : PoolableObject,IInitializePoolable
 {
     public LayerMask layer;         // 아마 달렸있을 Enemy Layer
     public Collider[] colliders;    // 감지한 Collder배열
+    protected Transform point;
 
     public float radius = 5f;
     public float height = 2f;       // 범위 높이
 
-    protected int ConstHeight = 5;    
+    protected int ConstHeight = 5;
     public float power = 10f;       // 적용할 힘의 세기
 
 
@@ -20,30 +21,42 @@ public class vortex : PoolableObject
         Vector3 pos1 = new Vector3(transform.position.x, transform.position.y - ConstHeight, transform.position.z);
         //캡슐의 맨위 위치
         Vector3 pos2 = new Vector3(transform.position.x, transform.position.y + ConstHeight, transform.position.z);
-        colliders = Physics.OverlapSphere(transform.position, radius, layer);
         colliders = Physics.OverlapCapsule(pos2, pos1, radius, layer);  //실제 범위
-        
-        
+
+
 
         foreach (var col in colliders)
         {
+            MonsterBase monster = col.GetComponent<MonsterBase>();
+
+            if (monster != null)
+            {
+                if (monster.GetMonsterSize() == MonsterSize.BIG)
+                {
+                    continue;
+                }
+            }
             NavMeshAgent agent = col.GetComponent<NavMeshAgent>();
-          
-            // Point자식
-            Transform point = transform.Find("Point");
- 
+
+           
+
             // 이동 방향 계산 (Point의 위치 - 현재 위치)
             Vector3 dir = (point.position - col.transform.position).normalized;
 
-            // 힘 적용
-            agent.Move(dir * Time.deltaTime * power);
+            if (agent != null)
+            {
+
+                // 힘 적용
+                agent.Move(dir * Time.deltaTime * power);
+            }
+
         }
 
     }
 
     protected void SetRadius(float radius)
     {
-        this.radius = radius*GameManager.Instance.PlayerStatManager.playerAreaExtent;
+        this.radius = radius * GameManager.Instance.PlayerStatManager.playerAreaExtent;
         transform.localScale = Vector3.one * radius * 2f;
     }
 
@@ -80,5 +93,11 @@ public class vortex : PoolableObject
         Gizmos.DrawLine(top + back, bottom + back);
         Gizmos.DrawLine(top + right, bottom + right);
         Gizmos.DrawLine(top + left, bottom + left);
+    }
+
+    public virtual void Initialize(object data)
+    {
+        // Point자식
+        point = transform.Find("Point");
     }
 }
