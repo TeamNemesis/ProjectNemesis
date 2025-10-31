@@ -105,6 +105,7 @@ public static class Constants
     public const string TAG_MONSTER = "Monster";
     public const string TAG_BULLET = "Bullet";
     public const string TAG_ENVIRONMENT = "Environment";
+    public const string TAG_ELECTIC = "ElectricMan";
 
     #endregion
 

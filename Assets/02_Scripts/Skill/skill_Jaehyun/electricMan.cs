@@ -36,4 +36,9 @@ public class electricMan : MonoBehaviour
     {
         lastDamageTime.Clear();
     }
+
+    private void OnDisable()
+    {
+        GameManager.Instance.skillManager.playScene.MapController.MonsterController.MonsterSpawner.OnAllWavesCompleted -= ClearDictionary;
+    }
 }
