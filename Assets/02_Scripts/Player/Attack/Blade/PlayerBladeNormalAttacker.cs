@@ -129,13 +129,6 @@ public class PlayerBladeNormalAttacker : PlayerNormalAttacker
         }
     }
 
-    public override void EndAttack()
-    {
-        base.EndAttack();
-        _currentCombo = 0;
-        _waitingForNext = false;
-        _queued = false;
-        Debug.Log("PlayerBladeNormalAttacker.EndAttack: Attack ended and combo reset.");
-    }
+    
     
 }
