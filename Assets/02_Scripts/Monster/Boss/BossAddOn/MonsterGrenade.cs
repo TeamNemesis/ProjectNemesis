@@ -4,15 +4,12 @@ using System.Collections.Specialized;
 using UnityEngine;
 using UnityEngine.Splines.ExtrusionShapes;
 using UnityEngine.UIElements;
-/// <summary>
-/// 플레이어의 유탄공격을 담당하는 클래스
-/// 무기타입에 상관없이 공통으로 사용
-/// </summary>
+
+
 public class MonsterGrenade : PoolableObject
 {
-    public WeaponType WeaponType => throw new NotImplementedException();
 
-    public bool IsAttacking => throw new NotImplementedException();
+    public bool IsAttacking;
 
     public event Action AttackStarted;
     public event Action AttackEnded;
@@ -46,6 +43,11 @@ public class MonsterGrenade : PoolableObject
     [SerializeField] private float smallGrenadeExplosionRadius = 2f;
     [SerializeField] private float smallGrenadeExplosionDamage = 15f;
 
+
+    private void Start()
+    {
+        FireGrenade(transform.position + transform.forward * 5f);
+    }
     public void FireGrenade(Vector3 targetPosition)
     {
         StartCoroutine(LaunchGrenade(targetPosition));
@@ -55,7 +57,6 @@ public class MonsterGrenade : PoolableObject
     {
         GameObject grenade = GameManager.Instance.PoolManager.GetFromPool(grenadeObject, transform.position + Vector3.up * 1.0f, Quaternion.identity);
 
-        // 원래 크기로 복원 (풀에서 재사용 시를 대비)
         grenade.transform.localScale = Vector3.one;
 
         GameObject explodeRange = GameManager.Instance.PoolManager.GetFromPool(explodeCircleObject, targetPos + Vector3.up * 0.1f, Quaternion.Euler(90f, 0f, 0f));
@@ -66,7 +67,6 @@ public class MonsterGrenade : PoolableObject
         }
         StartCoroutine(ParabolaMove(grenade, targetPos));
         yield return new WaitForSeconds(travelTime);
-        GameManager.Instance.PoolManager.ReleaseToPool(explodeRange);
     }
 
     private IEnumerator ParabolaMove(GameObject grenade, Vector3 target)
@@ -127,15 +127,29 @@ public class MonsterGrenade : PoolableObject
     private IEnumerator LaunchSmallGrenade(Vector3 startPos, Vector3 targetPos)
     {
         GameObject smallGrenade = GameManager.Instance.PoolManager.GetFromPool(
-            grenadeObject,  // 같은 프리팹 사용
+            grenadeObject,
             startPos,
             Quaternion.identity
         );
 
         if (smallGrenade == null) yield break;
 
-        // 크기를 작게 설정
         smallGrenade.transform.localScale = Vector3.one * smallGrenadeScale;
+
+        GameObject smallExplodeRange = GameManager.Instance.PoolManager.GetFromPool(
+            explodeCircleObject,
+            targetPos + Vector3.up * 0.1f,
+            Quaternion.Euler(90f, 0f, 0f)
+        );
+
+        if (smallExplodeRange != null)
+        {
+            AttackDecalEffect effect = smallExplodeRange.GetComponent<AttackDecalEffect>();
+            if (effect != null)
+            {
+                effect.Play(smallGrenadeTravelTime, smallGrenadeExplosionRadius);
+            }
+        }
 
         float elapsed = 0f;
 
@@ -144,7 +158,6 @@ public class MonsterGrenade : PoolableObject
             elapsed += Time.deltaTime;
             float t = Mathf.Clamp01(elapsed / smallGrenadeTravelTime);
 
-            // 포물선 이동
             Vector3 flatPos = Vector3.Lerp(startPos, targetPos, t);
             float parabola = 4f * smallGrenadeHeight * (t - t * t);
             flatPos.y += parabola;
@@ -153,10 +166,8 @@ public class MonsterGrenade : PoolableObject
             yield return null;
         }
 
-        // 작은 유탄 폭발
         SmallGrenadeExplode(smallGrenade.transform.position);
 
-        // 풀로 반환하기 전에 원래 크기로 복원
         smallGrenade.transform.localScale = Vector3.one;
         GameManager.Instance.PoolManager.ReleaseToPool(smallGrenade);
     }
