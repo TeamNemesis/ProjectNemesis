@@ -206,18 +206,23 @@ public static class Constants
     #region knockBack
     public const float KNOCKBACK_COOLTIME = 5f;
     public const float KNOCKBACK_POWER = 10f;
-    #endregion
+		#endregion
 
-    #region Util
+		#region localization
+		public const string STRING_Korean = "ko";
+		#endregion
 
-    /// <summary>
-    /// origin과 가장 가까운 List의 요소 반환
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="origin"></param>
-    /// <param name="targetList"></param>
-    /// <returns></returns>
-    public static T GetNearestObject<T>(Transform origin, List<T> targetList)  where T : Component
+
+		#region Util
+
+		/// <summary>
+		/// origin과 가장 가까운 List의 요소 반환
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="origin"></param>
+		/// <param name="targetList"></param>
+		/// <returns></returns>
+		public static T GetNearestObject<T>(Transform origin, List<T> targetList)  where T : Component
     {
         if(targetList == null)
         {
