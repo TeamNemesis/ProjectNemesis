@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 1985181822249743070}
   - component: {fileID: 1972541229979145840}
   - component: {fileID: 5191487766336061827}
+  - component: {fileID: 5619184980065636014}
   - component: {fileID: 3381086347271698201}
   m_Layer: 0
   m_Name: LaserTurret
@@ -164,7 +165,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d533c67e3cc5be4086de5bcbd8b5bfc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxHealth: 50
+  _maxHealth: 100
   _currentHealth: 0
   _moveSpeed: 5
   isStunned: 0
@@ -190,6 +191,18 @@ MonoBehaviour:
   player: {fileID: 0}
   agent: {fileID: 0}
   _target: {fileID: 0}
+--- !u!114 &5619184980065636014
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6109530275278130877}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 725c1c87d9a2e3346bd4c5a3c364f518, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!195 &3381086347271698201
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -200,7 +213,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 0
+  m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
@@ -257,7 +270,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abcdb33f6ac94e04e88a34bbe9b967ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rotationSpeed: 10
+  rotationSpeed: 30
   maxDistance: 1000
   wallLayer:
     serializedVersion: 2
