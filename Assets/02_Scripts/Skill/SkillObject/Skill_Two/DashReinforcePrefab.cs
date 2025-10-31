@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using UnityEngine;
 
 public class DashReinforceData
@@ -15,7 +15,7 @@ public class DashReinforcePrefab : AreaDamageBase, IInitializePoolable
 {
 	public override void ActiveSkill(Transform target)
 	{
-		// È­»ó Àû¿ë
+		// í™”ìƒ ì ìš©
 		DebuffHandler targetDebuffHandler = target.GetComponent<DebuffHandler>();
 		targetDebuffHandler.ApplyDebuff(DebuffHandler.DebuffData.CreateBurn());
 	}
@@ -50,7 +50,7 @@ public class DashReinforcePrefab : AreaDamageBase, IInitializePoolable
 	void OnDrawGizmos()
 	{
 		Gizmos.color = Color.yellow;
-		Gizmos.DrawWireSphere(transform.position, _areaExtent); // ¹İÁö¸§ 5Â¥¸® ¿øÇü Gizmo
+		Gizmos.DrawWireSphere(transform.position, _areaExtent); // ë°˜ì§€ë¦„ 5ì§œë¦¬ ì›í˜• Gizmo
 
 	}
 }

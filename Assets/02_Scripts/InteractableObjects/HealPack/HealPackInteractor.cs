@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections;
 using UnityEngine;
 
@@ -9,8 +9,8 @@ public class HealPackInteractor : RewardInteractableObject
     protected override IEnumerator RewardCoroutine()
     {
         yield return new WaitForSeconds(0.01f);
-        // ÀÌ ºÎºĞ¿¡¼­ PlayerModelÀ» Á÷Á¢Ã£±âº¸´Ù ÀÎÅÍÆäÀÌ½º¸¦ ÅëÇØ
-        // HealÀÌ °¡´ÉÇÑ ´ë»óÀÎÁö È®ÀÎÇÏ´Â °ÍÀÌ ´õ ÁÁÀ» ¼ö ÀÖÀ½
+        // ì´ ë¶€ë¶„ì—ì„œ PlayerModelì„ ì§ì ‘ì°¾ê¸°ë³´ë‹¤ ì¸í„°í˜ì´ìŠ¤ë¥¼ í†µí•´
+        // Healì´ ê°€ëŠ¥í•œ ëŒ€ìƒì¸ì§€ í™•ì¸í•˜ëŠ” ê²ƒì´ ë” ì¢‹ì„ ìˆ˜ ìˆìŒ
         _player.gameObject.GetComponent<PlayerModel>().Heal(50);
         OnRewardGiven?.Invoke();
         GameManager.Instance.PoolManager.ReleaseToPool(gameObject);

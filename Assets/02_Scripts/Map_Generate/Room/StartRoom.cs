@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class StartRoom : Room
 {
@@ -17,7 +17,7 @@ public class StartRoom : Room
     {
         if (_weapons.Length != _rewardSpawnPoints.Length)
         {
-            Debug.LogWarning("weapons¿Í rewardSpawnPointsÀÇ ±æÀÌ°¡ ´Ù¸¨´Ï´Ù.");
+            Debug.LogWarning("weaponsì™€ rewardSpawnPointsì˜ ê¸¸ì´ê°€ ë‹¤ë¦…ë‹ˆë‹¤.");
             return;
         }
 
@@ -31,7 +31,7 @@ public class StartRoom : Room
 
     public override IInteractable[] SpawnReward()
     {
-        // ½ÃÀÛ ¹æÀº º¸»óÀ» »ı¼ºÇÏÁö ¾ÊÀ½
+        // ì‹œì‘ ë°©ì€ ë³´ìƒì„ ìƒì„±í•˜ì§€ ì•ŠìŒ
         return System.Array.Empty<IInteractable>();
     }
 

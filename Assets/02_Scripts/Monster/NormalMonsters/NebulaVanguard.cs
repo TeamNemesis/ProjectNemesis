@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using UnityEngine;
 
 public class NebulaVanguard : MonsterBase
@@ -42,7 +42,7 @@ public class NebulaVanguard : MonsterBase
 
     private void HandleIdle()
     {
-        // ÇÃ·¹ÀÌ¾î¿Í °Å¸®
+        // í”Œë ˆì´ì–´ì™€ ê±°ë¦¬
         float distance = Vector3.Distance(transform.position, _target.position);
         if (distance <= detectionRange && CanSeePlayer())
         {
@@ -76,16 +76,16 @@ public class NebulaVanguard : MonsterBase
 
         if (_target != null && distance <= attackRange)
         {
-            // ¸ó½ºÅÍ ±âÁØ Áß½É À§Ä¡ ¼³Á¤
+            // ëª¬ìŠ¤í„° ê¸°ì¤€ ì¤‘ì‹¬ ìœ„ì¹˜ ì„¤ì •
             Vector3 center = transform.position + transform.forward * (_box_Length / 2f);
 
-            // ¹Ú½ºÀÇ ¹İ Å©±â
+            // ë°•ìŠ¤ì˜ ë°˜ í¬ê¸°
             Vector3 halfExtents = new Vector3(_box_Width / 2f, _box_Height / 2f, _box_Length / 2f);
 
-            // ¹Ú½ºÀÇ È¸Àü (¸ó½ºÅÍ Á¤¸éÀ» ±âÁØÀ¸·Î Á¤·Ä)
+            // ë°•ìŠ¤ì˜ íšŒì „ (ëª¬ìŠ¤í„° ì •ë©´ì„ ê¸°ì¤€ìœ¼ë¡œ ì •ë ¬)
             Quaternion orientation = Quaternion.LookRotation(transform.forward);
 
-            // ¹Ú½º ¿µ¿ª ¾ÈÀÇ Àû Å½»ö
+            // ë°•ìŠ¤ ì˜ì—­ ì•ˆì˜ ì  íƒìƒ‰
             Collider[] hitTarget = Physics.OverlapBox(center, halfExtents, orientation);
 
 
@@ -107,7 +107,7 @@ public class NebulaVanguard : MonsterBase
             yield return new WaitForSeconds(attackDelay);
         }
         _isAttacking = false;
-        baseState = MonsterState.Move; // °ø°İ ÈÄ ´Ù½Ã Ãß°İ »óÅÂ·Î ÀüÈ¯
+        baseState = MonsterState.Move; // ê³µê²© í›„ ë‹¤ì‹œ ì¶”ê²© ìƒíƒœë¡œ ì „í™˜
     }
 
 

@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 [CreateAssetMenu(fileName = "TechSelectPack", menuName = "ScriptableObjects/Reward/RewardDataSO_TechPack")]
 public class RewardDataSO_TechPack : RewardDataSO

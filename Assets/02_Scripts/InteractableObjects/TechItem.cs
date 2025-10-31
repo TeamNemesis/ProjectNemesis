@@ -1,26 +1,26 @@
-using System;
+ï»¿using System;
 using UnityEngine;
 
 
 [RequireComponent(typeof(SkillChoose))]
 public class TechItem : MonoBehaviour
 { 
-    #region ½ºÅ³ ½Àµæ
+    #region ìŠ¤í‚¬ ìŠµë“
 
     private TechSelectPackType _TechCompany;
     /// <summary>
-    /// ½ºÅ³ ½Àµæ
+    /// ìŠ¤í‚¬ ìŠµë“
     /// </summary>
     public void GetSkill(TechSelectPackType packType)
     {
         SkillChoose skillchoose = GetComponent<SkillChoose>();
-        // È¸»ç ÁöÁ¤
+        // íšŒì‚¬ ì§€ì •
         skillchoose.SetSkillCompany(packType);
         skillchoose.SetBtn();
     }
     #endregion
 
-    #region ½ºÅ³ ¾÷±×·¹ÀÌµå
+    #region ìŠ¤í‚¬ ì—…ê·¸ë ˆì´ë“œ
    
 
     public void SkillUpgrade()
@@ -30,7 +30,7 @@ public class TechItem : MonoBehaviour
     }
     #endregion
 
-    #region µ¹¿¬º¯ÀÌ ¾÷±×·¹ÀÌµå
+    #region ëŒì—°ë³€ì´ ì—…ê·¸ë ˆì´ë“œ
 
     public void Mutantupgrade()
     {

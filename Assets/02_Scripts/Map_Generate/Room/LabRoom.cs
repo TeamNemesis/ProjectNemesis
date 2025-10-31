@@ -1,4 +1,4 @@
-public class LabRoom : Room
+﻿public class LabRoom : Room
 {
     public override IInteractable[] SpawnReward()
     {
