@@ -56048,6 +56048,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f88eea1a57520f4b8ee9f12a938d446, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxDistance: 20
+  moveSpeed: 20
+  grappleMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  enemyMask:
+    serializedVersion: 2
+    m_Bits: 1024
+  stopDistance: 1.5
 --- !u!1 &4136843786559950690
 GameObject:
   m_ObjectHideFlags: 0
@@ -78238,7 +78247,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 12
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -88224,6 +88233,7 @@ GameObject:
   - component: {fileID: 2918574612672432105}
   - component: {fileID: 8951883237068818293}
   - component: {fileID: 8951883237068818294}
+  - component: {fileID: 8951883237068818295}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -88248,7 +88258,7 @@ CapsuleCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 1
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Radius: 0.7
   m_Height: 2
@@ -88261,13 +88271,26 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8951883237068818291}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 41a51a813a341274c8ce032b54c0d471, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 60
   damageInterval: 1
+--- !u!114 &8951883237068818295
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8951883237068818291}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d162b0ea6a717b4498f7e091327c421, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isReflecting: 0
 --- !u!1 &8952149779959136548
 GameObject:
   m_ObjectHideFlags: 0
