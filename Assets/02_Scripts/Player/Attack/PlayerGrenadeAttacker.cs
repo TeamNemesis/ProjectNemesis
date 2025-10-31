@@ -12,8 +12,8 @@ public class PlayerGrenadeAttacker : MonoBehaviour, IAttacker
 
     public bool IsAttacking => throw new NotImplementedException();
 
-    public event Action AttackStarted;
-    public event Action AttackEnded;
+    public event Action OnAttackStarted;
+    public event Action OnAttackEnded;
 
     //
     [SerializeField] private GameObject grenadePrefab;

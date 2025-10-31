@@ -158,7 +158,7 @@ public class PlayerInputHandler : MonoBehaviour
             Vector3? target = GetMouseGroundPoint();
             if (target.HasValue)
             {
-                
+                Debug.Log($"유탄 공격 입력받음: {target.Value}");
                 OnGrenadeAttackInput?.Invoke(target.Value);
             }
         }
