@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Localization.Settings;
 
 public class UIManager : MonoBehaviour
 {
@@ -71,9 +70,8 @@ public class UIManager : MonoBehaviour
 				SkillData data = skillBtn.skillData;
 				_skillImage.sprite = data.skillImagePath;
 
-				string locale = LocalizationSettings.SelectedLocale.Identifier.Code;
-				_skillScriptText.text = $"{data.skillIdx}\n" + (locale == "ko" ? data.skillScript : data.skillScriptEn);
-				_skillValueScriptText.text = locale == "ko" ? data.skillValueScript : data.skillValueScriptEn;
+				_skillScriptText.text = $"{data.skillIdx}\n" + (Constants.STRING_Korean == "ko" ? data.skillScript : data.skillScriptEn);
+				_skillValueScriptText.text = Constants.STRING_Korean == "ko" ? data.skillValueScript : data.skillValueScriptEn;
 				_skillLevelText.text = $"{data.skillLevel} / {data.skillMaxLevel}";
 		}
 

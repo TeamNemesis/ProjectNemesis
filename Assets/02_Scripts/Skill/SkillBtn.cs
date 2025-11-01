@@ -40,8 +40,8 @@ public class SkillBtn : PoolableObject
 		{
 				if (_skillScirpt != null && _skillData != null)
 				{
-						string locale = UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocale.Identifier.Code;
-						_skillScirpt.text = locale == "ko" ? _skillData.skillScript : _skillData.skillScriptEn;
+						
+						_skillScirpt.text = Constants.STRING_Korean == "ko" ? _skillData.skillScript : _skillData.skillScriptEn;
 				}
 		}
 
