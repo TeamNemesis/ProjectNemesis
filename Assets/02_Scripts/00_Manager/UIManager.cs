@@ -1,209 +1,172 @@
-using System;
+Ôªøusing System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Localization.Settings;
 
 public class UIManager : MonoBehaviour
 {
-    [SerializeField]
-    private SkillBtn _skillBtnPrefab;
-    [SerializeField]
-    private GameObject _listPanel;
-    #region «ˆ¿Á ∫∏¿Ø Ω∫≈≥ ∏ÆΩ∫∆Æ
+		[SerializeField] private SkillBtn _skillBtnPrefab;
+		[SerializeField] private GameObject _listPanel;
 
-    /// <summary>
-    /// Ω∫≈≥ ¿ÃπÃ¡ˆ
-    /// </summary>
-    [SerializeField]
-    private Image _skillImage;
+		[SerializeField] private Image _skillImage;
+		[SerializeField] private Text _skillScriptText;
+		[SerializeField] private Text _skillValueScriptText;
+		[SerializeField] private Text _skillLevelText;
+		[SerializeField] private Transform _parentContent;
 
-    /// <summary>
-    /// Ω∫≈≥ º≥∏Ì
-    /// </summary>
-    [SerializeField]
-    private Text _skillScriptText;
+		[SerializeField] private GameObject _skillBtnPanel;
+		[SerializeField] private GameObject _parentPanel;
+		[SerializeField] private SkillBtn _skillChooseBtnPrefab;
 
-    /// <summary>
-    /// Ω∫≈≥ ¿˚øÎ ºˆƒ° º≥∏Ì
-    /// </summary>
-    [SerializeField]
-    private Text _skillValueScriptText;
-    
-    /// <summary>
-    /// Ω∫≈≥ ∑π∫ß
-    /// </summary>
-    [SerializeField]
-    private Text _skillLevelText;
+		public event Action onRewardSelect;
 
-    [SerializeField]
-    private Transform _parentContent;
+		/// <summary>
+		/// ÌòÑÏû¨ Î≥¥Ïú† Ïä§ÌÇ¨ Î¶¨Ïä§Ìä∏ÏóêÏÑú ÏÑ†ÌÉùÌïú Î≤ÑÌäº Ï†ïÎ≥¥
+		/// </summary>
+		private SkillBtn _currentSelectedSkillBtn; 
 
-    /// <summary>
-    /// ∫∏ªÛ º±≈√ ¿Ã∫•∆Æ
-    /// </summary>
-    public event Action onRewardSelect;
-
-    public void InitializeManager()
-    {
-        if (_skillBtnPrefab == null)
-        {
-            _skillBtnPrefab = Resources.Load<SkillBtn>("Prefabs/Skill/SkillBtnPrefab");
-        }
-
-        if (_skillChooseBtnPrefab == null)
-        {
-            _skillChooseBtnPrefab = Resources.Load<SkillBtn>("Prefabs/Skill/SkillChoosePrefab");
-        }
-
-    }
-
-    /// <summary>
-    /// «ˆ¿Á ∫∏¿Ø ±‚º˙ ∏Ò∑œ ∏ÆΩ∫∆Æ ¡¶¿€
-    /// </summary>
-    public void MakeCurrentSkillList()
-    {
-
-        _listPanel.SetActive(true);
-        List<SkillData> list = GameManager.Instance.skillManager.GetChooseSkillList();
-
-        // ∫∏¿Ø ±‚º˙¿Ã æ¯¥Ÿ∏È ∏Æ≈œ
-        if (list == null)
-        {
-            return;
-        }
-
-        foreach (SkillData skill in list)
-        {
-            MakeSkillBtn(skill, _parentContent);
-        }
-    }
+		/// <summary>
+		/// ÌòÑÏû¨ ÌôúÏÑ±Ìôî ÎêòÏñ¥ÏûàÎäî Ïä§ÌÇ¨ Î≤ÑÌäº Î¶¨Ïä§Ìä∏
+		/// </summary>
+		private List<SkillBtn> _activeChooseButtons = new List<SkillBtn>();
 
 
-    /// <summary>
-    /// ∏ÆΩ∫∆Æ πˆ∆∞ ª˝º∫
-    /// </summary>
-    /// <param name="skillData"></param>
-    /// <param name="parentContent"></param>
-    public void MakeSkillBtn(SkillData skillData, Transform parentContent)
-    {
+		public void InitializeManager()
+		{
+				if (_skillBtnPrefab == null)
+						_skillBtnPrefab = Resources.Load<SkillBtn>("Prefabs/Skill/SkillBtnPrefab");
+
+				if (_skillChooseBtnPrefab == null)
+						_skillChooseBtnPrefab = Resources.Load<SkillBtn>("Prefabs/Skill/SkillChoosePrefab");
+		}
+
+		public void MakeCurrentSkillList()
+		{
+				_listPanel.SetActive(true);
+				List<SkillData> list = GameManager.Instance.skillManager.GetChooseSkillList();
+				if (list == null) return;
+
+				foreach (SkillData skill in list)
+				{
+						MakeSkillBtn(skill, _parentContent);
+				}
+		}
+
+		public void MakeSkillBtn(SkillData skillData, Transform parentContent)
+		{
+				SkillBtn skillBtn = GameManager.Instance.PoolManager
+						.GetFromPool(_skillBtnPrefab, _skillBtnPrefab.transform.position, _skillBtnPrefab.transform.rotation, parentContent)
+						.GetComponent<SkillBtn>();
+
+				skillBtn.SetSkillInfo(skillData);
+				skillBtn.GetComponent<Button>().onClick.AddListener(() => OnClick_SkillListBtn(skillBtn));
+		}
+
+		public void OnClick_SkillListBtn(SkillBtn skillBtn)
+		{
+				// ÏÑ†ÌÉùÎêú Î≤ÑÌäº Ï†ÄÏû•
+				_currentSelectedSkillBtn = skillBtn; 
+
+				SkillData data = skillBtn.skillData;
+				_skillImage.sprite = data.skillImagePath;
+
+				string locale = LocalizationSettings.SelectedLocale.Identifier.Code;
+				_skillScriptText.text = $"{data.skillIdx}\n" + (locale == "ko" ? data.skillScript : data.skillScriptEn);
+				_skillValueScriptText.text = locale == "ko" ? data.skillValueScript : data.skillValueScriptEn;
+				_skillLevelText.text = $"{data.skillLevel} / {data.skillMaxLevel}";
+		}
+
+		/// <summary>
+		/// Ïñ∏Ïñ¥ Î≥ÄÍ≤Ω Ïãú UI Í∞±Ïã†
+		/// </summary>
+		public void RefreshCurrentSkillUI() 
+		{
+				if (_currentSelectedSkillBtn != null)
+				{
+						OnClick_SkillListBtn(_currentSelectedSkillBtn);
+				}
+		}
+
+		public void OnClick_ListExitBtn()
+		{
+				foreach (Transform child in _parentContent)
+				{
+						PoolableObject childPool = child.GetComponent<PoolableObject>();
+						if (childPool != null)
+						{
+								SkillBtn skillBtn = childPool.GetComponent<SkillBtn>();
+								if (skillBtn != null) skillBtn.ReleaseObject();
+								GameManager.Instance.PoolManager.ReleaseToPoolByInterface(childPool);
+						}
+				}
+		}
+
+		public void SetActiveSkillBtnPanel(bool isActive)
+		{
+				_skillBtnPanel.SetActive(isActive);
+				if (!isActive)
+						onRewardSelect?.Invoke();
+		}
 
 
-        SkillBtn skillBtn = GameManager.Instance.PoolManager.GetFromPool(_skillBtnPrefab, _skillBtnPrefab.transform.position, _skillBtnPrefab.transform.rotation, parentContent).GetComponent<SkillBtn>();
-        skillBtn.SetSkillInfo(skillData);
-        skillBtn.GetComponent<Button>().onClick.AddListener(() => OnClick_SkillListBtn(skillBtn));
+		public SkillBtn MakeSkillBtn()
+		{
+				SkillBtn skillBtn = GameManager.Instance.PoolManager
+						.GetFromPool(_skillChooseBtnPrefab, Vector3.zero, _skillChooseBtnPrefab.transform.rotation, _parentPanel.transform)
+						.GetComponent<SkillBtn>();
 
-    }
+				_activeChooseButtons.Add(skillBtn);
+				return skillBtn;
+		}
 
-    public void OnClick_SkillListBtn(SkillBtn skillBtn)
-    {
-        _skillImage.sprite = skillBtn.skillData.skillImagePath;
-        _skillScriptText.text = skillBtn.skillData.skillIdx.ToString() + "\n" + skillBtn.skillData.skillScript;
-        _skillValueScriptText.text = skillBtn.skillData.skillValueScript;
-        _skillLevelText.text = skillBtn.skillData.skillLevel.ToString() + " / " + skillBtn.skillData.skillMaxLevel.ToString();
-    }
-
-    /// <summary>
-    /// «ˆ¿Á º“¡ˆ ∞≥ºˆ ∏ÆΩ∫∆Æ√¢ ¿⁄Ωƒ ø¿∫Í¡ß∆Æ ∆ƒ±´øÎ
-    /// </summary>
-    public void OnClick_ListExitBtn()
-    {
-        foreach (Transform child in _parentContent.transform)
-        {
-            PoolableObject childPool = child.GetComponent<PoolableObject>();
-            if (childPool != null)
-            {
-                SkillBtn skillBtn = childPool.GetComponent<SkillBtn>();
-                if (skillBtn != null)
-                {
-                    skillBtn.ReleaseObject();
-                }
-                GameManager.Instance.PoolManager.ReleaseToPoolByInterface(childPool);
-            }
-        }
-    }
-    #endregion
+		/// <summary>
+		/// Î≤ÑÌäº ÌÖçÏä§Ìä∏ Í∞±Ïã†
+		/// </summary>
+		public void RefreshAllChooseButtons()
+		{
+				foreach (SkillBtn button in _activeChooseButtons)
+				{
+						button.RefreshLanguage(); 
+				}
+		}
 
 
-    #region Ω∫≈≥ º±≈√ 
-    [SerializeField]
-    private GameObject _skillBtnPanel;
-    [SerializeField]
-    private GameObject _parentPanel;
-    [SerializeField]
-    private SkillBtn _skillChooseBtnPrefab;
+		public void DestroyChildObject(Transform parentObject)
+		{
+				Transform[] children = new Transform[parentObject.childCount];
+				for (int i = 0; i < parentObject.childCount; i++)
+						children[i] = parentObject.GetChild(i);
 
-    /// <summary>
-    /// ∫∏ªÛ√¢ »∞º∫»≠/∫Ò»∞º∫»≠
-    /// </summary>
-    /// <param name="isActive"></param>
-    public void SetActiveSkillBtnPanel(bool isActive)
-    {
-        // ∫∏ªÛ√¢ »∞º∫»≠ ªÛ≈¬
-        _skillBtnPanel.SetActive(isActive);
+				foreach (Transform child in children)
+				{
+						PoolableObject childPool = child.GetComponent<PoolableObject>();
+						if (childPool != null)
+						{
+								SkillBtn skillBtn = childPool.GetComponent<SkillBtn>();
+								if (skillBtn != null) skillBtn.ReleaseObject();
+								GameManager.Instance.PoolManager.ReleaseToPoolByInterface(childPool);
+						}
+				}
+		}
 
-        //∫∏ªÛ√¢¿Ã ≤®¡ˆ∏È ∫∏ªÛ º±≈√ ¿Ã∫•∆Æ πﬂµø
-        if(isActive == false)
-        {
-            onRewardSelect?.Invoke();
-        }
-    }
+		public void OnClickListExitBtn(Transform content)
+		{
+				Transform[] children = new Transform[content.childCount];
+				for (int i = 0; i < content.childCount; i++)
+						children[i] = content.GetChild(i);
 
-    public SkillBtn MakeSkillBtn()
-    {
-        SkillBtn skillBtn = GameManager.Instance.PoolManager.GetFromPool(_skillChooseBtnPrefab, Vector3.zero, _skillChooseBtnPrefab.transform.rotation, _parentPanel.transform).GetComponent<SkillBtn>();
-        
-        return skillBtn;
-    }
+				foreach (Transform child in children)
+				{
+						PoolableObject childPool = child.GetComponent<PoolableObject>();
+						if (childPool != null)
+						{
+								SkillBtn skillBtn = childPool.GetComponent<SkillBtn>();
+								if (skillBtn != null) skillBtn.ReleaseObject();
+								GameManager.Instance.PoolManager.ReleaseToPoolByInterface(childPool);
+						}
+				}
 
-
-    #endregion
-    public void DestroyChildObject(Transform parentObject)
-    {
-        Transform[] children = new Transform[parentObject.childCount];
-        for (int i = 0; i < parentObject.childCount; i++)
-        {
-            children[i] = parentObject.GetChild(i);
-        }
-
-        foreach (Transform child in children)
-        {
-            PoolableObject childPool = child.GetComponent<PoolableObject>();
-            if (childPool != null)
-            {
-                SkillBtn skillBtn = childPool.GetComponent<SkillBtn>();
-                if (skillBtn != null)
-                {
-                    skillBtn.ReleaseObject();
-                }
-                GameManager.Instance.PoolManager.ReleaseToPoolByInterface(childPool);
-            }
-        }
-
-    }
-
-    public void OnClickListExitBtn(Transform content)
-    {
-        Transform[] children = new Transform[content.childCount];
-        for (int i = 0; i < content.childCount; i++)
-        {
-            children[i] = content.GetChild(i);
-        }
-        foreach (Transform child in children)
-        {
-            PoolableObject childPool = child.GetComponent<PoolableObject>();
-            Debug.Log(childPool == null);
-            if (childPool != null)
-            {
-                SkillBtn skillBtn = childPool.GetComponent<SkillBtn>();
-                if(skillBtn != null)
-                {
-                    skillBtn.ReleaseObject();
-                }
-                GameManager.Instance.PoolManager.ReleaseToPoolByInterface(childPool);
-            }
-        }
-
-    _listPanel.SetActive(false);
-    }
-
+				_listPanel.SetActive(false);
+		}
 }
