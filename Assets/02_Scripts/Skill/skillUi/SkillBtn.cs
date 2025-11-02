@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Localization;
 using UnityEngine.UI;
 
 public class SkillBtn : PoolableObject, IPointerEnterHandler, IPointerExitHandler
@@ -47,7 +48,8 @@ public class SkillBtn : PoolableObject, IPointerEnterHandler, IPointerExitHandle
 		{
 				if (_skillScirpt != null && _skillData != null)
 				{
-						_skillScirpt.text = Constants.STRING_Korean == "ko" ? _skillData.skillScript : _skillData.skillScriptEn;
+						string locale = UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocale.Identifier.Code;
+						_skillScirpt.text = locale == "ko" ? _skillData.skillScript : _skillData.skillScriptEn;
 				}
 		}
 

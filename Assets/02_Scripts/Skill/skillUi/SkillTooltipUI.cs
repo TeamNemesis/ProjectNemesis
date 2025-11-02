@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Localization.Settings;
 
 public class SkillTooltipUI : PoolableObject
 {
@@ -20,21 +21,22 @@ public class SkillTooltipUI : PoolableObject
 
 		public void RefreshLanguage()
     {
+						string locale = LocalizationSettings.SelectedLocale.Identifier.Code;
         if (_keywordText != null && _skillTooltipData != null)
 				{
-						_keywordText.text = Constants.STRING_Korean == "ko" ? _skillTooltipData.keyword : _skillTooltipData.keywordEN;
+						_keywordText.text = locale == "ko" ? _skillTooltipData.keyword : _skillTooltipData.keywordEN;
 				}
 
 #if UNITY_STANDALONE_WIN
 				if (_scriptText != null && _skillTooltipData != null)
 				{
-						_scriptText.text = Constants.STRING_Korean == "ko" ? _skillTooltipData.PCScript : _skillTooltipData.PCScriptEN;
+						_scriptText.text = locale == "ko" ? _skillTooltipData.PCScript : _skillTooltipData.PCScriptEN;
 				}
 #elif UNITY_ANDROID
 
 				if (_scriptText != null && _skillTooltipData != null)
 				{
-						_scriptText.text = Constants.STRING_Korean == "ko" ? _skillTooltipData.mobileScript : _skillTooltipData.mobileScriptEN;
+						_scriptText.text = locale == "ko" ? _skillTooltipData.mobileScript : _skillTooltipData.mobileScriptEN;
 				}
 #endif
 		}

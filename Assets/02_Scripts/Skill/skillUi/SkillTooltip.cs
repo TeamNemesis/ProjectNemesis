@@ -66,23 +66,43 @@ public class SkillTooltip : MonoBehaviour
 				}
 
 		}
-		
+
 		/// <summary>
 		/// 스킬 툴팁 UI 생성
 		/// </summary>
 		/// <param name="skillData"></param>
 		public void ShowTooltip(SkillData skillData)
 		{
+				if (string.IsNullOrEmpty(skillData.skillTag)) return;
+
 				string[] skilltags = skillData.skillTag.Split(';');
 
-				for(int i = 0; i < skilltags.Length;i++) 
+				for (int i = 0; i < skilltags.Length; i++)
 				{
-						SkillTooltipUI skillTooltipObj = GameManager.Instance.PoolManager.GetFromPool(_skillTooltipUIPrefab, Vector3.zero, Quaternion.identity, transform).GetComponent<SkillTooltipUI>();
-						Debug.LogWarning(_skillTooltipKeywords[skilltags[i]]);
-						skillTooltipObj.SetTooltipData(_skillTooltipKeywords[skilltags[i]]);
-						_currentUIList.Add(skillTooltipObj);
+						string tag = skilltags[i].Trim();
+
+						// 빈 태그 무시
+						if (string.IsNullOrEmpty(tag)) continue;
+
+						// 키 존재 여부 확인
+						if (_skillTooltipKeywords.TryGetValue(tag, out var tooltipData))
+						{
+								SkillTooltipUI skillTooltipObj = GameManager.Instance.PoolManager
+										.GetFromPool(_skillTooltipUIPrefab, Vector3.zero, Quaternion.identity, transform)
+										.GetComponent<SkillTooltipUI>();
+
+								skillTooltipObj.SetTooltipData(tooltipData);
+								_currentUIList.Add(skillTooltipObj);
+
+								Debug.LogWarning($"툴팁 생성됨: {tag}");
+						}
+						else
+						{
+								Debug.LogWarning($"툴팁 키워드 없음: '{tag}'");
+						}
 				}
 		}
+
 
 		public void ReleaseCurrentTooltip()
 		{
