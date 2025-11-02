@@ -19,7 +19,7 @@ public class UIManager : MonoBehaviour
 		[SerializeField] private SkillBtn _skillChooseBtnPrefab;
 
 		public event Action onRewardSelect;
-
+		#region 스킬 리스트
 		/// <summary>
 		/// 현재 보유 스킬 리스트에서 선택한 버튼 정보
 		/// </summary>
@@ -30,6 +30,9 @@ public class UIManager : MonoBehaviour
 		/// </summary>
 		private List<SkillBtn> _activeChooseButtons = new List<SkillBtn>();
 
+		[SerializeField]
+		private SkillTooltip _skillTooltip;
+		public SkillTooltip skillTooltip { get { return _skillTooltip; } }
 
 		public void InitializeManager()
 		{
@@ -38,6 +41,8 @@ public class UIManager : MonoBehaviour
 
 				if (_skillChooseBtnPrefab == null)
 						_skillChooseBtnPrefab = Resources.Load<SkillBtn>("Prefabs/Skill/SkillChoosePrefab");
+
+				_skillTooltip.Initialize();
 		}
 
 		public void MakeCurrentSkillList()
@@ -74,7 +79,6 @@ public class UIManager : MonoBehaviour
 				_skillValueScriptText.text = Constants.STRING_Korean == "ko" ? data.skillValueScript : data.skillValueScriptEn;
 				_skillLevelText.text = $"{data.skillLevel} / {data.skillMaxLevel}";
 		}
-
 		/// <summary>
 		/// 언어 변경 시 UI 갱신
 		/// </summary>
@@ -99,6 +103,8 @@ public class UIManager : MonoBehaviour
 						}
 				}
 		}
+		#endregion
+
 
 		public void SetActiveSkillBtnPanel(bool isActive)
 		{
@@ -107,7 +113,7 @@ public class UIManager : MonoBehaviour
 						onRewardSelect?.Invoke();
 		}
 
-
+		#region skill choose
 		public SkillBtn MakeSkillBtn()
 		{
 				SkillBtn skillBtn = GameManager.Instance.PoolManager
@@ -167,4 +173,7 @@ public class UIManager : MonoBehaviour
 
 				_listPanel.SetActive(false);
 		}
+		#endregion
+
+	
 }
