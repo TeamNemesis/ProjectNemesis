@@ -414,7 +414,27 @@ public class PlayerStatManager : MonoBehaviour
     }
     #endregion
 
-    
+    /// <summary>
+    /// 플레이어 부활 여부
+    /// </summary>
+    private bool _playerRevive;
+    public bool playerRevive { get { return _playerRevive; } }
+    public void SetPlayerRevive(bool playerRevive)
+    {
+        _playerRevive = playerRevive;
+    }
+
+    /// <summary>
+    /// 플레이어 자동 회복
+    /// </summary>
+    private int _playerRestore;
+    public int playerRestore { get { return _playerRestore; } } 
+    public void SetPlayerRestore(int playerRestore)
+    {
+        _playerRestore += playerRestore;
+    }
+
+
 
     public void TakeDamage(WeaponType weaponType,ATTACKTYPE attackType,Transform monster, Transform attackerTransform = null)
     {

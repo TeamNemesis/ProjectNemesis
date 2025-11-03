@@ -7,7 +7,7 @@ using UnityEngine;
 public class PlayerDashState : PlayerStateBase
 {
     float _dashDuration = 0.5f; // 기본 fallback duration
-    float _dashDistance = 4f;   // 대시 거리 (예시)
+    float _dashDistance;   // 대시 거리 (예시)
 
     bool _subscribed = false;
 
@@ -24,7 +24,7 @@ public class PlayerDashState : PlayerStateBase
 
     public void SetDashDistance(float distanceMulti)
     {
-        _dashDistance = GameManager.Instance.PlayerStatManager.playerDashDistance * GameManager.Instance.PlayerStatManager.playerDashDistanceMulti;
+        _dashDistance = GameManager.Instance.PlayerStatManager.playerDashDistance * distanceMulti;
     }
 
     public override void Enter()
