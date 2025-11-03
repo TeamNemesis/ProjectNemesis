@@ -236,6 +236,8 @@ public class Player : MonoBehaviour
         // 1) 일반 공격 입력 처리
         if (_normalAttackPressed && TryConsumeNormalAttack())
         {
+            
+
             if (_normalAttacker != null && !IsDashing && !_isSpecialAttacking)
             {
                 bool accepted = false;
