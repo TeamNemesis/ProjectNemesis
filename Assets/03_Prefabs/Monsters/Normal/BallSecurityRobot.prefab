@@ -147,7 +147,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd942227042c3604fae64d06c0343c77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxHealth: 100
+  _maxHealth: 30
   _currentHealth: 0
   _moveSpeed: 5
   isStunned: 0
@@ -157,7 +157,7 @@ MonoBehaviour:
   isDead: 0
   debuffHandler: {fileID: 0}
   maxEliteHealth: 0
-  attackDamage: 10
+  attackDamage: 15
   attackRange: 2
   detectionRange: 100
   attackDelay: 0.5

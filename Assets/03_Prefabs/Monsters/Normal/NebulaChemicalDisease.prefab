@@ -235,7 +235,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7faddec5a41790f4eadf6c07d91e04c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxHealth: 100
+  _maxHealth: 120
   _currentHealth: 0
   _moveSpeed: 5
   isStunned: 0
@@ -249,10 +249,14 @@ MonoBehaviour:
   attackRange: 15
   detectionRange: 100
   attackDelay: 3
-  originalSpeed: 10
+  originalSpeed: 3
   targetTag: Player
   monsterSize: 0
   cost: 6
+  monsterRigidbody: {fileID: 0}
+  monsterCollider: {fileID: 0}
+  _isAttacking: 0
+  baseState: 0
   _knockBackDamage: 0
   player: {fileID: 0}
   agent: {fileID: 0}
@@ -260,10 +264,9 @@ MonoBehaviour:
   _poisonFieldDuration: 5
   _poisonFieldRadius: 3
   _poisonFieldDelay: 2
-  _isAttacking: 0
   poisonFieldPrefab: {fileID: 294633856658633526, guid: c6fc3eaefac9ff8438430d7b62ef1a5e, type: 3}
   attackDecalPrefab: {fileID: 4171473842588414540, guid: e1cdcf7ba7eac0445a237bf39c1ee586, type: 3}
-  currentState: 0
+  strayBullet: {fileID: 0}
 --- !u!195 &6429540665350499895
 NavMeshAgent:
   m_ObjectHideFlags: 0

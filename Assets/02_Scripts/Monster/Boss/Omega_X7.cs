@@ -48,35 +48,11 @@ public class Omega_X7 : MonsterBase
 
     [SerializeField] private MonsterGrenade monsterGrenade;
 
-    private void Start()
-    {
-        Initialize();
-    }
-
     public override void Initialize()
     {
         base.Initialize();
 
-        // MonsterGrenade 컴포넌트 찾기
         monsterGrenade = GetComponentInChildren<MonsterGrenade>();
-
-        if (monsterGrenade == null)
-        {
-            Debug.LogError($"[Omega_X7] MonsterGrenade component not found in children! GameObject: {gameObject.name}");
-
-            // 모든 자식 오브젝트 출력
-            Transform[] children = GetComponentsInChildren<Transform>();
-            Debug.Log($"[Omega_X7] Total children count: {children.Length}");
-            foreach (Transform child in children)
-            {
-                MonsterGrenade mg = child.GetComponent<MonsterGrenade>();
-                Debug.Log($"[Omega_X7] Child: {child.name}, Has MonsterGrenade: {mg != null}");
-            }
-        }
-        else
-        {
-            Debug.Log($"[Omega_X7] MonsterGrenade found successfully on GameObject: {monsterGrenade.gameObject.name}");
-        }
     }
 
     private void Update()
@@ -102,7 +78,6 @@ public class Omega_X7 : MonsterBase
 
     private void HandleIdle()
     {
-        // 플레이어와 거리
         float distance = Vector3.Distance(transform.position, _target.position);
         if (distance <= attackRange && CanSeePlayer())
         {
@@ -115,120 +90,66 @@ public class Omega_X7 : MonsterBase
     {
         _isAttacking = true;
 
-        // 터렛 스폰 위치 계산 (본체 기준 상대 좌표)
         Vector3 leftBottomSpawnPos = transform.position + new Vector3(-15, 0, -15);
         Vector3 rightBottomSpawnPos = transform.position + new Vector3(15, 0, -15);
         Vector3 upSpawnPos = transform.position + new Vector3(0, 0, 15);
 
-        // 왼쪽 아래 터렛 스폰
-        GameObject leftBottomTurretObj = GameManager.Instance.PoolManager.GetFromPool(
-            laserTurretPrefab,
-            leftBottomSpawnPos,
-            Quaternion.identity
-        );
+        GameManager.Instance.PoolManager.GetFromPool(laserTurretPrefab, leftBottomSpawnPos, Quaternion.identity);
+        GameManager.Instance.PoolManager.GetFromPool(laserTurretPrefab, rightBottomSpawnPos, Quaternion.identity);
+        GameManager.Instance.PoolManager.GetFromPool(laserTurretPrefab, upSpawnPos, Quaternion.identity);
 
-        // 오른쪽 아래 터렛 스폰
-        GameObject rightBottomTurretObj = GameManager.Instance.PoolManager.GetFromPool(
-            laserTurretPrefab,
-            rightBottomSpawnPos,
-            Quaternion.identity
-        );
-
-        // 위쪽 터렛 스폰
-        GameObject upTurretObj = GameManager.Instance.PoolManager.GetFromPool(
-            laserTurretPrefab,
-            upSpawnPos,
-            Quaternion.identity
-        );
-
-        // 쿨타임 리셋
         laserTurretSpawnCoolTime = 30f;
-
         _isAttacking = false;
 
-        yield return null; // 코루틴 형식 유지
+        yield return null;
     }
     #endregion
 
     #region 아이스 탱크 스폰
     private IEnumerator SpawnIceTank()
     {
-        // 아이스 탱크 스폰 시작
         _isIceTankSpawning = true;
         bool previousAttackingState = _isAttacking;
         _isAttacking = true;
 
-        // 아이스 탱크 스폰 위치 계산
         Vector3 leftTopSpawnPos = transform.position + new Vector3(-15, 0, 15);
         Vector3 rightTopSpawnPos = transform.position + new Vector3(15, 0, 15);
         Vector3 bottomSpawnPos = transform.position + new Vector3(0, 0, -15);
 
-        // 아이스 탱크 스폰 및 리스트에 저장
         List<GameObject> spawnedIceTanks = new List<GameObject>();
+        spawnedIceTanks.Add(GameManager.Instance.PoolManager.GetFromPool(iceTankPrefab, leftTopSpawnPos, Quaternion.identity));
+        spawnedIceTanks.Add(GameManager.Instance.PoolManager.GetFromPool(iceTankPrefab, rightTopSpawnPos, Quaternion.identity));
+        spawnedIceTanks.Add(GameManager.Instance.PoolManager.GetFromPool(iceTankPrefab, bottomSpawnPos, Quaternion.identity));
 
-        GameObject leftTopIceTank = GameManager.Instance.PoolManager.GetFromPool(
-            iceTankPrefab,
-            leftTopSpawnPos,
-            Quaternion.identity
-        );
-        spawnedIceTanks.Add(leftTopIceTank);
-
-        GameObject rightTopIceTank = GameManager.Instance.PoolManager.GetFromPool(
-            iceTankPrefab,
-            rightTopSpawnPos,
-            Quaternion.identity
-        );
-        spawnedIceTanks.Add(rightTopIceTank);
-
-        GameObject bottomIceTank = GameManager.Instance.PoolManager.GetFromPool(
-            iceTankPrefab,
-            bottomSpawnPos,
-            Quaternion.identity
-        );
-        spawnedIceTanks.Add(bottomIceTank);
-
-        // 10초 대기
         yield return new WaitForSeconds(10f);
 
-        // 10초 후 남아있는 아이스 탱크 개수 확인
         int survivingIceTankCount = 0;
         foreach (GameObject iceTank in spawnedIceTanks)
         {
             if (iceTank != null && iceTank.activeInHierarchy)
             {
-                // 남아있는 탱크는 풀로 반환
                 GameManager.Instance.PoolManager.ReleaseToPool(iceTank);
                 survivingIceTankCount++;
             }
         }
 
-        // 생존한 아이스 탱크 수만큼 보스 데미지 영구 증가 (각 30%)
         if (survivingIceTankCount > 0)
         {
             float damageMultiplier = 1f + (survivingIceTankCount * 0.3f);
             shotgunDamage *= damageMultiplier;
 
-            // 유탄 데미지도 증가
             if (monsterGrenade != null)
             {
                 monsterGrenade.IncreaseDamage(damageMultiplier);
             }
-
-            Debug.Log($"[Omega_X7] {survivingIceTankCount} ice tanks survived. Damage multiplier: {damageMultiplier}x");
         }
 
         _isAttacking = previousAttackingState;
-        _isIceTankSpawning = false; // 아이스 탱크 스폰 완료
+        _isIceTankSpawning = false;
 
-        // 아이스 탱크 스폰 완료 후 유탄 발사 패턴 시작 (15초마다 반복)
-        Debug.Log($"[Omega_X7] Attempting to start grenade pattern. monsterGrenade is null: {monsterGrenade == null}");
         if (monsterGrenade != null)
         {
             monsterGrenade.StartGrenadePattern();
-        }
-        else
-        {
-            Debug.LogError("[Omega_X7] Cannot start grenade pattern - monsterGrenade is null!");
         }
     }
     #endregion
@@ -238,7 +159,6 @@ public class Omega_X7 : MonsterBase
     {
         _isShotgunAttacking = true;
 
-        // 플레이어 방향 계산
         if (_target == null)
         {
             _isShotgunAttacking = false;
@@ -253,120 +173,43 @@ public class Omega_X7 : MonsterBase
         ).normalized;
         Quaternion lookRotation = Quaternion.LookRotation(directionToPlayer);
 
-        // 샷건 범위 표시 프리팹 생성 (본체 크기의 절반만큼 앞)
         float forwardOffset = transform.localScale.z / 2f;
         Vector3 spawnPos = transform.position + directionToPlayer * forwardOffset;
-        spawnPos.y = 0.1f; // Y 좌표 고정
+        spawnPos.y = 0.1f;
 
-        GameObject decalObj = GameManager.Instance.PoolManager.GetFromPool(
-            shotgunDecalPrefab,
-            spawnPos,
-            lookRotation
-        );
-
+        GameObject decalObj = GameManager.Instance.PoolManager.GetFromPool(shotgunDecalPrefab, spawnPos, lookRotation);
         ShotgunDecalEffect decalEffect = decalObj.GetComponent<ShotgunDecalEffect>();
         if (decalEffect != null)
         {
             decalEffect.Play();
         }
 
-        // 2초 대기 (경고 시간)
         yield return new WaitForSeconds(shotgunWarningDuration);
 
-        // 샷건 이펙트 재생
         PlayShotgunEffect();
-
-        // 샷건 공격 실행 (히트스캔) - 같은 위치에서
         PerformShotgunHitscan(spawnPos, directionToPlayer);
 
-        // 쿨타임 리셋
         shotgunttackCoolTime = 5f;
-
         _isShotgunAttacking = false;
     }
 
     private void PlayShotgunEffect()
     {
-        if (shotgunEffectPrefab == null)
-        {
-            Debug.LogWarning("[Omega_X7] Shotgun effect prefab is not assigned!");
-            return;
-        }
-
-        // shotgunEffectPos1에서 이펙트 재생
-        if (shotgunEffectPos1 != null)
-        {
-            GameObject effect1 = GameManager.Instance.PoolManager.GetFromPool(
-                shotgunEffectPrefab,
-                shotgunEffectPos1.position,
-                shotgunEffectPos1.rotation
-            );
-
-            if (effect1 != null)
-            {
-                ParticleSystem ps1 = effect1.GetComponent<ParticleSystem>();
-                if (ps1 != null)
-                {
-                    ps1.Play();
-                    // 파티클 재생 후 풀로 반환
-                    StartCoroutine(ReturnEffectToPool(effect1, ps1.main.duration + ps1.main.startLifetime.constantMax));
-                }
-                else
-                {
-                    StartCoroutine(ReturnEffectToPool(effect1, 2f));
-                }
-            }
-        }
-
-        // shotgunEffectPos2에서 이펙트 재생
-        if (shotgunEffectPos2 != null)
-        {
-            GameObject effect2 = GameManager.Instance.PoolManager.GetFromPool(
-                shotgunEffectPrefab,
-                shotgunEffectPos2.position,
-                shotgunEffectPos2.rotation
-            );
-
-            if (effect2 != null)
-            {
-                ParticleSystem ps2 = effect2.GetComponent<ParticleSystem>();
-                if (ps2 != null)
-                {
-                    ps2.Play();
-                    // 파티클 재생 후 풀로 반환
-                    StartCoroutine(ReturnEffectToPool(effect2, ps2.main.duration + ps2.main.startLifetime.constantMax));
-                }
-                else
-                {
-                    StartCoroutine(ReturnEffectToPool(effect2, 2f));
-                }
-            }
-        }
-    }
-
-    private IEnumerator ReturnEffectToPool(GameObject effect, float delay)
-    {
-        yield return new WaitForSeconds(delay);
-
-        if (effect != null)
-        {
-            GameManager.Instance.PoolManager.ReleaseToPool(effect);
-        }
+        // 간단하게 한 줄로!
+        if (shotgunEffectPos1 != null) GetEffectFromPool(shotgunEffectPrefab, shotgunEffectPos1);
+        if (shotgunEffectPos2 != null) GetEffectFromPool(shotgunEffectPrefab, shotgunEffectPos2);
     }
 
     private void PerformShotgunHitscan(Vector3 attackOrigin, Vector3 attackDirection)
     {
-        // 플레이어가 범위 내에 있는지 확인
         if (_target == null) return;
 
         Vector3 directionToTarget = (_target.position - attackOrigin).normalized;
         float angleToTarget = Vector3.Angle(attackDirection, directionToTarget);
         float distanceToTarget = Vector3.Distance(attackOrigin, _target.position);
 
-        // 각도와 거리 체크
         if (angleToTarget <= shotgunAngle / 2f && distanceToTarget <= shotgunRange)
         {
-            // 플레이어에게 데미지
             PlayerHealth playerHealth = _target.GetComponent<PlayerHealth>();
             if (playerHealth != null)
             {
@@ -386,18 +229,13 @@ public class Omega_X7 : MonsterBase
 
         while (!isDead && attackCount < maxAttacks)
         {
-            // 본체의 뒤쪽 방향 계산 (forward의 반대 방향)
             Vector3 backwardDirection = -transform.forward;
-
-            // 뒤쪽에서 좌우로 약간 랜덤하게 오프셋 추가
-            float sideOffset = Random.Range(-5f, 5f); // 좌우 랜덤 오프셋
+            float sideOffset = Random.Range(-5f, 5f);
             Vector3 rightDirection = transform.right * sideOffset;
-
-            // 본체 뒤쪽 + 좌우 오프셋 위치 계산
             Vector3 spawnPos = transform.position + backwardDirection * transform.localScale.z + rightDirection;
             spawnPos.y = 0;
 
-            GameObject missileObj = GameManager.Instance.PoolManager.GetFromPool(missilePrefab, spawnPos, Quaternion.identity);
+            GameObject missileObj = GameManager.Instance.PoolManager.GetFromPool(missilePrefab, spawnPos, Quaternion.identity, null, _isPhase2);
             Missile missile = missileObj.GetComponent<Missile>();
             if (missile != null && _target != null)
             {
@@ -408,9 +246,7 @@ public class Omega_X7 : MonsterBase
             yield return new WaitForSeconds(3f);
         }
 
-        // 쿨타임 리셋
         missileAttackCoolTime = 7f;
-
         _isMissileAttacking = false;
     }
     #endregion
@@ -418,40 +254,32 @@ public class Omega_X7 : MonsterBase
     #region 쿨타임 컨트롤러
     private void CoolTimeController()
     {
-        if (shotgunttackCoolTime > 0)
-            shotgunttackCoolTime -= Time.deltaTime;
-        if (missileAttackCoolTime > 0)
-            missileAttackCoolTime -= Time.deltaTime;
-        if (laserTurretSpawnCoolTime > 0)
-            laserTurretSpawnCoolTime -= Time.deltaTime;
+        if (shotgunttackCoolTime > 0) shotgunttackCoolTime -= Time.deltaTime;
+        if (missileAttackCoolTime > 0) missileAttackCoolTime -= Time.deltaTime;
+        if (laserTurretSpawnCoolTime > 0) laserTurretSpawnCoolTime -= Time.deltaTime;
     }
     #endregion
 
     #region 랜덤 스킬 사용
     private void TryUseSkill()
     {
-        // 사용 가능한 스킬 코루틴 리스트
         List<IEnumerator> availableSkills = new List<IEnumerator>();
 
-        // 샷건은 페이즈2 진입 후 + 아이스 탱크 스폰 완료 후에만 사용 가능
         if (shotgunttackCoolTime <= 0 && !_isShotgunAttacking && !_isIceTankSpawning && _isPhase2)
         {
             availableSkills.Add(ShotgunAttack());
         }
 
-        // 미사일은 항상 사용 가능
         if (missileAttackCoolTime <= 0 && !_isMissileAttacking)
         {
             availableSkills.Add(MissileAttack());
         }
 
-        // 레이저 터렛은 _isAttacking이 false일 때만 사용 가능 (다른 중요 패턴과 겹치지 않도록)
         if (laserTurretSpawnCoolTime <= 0 && !_isAttacking)
         {
             availableSkills.Add(SpawnLaserTurret());
         }
 
-        // 사용 가능한 스킬이 있으면 랜덤으로 선택
         if (availableSkills.Count > 0)
         {
             int randomIndex = Random.Range(0, availableSkills.Count);
@@ -459,7 +287,6 @@ public class Omega_X7 : MonsterBase
         }
         else if (!_isShotgunAttacking && !_isMissileAttacking)
         {
-            // 모든 공격이 끝났고 쿨타임 중일 때만 Idle로 전환
             baseState = MonsterState.Idle;
         }
     }
@@ -471,12 +298,9 @@ public class Omega_X7 : MonsterBase
 
         float healthRatio = (float)currentHealth / (float)maxHealth;
 
-        // 체력 70% 이하로 떨어졌을 때 아이스 탱크 스폰 (한 번만)
         if (!_isPhase2 && healthRatio <= 0.7f && lastHealthCheckThreshold > 0.7f)
         {
             _isPhase2 = true;
-
-            // 아이스 탱크 스폰 패턴 시작
             StartCoroutine(SpawnIceTank());
         }
 
@@ -485,7 +309,6 @@ public class Omega_X7 : MonsterBase
 
     protected override void Die()
     {
-        // 유탄 발사 패턴 중지
         if (monsterGrenade != null)
         {
             monsterGrenade.StopGrenadePattern();

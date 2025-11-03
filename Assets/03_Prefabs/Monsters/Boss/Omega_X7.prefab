@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9180696880122555241}
   m_Layer: 10
-  m_Name: SohtgunEffectPos (1)
+  m_Name: SohtgunEffectPos2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -126,7 +126,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f45516d27e91f2145945d17c2edd2b16, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxHealth: 100
+  _maxHealth: 8000
   _currentHealth: 0
   _moveSpeed: 5
   isStunned: 0
@@ -166,6 +166,9 @@ MonoBehaviour:
   shotgunttackCoolTime: 5
   missileAttackCoolTime: 7
   laserTurretSpawnCoolTime: 20
+  shotgunEffectPos1: {fileID: 9123342047822882760}
+  shotgunEffectPos2: {fileID: 9180696880122555241}
+  shotgunEffectPrefab: {fileID: 3661891336986802290, guid: 9ef05b27c0b2ea3478aa1e0ee27f40a9, type: 3}
   monsterGrenade: {fileID: 2417702956369364524}
 --- !u!114 &1421741991903583065
 MonoBehaviour:
@@ -279,6 +282,8 @@ MonoBehaviour:
   isEcploed: 0
   grenadeObject: {fileID: 7004181681113936238, guid: 0feaaad4b5de504469be1e487c1640c9, type: 3}
   explodeCircleObject: {fileID: 4171473842588414540, guid: e1cdcf7ba7eac0445a237bf39c1ee586, type: 3}
+  bigExplosionEffect: {fileID: 3661891336986802290, guid: 9ef05b27c0b2ea3478aa1e0ee27f40a9, type: 3}
+  smallExplosionEffect: {fileID: 5257073017889475926, guid: 7fc3b75163eac5c4db69fde545dbe967, type: 3}
   maxParabolaHeight: 15
   minParabolaHeight: 10
   closeDistance: 2
@@ -300,7 +305,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9123342047822882760}
   m_Layer: 10
-  m_Name: SohtgunEffectPos
+  m_Name: SohtgunEffectPos1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -125,7 +125,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb4641a948f8e6647939a9df673dc2d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxHealth: 100
+  _maxHealth: 60
   _currentHealth: 0
   _moveSpeed: 5
   isStunned: 0
@@ -135,11 +135,11 @@ MonoBehaviour:
   isDead: 0
   debuffHandler: {fileID: 0}
   maxEliteHealth: 0
-  attackDamage: 10
+  attackDamage: 3
   attackRange: 100
   detectionRange: 100
   attackDelay: 2.5
-  originalSpeed: 10
+  originalSpeed: 0
   targetTag: Player
   monsterSize: 0
   cost: 2
@@ -163,7 +163,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 3.5
+  m_Speed: 0
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120

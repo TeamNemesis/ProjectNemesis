@@ -19,6 +19,8 @@ public class Missile : MonsterBase
     [Header("Bullet"), SerializeField]
     private PoolableObject bulletPrefab;      // 총알 프리팹
 
+    [SerializeField] private PoolableObject explosionEffect;
+
     public override void Initialize(object data = null)
     {
         base.Initialize(data); // 부모 클래스의 Initialize 호출
@@ -119,6 +121,12 @@ public class Missile : MonsterBase
             }
 
             yield return new WaitForSeconds(0.1f);
+
+            // 폭발 이펙트 재생 (자기 위치에서)
+            if (explosionEffect != null)
+            {
+                GetEffectFromPool(explosionEffect, transform.position, Quaternion.identity);
+            }
 
             CheckTarget();
 
