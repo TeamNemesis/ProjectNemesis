@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Unity.Cinemachine;
+using UnityEngine;
 
 public class PlayScene : MonoBehaviour
 {
@@ -8,16 +9,21 @@ public class PlayScene : MonoBehaviour
     [SerializeField] MapController _mapController;                 // 맵 컨트롤러
     [SerializeField] PlaySceneView _playSceneView;                 // 플레이 씬 뷰
     [SerializeField] CameraMover _cameraMover;                     // 카메라 무버
+    [SerializeField] CinemachineBrain _cinemachineBrain;         // 시네머신 브레인
+    [SerializeField] bool _isColosseumRoom = false;               // 콜로세움 방 여부  
 
     public MapController MapController => _mapController;
     public Player player => _player;
 
     private void Awake()
     {
+        EventBus.OnColosseumRoomSet += IsColosseum;
+        IsColosseum(false);
+
         _inputHandler.OnInteractInput += _player.ExecuteInteraction;
 
         // PlayerInputHandler의 이벤트와 Player 메서드 연결
-        _inputHandler.OnMoveInput += _player.SetMoveInput;
+        _inputHandler.OnMoveInput += OnMoveInput;
         _inputHandler.OnDashInput += () => _player.SetDashPressed(true);
         _inputHandler.OnNomralAttackInput += () => _player.SetNormalAttackPressed(true);
         _inputHandler.OnGrenadeAttackInput += _player.HandleGrenade;
@@ -52,7 +58,7 @@ public class PlayScene : MonoBehaviour
             Debug.LogError("맵 컨트롤러가 할당되지 않았습니다!");
             return;
         }
-        _mapController.Initialize();
+        _mapController.Initialize(_player);
 
         if( _playSceneView == null)
         {
@@ -73,5 +79,84 @@ public class PlayScene : MonoBehaviour
 
     private void Update()
     {
+    }
+
+    void IsColosseum(bool isColosseum)
+    {
+        _isColosseumRoom = isColosseum;
+        _cameraMover.enabled = !isColosseum;
+        _cinemachineBrain.enabled = isColosseum;
+        SetCameraProjection(isColosseum);
+        SetMouseCursorLock(isColosseum);
+    }
+
+    void OnMoveInput(Vector3 moveDir)
+    {
+        // moveDir는 PlayerInputHandler에서 new Vector3(input.x, 0, input.y)로 전달된다고 가정.
+        // 그러므로 전진 성분은 moveDir.z, 좌우 성분은 moveDir.x 입니다.
+
+        Vector3 moveInput = new Vector3(moveDir.x, 0f, moveDir.z); // x:left/right, z:forward/back
+
+        if (!_isColosseumRoom)
+        {
+            // 콜로세움 방이 아니면 입력값을 그대로 전달하지 말고
+            // 카메라 기준 변환 후 전달해야 움직임이 카메라 기준이 됩니다.
+            // (기존 코드는 바로 전달하고 다시 변환해서 두 번 호출하는 문제 있었음)
+            _player.SetMoveInput(moveInput); // Player.SetMoveInput이 Vector3를 받는다고 가정
+            return;
+        }
+
+        // 카메라 기준으로 방향 변환
+        
+        Camera cam = Camera.main;
+        if (cam == null)
+        {
+            Debug.LogWarning("Main Camera not found. Using raw input direction.");
+            
+            return;
+        }
+
+        Vector3 camForward = cam.transform.forward;
+        Vector3 camRight = cam.transform.right;
+        camForward.y = 0f;
+        camRight.y = 0f;
+        camForward.Normalize();
+        camRight.Normalize();
+
+        Vector3 worldDirection = camForward * moveInput.z + camRight * moveInput.x;
+
+        // Player/PlayerMover가 Vector3 world-space 방향을 기대하므로 그대로 전달
+        _player.SetMoveInput(worldDirection);
+    }
+
+    void SetMouseCursorLock(bool isColosseum)
+    {
+        if (isColosseum)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+    }
+
+    void SetCameraProjection(bool isColosseum)
+    {
+        if (isColosseum)
+        {
+            Camera.main.orthographic = false;
+        }
+        else
+        {
+            Camera.main.orthographic = true;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        EventBus.OnColosseumRoomSet -= IsColosseum;
     }
 }

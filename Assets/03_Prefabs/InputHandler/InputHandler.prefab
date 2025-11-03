@@ -59,19 +59,7 @@ MonoBehaviour:
       m_Calls: []
   m_ActionEvents:
   - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 4091405947727495476}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: 
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
     m_ActionId: 351f2ccd-1f9f-44bf-9bec-d62ac5c5f408
     m_ActionName: 'Player/Move[/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]'
   - m_PersistentCalls:
@@ -102,14 +90,6 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: f56fdcfc-a908-489f-8852-b57b1a783da6
     m_ActionName: 'Player/Special[/Keyboard/q]'
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: e519b972-80ed-4566-b9a2-b3d92860acf5
-    m_ActionName: 'Player/New action[/Mouse/press]'
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 9ec42a3f-a54b-4bfc-b444-6fe5ea3d98a6
-    m_ActionName: 'Player/New action1[/Mouse/position]'
   - m_PersistentCalls:
       m_Calls: []
     m_ActionId: c95b2375-e6d9-4b88-9c4c-c5e76515df4b
@@ -162,6 +142,10 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 80678222-8580-4092-b0fe-46106230ae48
     m_ActionName: UI/Option_M
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 315c9a1b-a09b-436f-b1b2-60cc437309b2
+    m_ActionName: 'Player/Look[/Mouse/delta]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: 
@@ -179,4 +163,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14e6c3d701250ed4394c30848af0f883, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _normalAttackInterval: 0.2
   _playerInput: {fileID: 7761604650623864941}
+  mainCam: {fileID: 0}
+  _groundLayer:
+    serializedVersion: 2
+    m_Bits: 512

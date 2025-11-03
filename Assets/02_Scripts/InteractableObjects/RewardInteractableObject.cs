@@ -55,8 +55,6 @@ public abstract class RewardInteractableObject : InteractableObject
         yield return StartCoroutine(RewardCoroutine());
         // 코루틴 완료 시 정리 (보상은 RewardCoroutine 내부 또는 이벤트에서 적용)
         EndInteract();
-        // 풀로 반환
-        GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
     }
 
     // 공통 정리: 코루틴 중지, 상태 리셋

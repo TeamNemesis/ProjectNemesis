@@ -11,7 +11,6 @@ using UnityEngine;
 public class PlayerBladeNormalAttacker : PlayerNormalAttacker
 {
     [Header("----- 플레이어 데이터 -----")]
-    [SerializeField] Player _player;
     [SerializeField] int _maxCombo = 3; // 최대 콤보 수
     [SerializeField] float _comboInputWindow = 0.5f; // 콤보 입력 허용 시간 (초)
 

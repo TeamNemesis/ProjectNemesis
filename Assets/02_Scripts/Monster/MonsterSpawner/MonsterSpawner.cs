@@ -44,8 +44,13 @@ public class MonsterSpawner : MonoBehaviour
     /// <summary>
     /// 설정 후 즉시 스폰 시작
     /// </summary>
-    public void InitializeAndSpawn(int maxPoint, List<Transform> positions)
+    public void InitializeAndSpawn(int maxPoint, List<Transform> positions = null)
     {
+        if (maxPoint == 0 || positions == null || positions.Count == 0)
+        {
+            OnAllWavesCompleted?.Invoke();
+            return;
+        }
         SpawnerSetting(maxPoint, positions);
         StartSpawn();
     }
@@ -250,6 +255,8 @@ public class MonsterSpawner : MonoBehaviour
             monsterbase.SetEliteMaxHealth(roomNumber);
             monsterbase.OnDieEvent += () => OnMonsterDeath(spawnedMonster);
         }
+        EventBus.SpawnedMonster = monsterbase;
+        Debug.Log("Elite Monster Spawned: " + spawnedMonster.name);
     }
 
     /// <summary>

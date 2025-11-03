@@ -105,6 +105,7 @@ public static class Constants
     public const string TAG_MONSTER = "Monster";
     public const string TAG_BULLET = "Bullet";
     public const string TAG_ENVIRONMENT = "Environment";
+    public const string TAG_ELECTIC = "ElectricMan";
 
     #endregion
 
@@ -176,6 +177,7 @@ public static class Constants
     public const string LAYER_MASK_PLAYER = "Player";
     public const string LAYER_MASK_WALL = "Wall";
     public const string LAYER_MASK_GROUND = "Ground";
+    public const string LAYER_MASK_MONSTER = "Monster";
 
     #endregion
 
@@ -308,6 +310,7 @@ public enum TechSelectPackType
     Company3,
     Company4,
     Company5,
+    Count,
 }
 
 public enum RoomType

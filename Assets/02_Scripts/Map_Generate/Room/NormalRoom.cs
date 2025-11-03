@@ -6,8 +6,6 @@ using UnityEngine;
 /// </summary>
 public class NormalRoom : Room
 {
-    [SerializeField] Transform[] _monsterSpawnPoints;
-
     // NormalRoomType -> Pool/Resource 키 매핑 (프로젝트 규칙에 맞춰 값 설정)
     Dictionary<NormalRoomType, string> _normalRewardMap = new Dictionary<NormalRoomType, string>()
     {
@@ -25,8 +23,6 @@ public class NormalRoom : Room
         {TechSelectPackType.Company4, Constants.RESOURCES_PATH_REWARDS + "/TechSelectPack_Company4" },
         {TechSelectPackType.Company5, Constants.RESOURCES_PATH_REWARDS + "/TechSelectPack_Company5" },
     };
-
-    public Transform[] MonsterSpawnPoints => _monsterSpawnPoints;
 
     public override IInteractable[] SpawnReward()
     {
@@ -67,19 +63,19 @@ public class NormalRoom : Room
                     instance = poolMgr.GetFromPool(techKey, spawnPos, spawnRot, transform);
                 }
 
-                // 풀에서 못가져오면 폴백(리소스매니저/Instantiate 등)을 여기서 추가할 수 있음
-                if (instance == null && resourceMgr != null)
-                {
-                    var prefab = resourceMgr.LoadResource<GameObject>(techKey);
-                    if (prefab != null)
-                        instance = Instantiate(prefab, spawnPos, spawnRot, transform);
-                }
+                //// 풀에서 못가져오면 폴백(리소스매니저/Instantiate 등)을 여기서 추가할 수 있음
+                //if (instance == null && resourceMgr != null)
+                //{
+                //    var prefab = resourceMgr.LoadResource<GameObject>(techKey);
+                //    if (prefab != null)
+                //        instance = Instantiate(prefab, spawnPos, spawnRot, transform);
+                //}
 
-                if (instance == null)
-                {
-                    Debug.LogWarning($"NormalRoom.SpawnReward: Failed to spawn TechSelectPack for key '{techKey}' (room={name})");
-                    return System.Array.Empty<IInteractable>();
-                }
+                //if (instance == null)
+                //{
+                //    Debug.LogWarning($"NormalRoom.SpawnReward: Failed to spawn TechSelectPack for key '{techKey}' (room={name})");
+                //    return System.Array.Empty<IInteractable>();
+                //}
             }
             else
             {
@@ -101,36 +97,37 @@ public class NormalRoom : Room
                 instance = poolMgr.GetFromPool(prefabKey, spawnPos, spawnRot, transform);
             }
 
-            if (instance == null && resourceMgr != null)
-            {
-                var prefab = resourceMgr.LoadResource<GameObject>(prefabKey);
-                if (prefab != null)
-                    instance = Instantiate(prefab, spawnPos, spawnRot, transform);
-            }
+            //if (instance == null && resourceMgr != null)
+            //{
+            //    var prefab = resourceMgr.LoadResource<GameObject>(prefabKey);
+            //    if (prefab != null)
+            //        instance = Instantiate(prefab, spawnPos, spawnRot, transform);
+            //}
 
-            if (instance == null)
-            {
-                Debug.LogWarning($"NormalRoom.SpawnReward: Failed to spawn reward for key '{prefabKey}' (room={name})");
-                return System.Array.Empty<IInteractable>();
-            }
+            //if (instance == null)
+            //{
+            //    Debug.LogWarning($"NormalRoom.SpawnReward: Failed to spawn reward for key '{prefabKey}' (room={name})");
+            //    return System.Array.Empty<IInteractable>();
+            //}
         }
 
         // Spawn 성공: RewardInteractableObject 찾기 (루트 또는 자식)
         var reward = instance.GetComponent<RewardInteractableObject>()
                      ?? instance.GetComponentInChildren<RewardInteractableObject>(true);
 
-        if (reward == null)
-        {
-            Debug.LogError($"NormalRoom.SpawnReward: Spawned instance '{instance.name}' does not contain RewardInteractableObject. Releasing/destroying instance. (room={name})");
-            if (poolMgr != null)
-                poolMgr.ReleaseToPool(instance);
-            else
-                Destroy(instance);
+        //if (reward == null)
+        //{
+        //    Debug.LogError($"NormalRoom.SpawnReward: Spawned instance '{instance.name}' does not contain RewardInteractableObject. Releasing/destroying instance. (room={name})");
+        //    if (poolMgr != null)
+        //        poolMgr.ReleaseToPool(instance);
+        //    else
+        //        Destroy(instance);
 
-            return System.Array.Empty<IInteractable>();
-        }
+        //    return System.Array.Empty<IInteractable>();
+        //}
 
         reward.OnRewardGiven += RewardSelectionFinished;
+        Debug.Log("NormalRoom.SpawnReward: Reward spawned successfully.");
         reward.Initialize();
 
         // 마지막으로 보상 참조를 배열로 담아 반환 (이 배열이 '새로운 오브젝트 생성'을 의미하는 것은 아님)

@@ -110,13 +110,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9a327fe9be46e94984afe2b597befe5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  monsterPrefabs:
+  normalMonsterPrefabs:
   - {fileID: 2821671262608775679, guid: 31d9d065d60ebc543aa9a7c07609ba6a, type: 3}
   - {fileID: 7539578067776936276, guid: 69a152d5ffcc54b43951b3258fab8a37, type: 3}
   - {fileID: 4891787988556077794, guid: 3c786e0e126f3c04aac997196a100f79, type: 3}
   - {fileID: 900541771517750140, guid: bcae6f7357fac65468003be58c7ce711, type: 3}
   - {fileID: 5829316648119766581, guid: 62dc2018ab6d11846bb1126a063a0f5c, type: 3}
   - {fileID: 6741232429851390812, guid: 6f189b3983160024da34cf72ae75aa8a, type: 3}
+  eliteMonsterPrefabs:
+  - {fileID: 4414383118390511999, guid: a67148d98238ea146aac255bda110338, type: 3}
+  - {fileID: 6221192173117420515, guid: 5c7f3702c4549a940bc88c593a3260d1, type: 3}
+  - {fileID: 7566073503906103748, guid: 53657baafd1877f429405d5ec0e6e50c, type: 3}
 --- !u!1 &1235077924488153432
 GameObject:
   m_ObjectHideFlags: 0
@@ -263,6 +267,7 @@ MonoBehaviour:
   _currentDoors: []
   _currentRoomCount: 0
   _hasLabRoomAppeared: 0
+  _player: {fileID: 0}
 --- !u!1 &9088521303421703745
 GameObject:
   m_ObjectHideFlags: 0

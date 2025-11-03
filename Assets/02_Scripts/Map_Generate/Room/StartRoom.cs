@@ -10,7 +10,7 @@ public class StartRoom : Room
         base.Initialize(roomInfo);
         SpawnInteractableWeapons();
         RewardSelectionFinished();
-        CheatReward();
+        //CheatReward();
     }
 
     public void SpawnInteractableWeapons()

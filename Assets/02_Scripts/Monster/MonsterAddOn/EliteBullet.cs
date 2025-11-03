@@ -11,6 +11,11 @@ public class EliteBullet : PoolableObject
     private GameObject owner;
     private Coroutine lifeTimeCoroutine;
 
+
+    //변경된 부분
+    private Vector3 moveDir = Vector3.forward;
+
+
     public void SetDamage(float damage)
     {
         this.damage = damage;
@@ -36,9 +41,8 @@ public class EliteBullet : PoolableObject
 
     private void Update()
     {
-        transform.Translate(Vector3.forward * speed * Time.deltaTime);
+        transform.Translate(moveDir * speed * Time.deltaTime);
     }
-
 
     private void StartLifeTime()
     {
@@ -66,12 +70,19 @@ public class EliteBullet : PoolableObject
         if (other.CompareTag(targetTag))
         {
             IDamageable damageable = other.GetComponent<IDamageable>();
+            // 변경된 부분
+            reflect reflectable = other.GetComponent<reflect>();
+            if (reflectable != null && reflectable.isReflecting == true)
+            {
+                Reflect(other);
+                return;
+            }
+            //
             if (damageable != null)
             {
                 damageable.TakeDamage(damage, transform);
             }
 
-
             if (lifeTimeCoroutine != null)
             {
                 StopCoroutine(lifeTimeCoroutine);
@@ -79,8 +90,13 @@ public class EliteBullet : PoolableObject
             }
             GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
         }
+
         else
         {
+            if (other.CompareTag(Constants.TAG_ELECTIC))
+            {
+                return;
+            }
             if (lifeTimeCoroutine != null)
             {
                 StopCoroutine(lifeTimeCoroutine);
@@ -88,5 +104,23 @@ public class EliteBullet : PoolableObject
             }
             GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
         }
+    }
+
+    //변경 부분
+    private void Reflect(Collider reflector)
+    {
+        moveDir = -moveDir; // 방향 전환
+
+        targetTag = Constants.TAG_MONSTER; // 타겟태그 변경
+        owner = reflector.gameObject; // 주인 변경
+
+    }
+
+    //초기화
+    private void OnDisable()
+    {
+        moveDir = Vector3.forward;
+        targetTag = Constants.TAG_PLAYER;
+        owner = null;
     }
 }

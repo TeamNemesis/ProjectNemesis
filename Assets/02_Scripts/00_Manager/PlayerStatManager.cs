@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Security.Cryptography;
+using UnityEditor.Rendering;
 using UnityEngine;
 
 public class PlayerStatManager : MonoBehaviour
@@ -198,18 +200,29 @@ public class PlayerStatManager : MonoBehaviour
     {
         _totalMultiDamage += addDamage;
     }
+
+
     /// <summary>
-    /// 플레이어 이동 속도 계수
+    /// 플레이어 이동 속도
     /// </summary>
-    private float _playerMoveSpeed;
+    private float _playerMoveSpeed = 10f;
     public float playerMoveSpeed { get { return _playerMoveSpeed; } }
     public void AddPlayerMoveSpeed(float plusMoveSpeed)
     {
         _playerMoveSpeed += plusMoveSpeed;
-        OnPlayerMoveSpeedChange?.Invoke();
+        OnPlayerMoveSpeedChange?.Invoke(_playerMoveSpeed* _playerMoveSpeedMulti);
     }
-    public event Action OnPlayerMoveSpeedChange;
+    public event Action<float> OnPlayerMoveSpeedChange;
 
+
+    private float _playerMoveSpeedMulti = 1f;
+    public float playerMoveSpeedMulti { get { return _playerMoveSpeedMulti; } }
+    public void AddPlayerMoveSpeedMulti(float plusMoveSpeed)
+    {
+        _playerMoveSpeedMulti += plusMoveSpeed;
+        OnPlayerMoveSpeedChange?.Invoke(_playerMoveSpeed * _playerMoveSpeedMulti);
+        Debug.LogError(_playerMoveSpeed * _playerMoveSpeedMulti);
+    }
 
 
 

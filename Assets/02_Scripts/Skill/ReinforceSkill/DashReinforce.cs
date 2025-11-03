@@ -179,19 +179,41 @@ public class Skill_Three_Dash : ActiveTech
 /// </summary>
 public class Skill_Four_Dash : ActiveTech
 {
+
+    private float _frontTime;
+    private Action _frontAction;
+
     public override void Activate(SkillManager skillManager, Player player)
     {
+
         base.Activate(skillManager, player);
+        if (_frontAction != null)
+        {
+            player.OnDashStarted -= _frontAction;
+        }
+
+        _frontTime = skillData.skillBaseValue_1 + skillData.skillLevelValue_1 * skillData.skillLevel;
+
+        _frontAction = () => ActiveTry(player);
+
+        player.OnDashStarted += _frontAction;
     }
 
     public override void Deactivate(Player player, bool isAnotherSkill)
     {
         base.Deactivate(player, isAnotherSkill);
+        player.OnDashStarted -= _frontAction;
+
+    }
+    public override void ActiveTry(Player player)
+    {
+        player.playerModel.PlayerFrontInvincibility(_frontTime);
     }
 
     public Skill_Four_Dash(SkillData skillData) : base(skillData)
     {
     }
+
 }
 
 /// <summary>

@@ -14,7 +14,8 @@ public class TechSelectPackInteractor_Shop : TechSelectPackInteractor, IShopItem
     }
     public bool Purchase()
     {
-        if(GameManager.Instance.CurrencyManager.TrySpendCredit(_price))
+        Debug.Log("Attempting to purchase Tech Select Pack for " + _price + " credits.");
+        if (GameManager.Instance.CurrencyManager.TrySpendCredit(_price))
         {
             return true;
         }

@@ -20,15 +20,25 @@ public class electricMan : MonoBehaviour
             if (Time.time - lastTime >= damageInterval)
             {
                 // 실제 데미지 처리
-                CharacterModelBase target = monster.GetComponent<CharacterModelBase>();
+                MonsterBase target = monster.GetComponent<MonsterBase>();
                 if (target != null)
                 {
-                    target.TakeDamage(damage, null);
-                    Debug.Log("전기인간 데미지 적용!");
+                        target.TakeDamage(GameManager.Instance.PlayerStatManager.knockBackDamage * GameManager.Instance.PlayerStatManager.knockBackDamageMulti, null);
+                        Debug.Log("전기인간 데미지 적용!");
                 }
                 // 타이머 갱신(데미지 적용 시간)
                 lastDamageTime[monster] = Time.time;
             }
         }
+    }
+
+    public void ClearDictionary()
+    {
+        lastDamageTime.Clear();
+    }
+
+    private void OnDisable()
+    {
+        GameManager.Instance.skillManager.playScene.MapController.MonsterController.MonsterSpawner.OnAllWavesCompleted -= ClearDictionary;
     }
 }
