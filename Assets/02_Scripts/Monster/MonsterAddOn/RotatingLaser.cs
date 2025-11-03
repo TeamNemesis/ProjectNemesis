@@ -9,7 +9,7 @@ public class RotatingLaser : MonoBehaviour
     public LayerMask wallLayer; // 벽 레이어
 
     [Header("레이저 비주얼")]
-    public float laserWidth = 0.1f; // 레이저 두께
+    public float laserWidth = 0.5f; // 레이저 두께 (0.1 → 0.5로 증가)
     public Color laserColor = Color.red; // 레이저 색상
     public Material laserMaterial; // 커스텀 머티리얼 (선택사항)
     public Gradient colorGradient; // 그라디언트 (선택사항)

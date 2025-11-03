@@ -36,10 +36,17 @@ public class Omega_X7 : MonsterBase
     private bool _isMissileAttacking = false;
     private bool _isIceTankSpawning = false;
 
+    [Header("Effect Positions")]
+    [SerializeField] Transform shotgunEffectPos1;
+    [SerializeField] Transform shotgunEffectPos2;
+
+    [Header("Effects")]
+    [SerializeField] private PoolableObject shotgunEffectPrefab;
+
     private float lastHealthCheckThreshold = 1f;
     private bool _isPhase2 = false;
 
-    [SerializeField]private MonsterGrenade monsterGrenade;
+    [SerializeField] private MonsterGrenade monsterGrenade;
 
     private void Start()
     {
@@ -266,6 +273,9 @@ public class Omega_X7 : MonsterBase
         // 2초 대기 (경고 시간)
         yield return new WaitForSeconds(shotgunWarningDuration);
 
+        // 샷건 이펙트 재생
+        PlayShotgunEffect();
+
         // 샷건 공격 실행 (히트스캔) - 같은 위치에서
         PerformShotgunHitscan(spawnPos, directionToPlayer);
 
@@ -273,6 +283,75 @@ public class Omega_X7 : MonsterBase
         shotgunttackCoolTime = 5f;
 
         _isShotgunAttacking = false;
+    }
+
+    private void PlayShotgunEffect()
+    {
+        if (shotgunEffectPrefab == null)
+        {
+            Debug.LogWarning("[Omega_X7] Shotgun effect prefab is not assigned!");
+            return;
+        }
+
+        // shotgunEffectPos1에서 이펙트 재생
+        if (shotgunEffectPos1 != null)
+        {
+            GameObject effect1 = GameManager.Instance.PoolManager.GetFromPool(
+                shotgunEffectPrefab,
+                shotgunEffectPos1.position,
+                shotgunEffectPos1.rotation
+            );
+
+            if (effect1 != null)
+            {
+                ParticleSystem ps1 = effect1.GetComponent<ParticleSystem>();
+                if (ps1 != null)
+                {
+                    ps1.Play();
+                    // 파티클 재생 후 풀로 반환
+                    StartCoroutine(ReturnEffectToPool(effect1, ps1.main.duration + ps1.main.startLifetime.constantMax));
+                }
+                else
+                {
+                    StartCoroutine(ReturnEffectToPool(effect1, 2f));
+                }
+            }
+        }
+
+        // shotgunEffectPos2에서 이펙트 재생
+        if (shotgunEffectPos2 != null)
+        {
+            GameObject effect2 = GameManager.Instance.PoolManager.GetFromPool(
+                shotgunEffectPrefab,
+                shotgunEffectPos2.position,
+                shotgunEffectPos2.rotation
+            );
+
+            if (effect2 != null)
+            {
+                ParticleSystem ps2 = effect2.GetComponent<ParticleSystem>();
+                if (ps2 != null)
+                {
+                    ps2.Play();
+                    // 파티클 재생 후 풀로 반환
+                    StartCoroutine(ReturnEffectToPool(effect2, ps2.main.duration + ps2.main.startLifetime.constantMax));
+                }
+                else
+                {
+                    StartCoroutine(ReturnEffectToPool(effect2, 2f));
+                }
+            }
+        }
+    }
+
+    private IEnumerator ReturnEffectToPool(GameObject effect, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        if (effect != null)
+        {
+            GameManager.Instance.PoolManager.ReleaseToPool(effect);
+        }
     }
 
     private void PerformShotgunHitscan(Vector3 attackOrigin, Vector3 attackDirection)
