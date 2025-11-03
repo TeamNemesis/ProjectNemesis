@@ -202,6 +202,8 @@ public class Player : MonoBehaviour
         // 1) 일반 공격 입력 처리
         if (_normalAttackPressed && TryConsumeNormalAttack())
         {
+            
+
             if (_normalAttacker != null && !IsDashing && !_isSpecialAttacking)
             {
                 // 요청만 보냄. 실제 상태 전환은 AttackStarted 이벤트에서 수행
