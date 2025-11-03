@@ -351,7 +351,7 @@ public class Player : MonoBehaviour
             RifleWeapon rifleWeapon = weapon as RifleWeapon;
 
             playerRifleNormalAttacker?.Initialize(this, rifleWeapon.FirePos);
-            playerRifleSpecialAttacker?.Initialize(this);
+            playerRifleSpecialAttacker?.Initialize(this, rifleWeapon.FirePos);
         }
 
         if (weapon.WeaponType == WeaponType.Blade)
