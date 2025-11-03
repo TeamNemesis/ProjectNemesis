@@ -477,18 +477,16 @@ public class Player : MonoBehaviour
     public void GrenadeCountChanged(int currentCount, int maxCount)
     {
         OnGrenadeCountChanged?.Invoke(currentCount, maxCount);
-        Debug.Log($"유탄 개수 변경: {currentCount}/{maxCount}");
     }
 
     public void GrenadeCoolTimeChanged(float coolTimeRemaining, float maxCoolTime)
     {
         OnGrenadeCooltimeChanged?.Invoke(coolTimeRemaining, maxCoolTime);
-        Debug.Log($"유탄 쿨타임 변경: {coolTimeRemaining}/{maxCoolTime}");
     }
 
     #endregion
 
-    #region 상호작용 처리 (기존 로직)
+    #region 상호작용 처리
     public void OnWeaponInteracted(WeaponType newWeaponType)
     {
         _weaponController.ChangeWeapon(newWeaponType);
