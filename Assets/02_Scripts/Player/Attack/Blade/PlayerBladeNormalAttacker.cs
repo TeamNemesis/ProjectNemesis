@@ -11,7 +11,6 @@ using UnityEngine;
 public class PlayerBladeNormalAttacker : PlayerNormalAttacker
 {
     [Header("----- 플레이어 데이터 -----")]
-    [SerializeField] Player _player;
     [SerializeField] int _maxCombo = 3; // 최대 콤보 수
     [SerializeField] float _comboInputWindow = 0.5f; // 콤보 입력 허용 시간 (초)
 
@@ -129,18 +128,6 @@ public class PlayerBladeNormalAttacker : PlayerNormalAttacker
         }
     }
 
-    public override void EndAttack()
-    {
-        base.EndAttack();
-        _currentCombo = 0;
-        _waitingForNext = false;
-        _queued = false;
-        Debug.Log("PlayerBladeNormalAttacker.EndAttack: Attack ended and combo reset.");
-    }
-    //
-    public void Animation_OnAttackEnd()
-    {
-        EndAttack(); // _isAttacking = false
-        Debug.Log("PlayerBladeNormalAttacker.Animation_OnAttackEnd: Attack animation ended.");
-    }
+    
+    
 }

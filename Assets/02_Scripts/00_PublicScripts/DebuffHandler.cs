@@ -300,7 +300,16 @@ public class DebuffHandler : MonoBehaviour
             {
                 case Constants.DEBUFF_POISON:
                 case Constants.DEBUFF_OVERLOAD:
-                    character.TakeDamage(active.totalValue, null);          // 플레이어 모댐증 적용 요망
+                    if (character.tag == Constants.TAG_PLAYER)
+                    {
+                        float finalDamage = active.totalValue;
+                        finalDamage /= 5f;
+                        character.TakeDamage(finalDamage);
+                    }
+                    else
+                    {
+                        character.TakeDamage(active.totalValue);
+                    }
                     break;
                 default:
                     break;
@@ -341,6 +350,10 @@ public class DebuffHandler : MonoBehaviour
     /// <param name="duration"> 지속시간 </param>
     private IEnumerator StunCoroutine(float duration)
     {
+        if (monster.GetMonsterSize() == MonsterSize.BIG)
+        {
+            yield break;
+        }
         character.isStunned = true;
 
         if (agent != null)
@@ -369,6 +382,10 @@ public class DebuffHandler : MonoBehaviour
     /// <param name="duration"> 지속시간 </param>
     private IEnumerator BindCoroutine(float duration)
     {
+        if (monster.GetMonsterSize() == MonsterSize.BIG)
+        {
+            yield break;
+        }
         character.isBindned = true;
 
         if (agent != null)
@@ -393,6 +410,10 @@ public class DebuffHandler : MonoBehaviour
     private IEnumerator ConfuseCoroutine(float duration)
     {
         if (monster == null) yield break;
+        if (monster.GetMonsterSize() == MonsterSize.BIG)
+        {
+            yield break;
+        }
 
         // 혼란 상태에 들어가기 전에 원래 상태 저장
         // 이미 혼란 상태면 건너뛰기

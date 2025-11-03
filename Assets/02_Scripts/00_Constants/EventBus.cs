@@ -64,6 +64,8 @@ public static class EventBus
         Debug.Log("IsColosseumRoom set to: " + isColosseum);
         OnColosseumRoomSet?.Invoke(isColosseum);
     }
+
+    public static MonsterBase SpawnedMonster { get; set; }
 }
 
 

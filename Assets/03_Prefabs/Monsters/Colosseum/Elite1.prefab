@@ -248,7 +248,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1cfdf5bbd811ee845918ddf5a2fe2adf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxHealth: 100
+  _maxHealth: 1500
   _currentHealth: 0
   _moveSpeed: 5
   isStunned: 0
@@ -266,11 +266,14 @@ MonoBehaviour:
   targetTag: Player
   monsterSize: 2
   cost: 0
+  monsterRigidbody: {fileID: 0}
+  monsterCollider: {fileID: 0}
+  _isAttacking: 0
+  baseState: 0
   _knockBackDamage: 0
   player: {fileID: 0}
   agent: {fileID: 0}
   _target: {fileID: 0}
-  _isAttacking: 0
   _box_Length: 3
   _box_Height: 3
   _box_Width: 3
@@ -278,7 +281,6 @@ MonoBehaviour:
   teleportAttackDelay: 1
   bladeAttackkDelay: 1
   stopDistance: 2
-  currentState: 0
   _meshRenderer: {fileID: 0}
   attackDecal: {fileID: 4171473842588414540, guid: e1cdcf7ba7eac0445a237bf39c1ee586, type: 3}
   bladeWavePrefab: {fileID: 433645739003782474, guid: 32e7cbcd5d4ee5c498508d5492575fdb, type: 3}

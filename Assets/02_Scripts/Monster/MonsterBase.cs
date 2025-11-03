@@ -172,7 +172,7 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
 
     protected void LookAtPlayer()
     {
-        Vector3 dir = (_target.position - transform.position).normalized;
+        Vector3 dir = new Vector3(_target.position.x - transform.position.x, 0 , _target.position.z - transform.position.z).normalized;
         if (dir != Vector3.zero)
         {
             Quaternion targetRot = Quaternion.LookRotation(dir);
@@ -185,6 +185,65 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
         maxEliteHealth = (float)_maxHealth * 1 + (0.1f * roomCount);
         _maxHealth = (int)maxEliteHealth;
     }
+
+    #region 이펙트 관리
+    public void GetEffectFromPool(PoolableObject effectPrefab, Vector3 position, Quaternion rotation, float? customDuration = null)
+    {
+        if (effectPrefab == null)
+        {
+            return;
+        }
+
+        GameObject effectObj = GameManager.Instance.PoolManager.GetFromPool(
+            effectPrefab,
+            position,
+            rotation
+        );
+
+        if (effectObj == null)
+        {
+            return;
+        }
+
+        // ParticleSystem 찾기 및 재생
+        ParticleSystem ps = effectObj.GetComponent<ParticleSystem>();
+        if (ps != null)
+        {
+            ps.Play();
+
+            // 지속시간 계산
+            float duration = customDuration ?? (ps.main.duration + ps.main.startLifetime.constantMax);
+            StartCoroutine(ReturnEffectToPool(effectObj, duration));
+        }
+        else
+        {
+            // ParticleSystem이 없으면 기본 지속시간 사용
+            float duration = customDuration ?? 2f;
+            StartCoroutine(ReturnEffectToPool(effectObj, duration));
+        }
+    }
+
+    public void GetEffectFromPool(PoolableObject effectPrefab, Transform spawnTransform, float? customDuration = null)
+    {
+        if (spawnTransform == null)
+        {
+            return;
+        }
+
+        GetEffectFromPool(effectPrefab, spawnTransform.position, spawnTransform.rotation, customDuration);
+    }
+
+    protected IEnumerator ReturnEffectToPool(GameObject effect, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        if (effect != null)
+        {
+            GameManager.Instance.PoolManager.ReleaseToPool(effect);
+        }
+    }
+
+    #endregion
 
     protected override void Die()
     {
@@ -277,7 +336,6 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
         isPushed = false;
         monsterRigidbody.linearVelocity = Vector3.zero;
         monsterRigidbody.isKinematic = true;
-        monsterCollider.isTrigger = true;
         if (!isBindned)
         {
             agent.isStopped = false;

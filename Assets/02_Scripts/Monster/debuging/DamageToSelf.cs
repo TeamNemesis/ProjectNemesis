@@ -13,7 +13,7 @@ public class DamageToSelf : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.T))
         {
-            dmg.TakeDamage(10f, transform);
+            dmg.TakeDamage(1000f, transform);
         }
     }
 }
