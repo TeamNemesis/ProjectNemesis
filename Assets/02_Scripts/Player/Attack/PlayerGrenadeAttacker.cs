@@ -51,6 +51,7 @@ public class PlayerGrenadeAttacker : MonoBehaviour
     public void Initialize()
     {
         _currentCount = _maxCount;
+        OnGrenadeCooltimeChanged?.Invoke(0.0f, _coolTime);
         OnGrenadeCountChanged?.Invoke(_currentCount, _maxCount);
     }
 
