@@ -228,7 +228,7 @@ public class PlayerStatManager : MonoBehaviour
     {
         _playerMoveSpeedMulti += plusMoveSpeed;
         OnPlayerMoveSpeedChange?.Invoke(_playerMoveSpeed * _playerMoveSpeedMulti);
-        Debug.LogError(_playerMoveSpeed * _playerMoveSpeedMulti);
+        Debug.LogError(_playerMoveSpeed * _playerMoveSpeedMulti); 
     }
 
 
@@ -472,148 +472,92 @@ public class PlayerStatManager : MonoBehaviour
 
     public void Initialize()
     {
-
         InitPlayerStat();
 
         foreach (var stat in _playerStatDataDic.Values)
         {
             InitializeStatByReflection(stat);
         }
-
-        EventBus.OnMonsterHit += TakeDamage;
-
-        _playerStatDataDic["playerHP"].SetLevel(2);
-
-        SaveCurrentLevelsFromDictionary();
     }
 
-    #region readJson
-
-    public virtual void InitPlayerStat()
+    public void InitPlayerStat()
     {
-        Debug.Log("skill Initialize");
         ReadJsonFile();
-      
     }
 
     public void ReadJsonFile()
     {
-        TextAsset jsonFile = Resources.Load<TextAsset>(Constants.RESOURCES_PATH_PLAYERSTATDATA);
-        if (jsonFile == null)
+        if (!File.Exists(Constants.FILE_PATH_PLAYERSTAT))
         {
-            Debug.Log("오류 : 파일 없음 " + Constants.RESOURCES_PATH_PLAYERSTATDATA);
+            Debug.LogError("❌ 오류: 파일 없음 " + Constants.FILE_PATH_PLAYERSTAT);
             return;
         }
-        else
+
+        try
         {
-            string jsonText = jsonFile.text;
+            string jsonText = File.ReadAllText(Constants.FILE_PATH_PLAYERSTAT);
             _playerjsonData = JsonConvert.DeserializeObject<List<PlayerStatJsonData>>(jsonText);
             InitSkillDictionary();
+            Debug.Log("✅ JSON 파일 불러오기 성공");
         }
-
+        catch (System.Exception ex)
+        {
+            Debug.LogError("❌ JSON 파싱 오류: " + ex.Message);
+        }
     }
 
-    /// <summary>
-    /// 플레이어 스탯 딕셔너리 초기화
-    /// </summary>
     public void InitSkillDictionary()
     {
-        for (int i = 0; i < _playerjsonData.Count; i++)
+        _playerStatDataDic.Clear();
+        foreach (var data in _playerjsonData)
         {
-            _playerStatDataDic.Add(_playerjsonData[i].column, new PlayerStatData(_playerjsonData[i]));
+            _playerStatDataDic.Add(data.column, new PlayerStatData(data));
         }
     }
-    #endregion
 
-    /// <summary>
-    /// 필드값 초기화
-    /// </summary>
-    /// <param name="statData"></param>
     public void InitializeStatByReflection(PlayerStatData statData)
     {
-        // Column 이름에 해당하는 private 필드 찾기
-        var field = this.GetType().GetField($"_{statData.Column}", BindingFlags.NonPublic | BindingFlags.Instance);
+        var field = this.GetType().GetField($"_{statData.Column}", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 
         if (field != null && field.FieldType == typeof(float))
         {
             var value = statData.GetEffectiveValue();
-
             if (value is float floatValue)
             {
                 field.SetValue(this, floatValue);
             }
-            else
-            {
-                Debug.LogWarning($"Column '{statData.Column}'의 값이 float이 아닙니다: {value}");
-            }
-        }
-        else
-        {
-            Debug.LogWarning($"Column '{statData.Column}'에 해당하는 필드를 찾을 수 없거나 타입이 float이 아닙니다.");
         }
     }
 
-
-    public void SaveCurrentLevelsFromDictionary()
+    public void SaveCurrentLevelsToJson()
     {
         List<PlayerStatJsonData> updatedList = new();
 
         foreach (var pair in _playerStatDataDic)
         {
             var statData = pair.Value;
-
-            if (statData.MaxLevel > 0)
+            updatedList.Add(new PlayerStatJsonData
             {
-                var jsonData = new PlayerStatJsonData
-                {
-                    column = statData.Column,
-                    type = statData.Type,
-                    description = statData.Description,
-                    defaultValue = statData.DefaultValue.ToString(),
-                    upgradeValue = statData.UpgradeValue.ToString(),
-                    maxLevel = statData.MaxLevel,
-                    currentLevel = statData.CurrentLevel
-                };
-
-                updatedList.Add(jsonData);
-            }
+                column = statData.Column,
+                type = statData.Type,
+                description = statData.Description,
+                defaultValue = statData.DefaultValue.ToString(),
+                upgradeValue = statData.UpgradeValue.ToString(),
+                maxLevel = statData.MaxLevel,
+                currentLevel = statData.CurrentLevel
+            });
         }
 
-        string filePath = Constants.FILE_PATH_PLAYERSTAT;
-        string directory = Path.GetDirectoryName(filePath);
-
-        // 디렉토리가 없으면 생성
-        if (!Directory.Exists(directory))
-        {
-            Directory.CreateDirectory(directory);
-        }
-
-        // 파일이 없거나 변경된 항목이 없으면 전체 데이터로 저장
-        if (!File.Exists(filePath) || updatedList.Count == 0)
-        {
-            updatedList.Clear();
-            foreach (var pair in _playerStatDataDic)
-            {
-                var statData = pair.Value;
-
-                var jsonData = new PlayerStatJsonData
-                {
-                    column = statData.Column,
-                    type = statData.Type,
-                    description = statData.Description,
-                    defaultValue = statData.DefaultValue.ToString(),
-                    upgradeValue = statData.UpgradeValue.ToString(),
-                    maxLevel = statData.MaxLevel,
-                    currentLevel = statData.CurrentLevel
-                };
-
-                updatedList.Add(jsonData);
-            }
-        }
-
-        // JSON 저장
         string json = JsonConvert.SerializeObject(updatedList, Formatting.Indented);
-        File.WriteAllText(filePath, json);
+        File.WriteAllText(Constants.FILE_PATH_PLAYERSTAT, json);
     }
 
+    public void UploadToFirebase()
+    {
+        SaveCurrentLevelsToJson();
+        GameManager.Instance.serverManager.UploadPlayerStatFromLocal();
+    }
+
+   
 }
+
