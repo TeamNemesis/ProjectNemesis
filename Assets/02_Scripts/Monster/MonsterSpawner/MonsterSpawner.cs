@@ -255,8 +255,6 @@ public class MonsterSpawner : MonoBehaviour
             monsterbase.SetEliteMaxHealth(roomNumber);
             monsterbase.OnDieEvent += () => OnMonsterDeath(spawnedMonster);
         }
-        EventBus.SpawnedMonster = monsterbase;
-        Debug.Log("Elite Monster Spawned: " + spawnedMonster.name);
     }
 
     /// <summary>
