@@ -21,12 +21,19 @@ public class Omega_X7 : MonsterBase
 
     [Header("Prefabs")]
     [SerializeField] private PoolableObject missilePrefab;
-    [SerializeField] private PoolableObject eliteBulletPrefab;
+    [SerializeField] private PoolableObject laserTurretPrefab;
     [SerializeField] private PoolableObject shotgunDecalPrefab; // 샷건 범위 표시 프리팹
+    [SerializeField] private PoolableObject iceTankPrefab;
 
     [Header("CoolTimes")]
     [SerializeField] private float shotgunttackCoolTime = 5f;
     [SerializeField] private float missileAttackCoolTime = 7f;
+    [SerializeField] private float laserTurretSpawnCoolTime = 30f;
+
+    [Header("Local Stats")]
+    private bool _isShotgunAttacking = false;
+    private bool _isMissileAttacking = false;
+    private bool _isIceTankSpawning = false;
 
     private float lastHealthCheckThreshold = 1f;
     private bool _isPhase2 = false;
@@ -37,6 +44,7 @@ public class Omega_X7 : MonsterBase
         CoolTimeController();
         if (isDead || _target == null) return;
         if (isStunned) return;
+        LookAtPlayer();
 
         switch (baseState)
         {
@@ -44,10 +52,7 @@ public class Omega_X7 : MonsterBase
                 HandleIdle();
                 break;
             case MonsterState.Attack:
-                if (!_isAttacking)
-                {
-                    TryUseSkill();
-                }
+                TryUseSkill();
                 break;
             case MonsterState.Die:
                 Die();
@@ -65,15 +70,121 @@ public class Omega_X7 : MonsterBase
         }
     }
 
+    #region 레이저 터렛 스폰
+    private IEnumerator SpawnLaserTurret()
+    {
+        _isAttacking = true;
+
+        // 터렛 스폰 위치 계산 (본체 기준 상대 좌표)
+        Vector3 leftBottomSpawnPos = transform.position + new Vector3(-15, 0, -15);
+        Vector3 rightBottomSpawnPos = transform.position + new Vector3(15, 0, -15);
+        Vector3 upSpawnPos = transform.position + new Vector3(0, 0, 15);
+
+        // 왼쪽 아래 터렛 스폰
+        GameObject leftBottomTurretObj = GameManager.Instance.PoolManager.GetFromPool(
+            laserTurretPrefab,
+            leftBottomSpawnPos,
+            Quaternion.identity
+        );
+
+        // 오른쪽 아래 터렛 스폰
+        GameObject rightBottomTurretObj = GameManager.Instance.PoolManager.GetFromPool(
+            laserTurretPrefab,
+            rightBottomSpawnPos,
+            Quaternion.identity
+        );
+
+        // 위쪽 터렛 스폰
+        GameObject upTurretObj = GameManager.Instance.PoolManager.GetFromPool(
+            laserTurretPrefab,
+            upSpawnPos,
+            Quaternion.identity
+        );
+
+        // 쿨타임 리셋
+        laserTurretSpawnCoolTime = 30f;
+
+        _isAttacking = false;
+
+        yield return null; // 코루틴 형식 유지
+    }
+    #endregion
+
+    #region 아이스 탱크 스폰
+    private IEnumerator SpawnIceTank()
+    {
+        // 아이스 탱크 스폰 시작
+        _isIceTankSpawning = true;
+        bool previousAttackingState = _isAttacking;
+        _isAttacking = true;
+
+        // 아이스 탱크 스폰 위치 계산
+        Vector3 leftTopSpawnPos = transform.position + new Vector3(-15, 0, 15);
+        Vector3 rightTopSpawnPos = transform.position + new Vector3(15, 0, 15);
+        Vector3 bottomSpawnPos = transform.position + new Vector3(0, 0, -15);
+
+        // 아이스 탱크 스폰 및 리스트에 저장
+        List<GameObject> spawnedIceTanks = new List<GameObject>();
+
+        GameObject leftTopIceTank = GameManager.Instance.PoolManager.GetFromPool(
+            iceTankPrefab,
+            leftTopSpawnPos,
+            Quaternion.identity
+        );
+        spawnedIceTanks.Add(leftTopIceTank);
+
+        GameObject rightTopIceTank = GameManager.Instance.PoolManager.GetFromPool(
+            iceTankPrefab,
+            rightTopSpawnPos,
+            Quaternion.identity
+        );
+        spawnedIceTanks.Add(rightTopIceTank);
+
+        GameObject bottomIceTank = GameManager.Instance.PoolManager.GetFromPool(
+            iceTankPrefab,
+            bottomSpawnPos,
+            Quaternion.identity
+        );
+        spawnedIceTanks.Add(bottomIceTank);
+
+        // 10초 대기
+        yield return new WaitForSeconds(10f);
+
+        // 10초 후 남아있는 아이스 탱크 개수 확인
+        int survivingIceTankCount = 0;
+        foreach (GameObject iceTank in spawnedIceTanks)
+        {
+            if (iceTank != null && iceTank.activeInHierarchy)
+            {
+                // 남아있는 탱크는 풀로 반환
+                GameManager.Instance.PoolManager.ReleaseToPool(iceTank);
+                survivingIceTankCount++;
+            }
+        }
+
+        // 생존한 아이스 탱크 수만큼 보스 데미지 영구 증가 (각 30%)
+        if (survivingIceTankCount > 0)
+        {
+            float damageMultiplier = 1f + (survivingIceTankCount * 0.3f);
+            shotgunDamage *= damageMultiplier;
+
+            Debug.Log($"Boss damage increased! Surviving Ice Tanks: {survivingIceTankCount}, New Shotgun Damage: {shotgunDamage}");
+        }
+
+        _isAttacking = previousAttackingState;
+        _isIceTankSpawning = false; // 아이스 탱크 스폰 완료
+    }
+    #endregion
+
     #region 샷건 패턴 코루틴
     private IEnumerator ShotgunAttack()
     {
-        _isAttacking = true;
+        _isShotgunAttacking = true;
 
         // 플레이어 방향 계산
         if (_target == null)
         {
-            _isAttacking = false;
+            _isShotgunAttacking = false;
             baseState = MonsterState.Idle;
             yield break;
         }
@@ -111,8 +222,7 @@ public class Omega_X7 : MonsterBase
         // 쿨타임 리셋
         shotgunttackCoolTime = 5f;
 
-        _isAttacking = false;
-        baseState = MonsterState.Idle;
+        _isShotgunAttacking = false;
     }
 
     private void PerformShotgunHitscan(Vector3 attackOrigin, Vector3 attackDirection)
@@ -140,7 +250,7 @@ public class Omega_X7 : MonsterBase
     #region 미사일 패턴 코루틴
     private IEnumerator MissileAttack()
     {
-        _isAttacking = true;
+        _isMissileAttacking = true;
 
         // 2방향 벡터 정의 (X-Z 평면)
         Vector3[] directions = new Vector3[]
@@ -167,8 +277,7 @@ public class Omega_X7 : MonsterBase
         // 쿨타임 리셋
         missileAttackCoolTime = 7f;
 
-        _isAttacking = false;
-        baseState = MonsterState.Idle;
+        _isMissileAttacking = false;
     }
     #endregion
 
@@ -179,6 +288,8 @@ public class Omega_X7 : MonsterBase
             shotgunttackCoolTime -= Time.deltaTime;
         if (missileAttackCoolTime > 0)
             missileAttackCoolTime -= Time.deltaTime;
+        if (laserTurretSpawnCoolTime > 0)
+            laserTurretSpawnCoolTime -= Time.deltaTime;
     }
     #endregion
 
@@ -188,13 +299,22 @@ public class Omega_X7 : MonsterBase
         // 사용 가능한 스킬 코루틴 리스트
         List<IEnumerator> availableSkills = new List<IEnumerator>();
 
-        if (shotgunttackCoolTime <= 0)
+        // 샷건은 페이즈2 진입 후 + 아이스 탱크 스폰 완료 후에만 사용 가능
+        if (shotgunttackCoolTime <= 0 && !_isShotgunAttacking && !_isIceTankSpawning && _isPhase2)
         {
             availableSkills.Add(ShotgunAttack());
         }
-        if (missileAttackCoolTime <= 0)
+
+        // 미사일은 항상 사용 가능
+        if (missileAttackCoolTime <= 0 && !_isMissileAttacking)
         {
             availableSkills.Add(MissileAttack());
+        }
+
+        // 레이저 터렛은 _isAttacking이 false일 때만 사용 가능 (다른 중요 패턴과 겹치지 않도록)
+        if (laserTurretSpawnCoolTime <= 0 && !_isAttacking)
+        {
+            availableSkills.Add(SpawnLaserTurret());
         }
 
         // 사용 가능한 스킬이 있으면 랜덤으로 선택
@@ -203,8 +323,9 @@ public class Omega_X7 : MonsterBase
             int randomIndex = Random.Range(0, availableSkills.Count);
             StartCoroutine(availableSkills[randomIndex]);
         }
-        else
+        else if (!_isShotgunAttacking && !_isMissileAttacking)
         {
+            // 모든 공격이 끝났고 쿨타임 중일 때만 Idle로 전환
             baseState = MonsterState.Idle;
         }
     }
@@ -216,10 +337,13 @@ public class Omega_X7 : MonsterBase
 
         float healthRatio = (float)currentHealth / (float)maxHealth;
 
-        // 체력 임계값을 넘었을 때만 체크
+        // 체력 70% 이하로 떨어졌을 때 아이스 탱크 스폰 (한 번만)
         if (!_isPhase2 && healthRatio <= 0.7f && lastHealthCheckThreshold > 0.7f)
         {
             _isPhase2 = true;
+
+            // 아이스 탱크 스폰 패턴 시작
+            StartCoroutine(SpawnIceTank());
         }
 
         lastHealthCheckThreshold = healthRatio;
