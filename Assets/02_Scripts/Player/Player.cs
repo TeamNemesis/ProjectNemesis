@@ -300,7 +300,7 @@ public class Player : MonoBehaviour
     }
     #endregion
 
-    #region 이동 관련 공개 메서드 (기존 로직 유지)
+    #region 이동 관련 공개 함수들
     public void SetToIdle()
     {
         _stateMachine.ChangeState(PlayerStateType.Idle);
@@ -314,6 +314,14 @@ public class Player : MonoBehaviour
 
     public void StopMove()
     {
+        if (EventBus.IsColosseumRoom)
+        {
+            Vector3 cameraForward = Camera.main.transform.forward;
+            cameraForward.y = 0f;
+            cameraForward.Normalize();
+            _mover.Rotate(cameraForward);
+        }
+
         _mover.Move(Vector3.zero);
         _animator.OnMove(0f);
     }

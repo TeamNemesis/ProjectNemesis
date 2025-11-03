@@ -87,7 +87,7 @@ public class PlayerGrenadeAttacker : MonoBehaviour, IAttacker
     {
         Vector3 start = grenade.transform.position;
         float elapsed = 0f;
-
+        
         float distance = Vector3.Distance(new Vector3(start.x, 0f, start.z), new Vector3(target.x, 0f, target.z));
 
         float tDist = Mathf.InverseLerp(closeDistance, farDistance, distance);

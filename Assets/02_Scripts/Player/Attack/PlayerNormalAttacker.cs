@@ -8,6 +8,7 @@ using UnityEngine;
 /// </summary>
 public abstract class PlayerNormalAttacker : MonoBehaviour, IAttacker
 {
+    [SerializeField] protected Player _player;
     [SerializeField] protected bool _isAttacking = false;
     public abstract WeaponType WeaponType { get; }
 
@@ -16,6 +17,11 @@ public abstract class PlayerNormalAttacker : MonoBehaviour, IAttacker
 
     // 공격 중인지 표시 (파생 클래스에서 보호 수준으로 변경 가능)
     public bool IsAttacking => _isAttacking;
+
+    void Awake()
+    {
+        _player = GetComponentInParent<Player>();
+    }
 
     /// <summary>
     /// Player가 호출하는 진입점.
@@ -33,8 +39,9 @@ public abstract class PlayerNormalAttacker : MonoBehaviour, IAttacker
     protected virtual void StartAttack()
     {
         _isAttacking = true;
-        OnAttackStarted?.Invoke();
+
         Attack();
+        OnAttackStarted?.Invoke();
     }
 
     // 파생 클래스가 구현: 애니메이션 트리거, 발사, 콤보 로직 등
