@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 6932129022313556283}
   - component: {fileID: 6557108796912328702}
   - component: {fileID: 5707644572232838547}
+  - component: {fileID: 2639110958980148813}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -66,11 +67,11 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: -10
+  near clip plane: 0.01
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 15
+  orthographic size: 10
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -145,15 +146,40 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6686156600494389063}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ab192263cbe709a4bbb8b1540ad43ca3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minX: -10
-  maxX: 10
-  minZ: -30
-  maxZ: 10
+  minX: -30
+  maxX: 30
+  minZ: -50
+  maxZ: 30
   obstacleMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &2639110958980148813
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6686156600494389063}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f952f8878a15d3a40a0a0f58bde84f89, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _offset: {x: 0, y: 15, z: -15}
+  _cameraSpeed: 5
+  _minX: -30
+  _maxX: 30
+  _minZ: -50
+  _maxZ: 50
+  _transparentAlpha: 0.1
+  _obstacleMask:
+    serializedVersion: 2
+    m_Bits: 1975
+  _useBoxOverlap: 1
+  _paddingFactor: 1.05
+  _target: {fileID: 0}

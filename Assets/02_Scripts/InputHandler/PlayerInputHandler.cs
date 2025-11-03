@@ -15,7 +15,7 @@ public class PlayerInputHandler : MonoBehaviour
     [SerializeField] Camera mainCam;               // 메인 카메라 참조
     [SerializeField] LayerMask _groundLayer;        // Ground 레이어 마스크
 
-    public event Action<Vector2> OnMoveInput;        // 이동 입력 이벤트
+    public event Action<Vector3> OnMoveInput;        // 이동 입력 이벤트
     
     public event Action OnDashInput;                 // 대시 입력 이벤트
     public event Action OnInteractInput;             // 상호작용 입력 이벤트
@@ -26,7 +26,7 @@ public class PlayerInputHandler : MonoBehaviour
     public event Action OnSpecialAttackInput;        // 특수공격 입력 이벤트
     public event Action OnSpecialAttackInputCanceled;   // 특수공격 입력 종료 이벤트
 
-    Vector2 _moveDir;  // 이동 입력을 저장할 변수
+    Vector3 _moveDir;  // 이동 입력을 저장할 변수
     Coroutine _holdAttackRoutine; // 일반공격 입력 코루틴 참조
 
     private void Awake()
@@ -64,6 +64,7 @@ public class PlayerInputHandler : MonoBehaviour
         actionMap["GrenadeAttack"].started -= OnGrenadeAttack;
         actionMap["GrenadeAttack"].canceled -= OnGrenadeAttack;
         actionMap["SpecialAttack"].started -= OnSpecialAttack;
+        actionMap["SpecialAttack"].canceled -= OnSpecialAttack;
     }
 
     private void Update()
@@ -79,12 +80,13 @@ public class PlayerInputHandler : MonoBehaviour
     { 
         if(value.performed)
         {
-            _moveDir = value.ReadValue<Vector2>();
+            Vector2 moveDir = value.ReadValue<Vector2>();
+            _moveDir = new Vector3(moveDir.x, 0, moveDir.y);
             //Debug.Log($"이동 입력받음: {_moveDir}");
         }
         else if (value.canceled)
         {
-            _moveDir = Vector2.zero;
+            _moveDir = Vector3.zero;
             //Debug.Log("이동 입력 멈춤");
         }
     }

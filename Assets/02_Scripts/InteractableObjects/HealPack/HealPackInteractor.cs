@@ -13,5 +13,6 @@ public class HealPackInteractor : RewardInteractableObject
         // Heal이 가능한 대상인지 확인하는 것이 더 좋을 수 있음
         _player.gameObject.GetComponent<PlayerModel>().Heal(50);
         OnRewardGiven?.Invoke();
+        GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
     }
 }

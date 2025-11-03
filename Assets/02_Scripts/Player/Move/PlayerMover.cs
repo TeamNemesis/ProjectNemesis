@@ -1,53 +1,143 @@
 ﻿using UnityEngine;
 
-/// <summary>
-/// 플레이어의 이동을 담당하는 클래스
-/// </summary>
 public class PlayerMover : MonoBehaviour
 {
-    [Header("----- 읽기 전용 -----")]
-    [SerializeField] CharacterController _characterController;  // 캐릭터 컨트롤러 컴포넌트 참조
-    [SerializeField] float _moveSpeed = 5f;                    // 이동 속도
+    [Header("References")]
+    [SerializeField] CharacterController _controller;
 
-    Vector3 _moveDir; // 이동 방향 벡터
+    [Header("Movement")]
+    [SerializeField] float _moveSpeed = 5f;
+    [SerializeField] float _rotSpeed = 720f;
 
-    public void Initialize(CharacterController characterController)
+    [Header("Gravity")]
+    [SerializeField] float _gravity = -9.81f;
+    [SerializeField] float _terminalVelocity = -50f;
+    [SerializeField] float _groundStickVelocity = -2f; // grounded일 때 약간 아래로 유지
+
+    [Header("Ground Check")]
+    [SerializeField] LayerMask _groundLayer = ~0;
+    [SerializeField] float _groundCheckDistance = 0.2f; // 캐릭터 바닥에서 얼마나 밑을 체크할지
+    [SerializeField] float _groundCheckRadius = 0.3f; // CheckSphere 반지름 (캐릭터 크기에 맞게 조정)
+
+    [Header("Coyote / Snap")]
+    [SerializeField] float _coyoteTime = 0.12f; // 바닥 사라져도 잠깐은 떨어지지 않게
+    float _coyoteTimer;
+
+    Vector3 _horizontalVelocity; // x,z 이동 속도 (월드스페이스)
+    float _verticalVelocity;
+    Quaternion _targetRotation;
+
+    void Awake()
     {
-        _characterController = characterController;
+        if (_controller == null)
+            _controller = GetComponent<CharacterController>();
+        _targetRotation = transform.rotation;
+        GameManager.Instance.PlayerStatManager.OnPlayerMoveSpeedChange += SetMoveSpeed;
     }
 
-    /// <summary>
-    /// 이동 입력을 받았을 때 호출되어 캐릭터 컨트롤러를 통해 플레이어를 움직이는 함수
-    /// </summary>
-    /// <param name="moveDir"></param>
-    public void Move(Vector2 moveDir)
+    void Update()
     {
-        // 입력된 2D 벡터를 3D 벡터로 변환 (y축은 0으로 고정)
-        _moveDir = new Vector3(moveDir.x, 0, moveDir.y).normalized;
-
-        // 이동 방향에 속도를 곱하여 최종 이동 벡터 계산
-        _characterController.Move(_moveDir * _moveSpeed * Time.deltaTime);
-        // 캐릭터의 y값이 변경되면 안되므로 고정
-        Vector3 fixedPosition = transform.position;
-        fixedPosition.y = 0f;
-        transform.position = fixedPosition;
-
-        // 플레이어가 이동 중이라면 회전 처리
-        if (_moveDir != Vector3.zero)
+        // 1) Ground 체크 (CharacterController.isGrounded 보완)
+        bool isGrounded = false;
+        if (_controller != null)
         {
-            // 이동 방향으로 플레이어 회전(바로 회전)
-            //Quaternion targetRotation = Quaternion.LookRotation(_moveDir);
-            //transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 0.1f);
-            transform.rotation = Quaternion.LookRotation(_moveDir);
+            // CharacterController.isGrounded 는 작은 엣지 케이스가 있으므로 보조 레이/스피어 체크 사용
+            Vector3 origin = transform.position + Vector3.up * 0.1f;
+            isGrounded = Physics.CheckSphere(origin + Vector3.down * (_controller.height * 0.5f - _controller.radius + 0.01f),
+                                             _groundCheckRadius, _groundLayer, QueryTriggerInteraction.Ignore)
+                         || _controller.isGrounded;
         }
+
+        // 2) 코요테 타임 처리
+        if (isGrounded)
+            _coyoteTimer = _coyoteTime;
+        else
+            _coyoteTimer -= Time.deltaTime;
+
+        bool consideredGrounded = _coyoteTimer > 0f;
+
+        // 3) 수직 속도 관리
+        if (consideredGrounded)
+        {
+            // 바닥에 붙게끔 음수 작은 값 유지 (바닥에서 떨어지지 않도록)
+            if (_verticalVelocity < 0f)
+                _verticalVelocity = _groundStickVelocity;
+        }
+        else
+        {
+            // 중력 적용
+            _verticalVelocity += _gravity * Time.deltaTime;
+            if (_verticalVelocity < _terminalVelocity)
+                _verticalVelocity = _terminalVelocity;
+        }
+
+        // 4) 총 이동 벡터 계산 및 실제 이동
+        Vector3 move = new Vector3(_horizontalVelocity.x, _verticalVelocity, _horizontalVelocity.z) * Time.deltaTime;
+        if (_controller != null)
+        {
+            _controller.Move(move);
+        }
+        else
+        {
+            transform.position += move;
+        }
+
+        // 5) 회전 보간
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, _targetRotation, _rotSpeed * Time.deltaTime);
     }
 
     /// <summary>
-    /// 플레이어의 이동 속도를 설정하는 함수
+    /// 외부에서 호출: 카메라 기준으로 변환된 world-space direction을 전달하세요.
     /// </summary>
-    /// <param name="newSpeed"></param>
-    public void SetMoveSpeed(float newSpeed)
+    public void Move(Vector3 direction)
     {
-        _moveSpeed = newSpeed;
+        // direction은 world-space(평면)라고 가정. y는 무시.
+        direction.y = 0f;
+
+        if (direction.magnitude < 0.01f)
+        {
+            _horizontalVelocity = Vector3.zero;
+            return;
+        }
+
+        _horizontalVelocity = direction.normalized * _moveSpeed;
+        _targetRotation = Quaternion.LookRotation(direction);
     }
+
+    /// <summary>
+    /// 텔레포트/리스폰 시 안전하게 위치를 옮기기 위한 유틸.
+    /// CharacterController.enabled 를 끄고 position을 설정한 후 다시 켭니다.
+    /// 그리고 수직속도 및 코요테 타이머를 리셋합니다.
+    /// </summary>
+    public void TeleportTo(Vector3 newPos)
+    {
+        if (_controller != null)
+        {
+            _controller.enabled = false;
+            transform.position = newPos;
+            _controller.enabled = true;
+        }
+        else
+        {
+            transform.position = newPos;
+        }
+
+        // 리셋: 떨어지지 않도록 약간의 붙임 속도와 타이머 초기화
+        _verticalVelocity = 0f;
+        _coyoteTimer = _coyoteTime;
+    }
+
+    // (디버그용) 바닥 체크 시각화
+    void OnDrawGizmosSelected()
+    {
+        if (_controller == null) return;
+        Gizmos.color = Color.yellow;
+        Vector3 origin = transform.position + Vector3.up * 0.1f;
+        Vector3 spherePos = origin + Vector3.down * (_controller.height * 0.5f - _controller.radius + 0.01f);
+        Gizmos.DrawWireSphere(spherePos, _groundCheckRadius);
+    }
+
+    // 필요하다면 public으로 세팅/질의 함수 추가
+    public bool IsGrounded() => _coyoteTimer > 0f;
+    public void SetMoveSpeed(float s) => _moveSpeed = s;
 }

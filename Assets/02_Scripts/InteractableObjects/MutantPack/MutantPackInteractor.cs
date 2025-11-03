@@ -13,12 +13,13 @@ public class MutantPackInteractor : RewardInteractableObject
 
     public override void Initialize()
     {
-        GameManager.Instance.UIManager.onRewardSelect += RaiseRewardGivenEvent;
+        
     }
 
     // 보상 플로우(예: UI열고 플레이어가 선택하면 확정되는 경우)
     protected override IEnumerator RewardCoroutine()
     {
+        GameManager.Instance.UIManager.onRewardSelect += RaiseRewardGivenEvent;
         // UI가 없으면 바로 적용 (폴백)
         yield return new WaitForSeconds(0.2f);
 
@@ -29,6 +30,7 @@ public class MutantPackInteractor : RewardInteractableObject
     void RaiseRewardGivenEvent()
     {
         OnRewardGiven?.Invoke();
+        GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
     }
 
     protected override void OnDisable()

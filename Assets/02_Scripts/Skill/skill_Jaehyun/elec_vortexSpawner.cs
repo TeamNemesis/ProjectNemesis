@@ -15,7 +15,7 @@ public class elec_vortexSpawner : MonoBehaviour
 
         elecvortexPrefab.transform.Find("vortex_Range").localScale = new Vector3(radius*2, radius*2, radius*2);
 
-        vortex.Radius = radius_magnet;
+        vortex.PullRadius = radius_magnet;
 
         vortex.Damage = damage;
 

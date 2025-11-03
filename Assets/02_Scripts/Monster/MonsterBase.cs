@@ -108,7 +108,7 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
         baseState = MonsterState.Idle;
 
         // === 컴포넌트 초기화 ===
-        agent = GetComponent<NavMeshAgent>();
+        agent = GetComponentInChildren<NavMeshAgent>();
         if (agent != null && agent.isOnNavMesh)
         {
             agent.enabled = true;
@@ -128,13 +128,13 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
         debuffHandler.InitializeMonster(agent);
 
         // === 물리 초기화 (넉백 관련) ===
-        monsterRigidbody = GetComponent<Rigidbody>();
+        monsterRigidbody = GetComponentInChildren<Rigidbody>();
         if (monsterRigidbody != null)
         {
             monsterRigidbody.isKinematic = true;
         }
 
-        monsterCollider = GetComponent<Collider>();
+        monsterCollider = GetComponentInChildren<Collider>();
 
         // === 코루틴 정리 ===
         if (_knockBackCoroutine != null)

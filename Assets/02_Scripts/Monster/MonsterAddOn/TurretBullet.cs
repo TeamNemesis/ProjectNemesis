@@ -89,9 +89,10 @@ public class TurretBullet : PoolableObject
             }
             GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
         }
+        
         else
         {
-            if (lifeTimeCoroutine != null)
+            if (lifeTimeCoroutine != null )
             {
                 StopCoroutine(lifeTimeCoroutine);
                 lifeTimeCoroutine = null;

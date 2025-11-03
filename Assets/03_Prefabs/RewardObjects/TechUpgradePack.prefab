@@ -12,10 +12,10 @@ GameObject:
   - component: {fileID: 7667934807130172351}
   - component: {fileID: 6852761740100525567}
   - component: {fileID: 7244223153070222510}
-  - component: {fileID: -3143644292241591165}
   - component: {fileID: 5969187396448914151}
   - component: {fileID: -7490245269174704584}
   - component: {fileID: 898148617933432886}
+  - component: {fileID: -3193260685967631627}
   m_Layer: 6
   m_Name: TechUpgradePack
   m_TagString: Untagged
@@ -113,22 +113,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0.5, z: 0}
---- !u!114 &-3143644292241591165
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4939083516330407042}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 52debbd6a3c04f44bb26b94b126f1021, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _guidePoint: {fileID: 4517807865614754762}
-  _rewardTitle: "\uAE30\uC220 \uC5C5\uADF8\uB808\uC774\uB4DC \uD329"
-  _rewardInstruction: "E : \uAE30\uC220 \uC5C5\uADF8\uB808\uC774\uB4DC"
-  _techItem: {fileID: -7490245269174704584}
 --- !u!114 &5969187396448914151
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -165,6 +149,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc722e1497ebce346b87739747660c61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &-3193260685967631627
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4939083516330407042}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88d0023d8c4fdf240a9e19dd214c1f0c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _guidePoint: {fileID: 4517807865614754762}
+  _rewardTitle: "\uAE30\uC220 \uC5C5\uADF8\uB808\uC774\uB4DC \uD329"
+  _rewardInstruction: "100\uD06C\uB808"
+  _techItem: {fileID: -7490245269174704584}
+  _price: 100
 --- !u!1 &6843297556739107668
 GameObject:
   m_ObjectHideFlags: 0

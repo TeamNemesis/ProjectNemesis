@@ -11,5 +11,6 @@ public class ChromeInteractor : RewardInteractableObject
         yield return new WaitForSeconds(0.01f);
         GameManager.Instance.CurrencyManager.AddChrome(10);
         OnRewardGiven?.Invoke();
+        GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
     }
 }
