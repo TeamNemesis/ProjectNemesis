@@ -2689,6 +2689,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a68aac929387c6479cd349d26dd843c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _player: {fileID: 0}
   _isAttacking: 0
 --- !u!4 &505281492303754430
 Transform:
@@ -6413,6 +6414,8 @@ MonoBehaviour:
   _hpText: {fileID: 2830494881868050778}
   _goldText: {fileID: 1434030574608801828}
   _chromeText: {fileID: 8418758573808686476}
+  _grenadeCooltimeSlider: {fileID: 7609322574514149956}
+  _grenadeCountText: {fileID: 7653642456168025742}
   _interactionPanel: {fileID: 2733019396674896751}
   _interactionTitleText: {fileID: 1067047553362896306}
   _interactionInstructionText: {fileID: 4128513426684580196}
@@ -6974,6 +6977,7 @@ MonoBehaviour:
     m_Bits: 1975
   _useBoxOverlap: 1
   _paddingFactor: 1.05
+  _fadeSpeed: 5
   _target: {fileID: 0}
 --- !u!1 &2645086318189176403
 GameObject:
@@ -8556,15 +8560,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e11405ac3bb6b34d8bf1bbf8d173135, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  grenadePrefab: {fileID: 0}
-  explodeCircle: {fileID: 0}
+  _grenadePath: Prefabs/Bullet/Grenade
+  _explodeCirclePath: Prefabs/Effect/ExplodeCircle
   travelTime: 1
-  travelSpeed: 30
-  explosionRadius: 3
-  explosionDamage: 30
-  enemyLayer:
-    serializedVersion: 2
-    m_Bits: 0
+  _coolTime: 10
+  _timer: 0
+  _maxCount: 3
+  _currentCount: 0
   maxParabolaHeight: 15
   minParabolaHeight: 10
   closeDistance: 2
@@ -11071,8 +11073,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a7ceaed8ab002c4c8bf91a329a9ec1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isAttacking: 0
   _player: {fileID: 0}
+  _isAttacking: 0
   _maxCombo: 3
   _comboInputWindow: 0.5
   _currentCombo: 0
@@ -12613,6 +12615,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1024
   visualLifetime: 0.25
+  _firePoint: {fileID: 0}
 --- !u!1 &5294432250218724010
 GameObject:
   m_ObjectHideFlags: 0
@@ -14136,6 +14139,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d275a53a0d5f21747b98724b7c533980, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _player: {fileID: 0}
   _isAttacking: 0
   fallbackEnd: 0.05
   _firePoint: {fileID: 0}
@@ -17919,6 +17923,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 6408095085314632436, guid: 11fc0d2106e543445b031e2a458a0bfb, type: 3}
   m_PrefabInstance: {fileID: 7609322574514149954}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7609322574514149956 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4124083555473878819, guid: 11fc0d2106e543445b031e2a458a0bfb, type: 3}
+  m_PrefabInstance: {fileID: 7609322574514149954}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &7609728941379449641
 Transform:
   m_ObjectHideFlags: 0
@@ -18164,6 +18179,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 7277845455412194706, guid: 35306799248d93944b5bff033751ab8e, type: 3}
   m_PrefabInstance: {fileID: 7653642456168025740}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7653642456168025742 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4695318703419437913, guid: 35306799248d93944b5bff033751ab8e, type: 3}
+  m_PrefabInstance: {fileID: 7653642456168025740}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &7656774683040967500
 Transform:
   m_ObjectHideFlags: 0
@@ -20161,6 +20187,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f88eea1a57520f4b8ee9f12a938d446, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxDistance: 20
+  moveSpeed: 25
+  stopDistance: 1.5
+  grappleMask:
+    serializedVersion: 2
+    m_Bits: 0
+  line: {fileID: 0}
 --- !u!1 &8520101434144995301
 GameObject:
   m_ObjectHideFlags: 0
