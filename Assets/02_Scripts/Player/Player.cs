@@ -464,6 +464,7 @@ public class Player : MonoBehaviour
     public void HandleGrenade(Vector3 mousePos)
     {
         _grenadeAttacker.SetMousePos(mousePos);
+        _grenadeAttacker.RequestAttack();
     }
 
     #region 상호작용 처리 (기존 로직)
