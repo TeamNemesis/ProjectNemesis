@@ -962,6 +962,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 605253879375314054, guid: 926b1bbd08fdeee4c9b07a99cc1ff7c4, type: 3}
+      propertyPath: _normalAttackInterval
+      value: 0.05
+      objectReference: {fileID: 0}
     - target: {fileID: 4091405947727495476, guid: 926b1bbd08fdeee4c9b07a99cc1ff7c4, type: 3}
       propertyPath: m_Name
       value: InputHandler

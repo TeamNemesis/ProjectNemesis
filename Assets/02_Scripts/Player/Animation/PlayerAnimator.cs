@@ -33,6 +33,7 @@ public class PlayerAnimator : MonoBehaviour
     public void OnNormalAttack()
     {
         _animator.SetTrigger(Constants.ANIPARAM_ONNORMALATTACK);
+        Debug.LogWarning("PlayerAnimator: OnNormalAttack triggered.");
     }
 
     public void OnSpecialAttack()
