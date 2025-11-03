@@ -1,43 +1,105 @@
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
 
-/// <summary>
-/// 구매할 수 있는 아이템은 수리키트, 기술, 업그레이드 키트, 돌연변이 등이다.
-/// 구매를 원하는 아이템과 상호작용 하면 아이템을 습득한다.
-/// 매 상점에 입점되는 항목은 4개가 주어지며
-/// 반드시 수리키트와 랜덤한 회사의 기술을 하나 이상 포함한다.
-/// 중복된 항목은 나오지 않는다. (수리키트가 2개 나오지는 않음. 기술은 서로 다른 기술로 2개 가능)
-/// 상점에서 아이템을 구매하면 해당 아이템은 매진되며, 해당 방에서는 다시 구매할 수 없다. 
-/// </summary>
 public class ShopRoom : Room
 {
-    [SerializeField] float _techSelectChance = 0.4f; // 기술 선택 보상이 나올 확률
-    [SerializeField] float _upgradePackChance = 0.4f; // 업그레이드 팩 보상이 나올 확률
-    [SerializeField] float _mutantChance = 0.1f; // 돌연변이 보상이 나올 확률
+    Dictionary<ShopItemType, string> _shopItemPathMap = new()
+    {
+        { ShopItemType.MutantPack , "Prefabs/ShopItems/MutantPack" },
+        {ShopItemType.HealPack , "Prefabs/ShopItems/HealPack" },
+        {ShopItemType.TechSelectPack , "Prefabs/ShopItems/TechSelectPack" },
+        {ShopItemType.TechUpgradePack , "Prefabs/ShopItems/TechUpgradePack" },
+    };
 
-    //Dictionary<ShopItemType, string> _shopItemMap = new Dictionary<ShopItemType, string>()
-    //{
-    //    {ShopItemType.HealPack, Constants.RESOURCES_PATH_REWARDS + "/HealPack" },
-    //    {ShopItemType.TechSelectPack_Company1, Constants.RESOURCES_PATH_REWARDS + "/TechSelectPack_Company1" },
-    //    {ShopItemType.TechSelectPack_Company2, Constants.RESOURCES_PATH_REWARDS + "/TechSelectPack_Company2" },
-    //    {ShopItemType.TechSelectPack_Company3, Constants.RESOURCES_PATH_REWARDS + "/TechSelectPack_Company3" },
-    //    {ShopItemType.TechSelectPack_Company4, Constants.RESOURCES_PATH_REWARDS + "/TechSelectPack_Company4" },
-    //    {ShopItemType.TechSelectPack_Company5, Constants.RESOURCES_PATH_REWARDS + "/TechSelectPack_Company5" },
-    //    {ShopItemType.UpgradePack, Constants.RESOURCES_PATH_REWARDS + "/UpgradePack" },
-    //    {ShopItemType.Mutant, Constants.RESOURCES_PATH_REWARDS + "/Mutant" },
-    //};
+    Dictionary<TechSelectPackType, string> _techSelectPackPathMap = new()
+    {
+        {TechSelectPackType.Company1, "Prefabs/ShopItems/TechSelectPack_Company1" },
+        {TechSelectPackType.Company2, "Prefabs/ShopItems/TechSelectPack_Company2" },
+        {TechSelectPackType.Company3, "Prefabs/ShopItems/TechSelectPack_Company3" },
+        {TechSelectPackType.Company4, "Prefabs/ShopItems/TechSelectPack_Company4" },
+        {TechSelectPackType.Company5, "Prefabs/ShopItems/TechSelectPack_Company5" },
+    };
+
+    public override void Initialize(RoomInfo roomInfo)
+    {
+        base.Initialize(roomInfo);
+        SpawnReward();
+        RewardSelectionFinished();
+    }
 
     public override IInteractable[] SpawnReward()
     {
-        throw new System.NotImplementedException();
+        ShopItemType[] selectedTypes = DecideShopItems(4);
+        List<IInteractable> spawnedItems = new List<IInteractable>();
+        for (int i = 0; i < selectedTypes.Length; i++)
+        {
+            ShopItemType itemType = selectedTypes[i];
+            if (!_shopItemPathMap.TryGetValue(itemType, out string prefabPath))
+            {
+                Debug.LogWarning($"ShopRoom.SpawnReward: 아이템 타입 {itemType}에 대한 프리팹 경로를 찾을 수 없습니다.");
+                continue;
+            }
+            GameObject itemPrefab = Resources.Load<GameObject>(prefabPath);
+            if (itemPrefab == null)
+            {
+                Debug.LogWarning($"ShopRoom.SpawnReward: 경로 '{prefabPath}'에서 아이템 프리팹을 로드할 수 없습니다.");
+                continue;
+            }
+            Transform spawnPoint = _rewardSpawnPoints.Length > i ? _rewardSpawnPoints[i] : _rewardSpawnPoints[0];
+            GameObject itemInstance = Instantiate(itemPrefab, spawnPoint.position, spawnPoint.rotation, this.transform);
+            ShopItem shopItem = itemInstance.GetComponent<ShopItem>();
+            if (shopItem == null)
+            {
+                Debug.LogWarning($"ShopRoom.SpawnReward: 인스턴스화된 오브젝트에 ShopItem 컴포넌트가 없습니다.");
+                continue;
+            }
+            // TechSelectPack인 경우, 랜덤 회사 팩으로 초기화
+            if (itemType == ShopItemType.TechSelectPack)
+            {
+                TechSelectPackType randomPackType = (TechSelectPackType)Random.Range(0, System.Enum.GetValues(typeof(TechSelectPackType)).Length);
+                if (_techSelectPackPathMap.TryGetValue(randomPackType, out string techPackPath))
+                {
+                    GameObject techPackPrefab = Resources.Load<GameObject>(techPackPath);
+                    if (techPackPrefab != null)
+                    {
+                        Destroy(itemInstance);
+                        itemInstance = Instantiate(techPackPrefab, spawnPoint.position, spawnPoint.rotation, this.transform);
+                        shopItem = itemInstance.GetComponent<ShopItem>();
+                    }
+                }
+            }
+            shopItem.Initialize();
+            spawnedItems.Add(shopItem);
+
+
+        }
+        return spawnedItems.ToArray();
     }
 
-    RewardInteractableObject[] DecideRewards(int count)
+    ShopItemType[] DecideShopItems(int count = 4)
     {
-        //// 보상 count개를 담을 배열 생성
-        //RewardInteractableObject[] rewards = new RewardInteractableObject[count];
+        List<ShopItemType> selectedTypes = new List<ShopItemType>();
+        // 4개 중 한개는 무조건 체력 회복
+        selectedTypes.Add(ShopItemType.HealPack);
 
-        throw new System.NotImplementedException();
+        // 4개 중 한개는 무조건 기술 선택 팩
+        selectedTypes.Add(ShopItemType.TechSelectPack);
 
+        // 나머지 2개는 체력 회복팩을 제외한 나머지 아이템들 중에서 랜덤 선택
+        ShopItemType[] possibleTypes = new ShopItemType[]
+        {
+            ShopItemType.TechUpgradePack,
+            ShopItemType.MutantPack,
+            ShopItemType.TechSelectPack,
+        };
+        while (selectedTypes.Count < count)
+        {
+            ShopItemType randomType = possibleTypes[Random.Range(0, possibleTypes.Length)];
+            if (!selectedTypes.Contains(randomType))
+            {
+                selectedTypes.Add(randomType);
+            }
+        }
+        return selectedTypes.ToArray();
     }
 }

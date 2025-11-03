@@ -130,13 +130,8 @@ public class NormalRoom : Room
             return System.Array.Empty<IInteractable>();
         }
 
-        // 초기화/구독 (TechSelect 초기화는 안전하게 수행)
-        if (reward is TechSelectPackInteractor techSelect && _roomInfo.TryGetTechSelect(out var techType))
-        {
-            techSelect.Initialize(techType);
-        }
-
         reward.OnRewardGiven += RewardSelectionFinished;
+        reward.Initialize();
 
         // 마지막으로 보상 참조를 배열로 담아 반환 (이 배열이 '새로운 오브젝트 생성'을 의미하는 것은 아님)
         return new IInteractable[] { reward };

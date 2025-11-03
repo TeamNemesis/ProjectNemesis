@@ -445,6 +445,7 @@ public class PlayerStatManager : MonoBehaviour
                 break;
         }
         Debug.LogError("현재 데미지 : " + damage + attackType + weaponType);
+        
         monster.GetComponent<MonsterBase>().TakeDamage(damage, attackerTransform);
     }
 

@@ -1,3 +1,4 @@
+
 using System;
 using System.Collections;
 using UnityEngine;
@@ -21,6 +22,11 @@ public abstract class RewardInteractableObject : InteractableObject
 
     public abstract event Action OnRewardGiven;
     public override event Action<IInteractable> OnInteracted;
+
+    public virtual void Initialize()
+    {
+        // 기본 구현 없음, 파생 클래스에서 필요시 오버라이드
+    }
 
     // TryInteract은 호출자에게 상호작용이 시작되었는지 알려주는 동기적 bool 반환
     public override bool TryInteract(Transform subject)

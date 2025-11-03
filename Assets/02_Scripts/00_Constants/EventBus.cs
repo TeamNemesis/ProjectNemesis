@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 /// <summary>
@@ -34,6 +35,27 @@ public static class EventBus
     {
         OnFailBuy?.Invoke(price);
     }
+
+    /// <summary>
+    /// 몬스터 넉백 시 발생하는 이벤트
+    /// </summary>
+    public static event Action<Vector3> OnMonsterKnockBack;
+
+    public static void MonsterKnockBack(Vector3 monsterPosition)
+    {
+        Debug.LogError("이벤트 호출");
+        OnMonsterKnockBack?.Invoke(monsterPosition);
+    }
+
+    /// <summary>
+    /// 유탄 폭발 이벤트
+    /// </summary>
+    public static event Action<Vector3> OnGrenadeBomb;
+    public static void GrenadeBomb(Vector3 bombPosition)
+    {
+        OnGrenadeBomb?.Invoke(bombPosition);
+    }
+
 }
 
 

@@ -70,10 +70,6 @@ public static class Constants
     /// </summary>
     public static float SKILL_ONE_SPATTACK_STACKTIME = 1f;
 
-    /// <summary>
-    /// 장판 지속 시간
-    /// </summary>
-    public static float SKILL_ONE_SPATTACK_TIME = 3f;
 
     /// <summary>
     /// 피의 갈증 힐량
@@ -121,6 +117,8 @@ public static class Constants
 
     #endregion
 
+    public const float MISSILIE_HEIGHT = 0.5f;
+
     #region Drone
 
     /// <summary>
@@ -153,18 +151,6 @@ public static class Constants
     /// 드론 콜라이더 탐색 숫자
     /// </summary>
     public static int DRONE_SEARCHNUM = 10;
-
-    #endregion
-    #region Bullet
-    /// <summary>
-    /// 드론 총알 속도
-    /// </summary>
-    public static float DRONE_BULLET_SPEED = 7f;
-
-    /// <summary>
-    /// 드론 총알 존재 시간
-    /// </summary>
-    public static float DRONE_BULLET_TIME = 5f;
 
     #endregion
 
@@ -217,6 +203,7 @@ public static class Constants
 
     #region knockBack
     public const float KNOCKBACK_COOLTIME = 5f;
+    public const float KNOCKBACK_POWER = 10f;
     #endregion
 
     #region Util

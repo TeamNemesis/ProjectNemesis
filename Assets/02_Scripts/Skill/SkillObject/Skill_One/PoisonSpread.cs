@@ -29,7 +29,7 @@ public class PoisonSpread : AreaDamageBase,IInitializePoolable
 
     public IEnumerator DestroyPoisonSpreadCoroutine()
     {
-        yield return new WaitForSeconds(Constants.SKILL_ONE_HITPOISONSPREAD_TIME);
+        yield return new WaitForSeconds(Constants.SKILL_REMAIN);
         GameManager.Instance.PoolManager.ReleaseToPoolByInterface(this);
     }
 
@@ -44,8 +44,7 @@ public class PoisonSpread : AreaDamageBase,IInitializePoolable
     {
         if(data is PoisonSpreadData skillData)
         {
-               _areaExtent = skillData.extent * GameManager.Instance.PlayerStatManager.playerAreaExtent;
-            transform.localScale = Vector3.one * _areaExtent * 2f;
+            SetAreaExtent(skillData.extent);
         }
     }
 }

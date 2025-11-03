@@ -83,6 +83,10 @@ public abstract class CharacterModelBase : PoolableObject, IDamageable
     /// <param name="plusHp"></param>
     public void Heal(int plusHp)
     {
+        if(_currentHealth == maxHealth)
+        {
+            return;
+        }
         _currentHealth += plusHp;
         if (_currentHealth > maxHealth)
         {

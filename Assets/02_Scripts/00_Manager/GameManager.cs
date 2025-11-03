@@ -59,20 +59,7 @@ public class GameManager : MonoBehaviour
             DontDestroyOnLoad(gameObject);
         }
 
-        if (_skillManger==null)
-        {
-            _skillManger = Resources.Load<SkillManager>("Prefabs/Skill/SkillManager");
-            _skillManger = Instantiate(_skillManger,transform);
-            _skillManger.name = "SkillManager";
-        }
-
-        if(_uiManager==null)
-        {
-            _uiManager = Resources.Load<UIManager>("Prefabs/Skill/UIManager");
-            _uiManager = Instantiate(_uiManager,transform);
-            _uiManager.name = "UIManager";
-            
-        }
+      
 
         
     }
@@ -80,7 +67,23 @@ public class GameManager : MonoBehaviour
 
     void Initialize()
     {
-        _instance._resourceManager.Initialize();
+
+				if (_skillManger == null)
+				{
+						_skillManger = Resources.Load<SkillManager>("Prefabs/Skill/SkillManager");
+						_skillManger = Instantiate(_skillManger, transform);
+						_skillManger.name = "SkillManager";
+						DontDestroyOnLoad(_skillManger);
+				}
+
+				if (_uiManager == null)
+				{
+						_uiManager = Resources.Load<UIManager>("Prefabs/Skill/UIManager");
+						_uiManager = Instantiate(_uiManager, transform);
+						_uiManager.name = "UIManager";
+						DontDestroyOnLoad(_uiManager);
+				}
+				_instance._resourceManager.Initialize();
         _instance._dataManager.Initialize(_instance._resourceManager);
         _skillManger.InitializeSkillManager();
         _uiManager.InitializeManager();
