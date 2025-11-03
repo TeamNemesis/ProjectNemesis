@@ -12,6 +12,7 @@ public class Omega_X7 : MonsterBase
     [Header("Missile")]
     [SerializeField] private int missileAttackCounter = 0;
     [SerializeField] private int maxMissileAttackCount = 5;
+    [SerializeField] private float misileAttackDamage = 20f;
 
     [Header("Shotgun Attack")]
     [SerializeField] private float shotgunDamage = 30f;
@@ -38,6 +39,39 @@ public class Omega_X7 : MonsterBase
     private float lastHealthCheckThreshold = 1f;
     private bool _isPhase2 = false;
 
+    [Header("Phase2 Objects")]
+    [SerializeField]private MonsterGrenade monsterGrenade;
+
+    private void Start()
+    {
+        Initialize();
+    }
+
+    public override void Initialize()
+    {
+        base.Initialize();
+
+        // MonsterGrenade 컴포넌트 찾기
+        monsterGrenade = GetComponentInChildren<MonsterGrenade>();
+
+        if (monsterGrenade == null)
+        {
+            Debug.LogError($"[Omega_X7] MonsterGrenade component not found in children! GameObject: {gameObject.name}");
+
+            // 모든 자식 오브젝트 출력
+            Transform[] children = GetComponentsInChildren<Transform>();
+            Debug.Log($"[Omega_X7] Total children count: {children.Length}");
+            foreach (Transform child in children)
+            {
+                MonsterGrenade mg = child.GetComponent<MonsterGrenade>();
+                Debug.Log($"[Omega_X7] Child: {child.name}, Has MonsterGrenade: {mg != null}");
+            }
+        }
+        else
+        {
+            Debug.Log($"[Omega_X7] MonsterGrenade found successfully on GameObject: {monsterGrenade.gameObject.name}");
+        }
+    }
 
     private void Update()
     {
@@ -168,11 +202,28 @@ public class Omega_X7 : MonsterBase
             float damageMultiplier = 1f + (survivingIceTankCount * 0.3f);
             shotgunDamage *= damageMultiplier;
 
-            Debug.Log($"Boss damage increased! Surviving Ice Tanks: {survivingIceTankCount}, New Shotgun Damage: {shotgunDamage}");
+            // 유탄 데미지도 증가
+            if (monsterGrenade != null)
+            {
+                monsterGrenade.IncreaseDamage(damageMultiplier);
+            }
+
+            Debug.Log($"[Omega_X7] {survivingIceTankCount} ice tanks survived. Damage multiplier: {damageMultiplier}x");
         }
 
         _isAttacking = previousAttackingState;
         _isIceTankSpawning = false; // 아이스 탱크 스폰 완료
+
+        // 아이스 탱크 스폰 완료 후 유탄 발사 패턴 시작 (15초마다 반복)
+        Debug.Log($"[Omega_X7] Attempting to start grenade pattern. monsterGrenade is null: {monsterGrenade == null}");
+        if (monsterGrenade != null)
+        {
+            monsterGrenade.StartGrenadePattern();
+        }
+        else
+        {
+            Debug.LogError("[Omega_X7] Cannot start grenade pattern - monsterGrenade is null!");
+        }
     }
     #endregion
 
@@ -269,6 +320,11 @@ public class Omega_X7 : MonsterBase
             spawnPos.y = 0;
 
             GameObject missileObj = GameManager.Instance.PoolManager.GetFromPool(missilePrefab, spawnPos, Quaternion.identity);
+            Missile missile = missileObj.GetComponent<Missile>();
+            if (missile != null && _target != null)
+            {
+                missile.SetAttackDamage(misileAttackDamage);
+            }
 
             attackCount++;
             yield return new WaitForSeconds(3f);
@@ -347,5 +403,16 @@ public class Omega_X7 : MonsterBase
         }
 
         lastHealthCheckThreshold = healthRatio;
+    }
+
+    protected override void Die()
+    {
+        // 유탄 발사 패턴 중지
+        if (monsterGrenade != null)
+        {
+            monsterGrenade.StopGrenadePattern();
+        }
+
+        base.Die();
     }
 }

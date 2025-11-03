@@ -43,28 +43,162 @@ public class MonsterGrenade : PoolableObject
     [SerializeField] private float smallGrenadeExplosionRadius = 2f;
     [SerializeField] private float smallGrenadeExplosionDamage = 15f;
 
+    [Header("Grenade Fire Settings")]
+    [SerializeField] private float grenadeFireInterval = 15f;  // 유탄 발사 간격
+    private bool isGrenadeActive = false;  // 유탄 발사 활성화 여부
+    private Coroutine grenadePatternCoroutine;  // 유탄 패턴 코루틴 참조
 
-    private void Start()
+    /// <summary>
+    /// 유탄 데미지 증가 (아이스 탱크 생존 수에 따라)
+    /// </summary>
+    public void IncreaseDamage(float multiplier)
     {
-        FireGrenade(transform.position + transform.forward * 5f);
+        explosionDamage *= multiplier;
+        smallGrenadeExplosionDamage *= multiplier;
+        Debug.Log($"[MonsterGrenade] Damage increased by {multiplier}x. New explosion damage: {explosionDamage}, Small grenade damage: {smallGrenadeExplosionDamage}");
     }
-    public void FireGrenade(Vector3 targetPosition)
+
+    /// <summary>
+    /// 15초마다 유탄을 발사하는 패턴 시작
+    /// </summary>
+    public void StartGrenadePattern()
     {
-        StartCoroutine(LaunchGrenade(targetPosition));
+        if (!isGrenadeActive)
+        {
+            isGrenadeActive = true;
+            grenadePatternCoroutine = StartCoroutine(GrenadePatternCoroutine());
+            Debug.Log("[MonsterGrenade] Grenade pattern started!");
+        }
+        else
+        {
+            Debug.LogWarning("[MonsterGrenade] Grenade pattern is already active!");
+        }
+    }
+
+    /// <summary>
+    /// 유탄 발사 패턴 중지
+    /// </summary>
+    public void StopGrenadePattern()
+    {
+        isGrenadeActive = false;
+        if (grenadePatternCoroutine != null)
+        {
+            StopCoroutine(grenadePatternCoroutine);
+            grenadePatternCoroutine = null;
+        }
+        Debug.Log("[MonsterGrenade] Grenade pattern stopped!");
+    }
+
+    private IEnumerator GrenadePatternCoroutine()
+    {
+        while (isGrenadeActive)
+        {
+            Debug.Log($"[MonsterGrenade] Firing grenade volley at time: {Time.time}");
+            FireGrenade();
+            yield return new WaitForSeconds(grenadeFireInterval);
+        }
+    }
+
+    public void FireGrenade()
+    {
+        // 프리팹 null 체크
+        if (grenadeObject == null)
+        {
+            Debug.LogError("[MonsterGrenade] grenadeObject prefab is not assigned!");
+            return;
+        }
+        if (explodeCircleObject == null)
+        {
+            Debug.LogError("[MonsterGrenade] explodeCircleObject prefab is not assigned!");
+            return;
+        }
+
+        // 부모 객체(Omega_X7) 위치를 중심으로 4개 구역 설정
+        Vector3 centerPos = transform.parent != null ? transform.parent.position : transform.position;
+
+        Debug.Log($"[MonsterGrenade] FireGrenade called! Center position: {centerPos}");
+
+        // 4개 구역 정의 (x: -10~10, z: -10~10)
+        // 구역 1: x(-10~0), z(0~10)   - 왼쪽 위
+        // 구역 2: x(0~10), z(0~10)    - 오른쪽 위
+        // 구역 3: x(-10~0), z(-10~0)  - 왼쪽 아래
+        // 구역 4: x(0~10), z(-10~0)   - 오른쪽 아래
+
+        for (int i = 0; i < 4; i++)
+        {
+            Vector3 randomTarget = Vector3.zero;
+
+            switch (i)
+            {
+                case 0: // 왼쪽 위
+                    randomTarget = centerPos + new Vector3(
+                        UnityEngine.Random.Range(-10f, 0f),
+                        0f,
+                        UnityEngine.Random.Range(0f, 10f)
+                    );
+                    break;
+                case 1: // 오른쪽 위
+                    randomTarget = centerPos + new Vector3(
+                        UnityEngine.Random.Range(0f, 10f),
+                        0f,
+                        UnityEngine.Random.Range(0f, 10f)
+                    );
+                    break;
+                case 2: // 왼쪽 아래
+                    randomTarget = centerPos + new Vector3(
+                        UnityEngine.Random.Range(-10f, 0f),
+                        0f,
+                        UnityEngine.Random.Range(-10f, 0f)
+                    );
+                    break;
+                case 3: // 오른쪽 아래
+                    randomTarget = centerPos + new Vector3(
+                        UnityEngine.Random.Range(0f, 10f),
+                        0f,
+                        UnityEngine.Random.Range(-10f, 0f)
+                    );
+                    break;
+            }
+
+            // 글로벌 좌표 기준 y축을 0으로 설정
+            randomTarget.y = 0f;
+
+            Debug.Log($"[MonsterGrenade] Launching grenade {i + 1} to {randomTarget}");
+            StartCoroutine(LaunchGrenade(randomTarget));
+        }
     }
 
     private IEnumerator LaunchGrenade(Vector3 targetPos)
     {
-        GameObject grenade = GameManager.Instance.PoolManager.GetFromPool(grenadeObject, transform.position + Vector3.up * 1.0f, Quaternion.identity);
+        if (grenadeObject == null)
+        {
+            Debug.LogError("[MonsterGrenade] Cannot launch grenade - grenadeObject is null!");
+            yield break;
+        }
+
+        Vector3 startPos = transform.parent != null ? transform.parent.position : transform.position;
+        startPos += Vector3.up * 1.0f;
+
+        GameObject grenade = GameManager.Instance.PoolManager.GetFromPool(grenadeObject, startPos, Quaternion.identity);
+
+        if (grenade == null)
+        {
+            Debug.LogError("[MonsterGrenade] Failed to get grenade from pool!");
+            yield break;
+        }
 
         grenade.transform.localScale = Vector3.one;
 
-        GameObject explodeRange = GameManager.Instance.PoolManager.GetFromPool(explodeCircleObject, targetPos + Vector3.up * 0.1f, Quaternion.Euler(90f, 0f, 0f));
-        AttackDecalEffect effect = explodeRange.GetComponent<AttackDecalEffect>();
-        if (effect != null)
+        if (explodeCircleObject != null)
         {
-            effect.Play(travelTime, explosionRadius);
+            GameObject explodeRange = GameManager.Instance.PoolManager.GetFromPool(explodeCircleObject, targetPos + Vector3.up * 0.1f, Quaternion.Euler(90f, 0f, 0f));
+            AttackDecalEffect effect = explodeRange?.GetComponent<AttackDecalEffect>();
+            if (effect != null)
+            {
+                effect.Play(travelTime, explosionRadius);
+            }
         }
+
         StartCoroutine(ParabolaMove(grenade, targetPos));
         yield return new WaitForSeconds(travelTime);
     }
