@@ -353,7 +353,7 @@ public class Player : MonoBehaviour
             RifleWeapon rifleWeapon = weapon as RifleWeapon;
 
             playerRifleNormalAttacker?.Initialize(this, rifleWeapon.FirePos);
-            playerRifleSpecialAttacker?.Initialize(this);
+            playerRifleSpecialAttacker?.Initialize(this, rifleWeapon.FirePos);
         }
 
         if (weapon.WeaponType == WeaponType.Blade)
@@ -466,6 +466,7 @@ public class Player : MonoBehaviour
     public void HandleGrenade(Vector3 mousePos)
     {
         _grenadeAttacker.SetMousePos(mousePos);
+        _grenadeAttacker.RequestAttack();
     }
 
     #region 상호작용 처리 (기존 로직)
