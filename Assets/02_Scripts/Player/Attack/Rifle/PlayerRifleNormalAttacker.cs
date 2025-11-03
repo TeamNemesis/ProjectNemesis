@@ -18,7 +18,6 @@ public class PlayerRifleNormalAttacker : PlayerNormalAttacker
 
     public override event Action OnAttackStarted;
 
-    Player _player;
     Coroutine _endRoutine;
 
     // Initialize로 firePoint, prefab 주입 가능

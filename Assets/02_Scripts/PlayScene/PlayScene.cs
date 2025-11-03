@@ -42,6 +42,8 @@ public class PlayScene : MonoBehaviour
         _player.playerModel.OnHpChanged += _playSceneView.UpdateHPBar;
         _player.OnInteractableDetected += _playSceneView.ShowInteractionUI;
         _player.OnInteractableMissed += _playSceneView.HideInteractionUI;
+        _player.OnGrenadeCooltimeChanged += _playSceneView.UpdateGrenadeCoolTime;
+        _player.OnGrenadeCountChanged += _playSceneView.UpdateGrenadeCount;
     }
 
     private void Start()
@@ -86,7 +88,8 @@ public class PlayScene : MonoBehaviour
         _isColosseumRoom = isColosseum;
         _cameraMover.enabled = !isColosseum;
         _cinemachineBrain.enabled = isColosseum;
-        MouseCursorLock(isColosseum);
+        SetCameraProjection(isColosseum);
+        SetMouseCursorLock(isColosseum);
     }
 
     void OnMoveInput(Vector3 moveDir)
@@ -128,7 +131,7 @@ public class PlayScene : MonoBehaviour
         _player.SetMoveInput(worldDirection);
     }
 
-    void MouseCursorLock(bool isColosseum)
+    void SetMouseCursorLock(bool isColosseum)
     {
         if (isColosseum)
         {
@@ -139,6 +142,18 @@ public class PlayScene : MonoBehaviour
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
+        }
+    }
+
+    void SetCameraProjection(bool isColosseum)
+    {
+        if (isColosseum)
+        {
+            Camera.main.orthographic = false;
+        }
+        else
+        {
+            Camera.main.orthographic = true;
         }
     }
 

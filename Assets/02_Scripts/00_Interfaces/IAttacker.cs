@@ -18,6 +18,6 @@ public interface IAttacker
     void OnAnimationFire();
     void OnAnimationEnd();
 
-    event Action AttackStarted;
-    event Action AttackEnded;
+    event Action OnAttackStarted;
+    event Action OnAttackEnded;
 }

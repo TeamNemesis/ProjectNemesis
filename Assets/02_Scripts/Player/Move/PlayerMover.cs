@@ -86,6 +86,14 @@ public class PlayerMover : MonoBehaviour
         transform.rotation = Quaternion.RotateTowards(transform.rotation, _targetRotation, _rotSpeed * Time.deltaTime);
     }
 
+    public void Rotate(Vector3 direction)
+    {
+        direction.y = 0f;
+        if (direction.magnitude < 0.01f)
+            return;
+        _targetRotation = Quaternion.LookRotation(direction);
+    }
+
     /// <summary>
     /// 외부에서 호출: 카메라 기준으로 변환된 world-space direction을 전달하세요.
     /// </summary>
@@ -101,30 +109,8 @@ public class PlayerMover : MonoBehaviour
         }
 
         _horizontalVelocity = direction.normalized * _moveSpeed;
+        
         _targetRotation = Quaternion.LookRotation(direction);
-    }
-
-    /// <summary>
-    /// 텔레포트/리스폰 시 안전하게 위치를 옮기기 위한 유틸.
-    /// CharacterController.enabled 를 끄고 position을 설정한 후 다시 켭니다.
-    /// 그리고 수직속도 및 코요테 타이머를 리셋합니다.
-    /// </summary>
-    public void TeleportTo(Vector3 newPos)
-    {
-        if (_controller != null)
-        {
-            _controller.enabled = false;
-            transform.position = newPos;
-            _controller.enabled = true;
-        }
-        else
-        {
-            transform.position = newPos;
-        }
-
-        // 리셋: 떨어지지 않도록 약간의 붙임 속도와 타이머 초기화
-        _verticalVelocity = 0f;
-        _coyoteTimer = _coyoteTime;
     }
 
     // (디버그용) 바닥 체크 시각화
@@ -137,7 +123,5 @@ public class PlayerMover : MonoBehaviour
         Gizmos.DrawWireSphere(spherePos, _groundCheckRadius);
     }
 
-    // 필요하다면 public으로 세팅/질의 함수 추가
-    public bool IsGrounded() => _coyoteTimer > 0f;
     public void SetMoveSpeed(float s) => _moveSpeed = s;
 }

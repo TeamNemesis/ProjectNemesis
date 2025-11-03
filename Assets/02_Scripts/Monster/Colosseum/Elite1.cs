@@ -194,6 +194,8 @@ public class Elite1 : MonsterBase
         // 생성
         Vector3 spawnPos = new Vector3(transform.position.x, 1f, transform.position.z) + transform.forward * 1f;
         GameObject blade = GameManager.Instance.PoolManager.GetFromPool(bladeWavePrefab, spawnPos, transform.rotation);
+        TurretBullet bulletsetting = blade.GetComponent<TurretBullet>();
+        bulletsetting.Initialize(targetTag, attackDamage, 5f, gameObject);
     }
     #endregion
 
@@ -236,7 +238,8 @@ public class Elite1 : MonsterBase
     {
         // 공격 시작: 플레이어를 바라보고 앞으로 전진
         transform.LookAt(_target);
-        transform.position += transform.forward * attackDist;
+        ////transform.position += transform.forward * attackDist;
+        //transform.Translate(Vector3.forward * attackDist);
 
         // 공격 모션 타이밍 (애니메이션 타이밍 맞추는 용도)
         yield return new WaitForSeconds(0.3f);
@@ -306,6 +309,8 @@ public class Elite1 : MonsterBase
         // 생성
         Vector3 spawnPos = new Vector3(transform.position.x, 1f, transform.position.z) + transform.forward * 1f;
         GameObject bullet = GameManager.Instance.PoolManager.GetFromPool(BulletPrefab, spawnPos, transform.rotation);
+        TurretBullet bulletsetting = bullet.GetComponent<TurretBullet>();
+        bulletsetting.Initialize(targetTag, attackDamage, 5f, gameObject);  
     }
     #endregion
 
