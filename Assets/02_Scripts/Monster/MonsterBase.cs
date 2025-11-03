@@ -172,7 +172,7 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
 
     protected void LookAtPlayer()
     {
-        Vector3 dir = (_target.position - transform.position).normalized;
+        Vector3 dir = new Vector3(_target.position.x - transform.position.x, 0 , _target.position.z - transform.position.z).normalized;
         if (dir != Vector3.zero)
         {
             Quaternion targetRot = Quaternion.LookRotation(dir);
