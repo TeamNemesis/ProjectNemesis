@@ -15,7 +15,6 @@ public class ServerManager : MonoBehaviour
 
 		public GameObject popUpPanel;
 		public TextMeshProUGUI popUpMsg;
-		public GameObject mainPanel;
 		public GameObject loginPanel;
 		public GameObject loadingPanel;
 		public Button _nextSceneBtn;
@@ -99,8 +98,6 @@ public class ServerManager : MonoBehaviour
 						await DownloadJsonToLocal(fromGameBase: false);
 
 						_nextSceneBtn.interactable = true;
-						loginPanel.SetActive(false);
-						mainPanel.SetActive(true);
 				}
 				catch (System.Exception ex)
 				{
@@ -159,7 +156,7 @@ public class ServerManager : MonoBehaviour
 
 				await dbRef.Child("playerStats").Child(currentUser.UserId).UpdateChildrenAsync(data);
 
-				ShowPopup(" JSON 파일을 성공적으로 업로드했습니다.");
+				Debug.Log(" JSON 파일을 성공적으로 업로드했습니다.");
 				loadingPanel.SetActive(false);
 		}
 
@@ -211,7 +208,7 @@ public class ServerManager : MonoBehaviour
 						string folderPath = Path.GetDirectoryName(Constants.FILE_PATH_PLAYERSTAT);
 						if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
 						File.WriteAllText(Constants.FILE_PATH_PLAYERSTAT, jsonText);
-						ShowPopup(" JSON 데이터를 성공적으로 저장했습니다.");
+						Debug.Log(" JSON 데이터를 성공적으로 저장했습니다.");
 				}
 				UploadPlayerStatFromLocal();
 				loadingPanel.SetActive(false);
