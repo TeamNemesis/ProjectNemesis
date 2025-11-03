@@ -1,79 +1,60 @@
-using UnityEngine;
+Ôªøusing UnityEngine;
 using UnityEngine.UI;
 
 public class SkillBtn : PoolableObject
 {
-		/// <summary>
-		/// πËƒ°µ» Ω∫≈≥ µ•¿Ã≈Õ
-		/// </summary>
 		private SkillData _skillData;
-		public SkillData skillData { get { return _skillData; } }
+		public SkillData skillData => _skillData;
+
+		[SerializeField] private Image _skillImage;
+		[SerializeField] private Text _skillScirpt;
+		[SerializeField] private Text _skillIDX;
+		[SerializeField] private Text _skillLevel;
 
 		public void SetSkillData(SkillData setSkillData)
 		{
 				_skillData = setSkillData;
 		}
 
-		[SerializeField]
-		private Image _skillImage;
-		[SerializeField]
-		private Text _skillScirpt;
-		[SerializeField]
-		private Text _skillIDX;
-		[SerializeField]
-		private Text _skillLevel;
-
-
 		public void SetSkillInfo(SkillData choosedSkill)
 		{
 				_skillData = choosedSkill;
 
+				// Ïñ∏Ïñ¥ Î≤àÏó≠
+				RefreshLanguage(); 
 
-
-				if (_skillScirpt != null)
-				{
-						_skillScirpt.text = choosedSkill.skillScript;
-				}
 				if (_skillImage != null)
-				{
 						_skillImage.sprite = choosedSkill.skillImagePath;
-				}
+
 				if (_skillIDX != null)
-				{
 						_skillIDX.text = choosedSkill.skillIdx.ToString();
-				}
-				if(_skillLevel !=null)
+
+				if (_skillLevel != null)
+						_skillLevel.text = $"{choosedSkill.skillLevel} / {choosedSkill.skillMaxLevel}";
+		}
+
+		/// <summary>
+		/// Ïñ∏Ïñ¥ Î≥ÄÍ≤Ω Ïãú ÌÖçÏä§Ìä∏Îßå Í∞±Ïã†
+		/// </summary>
+		public void RefreshLanguage()
+		{
+				if (_skillScirpt != null && _skillData != null)
 				{
-						_skillLevel.text = choosedSkill.skillLevel.ToString() + " / " + choosedSkill.skillMaxLevel.ToString();
+						
+						_skillScirpt.text = Constants.STRING_Korean == "ko" ? _skillData.skillScript : _skillData.skillScriptEn;
 				}
 		}
 
+		public GameObject GetGameObject() => gameObject;
 
-    public GameObject GetGameObject()
-    {
-		return gameObject;
-    }
+		public void ReleaseObject()
+		{
+				if (_skillScirpt != null) _skillScirpt.text = null;
+				if (_skillImage != null) _skillImage.sprite = null;
+				if (_skillIDX != null) _skillIDX.text = null;
+				if (_skillLevel != null) _skillLevel.text = null;
 
-    public void ReleaseObject()
-    {
-        if (_skillScirpt != null)
-        {
-            _skillScirpt.text = null;
-        }
-        if (_skillImage != null)
-        {
-            _skillImage.sprite = null;
-        }
-        if (_skillIDX != null)
-        {
-            _skillIDX.text = null;
-        }
-        if (_skillLevel != null)
-        {
-            _skillLevel.text = null;
-        }
-        _skillData = null;
-		GetComponent<Button>().onClick.RemoveAllListeners();
-
-    }
+				_skillData = null;
+				GetComponent<Button>().onClick.RemoveAllListeners();
+		}
 }
