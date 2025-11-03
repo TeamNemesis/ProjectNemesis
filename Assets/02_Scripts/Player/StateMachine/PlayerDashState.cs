@@ -35,7 +35,8 @@ public class PlayerDashState : PlayerStateBase
         _subscribed = true;
 
         // 대시 방향: 입력 벡터가 있으면 그쪽, 아니면 플레이어 앞 방향
-        Vector3 dir3 = _player.MoveInput.sqrMagnitude > 0.01f ? new Vector3(_player.MoveInput.x, 0f, _player.MoveInput.y).normalized : _player.transform.forward;
+        Vector3 dir3 = _player.MoveInput.sqrMagnitude > 0.01f ? new Vector3(_player.MoveInput.x, 0f, _player.MoveInput.z).normalized : _player.transform.forward;
+        Debug.LogError(_player.MoveInput);
 
         // 애니메이션 기반 duration 계산 시도
         float durationToUse = _dashDuration;

@@ -236,7 +236,8 @@ public class Elite1 : MonsterBase
     {
         // 공격 시작: 플레이어를 바라보고 앞으로 전진
         transform.LookAt(_target);
-        transform.position += transform.forward * attackDist;
+        //transform.position += transform.forward * attackDist;
+        transform.Translate(Vector3.forward * attackDist);
 
         // 공격 모션 타이밍 (애니메이션 타이밍 맞추는 용도)
         yield return new WaitForSeconds(0.3f);
