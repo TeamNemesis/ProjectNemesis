@@ -300,7 +300,17 @@ public class DebuffHandler : MonoBehaviour
             {
                 case Constants.DEBUFF_POISON:
                 case Constants.DEBUFF_OVERLOAD:
-                    character.TakeDamage(active.totalValue, null);          // 플레이어 모댐증 적용 요망
+                    if (character.tag == Constants.TAG_PLAYER)
+                    {
+                        float finalDamage = active.totalValue;
+                        // 플레이어 독뎀 감소 적용
+                        finalDamage /= 5f;
+                        character.TakeDamage(finalDamage);
+                    }
+                    else
+                    {
+                        character.TakeDamage(active.totalValue);
+                    }
                     break;
                 default:
                     break;

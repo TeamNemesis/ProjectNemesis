@@ -39,7 +39,6 @@ public class Omega_X7 : MonsterBase
     private float lastHealthCheckThreshold = 1f;
     private bool _isPhase2 = false;
 
-    [Header("Phase2 Objects")]
     [SerializeField]private MonsterGrenade monsterGrenade;
 
     private void Start()
@@ -303,20 +302,20 @@ public class Omega_X7 : MonsterBase
     {
         _isMissileAttacking = true;
 
-        // 2방향 벡터 정의 (X-Z 평면)
-        Vector3[] directions = new Vector3[]
-        { Vector3.right, Vector3.left};
-
         int attackCount = 0;
         int maxAttacks = 3;
 
         while (!isDead && attackCount < maxAttacks)
         {
-            // 랜덤하게 방향 선택
-            Vector3 randomDirection = directions[Random.Range(0, directions.Length)];
+            // 본체의 뒤쪽 방향 계산 (forward의 반대 방향)
+            Vector3 backwardDirection = -transform.forward;
 
-            // 선택된 방향으로 스폰 위치 계산
-            Vector3 spawnPos = transform.position + randomDirection * transform.localScale.z;
+            // 뒤쪽에서 좌우로 약간 랜덤하게 오프셋 추가
+            float sideOffset = Random.Range(-5f, 5f); // 좌우 랜덤 오프셋
+            Vector3 rightDirection = transform.right * sideOffset;
+
+            // 본체 뒤쪽 + 좌우 오프셋 위치 계산
+            Vector3 spawnPos = transform.position + backwardDirection * transform.localScale.z + rightDirection;
             spawnPos.y = 0;
 
             GameObject missileObj = GameManager.Instance.PoolManager.GetFromPool(missilePrefab, spawnPos, Quaternion.identity);
