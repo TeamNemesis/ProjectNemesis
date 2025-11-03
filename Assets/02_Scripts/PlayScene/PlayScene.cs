@@ -42,6 +42,8 @@ public class PlayScene : MonoBehaviour
         _player.playerModel.OnHpChanged += _playSceneView.UpdateHPBar;
         _player.OnInteractableDetected += _playSceneView.ShowInteractionUI;
         _player.OnInteractableMissed += _playSceneView.HideInteractionUI;
+        _player.OnGrenadeCooltimeChanged += _playSceneView.UpdateGrenadeCoolTime;
+        _player.OnGrenadeCountChanged += _playSceneView.UpdateGrenadeCount;
     }
 
     private void Start()

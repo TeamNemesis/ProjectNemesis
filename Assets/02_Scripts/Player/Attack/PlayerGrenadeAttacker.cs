@@ -8,17 +8,13 @@ using System.Collections.Specialized;
 /// </summary>
 public class PlayerGrenadeAttacker : MonoBehaviour
 {
-    //
     [SerializeField] string _grenadePath = "Prefabs/Bullet/Grenade";
     [SerializeField] string _explodeCirclePath = "Prefabs/Effect/ExplodeCircle";
-
-    [SerializeField] private GameObject grenadePrefab;
-    [SerializeField] private GameObject explodeCircle;
-    [SerializeField] private float travelTime = 1.0f;     // 유탄이 도착하는 시간
-    [SerializeField] private float travelSpeed = 30.0f;
-    [SerializeField] private float explosionRadius = 3f;  // 폭발 반경
-    [SerializeField] private float explosionDamage = 30f; // 폭발 데미지
-    [SerializeField] private LayerMask enemyLayer;        // 적 탐지용
+    [SerializeField] float travelTime = 1.0f;     // 유탄이 도착하는 시간
+    [SerializeField] float _coolTime = 10.0f;   // 쿨타임
+    [SerializeField] float _timer = 0.0f;       // 쿨타임 타이머
+    [SerializeField] int _maxCount = 3;       // 최대 소지 개수
+    [SerializeField] int _currentCount = 0;   // 현재 소지 개수
 
     Vector3 _mousePos;
 
@@ -33,16 +29,47 @@ public class PlayerGrenadeAttacker : MonoBehaviour
     [SerializeField, Tooltip("이 거리 이상이면 '멀다'로 간주")]
     private float farDistance = 10f;
 
-    private Camera mainCam;
+    public event Action<int, int> OnGrenadeCountChanged; // 현재 유탄 개수, 최대 유탄 개수
+    public event Action<float, float> OnGrenadeCooltimeChanged; // 현재 쿨타임, 최대 쿨타임
+
+    private void Update()
+    {
+        // 쿨타임 처리
+        if(_currentCount < _maxCount)
+        {
+            _timer += Time.deltaTime;
+            OnGrenadeCooltimeChanged?.Invoke(_timer, _coolTime);
+            if (_timer >= _coolTime)
+            {
+                _currentCount++;
+                _timer = 0.0f;
+                OnGrenadeCountChanged?.Invoke(_currentCount, _maxCount);
+            }
+        }
+    }
+
+    public void Initialize()
+    {
+        _currentCount = _maxCount;
+        OnGrenadeCountChanged?.Invoke(_currentCount, _maxCount);
+    }
 
     public void GrenadeAttack(Vector3 mousePos)
     {
         Debug.Log("유탄 공격 실행");
+        _currentCount--;
+        OnGrenadeCountChanged?.Invoke(_currentCount, _maxCount);
         LaunchGrenade(mousePos);
     }
 
     public bool RequestAttack()
     {
+        if(_currentCount <= 0)
+        {
+            Debug.Log("유탄이 없습니다.");
+            return false;
+        }
+        
         GrenadeAttack(_mousePos);
         return true;
     }
