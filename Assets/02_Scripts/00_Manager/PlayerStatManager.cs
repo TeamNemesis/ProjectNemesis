@@ -1,10 +1,17 @@
-﻿using System;
-using System.Security.Cryptography;
-using UnityEditor.Rendering;
+﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
+using System.IO;
 
 public class PlayerStatManager : MonoBehaviour
 {
+    private Dictionary<string,PlayerStatData> _playerStatDataDic = new Dictionary<string,PlayerStatData>();
+    public Dictionary<string, PlayerStatData> playerStatDataDic { get { return _playerStatDataDic; } }
+
+    private List<PlayerStatJsonData> _playerjsonData = new List<PlayerStatJsonData>();
+
     #region 공격력 
 
     #region 검
@@ -34,7 +41,7 @@ public class PlayerStatManager : MonoBehaviour
     /// <summary>
     /// 원거리 일반 공격력
     /// </summary>
-    private float _playerRifleAttackDamage = 20;
+    private float _playerRifleAttackDamage;
     public float playerRifleAttackDamage { get { return _playerRifleAttackDamage; } }
     public void AddPlayerRifleAttackDamage(float plusPlayerRifleAttack)
     {
@@ -44,7 +51,7 @@ public class PlayerStatManager : MonoBehaviour
     /// <summary>
     /// 원거리 특수 최소 공격력
     /// </summary>
-    private float _playerRifleSPAttackMinDamage = 100;
+    private float _playerRifleSPAttackMinDamage;
     public float playerRifleSPAttackMinDamage { get { return _playerRifleSPAttackMinDamage; } }
     public void AddPlayerRifleSPAttackMinDamage(float plusPlayerRifleSPAttackDamage)
     {
@@ -54,7 +61,7 @@ public class PlayerStatManager : MonoBehaviour
     /// <summary>
     /// 원거리 특수 공격 차지 비율
     /// </summary>
-    private float _playerRifleChargeRatio = 0f;
+    private float _playerRifleChargeRatio;
     public float playerRifleChargeRatio { get { return _playerRifleChargeRatio; } }   
     public void SetPlayerRifleChargeRatio(float chargeRatio)
     {
@@ -64,7 +71,7 @@ public class PlayerStatManager : MonoBehaviour
     /// <summary>
     /// 원거리 특수 공격 최대 차지 데미지
     /// </summary>
-    private float _playerRifleMaxChargeDamage = 150f;
+    private float _playerRifleMaxChargeDamage;
     public float playerRifleMaxChargeDamage { get { return _playerRifleMaxChargeDamage; } }
     public void SetPlayerRifleMaxChargeDamage(float maxChargeDamage)
     {
@@ -118,7 +125,7 @@ public class PlayerStatManager : MonoBehaviour
     /// <summary>
     /// 플레이어 일반 공격 데미지 계수
     /// </summary>
-    private float _playerAttackDamage = 1f;
+    private float _playerAttackDamage;
     public float playerAttackDamage { get { return _playerAttackDamage; } }
     public void AddPlayerAttackDamage(float plusDamage)
     {
@@ -132,7 +139,7 @@ public class PlayerStatManager : MonoBehaviour
     /// <summary>
     /// 플레이어 유탄 공격 데미지 계수
     /// </summary>
-    private float _playerGrenadeDamageMulti=1f;
+    private float _playerGrenadeDamageMulti;
     public float playerGrenadeDamageMulti { get { return _playerGrenadeDamageMulti; } }
     public void AddPlayerGrenadeDamageMulti(float plusGrenadeDamage)
     {
@@ -143,7 +150,7 @@ public class PlayerStatManager : MonoBehaviour
     /// <summary>
     /// 플레이어 특수 공격 데미지 계수
     /// </summary>
-    private float _playerSPAttackDamage = 1f;
+    private float _playerSPAttackDamage;
     public float playerSPAttackDamage { get { return _playerSPAttackDamage; } }
     public void AddPlayerSPAttackDamage(float plusSPAttackDamage)
     {
@@ -153,7 +160,7 @@ public class PlayerStatManager : MonoBehaviour
     /// <summary>
     /// 플레이어 특수 효과 계수
     /// </summary>
-    private float _playerSPAttackValue=1f;
+    private float _playerSPAttackValue;
     public float playerSPAttackValue { get { return _playerSPAttackValue; } }
     public void AddPlayerSPAttackValue(float plusSPValue)
     {
@@ -189,7 +196,7 @@ public class PlayerStatManager : MonoBehaviour
     /// <summary>
     /// 모든 데미지 증가 계수
     /// </summary>
-    private float _totalMultiDamage = 0f;
+    private float _totalMultiDamage;
     public float totalMultiDamage { get { return _totalMultiDamage; } }
 
     /// <summary>
@@ -205,7 +212,7 @@ public class PlayerStatManager : MonoBehaviour
     /// <summary>
     /// 플레이어 이동 속도
     /// </summary>
-    private float _playerMoveSpeed = 10f;
+    private float _playerMoveSpeed;
     public float playerMoveSpeed { get { return _playerMoveSpeed; } }
     public void AddPlayerMoveSpeed(float plusMoveSpeed)
     {
@@ -215,7 +222,7 @@ public class PlayerStatManager : MonoBehaviour
     public event Action<float> OnPlayerMoveSpeedChange;
 
 
-    private float _playerMoveSpeedMulti = 1f;
+    private float _playerMoveSpeedMulti;
     public float playerMoveSpeedMulti { get { return _playerMoveSpeedMulti; } }
     public void AddPlayerMoveSpeedMulti(float plusMoveSpeed)
     {
@@ -229,7 +236,7 @@ public class PlayerStatManager : MonoBehaviour
     /// <summary>
     /// 플레이어 대쉬 거리
     /// </summary>
-    private float _playerDashDistance = 5f;
+    private float _playerDashDistance;
     public float playerDashDistance { get { return _playerDashDistance; } }
     public void AddPlayerDashDistance(float plusDashDistance)
     {
@@ -265,7 +272,7 @@ public class PlayerStatManager : MonoBehaviour
     /// <summary>
     /// 유탄 공격력
     /// </summary>
-    private float _playerGrenadeDamage=30f;
+    private float _playerGrenadeDamage;
     public float playerGrenadeDamage { get { return _playerGrenadeDamage; } }
     public void AddPlayerGreneadeDamage(float plusGreneadeDamage)
     {
@@ -275,7 +282,7 @@ public class PlayerStatManager : MonoBehaviour
     /// <summary>
     /// 플레이어 범위 공격 범위 계수
     /// </summary>
-    private float _playerAreaExtent = 1f;
+    private float _playerAreaExtent;
     public float playerAreaExtent { get { return _playerAreaExtent; } }
     public void AddPlayerAreaExtent(float plusAreaExtent)
     {
@@ -316,7 +323,7 @@ public class PlayerStatManager : MonoBehaviour
     /// <summary>
     /// 플레이어 받는 피해 계수
     /// </summary>
-    private float _playerReduceDamagePercent = 1f;
+    private float _playerReduceDamagePercent;
     public float playerReduceDamagePercent { get { return _playerReduceDamagePercent; } }
     public void AddReduceDamagePercent(float plusReduceDamagePercent)
     {
@@ -328,7 +335,7 @@ public class PlayerStatManager : MonoBehaviour
     /// <summary>
     /// 플레이어 회피율
     /// </summary>
-    private float _playerAvoidance= 0f;
+    private float _playerAvoidance;
     public float playerAvoidance { get { return _playerAvoidance; } }
     public void AddPlayerAvoidance(float plusPlayerAvoidance)
     {
@@ -343,7 +350,7 @@ public class PlayerStatManager : MonoBehaviour
     /// <summary>
     /// 넉백 충돌 데미지
     /// </summary>
-    private float _knockBackDamage = 60f;
+    private float _knockBackDamage;
     public float knockBackDamage { get { return _knockBackDamage; } }
     public void AddKockBackDamage(float plusKnockBackDamage)
     {
@@ -353,7 +360,7 @@ public class PlayerStatManager : MonoBehaviour
     /// <summary>
     /// 넉백 충돌 데미지 계수 
     /// </summary>
-    private float _knockBackDamageMulti = 1f;
+    private float _knockBackDamageMulti;
     public float knockBackDamageMulti { get { return _knockBackDamageMulti; } }
     public void AddKockBackDamageMulti(float plusKnockBackDamageMulti)
     {
@@ -399,7 +406,7 @@ public class PlayerStatManager : MonoBehaviour
     /// <summary>
     /// 약화 추가 데미지 계수
     /// </summary>
-    private float _weakenPlusDamage = 0f;
+    private float _weakenPlusDamage;
     public float weakenPlusDamage { get { return _weakenPlusDamage; } }
     public void AddWeakenPlusDamage(float PlusWeakenDamage)
     {
@@ -465,6 +472,148 @@ public class PlayerStatManager : MonoBehaviour
 
     public void Initialize()
     {
+
+        InitPlayerStat();
+
+        foreach (var stat in _playerStatDataDic.Values)
+        {
+            InitializeStatByReflection(stat);
+        }
+
         EventBus.OnMonsterHit += TakeDamage;
+
+        _playerStatDataDic["playerHP"].SetLevel(2);
+
+        SaveCurrentLevelsFromDictionary();
     }
+
+    #region readJson
+
+    public virtual void InitPlayerStat()
+    {
+        Debug.Log("skill Initialize");
+        ReadJsonFile();
+      
+    }
+
+    public void ReadJsonFile()
+    {
+        TextAsset jsonFile = Resources.Load<TextAsset>(Constants.RESOURCES_PATH_PLAYERSTATDATA);
+        if (jsonFile == null)
+        {
+            Debug.Log("오류 : 파일 없음 " + Constants.RESOURCES_PATH_PLAYERSTATDATA);
+            return;
+        }
+        else
+        {
+            string jsonText = jsonFile.text;
+            _playerjsonData = JsonConvert.DeserializeObject<List<PlayerStatJsonData>>(jsonText);
+            InitSkillDictionary();
+        }
+
+    }
+
+    /// <summary>
+    /// 플레이어 스탯 딕셔너리 초기화
+    /// </summary>
+    public void InitSkillDictionary()
+    {
+        for (int i = 0; i < _playerjsonData.Count; i++)
+        {
+            _playerStatDataDic.Add(_playerjsonData[i].column, new PlayerStatData(_playerjsonData[i]));
+        }
+    }
+    #endregion
+
+    /// <summary>
+    /// 필드값 초기화
+    /// </summary>
+    /// <param name="statData"></param>
+    public void InitializeStatByReflection(PlayerStatData statData)
+    {
+        // Column 이름에 해당하는 private 필드 찾기
+        var field = this.GetType().GetField($"_{statData.Column}", BindingFlags.NonPublic | BindingFlags.Instance);
+
+        if (field != null && field.FieldType == typeof(float))
+        {
+            var value = statData.GetEffectiveValue();
+
+            if (value is float floatValue)
+            {
+                field.SetValue(this, floatValue);
+            }
+            else
+            {
+                Debug.LogWarning($"Column '{statData.Column}'의 값이 float이 아닙니다: {value}");
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"Column '{statData.Column}'에 해당하는 필드를 찾을 수 없거나 타입이 float이 아닙니다.");
+        }
+    }
+
+
+    public void SaveCurrentLevelsFromDictionary()
+    {
+        List<PlayerStatJsonData> updatedList = new();
+
+        foreach (var pair in _playerStatDataDic)
+        {
+            var statData = pair.Value;
+
+            if (statData.MaxLevel > 0)
+            {
+                var jsonData = new PlayerStatJsonData
+                {
+                    column = statData.Column,
+                    type = statData.Type,
+                    description = statData.Description,
+                    defaultValue = statData.DefaultValue.ToString(),
+                    upgradeValue = statData.UpgradeValue.ToString(),
+                    maxLevel = statData.MaxLevel,
+                    currentLevel = statData.CurrentLevel
+                };
+
+                updatedList.Add(jsonData);
+            }
+        }
+
+        string filePath = Constants.FILE_PATH_PLAYERSTAT;
+        string directory = Path.GetDirectoryName(filePath);
+
+        // 디렉토리가 없으면 생성
+        if (!Directory.Exists(directory))
+        {
+            Directory.CreateDirectory(directory);
+        }
+
+        // 파일이 없거나 변경된 항목이 없으면 전체 데이터로 저장
+        if (!File.Exists(filePath) || updatedList.Count == 0)
+        {
+            updatedList.Clear();
+            foreach (var pair in _playerStatDataDic)
+            {
+                var statData = pair.Value;
+
+                var jsonData = new PlayerStatJsonData
+                {
+                    column = statData.Column,
+                    type = statData.Type,
+                    description = statData.Description,
+                    defaultValue = statData.DefaultValue.ToString(),
+                    upgradeValue = statData.UpgradeValue.ToString(),
+                    maxLevel = statData.MaxLevel,
+                    currentLevel = statData.CurrentLevel
+                };
+
+                updatedList.Add(jsonData);
+            }
+        }
+
+        // JSON 저장
+        string json = JsonConvert.SerializeObject(updatedList, Formatting.Indented);
+        File.WriteAllText(filePath, json);
+    }
+
 }

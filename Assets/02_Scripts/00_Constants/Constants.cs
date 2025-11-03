@@ -197,8 +197,10 @@ public static class Constants
 
     public const string RESOURCES_PATH_SKILLTOOLTIP = "SkillData/SkillTooltip/KeywordData";
     public const string RESOURCES_PATH_SKILLTOOLTIPUI = "Prefabs/Skill/Skill_ToolTip";
-		#region Map
-		public static string RESOURCES_PATH_ROOMDATASO = "ScriptableObjects/Map/Rooms";
+    public const string RESOURCES_PATH_PLAYERSTATDATA = "SkillData/PlayerStatData";
+    public const string FILE_PATH_PLAYERSTAT = @"C:\Users\User\Desktop\ProjectNemesis\SkillData\PlayerStatData.json";
+        #region Map
+        public static string RESOURCES_PATH_ROOMDATASO = "ScriptableObjects/Map/Rooms";
     public static string RESOURCES_PATH_DOOR_PREFAB = "Prefabs/Map/Doors/Door";
     public static string RESOURCES_PATH_REWARDS = "Prefabs/Rewards";
     public static string RESOURCES_PATH_SHOPITEMS = "Prefabs/ShopItems";
