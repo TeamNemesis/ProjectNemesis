@@ -182,10 +182,6 @@ public static class Constants
 
     #endregion
 
-    #region Map Settings
-    public const int ROOMCOSTMULTIPLIER = 10;
-    #endregion
-
     #region AnimatorParameters
     public static string ANIPARAM_MOVESPEED = "MoveSpeed";
     public static string ANIPARAM_ONNORMALATTACK = "OnNormalAttack";

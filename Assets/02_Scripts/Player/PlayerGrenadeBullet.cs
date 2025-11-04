@@ -59,6 +59,14 @@ public class PlayerGrenadeBullet : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        //if (EventBus.HasMutant2)
+        //{
+        //    if (other.CompareTag(Constants.TAG_MONSTER) || other.CompareTag(Constants.)
+        //    {
+        //        return; // 적과 충돌 무시
+        //    }
+        //}
+    
         if(other.CompareTag("Ground") || other.CompareTag("Wall"))
         {
             Explode(transform.position, transform);

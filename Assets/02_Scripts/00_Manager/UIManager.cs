@@ -100,26 +100,15 @@ public class UIManager : MonoBehaviour
 				}
 		}
 
-    public void SetActiveSkillBtnPanel(bool isActive)
-    {
-        // 보상패널 활성화 상태를 이벤트버스에 설정
-        EventBus.SetIsRewardSelecting(isActive);
-		Debug.Log("현재 보상 선택 상태: " + isActive);
-        // 콜로세움이면 마우스 커서 켜주기
-        if (EventBus.IsColosseumRoom)
-        {
-            Cursor.lockState = isActive ? CursorLockMode.None : CursorLockMode.Locked;
-            Cursor.visible = isActive; // 커서 보이게/숨기기
-        }
-
-        _skillBtnPanel.SetActive(isActive);
-
-        if (!isActive)
-            onRewardSelect?.Invoke();
-    }
+		public void SetActiveSkillBtnPanel(bool isActive)
+		{
+				_skillBtnPanel.SetActive(isActive);
+				if (!isActive)
+						onRewardSelect?.Invoke();
+		}
 
 
-    public SkillBtn MakeSkillBtn()
+		public SkillBtn MakeSkillBtn()
 		{
 				SkillBtn skillBtn = GameManager.Instance.PoolManager
 						.GetFromPool(_skillChooseBtnPrefab, Vector3.zero, _skillChooseBtnPrefab.transform.rotation, _parentPanel.transform)
