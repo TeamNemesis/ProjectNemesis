@@ -167,11 +167,6 @@ public abstract class CharacterModelBase : PoolableObject, IDamageable
 
     protected virtual void Die()
     {
-        // 죽은 상태면 반환
-        if(isDead)
-        {
-            return;
-        }
         OnDieEvent?.Invoke();
         Debug.LogWarning("몬스터 죽음");
         isDead = true;
