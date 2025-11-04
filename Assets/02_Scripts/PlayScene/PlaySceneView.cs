@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.Localization.Components;
 using UnityEngine.UI;
 
 /// <summary>
@@ -18,8 +19,10 @@ public class PlaySceneView : MonoBehaviour
     [SerializeField] GameObject _interactionPanel;
     [SerializeField] TextMeshProUGUI _interactionTitleText;
     [SerializeField] TextMeshProUGUI _interactionInstructionText;
+    [SerializeField] LocalizeStringEvent localizeStringEvent;
 
-    public void Initialize()
+
+		public void Initialize()
     {
         GameManager.Instance.CurrencyManager.GetCurrentCurrency();
         HideInteractionUI();
@@ -57,7 +60,7 @@ public class PlaySceneView : MonoBehaviour
     {
         interactable.GetInteractionMessage(out string title, out string instruction);
         _interactionTitleText.text = title;
-        _interactionInstructionText.text = instruction;
+				localizeStringEvent.StringReference.SetReference("New Table", instruction);
     }
 
     public void UpdateGrenadeCoolTime(float currentCooltime, float maxCooltime)
