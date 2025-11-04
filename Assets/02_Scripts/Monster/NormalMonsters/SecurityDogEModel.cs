@@ -129,7 +129,14 @@ public class SecurityDogEModel : MonsterBase
             // NavMeshAgent 정지 및 비활성화
             agent.isStopped = true;
             agent.ResetPath();
-            yield return new WaitForSeconds(0.1f); // Agent가 완전히 멈출 시간
+
+            // IsMoving 먼저 false로
+            if (monsterAnimator != null)
+            {
+                monsterAnimator.SetBool("IsMoving", false);
+            }
+
+            yield return new WaitForSeconds(0.1f);
 
             agent.enabled = false;
 
@@ -147,21 +154,20 @@ public class SecurityDogEModel : MonsterBase
                                                RigidbodyConstraints.FreezeRotation;
             }
 
-            // 점프 대기 상태로 전환
+            // 점프 대기 애니메이션 직접 재생
             if (monsterAnimator != null)
             {
-                monsterAnimator.SetBool("IsMoving", false);
-                monsterAnimator.SetBool("IsJumpWaiting", true);
-                monsterAnimator.SetBool("IsAttacking", false);
+                Debug.Log("JumpWaiting 애니메이션 재생 시도");
+                monsterAnimator.Play("JumpWaiting"); // 애니메이션 State 이름을 직접 입력
             }
 
             yield return new WaitForSeconds(jumpPrepareTime);
 
-            // 돌진 공격 상태로 전환
+            // 돌진 공격 애니메이션 직접 재생
             if (monsterAnimator != null)
             {
-                monsterAnimator.SetBool("IsJumpWaiting", false);
-                monsterAnimator.SetBool("IsAttacking", true);
+                Debug.Log("Attack 애니메이션 재생 시도");
+                monsterAnimator.Play("Attack"); // 애니메이션 State 이름을 직접 입력
             }
 
             // 점프 방향 계산
@@ -205,12 +211,6 @@ public class SecurityDogEModel : MonsterBase
             {
                 Debug.LogError("monsterRigidbody가 null입니다!");
                 yield return new WaitForSeconds(1f);
-            }
-
-            // 애니메이션 초기화
-            if (monsterAnimator != null)
-            {
-                monsterAnimator.SetBool("IsAttacking", false);
             }
 
             // NavMeshAgent 재활성화
@@ -286,6 +286,12 @@ public class SecurityDogEModel : MonsterBase
             attackCoroutine = null;
         }
 
+        // 애니메이션을 Idle 상태로 전환
+        if (monsterAnimator != null)
+        {
+            monsterAnimator.SetBool("IsMoving", false);
+        }
+
         // Rigidbody 정리
         if (monsterRigidbody != null)
         {
@@ -302,8 +308,8 @@ public class SecurityDogEModel : MonsterBase
             monsterRigidbody.constraints = RigidbodyConstraints.None;
         }
 
-        // 약간의 대기 시간 (물리 처리 완료)
-        yield return new WaitForSeconds(0.1f);
+        // 약간의 대기 시간 (물리 처리 완료 + 멈춤 연출)
+        yield return new WaitForSeconds(0.3f);
 
         // NavMeshAgent 재활성화
         if (!agent.enabled)
