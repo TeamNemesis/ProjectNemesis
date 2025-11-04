@@ -66,6 +66,12 @@ public static class EventBus
     }
 
     public static MonsterBase SpawnedMonster { get; set; }
+
+    public static bool IsRewardSelecting = false;
+    public static void SetIsRewardSelecting(bool isSelecting)
+    {
+        IsRewardSelecting = isSelecting;
+    }
 }
 
 
