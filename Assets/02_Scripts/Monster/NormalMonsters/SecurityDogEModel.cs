@@ -137,19 +137,7 @@ public class SecurityDogEModel : MonsterBase
                                                RigidbodyConstraints.FreezeRotation;
             }
 
-            // 점프 대기 애니메이션 재생
-            if (monsterAnimator != null)
-            {
-                monsterAnimator.SetTrigger("JumpWaiting");
-            }
-
             yield return new WaitForSeconds(jumpPrepareTime);
-
-            // 돌진 공격 애니메이션 재생
-            if (monsterAnimator != null)
-            {
-                monsterAnimator.SetTrigger("Attack");
-            }
 
             // 점프 방향 계산
             Vector3 jumpDirection = (_target.position - transform.position).normalized;

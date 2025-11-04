@@ -15,9 +15,9 @@ GameObject:
   - component: {fileID: 9219750892262591685}
   - component: {fileID: 7566073503906103748}
   - component: {fileID: 4490352548413922801}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: Elite3
-  m_TagString: Monster
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -161,7 +161,6 @@ MonoBehaviour:
   player: {fileID: 0}
   agent: {fileID: 0}
   _target: {fileID: 0}
-  monsterAnimator: {fileID: 0}
   missileAttackCounter: 0
   maxMissileAttackCount: 5
   bulletLifeTime: 8
