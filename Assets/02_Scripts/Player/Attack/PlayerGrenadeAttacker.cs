@@ -62,6 +62,11 @@ public class PlayerGrenadeAttacker : MonoBehaviour
         Debug.Log("유탄 공격 실행");
         _currentCount--;
         OnGrenadeCountChanged?.Invoke(_currentCount, _maxCount);
+        if (EventBus.HasMutant1)
+        {
+            StartCoroutine(Launch3GrenadeRoutine(mousePos));
+            return;
+        }
         LaunchGrenade(mousePos);
     }
 
@@ -100,5 +105,20 @@ public class PlayerGrenadeAttacker : MonoBehaviour
         bullet.Initialize(transform, targetPos);
 
         Destroy(explodeCircle, travelTime);
+    }
+
+    /// <summary>
+    /// 돌연변이 획득 시 유탄 3발 발사하는 코루틴
+    /// </summary>
+    IEnumerator Launch3GrenadeRoutine(Vector3 targetPos)
+    {
+        int count = 0;
+        while (count < 3)
+        {
+            LaunchGrenade(targetPos);
+            count++;
+            yield return new WaitForSeconds(0.2f);  // 발사간격은 나중에 튜닝
+        }
+
     }
 }
