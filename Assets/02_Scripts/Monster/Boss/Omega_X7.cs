@@ -195,7 +195,6 @@ public class Omega_X7 : MonsterBase
 
     private void PlayShotgunEffect()
     {
-        // 간단하게 한 줄로!
         if (shotgunEffectPos1 != null) GetEffectFromPool(shotgunEffectPrefab, shotgunEffectPos1);
         if (shotgunEffectPos2 != null) GetEffectFromPool(shotgunEffectPrefab, shotgunEffectPos2);
     }
