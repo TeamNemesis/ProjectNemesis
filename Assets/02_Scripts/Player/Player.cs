@@ -49,7 +49,6 @@ public class Player : MonoBehaviour
     [Header("----- 상태 플래그 (Player가 소유) -----")]
     [SerializeField] bool _canMove;                        // 플레이어 이동 가능 여부
     [SerializeField] bool _isDashing;                      // 플레이어 대시 중 여부 (동기화됨)
-    [SerializeField] bool _isNormalAttacking;              // (동기화됨)
     [SerializeField] bool _isSpecialAttacking;             // 플레이어 특수공격 중 여부
 
     // 읽기 전용 프로퍼티로 외부 접근 제공
@@ -72,7 +71,7 @@ public class Player : MonoBehaviour
 
     // 변경: IsDashing/IsNormalAttacking는 해당 컴포넌트(실제 소유자)를 우선 참조하도록 함.
     public bool IsDashing => _dasher != null ? _dasher.IsDashing : _isDashing;
-    public bool IsNormalAttacking => _normalAttacker != null ? _normalAttacker.IsAttacking : _isNormalAttacking;
+    public bool IsNormalAttacking =>  _normalAttacker.IsAttacking;
     public bool IsSpecialAttacking => _isSpecialAttacking;
 
     #region 이벤트
@@ -226,17 +225,17 @@ public class Player : MonoBehaviour
     #region 상태 플래그 Setters (상태 Enter/Exit에서 호출)
     public void SetCanMove(bool canMove) => _canMove = canMove;
     public void SetIsDashing(bool isDashing) => _isDashing = isDashing; // 유지하되 Dasher가 권한자
-    public void SetIsNormalAttacking(bool isNormalAttacking) => _isNormalAttacking = isNormalAttacking;
     public void SetIsSpecialAttacking(bool isSpecialAttacking) => _isSpecialAttacking = isSpecialAttacking;
     #endregion
 
     #region 상태 전환 평가 및 처리
     void EvaluateTransitions()
     {
+        Debug.Log(" Player: Evaluating state transitions");
         // 1) 일반 공격 입력 처리
         if (_normalAttackPressed && TryConsumeNormalAttack())
         {
-            
+            Debug.Log(" Player: normal attack input detected");
 
             if (_normalAttacker != null && !IsDashing && !_isSpecialAttacking)
             {
@@ -391,14 +390,12 @@ public class Player : MonoBehaviour
     {
         Debug.Log("Player: attacker started -> change to NormalAttack state");
         _stateMachine.ChangeState(PlayerStateType.NormalAttack);
-        _isNormalAttacking = true;
         OnNormalAttackStarted?.Invoke();
     }
 
     void OnAttackerEnded()
     {
         Debug.Log("Player: attacker ended -> return to Idle");
-        _isNormalAttacking = false;
         _stateMachine.ChangeState(PlayerStateType.Idle);
     }
 
@@ -451,9 +448,9 @@ public class Player : MonoBehaviour
     #region 특수공격 처리
     public void HandleSpecialStarted()
     {
-        if (_isDashing || _isNormalAttacking || _isSpecialAttacking) return;
+        if (_isDashing || IsNormalAttacking || _isSpecialAttacking) return;
 
-        if (_specialAttacker != null && _specialAttacker.RequestSpecial())
+        if (_specialAttacker != null && _specialAttacker.RequestAttack())
         {
             _stateMachine.ChangeState(PlayerStateType.SpecialAttack);
             OnSpecialAttackStarted?.Invoke();
