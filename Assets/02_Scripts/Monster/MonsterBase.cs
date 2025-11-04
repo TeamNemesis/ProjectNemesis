@@ -265,6 +265,7 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
     {
         if (isDead) return;
 
+        isDead = true;
         baseState = MonsterState.Die;
 
         if (agent != null && agent.isOnNavMesh)
@@ -286,12 +287,10 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
 
     private IEnumerator WaitForDieAnimation()
     {
-        // 현재 애니메이션 상태 확인
-        yield return null; // 한 프레임 대기 (Trigger 적용 대기)
+        yield return null;
 
         AnimatorStateInfo stateInfo = monsterAnimator.GetCurrentAnimatorStateInfo(0);
 
-        // Die 애니메이션 재생 대기
         while (stateInfo.normalizedTime < 1.0f)
         {
             stateInfo = monsterAnimator.GetCurrentAnimatorStateInfo(0);
@@ -304,7 +303,7 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
     private void CompleteDeath()
     {
         GameManager.Instance.CurrencyManager.AddCredit(cost);
-        base.Die();
+        base.Die(); // 이제 안전하게 호출 가능
     }
 
     #endregion
