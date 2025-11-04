@@ -53,6 +53,7 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
 
     [Header("Animator")]
     [SerializeField] protected Animator monsterAnimator;
+    [SerializeField] protected bool hasDieAnimation = false;
 
     /// <summary>
     /// 공격력 반환
@@ -120,6 +121,13 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
         }
         monsterAnimator = GetComponentInChildren<Animator>();
 
+        // === 애니메이터 초기화 ===
+        if (monsterAnimator != null)
+        {
+            monsterAnimator.Rebind();
+            monsterAnimator.Update(0f);
+        }
+
         // === 타겟 설정 ===
         GameObject targetObj = GameObject.FindGameObjectWithTag(targetTag);
         if (targetObj != null)
@@ -146,6 +154,9 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
             StopCoroutine(_knockBackCoroutine);
             _knockBackCoroutine = null;
         }
+
+        // === 모든 코루틴 정리 (사망 애니메이션 코루틴 포함) ===
+        StopAllCoroutines();
     }
 
     protected bool CanSeePlayer()
@@ -249,11 +260,55 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
 
     #endregion
 
+    #region 사망 처리 및 애니메이션 처리
     protected override void Die()
+    {
+        if (isDead) return;
+
+        isDead = true;
+        baseState = MonsterState.Die;
+
+        if (agent != null && agent.isOnNavMesh)
+        {
+            agent.isStopped = true;
+            agent.enabled = false;
+        }
+
+        if (hasDieAnimation && monsterAnimator != null)
+        {
+            monsterAnimator.SetTrigger("Die");
+            StartCoroutine(WaitForDieAnimation());
+        }
+        else
+        {
+            CompleteDeath();
+        }
+    }
+
+    private IEnumerator WaitForDieAnimation()
+    {
+        // 현재 애니메이션 상태 확인
+        yield return null; // 한 프레임 대기 (Trigger 적용 대기)
+
+        AnimatorStateInfo stateInfo = monsterAnimator.GetCurrentAnimatorStateInfo(0);
+
+        // Die 애니메이션 재생 대기
+        while (stateInfo.normalizedTime < 1.0f)
+        {
+            stateInfo = monsterAnimator.GetCurrentAnimatorStateInfo(0);
+            yield return null;
+        }
+
+        CompleteDeath();
+    }
+
+    private void CompleteDeath()
     {
         GameManager.Instance.CurrencyManager.AddCredit(cost);
         base.Die();
     }
+
+    #endregion
 
 
     #region 넉백
