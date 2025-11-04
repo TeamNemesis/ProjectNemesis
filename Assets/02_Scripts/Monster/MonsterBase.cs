@@ -265,7 +265,6 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
     {
         if (isDead) return;
 
-        isDead = true;
         baseState = MonsterState.Die;
 
         if (agent != null && agent.isOnNavMesh)

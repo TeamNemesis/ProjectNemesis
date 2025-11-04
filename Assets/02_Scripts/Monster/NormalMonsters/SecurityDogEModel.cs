@@ -13,8 +13,6 @@ public class SecurityDogEModel : MonsterBase
     private Quaternion fixedRotation;
     private Coroutine attackCoroutine; // 공격 코루틴 참조 저장
 
-    // Start() 제거!
-
     private void Update()
     {
         if (isDead || _target == null) return;
@@ -46,6 +44,12 @@ public class SecurityDogEModel : MonsterBase
 
     private void HandleIdle()
     {
+        // Idle 애니메이션 재생
+        if (monsterAnimator != null)
+        {
+            monsterAnimator.SetBool("IsMoving", false);
+        }
+
         float distance = Vector3.Distance(transform.position, _target.position);
         if (distance <= detectionRange && CanSeePlayer())
         {
@@ -60,6 +64,12 @@ public class SecurityDogEModel : MonsterBase
             return;
         }
         if (_target == null) return;
+
+        // Move 애니메이션 재생
+        if (monsterAnimator != null)
+        {
+            monsterAnimator.SetBool("IsMoving", true);
+        }
 
         float distance = Vector3.Distance(transform.position, _target.position);
 
@@ -137,18 +147,21 @@ public class SecurityDogEModel : MonsterBase
                                                RigidbodyConstraints.FreezeRotation;
             }
 
-            // 점프 대기 애니메이션 재생
+            // 점프 대기 상태로 전환
             if (monsterAnimator != null)
             {
-                monsterAnimator.SetTrigger("JumpWaiting");
+                monsterAnimator.SetBool("IsMoving", false);
+                monsterAnimator.SetBool("IsJumpWaiting", true);
+                monsterAnimator.SetBool("IsAttacking", false);
             }
 
             yield return new WaitForSeconds(jumpPrepareTime);
 
-            // 돌진 공격 애니메이션 재생
+            // 돌진 공격 상태로 전환
             if (monsterAnimator != null)
             {
-                monsterAnimator.SetTrigger("Attack");
+                monsterAnimator.SetBool("IsJumpWaiting", false);
+                monsterAnimator.SetBool("IsAttacking", true);
             }
 
             // 점프 방향 계산
@@ -192,6 +205,12 @@ public class SecurityDogEModel : MonsterBase
             {
                 Debug.LogError("monsterRigidbody가 null입니다!");
                 yield return new WaitForSeconds(1f);
+            }
+
+            // 애니메이션 초기화
+            if (monsterAnimator != null)
+            {
+                monsterAnimator.SetBool("IsAttacking", false);
             }
 
             // NavMeshAgent 재활성화
