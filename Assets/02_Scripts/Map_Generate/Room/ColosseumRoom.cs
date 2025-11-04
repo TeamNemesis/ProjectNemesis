@@ -54,28 +54,32 @@ public class ColosseumRoom : Room
         // 2. 두번째 보상은 일반 보상 맵에서 무작위로 선택
         List<NormalRoomType> normalRoomTypes = new List<NormalRoomType>(_normalRewardMap.Keys);
         NormalRoomType randomNormalType = normalRoomTypes[Random.Range(0, normalRoomTypes.Count)];
-        GameObject normalRewardPrefab = GameManager.Instance.PoolManager.GetFromPool(_normalRewardMap[randomNormalType], _rewardSpawnPoints[1].position, Quaternion.identity);
-        // 반환할 리스트에 추가
-        results.Add(normalRewardPrefab.GetComponent<IInteractable>());
-        // 만약 두번째 보상이 기술팩이었다면 normalRoomTypes에서 제거 후 세번째 보상 선택
         if (randomNormalType == NormalRoomType.TechSelect)
         {
+            // 만약 두번째 보상이 기술팩이었다면 normalRoomTypes에서 제거 후 세번째 보상 선택
+            GameObject normalRewardPrefab = GameManager.Instance.PoolManager.GetFromPool(_techSelectPackMap[GameManager.Instance.skillManager.GetSkillPackTypes(1)[0]], _rewardSpawnPoints[1].position, Quaternion.identity);
+            results.Add(normalRewardPrefab.GetComponent<IInteractable>());
             normalRoomTypes.Remove(NormalRoomType.TechSelect);
+        }
+        else
+        {
+            GameObject normalRewardPrefab = GameManager.Instance.PoolManager.GetFromPool(_normalRewardMap[randomNormalType], _rewardSpawnPoints[1].position, Quaternion.identity);
+            results.Add(normalRewardPrefab.GetComponent<IInteractable>());
         }
 
         // 3. 세번째 보상은 일반 보상 맵에서 무작위로 선택(남은 것 중에서)
-        NormalRoomType randomNormalType2 = normalRoomTypes[Random.Range(0, normalRoomTypes.Count)];
-        GameObject normalRewardPrefab2 = GameManager.Instance.PoolManager.GetFromPool(_normalRewardMap[randomNormalType2], _rewardSpawnPoints[2].position, Quaternion.identity);
-        // 반환할 리스트에 추가
-        results.Add(normalRewardPrefab2.GetComponent<IInteractable>());
-
-        // 여기서 문제는 results들을 rewardableObject로 캐스팅해서 보상선택이 완료되었다는 이벤트를 RewardSelectionFinished에 연결해줘야 하는데
-        foreach (var interactable in results)
+        List<NormalRoomType> normalRoomTypes2 = new List<NormalRoomType>(_normalRewardMap.Keys);
+        NormalRoomType randomNormalType2 = normalRoomTypes2[Random.Range(0, normalRoomTypes2.Count)];
+        if (randomNormalType2 == NormalRoomType.TechSelect)
         {
-            if (interactable is RewardInteractableObject rewardableObject)
-            {
-                rewardableObject.OnRewardGiven += RewardSelectionFinished;
-            }
+            GameObject normalRewardPrefab = GameManager.Instance.PoolManager.GetFromPool(_techSelectPackMap[GameManager.Instance.skillManager.GetSkillPackTypes(1)[0]], _rewardSpawnPoints[2].position, Quaternion.identity);
+            results.Add(normalRewardPrefab.GetComponent<IInteractable>());
+            normalRoomTypes2.Remove(NormalRoomType.TechSelect);
+        }
+        else
+        {
+            GameObject normalRewardPrefab = GameManager.Instance.PoolManager.GetFromPool(_normalRewardMap[randomNormalType2], _rewardSpawnPoints[2].position, Quaternion.identity);
+            results.Add(normalRewardPrefab.GetComponent<IInteractable>());
         }
         // 이렇게하면 하나라도 보상을 획득한경우 RewardSelectionFinished가 호출된다.
         // 그러면 보상선택 3개가 완료되지 않아도 보상선택이 완료되었다고 처리되는 문제가 있다.

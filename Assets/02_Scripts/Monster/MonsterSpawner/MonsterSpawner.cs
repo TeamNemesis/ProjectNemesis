@@ -256,6 +256,7 @@ public class MonsterSpawner : MonoBehaviour
         MonsterBase monsterbase = spawnedMonster.GetComponent<MonsterBase>();
 
         activeMonsters.Add(spawnedMonster);
+        EventBus.SpawnedMonster = monsterbase;
 
         if (monsterbase != null)
         {
