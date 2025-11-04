@@ -205,7 +205,7 @@ public class ServerManager : MonoBehaviour
         await DownloadJsonToLocal(fromGameBase: false);
     }
 
-    private async System.Threading.Tasks.Task DownloadJsonToLocal(bool fromGameBase)
+    private async Task DownloadJsonToLocal(bool fromGameBase)
     {
         SetLoading(true);
 
@@ -231,7 +231,7 @@ public class ServerManager : MonoBehaviour
                 {
                     ShowPopup("로그인된 사용자가 없습니다.");
                     SetLoading(false);
-                    return System.Threading.Tasks.Task.CompletedTask;
+                    return;
 
                 }
 
