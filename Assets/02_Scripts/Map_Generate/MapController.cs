@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -58,8 +57,6 @@ public class MapController : MonoBehaviour
         if (interactable is DoorInteractor doorInteractor && doorInteractor.RoomInfo != null)
         {
             DestroyCurrentRoomObjects();
-            // 여기서 방 넘어갈 때 이펙트나 로딩화면 처리
-
             Room room = _roomSpawner.SpawnRoom(doorInteractor.RoomInfo);
             // 콜로세움 방 진입 시 처리
             if (doorInteractor.RoomInfo.RoomType == RoomType.Colosseum)
@@ -97,8 +94,9 @@ public class MapController : MonoBehaviour
 
         // 여기서 방 타입별로 스폰할 몬스터 정해주고
         // 스폰위치 업데이트 해주고 몬스터 스폰해야함.
+        // 지금은 테스트용으로 노말 방에서만 생성
 
-        int roomCost = _currentRoomCount * Constants.ROOMCOSTMULTIPLIER;
+        int roomCost = _currentRoomCount * 10; // 예시: 방 번호에 비례하는 비용
         Transform[] spawnPoints = room.MonsterSpawnPoints;
         if (room.RoomInfo.RoomType == RoomType.Colosseum)
         {
@@ -329,13 +327,6 @@ public class MapController : MonoBehaviour
     void StartReward()
     {
         _currentRoom.SpawnReward();
-        Debug.Log("보상 선택 시작");
-    }
-
-    IEnumerator GoToNextRoomRoutine()
-    {
-        yield return new WaitForSeconds(1.0f);
-        // 다음 방으로 이동 처리
     }
 
 #if UNITY_EDITOR

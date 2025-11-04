@@ -9,7 +9,7 @@ using System.Collections.Specialized;
 public class PlayerGrenadeAttacker : MonoBehaviour
 {
     [SerializeField] string _grenadePath = "Prefabs/Bullet/Grenade";
-    [SerializeField] string _explodeCirclePath = "Prefabs/Effect/Skill/ExplodeCircle";
+    [SerializeField] string _explodeCirclePath = "Prefabs/Effect/ExplodeCircle";
     [SerializeField] float travelTime = 1.0f;     // 유탄이 도착하는 시간
     [SerializeField] float _coolTime = 10.0f;   // 쿨타임
     [SerializeField] float _timer = 0.0f;       // 쿨타임 타이머
@@ -53,8 +53,6 @@ public class PlayerGrenadeAttacker : MonoBehaviour
         _currentCount = _maxCount;
         OnGrenadeCooltimeChanged?.Invoke(0.0f, _coolTime);
         OnGrenadeCountChanged?.Invoke(_currentCount, _maxCount);
-        _explodeCirclePath = "Prefabs/Effect/Skill/ExplodeCircle";
-        _grenadePath = "Prefabs/Bullet/Grenade";
     }
 
     public void GrenadeAttack(Vector3 mousePos)

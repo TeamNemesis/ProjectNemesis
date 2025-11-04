@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
 public class ColosseumRoom : Room
@@ -22,166 +21,118 @@ public class ColosseumRoom : Room
         {TechSelectPackType.Company5, Constants.RESOURCES_PATH_REWARDS + "/TechSelectPack_Company5" },
     };
 
-    // 보상 선택 완료를 판단하기 위한 상태
-    // - subscribedRewardables: 실제 이벤트를 구독한 RewardInteractableObject 목록 (언제든 언구독 가능하게 보관)
-    // - remainingRewardCount: 플레이어가 획득해야 남은 보상 수 (초기값은 구독한 rewardable 수)
-    private readonly List<RewardInteractableObject> _subscribedRewardables = new List<RewardInteractableObject>();
-    private int _remainingRewardCount = 0;
-
-    /// <summary>
-    /// 일반 보상 맵에서 3개를 무작위로 선택하여 스폰
-    /// 단 기술팩은 반드시 하나를 포함해야하고 
-    /// </summary>
-    /// <returns></returns>
     public override IInteractable[] SpawnReward()
     {
         // 보상 스폰 포인트 유효성 검사
-        if (_rewardSpawnPoints == null || _rewardSpawnPoints.Length < 3)
+        if (_rewardSpawnPoints == null || _rewardSpawnPoints.Length == 0)
         {
-            Debug.LogWarning($"ColosseumRoom.SpawnReward: reward spawn points are not properly set. (room={name})");
+            Debug.LogWarning($"NormalRoom.SpawnReward: reward spawn points are not set. (room={name})");
             return System.Array.Empty<IInteractable>();
         }
 
-        // 반환할 IInteractable 리스트 생성
-        List<IInteractable> results = new List<IInteractable>();
-
-        // 1. 첫번째 보상은 반드시 기술팩으로 설정해서 스폰
-        TechSelectPackType techPackType = GameManager.Instance.skillManager.GetSkillPackTypes(1)[0];
-        GameObject techPackPrefab = GameManager.Instance.PoolManager.GetFromPool(_techSelectPackMap[techPackType], _rewardSpawnPoints[0].position, Quaternion.identity);
-        // 반환할 리스트에 추가
-        results.Add(techPackPrefab.GetComponent<IInteractable>());
-
-        // 2. 두번째 보상은 일반 보상 맵에서 무작위로 선택
-        List<NormalRoomType> normalRoomTypes = new List<NormalRoomType>(_normalRewardMap.Keys);
-        NormalRoomType randomNormalType = normalRoomTypes[Random.Range(0, normalRoomTypes.Count)];
-        if (randomNormalType == NormalRoomType.TechSelect)
+        // Normal 타입인지 확인하고 NormalType 값 획득
+        if (!_roomInfo.TryGetNormal(out var normalType))
         {
-            // 만약 두번째 보상이 기술팩이었다면 normalRoomTypes에서 제거 후 세번째 보상 선택
-            GameObject normalRewardPrefab = GameManager.Instance.PoolManager.GetFromPool(_techSelectPackMap[GameManager.Instance.skillManager.GetSkillPackTypes(1)[0]], _rewardSpawnPoints[1].position, Quaternion.identity);
-            results.Add(normalRewardPrefab.GetComponent<IInteractable>());
-            normalRoomTypes.Remove(NormalRoomType.TechSelect);
-        }
-        else
-        {
-            GameObject normalRewardPrefab = GameManager.Instance.PoolManager.GetFromPool(_normalRewardMap[randomNormalType], _rewardSpawnPoints[1].position, Quaternion.identity);
-            results.Add(normalRewardPrefab.GetComponent<IInteractable>());
+            // Normal 타입이 아니면 보상 없음
+            return System.Array.Empty<IInteractable>();
         }
 
-        // 3. 세번째 보상은 일반 보상 맵에서 무작위로 선택(남은 것 중에서)
-        List<NormalRoomType> normalRoomTypes2 = new List<NormalRoomType>(_normalRewardMap.Keys);
-        NormalRoomType randomNormalType2 = normalRoomTypes2[Random.Range(0, normalRoomTypes2.Count)];
-        if (randomNormalType2 == NormalRoomType.TechSelect)
-        {
-            GameObject normalRewardPrefab = GameManager.Instance.PoolManager.GetFromPool(_techSelectPackMap[GameManager.Instance.skillManager.GetSkillPackTypes(1)[0]], _rewardSpawnPoints[2].position, Quaternion.identity);
-            results.Add(normalRewardPrefab.GetComponent<IInteractable>());
-            normalRoomTypes2.Remove(NormalRoomType.TechSelect);
-        }
-        else
-        {
-            GameObject normalRewardPrefab = GameManager.Instance.PoolManager.GetFromPool(_normalRewardMap[randomNormalType2], _rewardSpawnPoints[2].position, Quaternion.identity);
-            results.Add(normalRewardPrefab.GetComponent<IInteractable>());
-        }
-        // 이렇게하면 하나라도 보상을 획득한경우 RewardSelectionFinished가 호출된다.
-        // 그러면 보상선택 3개가 완료되지 않아도 보상선택이 완료되었다고 처리되는 문제가 있다.
-        // 이를 해결하려면 RewardInteractableObject에서 보상선택이 완료될때마다 카운트를 올리고
-        // 3개가 모두 완료되었을때 RewardSelectionFinished를 호출하도록 해야한다.
+        Vector3 spawnPos = _rewardSpawnPoints[0].position;
+        Quaternion spawnRot = Quaternion.identity;
+        GameObject instance = null;
 
-        // --- 여기부터: RewardInteractableObject 이벤트 구독 및 카운팅 로직 ---
-        // 기존에 남아있던 구독은 안전하게 해제
-        UnsubscribeAllRewardables();
+        var poolMgr = GameManager.Instance?.PoolManager;
+        var resourceMgr = GameManager.Instance?.ResourceManager;
 
-        _subscribedRewardables.Clear();
-        _remainingRewardCount = 0;
-
-        // 판단 로직:
-        // - 결과 리스트 중 RewardInteractableObject 인스턴스만 "획득 대기 대상으로" 간주하고 카운팅에 포함
-        // - 만약 rewardable 객체가 0개라면(드물지만) 즉시 RewardSelectionFinished 호출
-        foreach (var interactable in results)
+        // TechSelect은 별도 매핑 처리
+        if (normalType == NormalRoomType.TechSelect)
         {
-            if (interactable is RewardInteractableObject rewardableObject)
+            if (!_roomInfo.TryGetTechSelect(out var packType))
             {
-                // 구독
-                rewardableObject.OnRewardGiven += OnSingleRewardGiven;
-                _subscribedRewardables.Add(rewardableObject);
+                Debug.LogWarning($"NormalRoom.SpawnReward: TechSelectPackType이 설정되지 않았습니다. (room={name})");
+                return System.Array.Empty<IInteractable>();
+            }
+
+            if (_techSelectPackMap.TryGetValue(packType, out var techKey) && !string.IsNullOrEmpty(techKey))
+            {
+                if (poolMgr != null)
+                {
+                    instance = poolMgr.GetFromPool(techKey, spawnPos, spawnRot, transform);
+                }
+
+                //// 풀에서 못가져오면 폴백(리소스매니저/Instantiate 등)을 여기서 추가할 수 있음
+                //if (instance == null && resourceMgr != null)
+                //{
+                //    var prefab = resourceMgr.LoadResource<GameObject>(techKey);
+                //    if (prefab != null)
+                //        instance = Instantiate(prefab, spawnPos, spawnRot, transform);
+                //}
+
+                //if (instance == null)
+                //{
+                //    Debug.LogWarning($"NormalRoom.SpawnReward: Failed to spawn TechSelectPack for key '{techKey}' (room={name})");
+                //    return System.Array.Empty<IInteractable>();
+                //}
             }
             else
             {
-                // IInteractable 이지만 RewardInteractableObject가 아닌 경우: 디자인상 즉시 완료로 간주하거나 별도 동작 필요
-                // 여기서는 보상 획득 대상으로 간주하지 않아 remaining count에는 포함하지 않음.
+                Debug.LogWarning($"NormalRoom.SpawnReward: No mapping for TechSelectPackType {packType} (room={name})");
+                return System.Array.Empty<IInteractable>();
             }
         }
-
-        // remainingRewardCount는 구독된 rewardables 수
-        _remainingRewardCount = _subscribedRewardables.Count;
-
-        // 만약 획득 대상(구독된 rewardables)이 없다면 바로 완료 처리
-        if (_remainingRewardCount == 0)
+        else
         {
-            RewardSelectionFinished();
-        }
-
-        return results.ToArray();
-    }
-
-    private void OnSingleRewardGiven()
-    {
-        // 안전하게 남은 수 감소 및 언구독
-        _remainingRewardCount = Mathf.Max(0, _remainingRewardCount - 1);
-
-        // 호출한 rewardable을 찾아 언구독 - RewardInteractableObject에서 호출 시 자체 참조 전달이 없으면
-        // 우리는 모든 구독 객체들 중에서 OnRewardGiven 이벤트가 발생한 것을 알 수 없으므로
-        // RewardInteractableObject의 OnRewardGiven이 호출될 때 해당 객체가 스스로 EventBus나 Room에
-        // 인스턴스 참조를 넘길 수 있다면 더 정확하지만, 여기서는 단순히 카운트 기반으로 처리.
-        // (만약 이벤트가 인스턴스 참조를 전달하도록 변경 가능한 경우 OnSingleRewardGiven(RewardInteractableObject r) 형태로 바꾸는 것을 권장)
-
-        // 이미 소비된 보상에 대해 중복 카운팅되지 않도록 모든 구독 객체와의 언구독을 시도.
-        // (좀 더 정교한 처리를 원하면 RewardInteractableObject 측에서 자신의 OnRewardGiven에서
-        // Room의 Unregister 방식으로 본인을 전달하도록 바꾸세요.)
-        // 여기선 간단하게 모든 subscribedRewardables를 확인해 인터널 상태가 'given'이면 언구독 제거 가능.
-        // (예: rewardableObject.IsGiven 플래그가 있다면 이를 검사해서 언구독할 수 있음)
-
-        // 완료 체크
-        if (_remainingRewardCount <= 0)
-        {
-            // 모든 보상 획득 완료
-            RewardSelectionFinished();
-            // 구독 전부 해제(안전)
-            UnsubscribeAllRewardables();
-        }
-    }
-
-    // 모든 구독을 안전하게 해제
-    private void UnsubscribeAllRewardables()
-    {
-        for (int i = _subscribedRewardables.Count - 1; i >= 0; i--)
-        {
-            var r = _subscribedRewardables[i];
-            if (r != null)
+            // 일반 매핑 처리
+            if (!_normalRewardMap.TryGetValue(normalType, out var prefabKey) || string.IsNullOrEmpty(prefabKey))
             {
-                r.OnRewardGiven -= OnSingleRewardGiven;
+                Debug.LogWarning($"NormalRoom.SpawnReward: No prefab key mapped for NormalRoomType {normalType}. (room={name})");
+                return System.Array.Empty<IInteractable>();
             }
+
+            if (poolMgr != null)
+            {
+                instance = poolMgr.GetFromPool(prefabKey, spawnPos, spawnRot, transform);
+            }
+
+            //if (instance == null && resourceMgr != null)
+            //{
+            //    var prefab = resourceMgr.LoadResource<GameObject>(prefabKey);
+            //    if (prefab != null)
+            //        instance = Instantiate(prefab, spawnPos, spawnRot, transform);
+            //}
+
+            //if (instance == null)
+            //{
+            //    Debug.LogWarning($"NormalRoom.SpawnReward: Failed to spawn reward for key '{prefabKey}' (room={name})");
+            //    return System.Array.Empty<IInteractable>();
+            //}
         }
-        _subscribedRewardables.Clear();
+
+        // Spawn 성공: RewardInteractableObject 찾기 (루트 또는 자식)
+        var reward = instance.GetComponent<RewardInteractableObject>()
+                     ?? instance.GetComponentInChildren<RewardInteractableObject>(true);
+
+        //if (reward == null)
+        //{
+        //    Debug.LogError($"NormalRoom.SpawnReward: Spawned instance '{instance.name}' does not contain RewardInteractableObject. Releasing/destroying instance. (room={name})");
+        //    if (poolMgr != null)
+        //        poolMgr.ReleaseToPool(instance);
+        //    else
+        //        Destroy(instance);
+
+        //    return System.Array.Empty<IInteractable>();
+        //}
+
+        reward.OnRewardGiven += RewardSelectionFinished;
+        Debug.Log("NormalRoom.SpawnReward: Reward spawned successfully.");
+        reward.Initialize();
+
+        // 마지막으로 보상 참조를 배열로 담아 반환 (이 배열이 '새로운 오브젝트 생성'을 의미하는 것은 아님)
+        return new IInteractable[] { reward };
     }
 
-    // 방(또는 오브젝트)이 비활성화될 때 구독 정리 및 콜로세움 플래그 해제
     private void OnDisable()
     {
-        UnsubscribeAllRewardables();
         EventBus.SetColosseumRoom(false);
-    }
-}
-
-[CustomEditor(typeof(ColosseumRoom))]
-public class ColosseumRoomDebugger : Editor
-{
-    public override void OnInspectorGUI()
-    {
-        DrawDefaultInspector();
-        ColosseumRoom colosseumRoom = (ColosseumRoom)target;
-        if (GUILayout.Button("Spawn Rewards"))
-        {
-            colosseumRoom.SpawnReward();
-        }
     }
 }

@@ -261,8 +261,7 @@ public class SkillChoose : MonoBehaviour
 
         if (upgradeSkillNum == 0)
         {
-            Debug.Log("대신 돈을 드립니다.");
-            GameManager.Instance.CurrencyManager.AddCredit(100);
+            Debug.Log("Error");
             GameManager.Instance.UIManager.SetActiveSkillBtnPanel(false);
             return;
         }
