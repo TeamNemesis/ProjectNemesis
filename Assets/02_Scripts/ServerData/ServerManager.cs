@@ -1,12 +1,10 @@
 ﻿using Firebase.Auth;
 using Firebase.Database;
-using Google;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Experimental.Rendering;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -30,7 +28,7 @@ public class ServerManager : MonoBehaviour
     private FirebaseUser currentUser;
     private DatabaseReference dbRef;
 
-    private GoogleSignInConfiguration googleConfig;
+    
     private bool shouldChangeScene = false;
 
     public void Initialize()
@@ -42,10 +40,10 @@ public class ServerManager : MonoBehaviour
 
         bool isMobile = Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer;
 
-        googleLoginBtn.gameObject.SetActive(!isMobile);
-        linkEmailBtn.gameObject.SetActive(!isMobile);
+        googleLoginBtn.gameObject.SetActive(isMobile);
+        linkEmailBtn.gameObject.SetActive(isMobile);
 
-        if (!isMobile)
+        if (isMobile)
         {
             googleLoginBtn.onClick.AddListener(OnClickGoogleLogin);
             linkEmailBtn.onClick.AddListener(() => {
@@ -53,13 +51,8 @@ public class ServerManager : MonoBehaviour
             });
         }
 
-        googleConfig = new GoogleSignInConfiguration
-        {
-            WebClientId = "YOUR_WEB_CLIENT_ID",
-            RequestIdToken = true
-        };
+        
 
-        GoogleSignIn.Configuration = googleConfig;
 
         if (auth.CurrentUser != null)
         {
@@ -362,34 +355,49 @@ public class ServerManager : MonoBehaviour
         SetLoading(false);
     }
 
-    public async void OnClickGoogleLogin()
+    public void OnClickGoogleLogin()
     {
+#if UNITY_ANDROID
         SetLoading(true);
 
         try
         {
-            GoogleSignInUser googleUser = await GoogleSignIn.DefaultInstance.SignIn();
-            string idToken = googleUser.IdToken;
-
-            Credential credential = GoogleAuthProvider.GetCredential(idToken, null);
-            FirebaseUser firebaseUser = await auth.SignInWithCredentialAsync(credential);
-
-            currentUser = firebaseUser;
-            ShowPopup("Google 로그인 성공", true);
-
-            await DownloadJsonToLocal(fromGameBase: false);
-            
+            AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
+            AndroidJavaObject activity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
+            activity.Call("startGoogleLogin"); // Java에서 로그인 시작
         }
         catch (System.Exception ex)
         {
-            ShowError("Google 로그인 중 오류가 발생했습니다."+ "Google 로그인 오류: " + ex.Message,null);
-            auth.SignOut();
+            ShowError("Google 로그인 호출 중 오류가 발생했습니다.", "Android 호출 오류: " + ex.Message);
+            SetLoading(false);
         }
-
-        SetLoading(false);
+#endif
     }
 
-    private void ShowPopup(string message, bool changeSceneOnConfirm = false)
+		public async void OnGoogleLoginSuccess(string idToken)
+		{
+				SetLoading(true);
+
+				try
+				{
+						Credential credential = GoogleAuthProvider.GetCredential(idToken, null);
+						FirebaseUser firebaseUser = await auth.SignInWithCredentialAsync(credential);
+
+						currentUser = firebaseUser;
+						ShowPopup("Google 로그인 성공", true);
+
+						await DownloadJsonToLocal(fromGameBase: false);
+				}
+				catch (System.Exception ex)
+				{
+						ShowError("Google 로그인 중 오류가 발생했습니다.", "Google 로그인 오류: " + ex.Message);
+						auth.SignOut();
+				}
+
+				SetLoading(false);
+		}
+
+		private void ShowPopup(string message, bool changeSceneOnConfirm = false)
     {
         shouldChangeScene = changeSceneOnConfirm;
 
