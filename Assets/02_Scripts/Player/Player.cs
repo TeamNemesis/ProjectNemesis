@@ -45,13 +45,11 @@ public class Player : MonoBehaviour
     [SerializeField] bool _grenadeAttackPressed;           // 플레이어 유탄 공격 입력 여부 (단발)
     [SerializeField] bool _specialAttackPressed;           // 플레이어 특수 공격 입력 여부 (단발)
 
-    [Header("----- 상태 플래그 (Player가 소유) -----")]
+    [Header("----- 상태 플래그 (Player가 소유) -> 담당 컴포넌트가 갖고있게 수정중 -----")]
     [SerializeField] bool _canMove;                        // 플레이어 이동 가능 여부
     // NOTE: _isDashing 및 _isNormalAttacking 필드는 컴포넌트(예: PlayerDasher, PlayerNormalAttacker)가 실제 소유자일 때
     // UI / 에디터에서 확인하려고 남겨둘 수 있으나 런타임 로직은 컴포넌트의 상태를 우선 참조하도록 변경했습니다.
     [SerializeField] bool _isDashing;                      // 플레이어 대시 중 여부 (동기화됨)
-    [SerializeField] bool _isNormalAttacking;              // (동기화됨)
-    [SerializeField] bool _isSpecialAttacking;             // 플레이어 특수공격 중 여부
 
     // 읽기 전용 프로퍼티로 외부 접근 제공
     public PlayerNormalAttacker NormalAttacker => _normalAttacker;
@@ -71,8 +69,7 @@ public class Player : MonoBehaviour
 
     // 변경: IsDashing/IsNormalAttacking는 해당 컴포넌트(실제 소유자)를 우선 참조하도록 함.
     public bool IsDashing => _dasher != null ? _dasher.IsDashing : _isDashing;
-    public bool IsNormalAttacking => _normalAttacker != null ? _normalAttacker.IsAttacking : _isNormalAttacking;
-    public bool IsSpecialAttacking => _isSpecialAttacking;
+    public bool IsNormalAttacking => _normalAttacker.IsAttacking;
 
     #region 이벤트
     public event Action OnNormalAttackStarted;
@@ -188,8 +185,6 @@ public class Player : MonoBehaviour
     // 상태(Enter/Exit)에서 호출하여 Player가 소유한 플래그를 변경
     public void SetCanMove(bool canMove) => _canMove = canMove;
     public void SetIsDashing(bool isDashing) => _isDashing = isDashing; // 유지하되 Dasher가 권한자
-    public void SetIsNormalAttacking(bool isNormalAttacking) => _isNormalAttacking = isNormalAttacking;
-    public void SetIsSpecialAttacking(bool isSpecialAttacking) => _isSpecialAttacking = isSpecialAttacking;
     #endregion
 
     #region 상태 전환 평가 및 처리
@@ -202,7 +197,9 @@ public class Player : MonoBehaviour
         // 1) 일반 공격 입력 처리
         if (_normalAttackPressed && TryConsumeNormalAttack())
         {
-            if (_normalAttacker != null && !IsDashing && !_isSpecialAttacking)
+            Debug.Log(" Player: normal attack input detected");
+
+            if (_normalAttacker != null && !IsDashing && !_normalAttacker.IsAttacking)
             {
                 // 요청만 보냄. 실제 상태 전환은 AttackStarted 이벤트에서 수행
                 bool accepted = false;
@@ -228,7 +225,7 @@ public class Player : MonoBehaviour
         // 2) 대시
         if (_dashPressed && TryConsumeDash())
         {
-            if (!IsNormalAttacking && !_isSpecialAttacking && !IsDashing)
+            if (!IsNormalAttacking && !_specialAttacker.CanAttack() && !IsDashing)
             {
                 _stateMachine.ChangeState(PlayerStateType.Dash);
                 return;
@@ -236,7 +233,7 @@ public class Player : MonoBehaviour
         }
 
         // 3) 이동
-        if (_moveInput.sqrMagnitude > 0.01f && !IsNormalAttacking && !_isSpecialAttacking && !IsDashing)
+        if (_moveInput.sqrMagnitude > 0.01f && !IsNormalAttacking && !_specialAttacker.CanAttack() && !IsDashing)
         {
             if (_stateMachine.CurrentType != PlayerStateType.Move)
             {
@@ -246,7 +243,7 @@ public class Player : MonoBehaviour
         }
 
         // 4) 기본 Idle
-        if (_stateMachine.CurrentType != PlayerStateType.Idle && !IsNormalAttacking && !IsDashing && !_isSpecialAttacking)
+        if (_stateMachine.CurrentType != PlayerStateType.Idle && !IsNormalAttacking && !IsDashing && !_specialAttacker.CanAttack())
         {
             _stateMachine.ChangeState(PlayerStateType.Idle);
         }
@@ -430,7 +427,7 @@ public class Player : MonoBehaviour
         // 우선권/상태 검사: 이미 다른 동작 중이면 무시
         if (_isDashing || _isNormalAttacking || _isSpecialAttacking) return;
 
-        if (_specialAttacker != null && _specialAttacker.RequestSpecial())
+        if (_specialAttacker != null && _specialAttacker.RequestAttack())
         {
             _stateMachine.ChangeState(PlayerStateType.SpecialAttack);
             OnSpecialAttackStarted?.Invoke();
@@ -439,7 +436,7 @@ public class Player : MonoBehaviour
 
     public void HandleSpecialCanceled()
     {
-        if (_specialAttacker != null && _specialAttacker.IsCharging)
+        if (_specialAttacker != null && _specialAttacker.CanAttack)
         {
             _specialAttacker.StopChargeAndFire();
         }

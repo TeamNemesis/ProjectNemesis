@@ -21,7 +21,7 @@ public class PlayerSpecialAttackState : PlayerStateBase
         }
 
         // 차지 시작 (owner.StartCoroutine 내부에서 작업)
-        _player.SpecialAttacker.StartCharge();
+        _player.SpecialAttacker.StartAttackRoutine();
 
         // 필요하면 charge 값 업데이트용 이벤트 구독 (UI 갱신 등)
         _player.SpecialAttacker.OnSpecialChargeUpdated += HandleChargeUpdated;
@@ -48,7 +48,7 @@ public class PlayerSpecialAttackState : PlayerStateBase
         }
 
         // 만약 차지 중이라면 취소(혹은 이미 발사되었으면 아무것도 안 함)
-        if (_player.SpecialAttacker != null && _player.SpecialAttacker.IsCharging)
+        if (_player.SpecialAttacker != null && _player.SpecialAttacker.CanAttack)
         {
             _player.SpecialAttacker.CancelCharge();
         }
