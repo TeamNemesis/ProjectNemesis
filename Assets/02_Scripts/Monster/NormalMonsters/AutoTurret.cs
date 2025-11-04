@@ -17,6 +17,10 @@ public class AutoTurret : MonsterBase
     [Header("TurretBulletPrefab"), SerializeField]
     private PoolableObject turretbullet; // 터렛 총알 프리펩
 
+    [SerializeField] private Transform shootPos;
+
+    [SerializeField] private PoolableObject muzzleFlashPrefab;
+
     private void Update()
     {
         if (isDead || _target == null) return;
@@ -52,6 +56,8 @@ public class AutoTurret : MonsterBase
 
     private IEnumerator PerformAttack()
     {
+        monsterAnimator.SetTrigger("Attack");
+        GetEffectFromPool(muzzleFlashPrefab, shootPos.position, shootPos.rotation);
         _isAttacking = true;
 
         if (_target != null && Vector3.Distance(transform.position, _target.position) <= attackRange)
@@ -64,6 +70,7 @@ public class AutoTurret : MonsterBase
             }
             yield return new WaitForSeconds(attackDelay);
         }
+        
         _isAttacking = false;
         baseState = MonsterState.Idle; // 공격 후 다시 대기 상태로 전환
     }

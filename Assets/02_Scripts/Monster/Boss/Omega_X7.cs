@@ -12,27 +12,55 @@ public class Omega_X7 : MonsterBase
     [Header("Missile")]
     [SerializeField] private int missileAttackCounter = 0;
     [SerializeField] private int maxMissileAttackCount = 5;
+    [SerializeField] private float misileAttackDamage = 20f;
 
-    [Header("Bullet")]
-    [SerializeField] float bulletLifeTime = 8f;
+    [Header("Shotgun Attack")]
+    [SerializeField] private float shotgunDamage = 30f;
+    [SerializeField] private float shotgunRange = 1000f;
+    [SerializeField] private float shotgunAngle = 120f;
+    [SerializeField] private float shotgunWarningDuration = 2f;
 
     [Header("Prefabs")]
     [SerializeField] private PoolableObject missilePrefab;
-    [SerializeField] private PoolableObject eliteBulletPrefab;
+    [SerializeField] private PoolableObject laserTurretPrefab;
+    [SerializeField] private PoolableObject shotgunDecalPrefab; // 샷건 범위 표시 프리팹
+    [SerializeField] private PoolableObject iceTankPrefab;
 
     [Header("CoolTimes")]
-    [SerializeField] private float bulletAttackCoolTime = 5f;
+    [SerializeField] private float shotgunttackCoolTime = 5f;
     [SerializeField] private float missileAttackCoolTime = 7f;
+    [SerializeField] private float laserTurretSpawnCoolTime = 30f;
+
+    [Header("Local Stats")]
+    private bool _isShotgunAttacking = false;
+    private bool _isMissileAttacking = false;
+    private bool _isIceTankSpawning = false;
+
+    [Header("Effect Positions")]
+    [SerializeField] Transform shotgunEffectPos1;
+    [SerializeField] Transform shotgunEffectPos2;
+
+    [Header("Effects")]
+    [SerializeField] private PoolableObject shotgunEffectPrefab;
 
     private float lastHealthCheckThreshold = 1f;
     private bool _isPhase2 = false;
 
+    [SerializeField] private MonsterGrenade monsterGrenade;
+
+    public override void Initialize()
+    {
+        base.Initialize();
+
+        monsterGrenade = GetComponentInChildren<MonsterGrenade>();
+    }
 
     private void Update()
     {
         CoolTimeController();
         if (isDead || _target == null) return;
         if (isStunned) return;
+        LookAtPlayer();
 
         switch (baseState)
         {
@@ -40,10 +68,7 @@ public class Omega_X7 : MonsterBase
                 HandleIdle();
                 break;
             case MonsterState.Attack:
-                if (!_isAttacking)
-                {
-                    StartCoroutine(MissileAttack());
-                }
+                TryUseSkill();
                 break;
             case MonsterState.Die:
                 Die();
@@ -53,7 +78,6 @@ public class Omega_X7 : MonsterBase
 
     private void HandleIdle()
     {
-        // 플레이어와 거리
         float distance = Vector3.Distance(transform.position, _target.position);
         if (distance <= attackRange && CanSeePlayer())
         {
@@ -61,79 +85,208 @@ public class Omega_X7 : MonsterBase
         }
     }
 
-    #region 총알 패턴 코루틴
-    private IEnumerator BulletAttack()
+    #region 레이저 터렛 스폰
+    private IEnumerator SpawnLaserTurret()
     {
         _isAttacking = true;
-        {
-            yield return null;
-        }
+
+        Vector3 leftBottomSpawnPos = transform.position + new Vector3(-15, 0, -15);
+        Vector3 rightBottomSpawnPos = transform.position + new Vector3(15, 0, -15);
+        Vector3 upSpawnPos = transform.position + new Vector3(0, 0, 15);
+
+        GameManager.Instance.PoolManager.GetFromPool(laserTurretPrefab, leftBottomSpawnPos, Quaternion.identity);
+        GameManager.Instance.PoolManager.GetFromPool(laserTurretPrefab, rightBottomSpawnPos, Quaternion.identity);
+        GameManager.Instance.PoolManager.GetFromPool(laserTurretPrefab, upSpawnPos, Quaternion.identity);
+
+        laserTurretSpawnCoolTime = 30f;
         _isAttacking = false;
+
+        yield return null;
+    }
+    #endregion
+
+    #region 아이스 탱크 스폰
+    private IEnumerator SpawnIceTank()
+    {
+        _isIceTankSpawning = true;
+        bool previousAttackingState = _isAttacking;
+        _isAttacking = true;
+
+        Vector3 leftTopSpawnPos = transform.position + new Vector3(-15, 0, 15);
+        Vector3 rightTopSpawnPos = transform.position + new Vector3(15, 0, 15);
+        Vector3 bottomSpawnPos = transform.position + new Vector3(0, 0, -15);
+
+        List<GameObject> spawnedIceTanks = new List<GameObject>();
+        spawnedIceTanks.Add(GameManager.Instance.PoolManager.GetFromPool(iceTankPrefab, leftTopSpawnPos, Quaternion.identity));
+        spawnedIceTanks.Add(GameManager.Instance.PoolManager.GetFromPool(iceTankPrefab, rightTopSpawnPos, Quaternion.identity));
+        spawnedIceTanks.Add(GameManager.Instance.PoolManager.GetFromPool(iceTankPrefab, bottomSpawnPos, Quaternion.identity));
+
+        yield return new WaitForSeconds(10f);
+
+        int survivingIceTankCount = 0;
+        foreach (GameObject iceTank in spawnedIceTanks)
+        {
+            if (iceTank != null && iceTank.activeInHierarchy)
+            {
+                GameManager.Instance.PoolManager.ReleaseToPool(iceTank);
+                survivingIceTankCount++;
+            }
+        }
+
+        if (survivingIceTankCount > 0)
+        {
+            float damageMultiplier = 1f + (survivingIceTankCount * 0.3f);
+            shotgunDamage *= damageMultiplier;
+
+            if (monsterGrenade != null)
+            {
+                monsterGrenade.IncreaseDamage(damageMultiplier);
+            }
+        }
+
+        _isAttacking = previousAttackingState;
+        _isIceTankSpawning = false;
+
+        if (monsterGrenade != null)
+        {
+            monsterGrenade.StartGrenadePattern();
+        }
+    }
+    #endregion
+
+    #region 샷건 패턴 코루틴
+    private IEnumerator ShotgunAttack()
+    {
+        _isShotgunAttacking = true;
+
+        if (_target == null)
+        {
+            _isShotgunAttacking = false;
+            baseState = MonsterState.Idle;
+            yield break;
+        }
+
+        Vector3 directionToPlayer = new Vector3(
+            _target.position.x - transform.position.x,
+            0,
+            _target.position.z - transform.position.z
+        ).normalized;
+        Quaternion lookRotation = Quaternion.LookRotation(directionToPlayer);
+
+        float forwardOffset = transform.localScale.z / 2f;
+        Vector3 spawnPos = transform.position + directionToPlayer * forwardOffset;
+        spawnPos.y = 0.1f;
+
+        GameObject decalObj = GameManager.Instance.PoolManager.GetFromPool(shotgunDecalPrefab, spawnPos, lookRotation);
+        ShotgunDecalEffect decalEffect = decalObj.GetComponent<ShotgunDecalEffect>();
+        if (decalEffect != null)
+        {
+            decalEffect.Play();
+        }
+
+        yield return new WaitForSeconds(shotgunWarningDuration);
+
+        PlayShotgunEffect();
+        PerformShotgunHitscan(spawnPos, directionToPlayer);
+
+        shotgunttackCoolTime = 5f;
+        _isShotgunAttacking = false;
+    }
+
+    private void PlayShotgunEffect()
+    {
+        if (shotgunEffectPos1 != null) GetEffectFromPool(shotgunEffectPrefab, shotgunEffectPos1);
+        if (shotgunEffectPos2 != null) GetEffectFromPool(shotgunEffectPrefab, shotgunEffectPos2);
+    }
+
+    private void PerformShotgunHitscan(Vector3 attackOrigin, Vector3 attackDirection)
+    {
+        if (_target == null) return;
+
+        Vector3 directionToTarget = (_target.position - attackOrigin).normalized;
+        float angleToTarget = Vector3.Angle(attackDirection, directionToTarget);
+        float distanceToTarget = Vector3.Distance(attackOrigin, _target.position);
+
+        if (angleToTarget <= shotgunAngle / 2f && distanceToTarget <= shotgunRange)
+        {
+            PlayerHealth playerHealth = _target.GetComponent<PlayerHealth>();
+            if (playerHealth != null)
+            {
+                playerHealth.TakeDamage(shotgunDamage);
+            }
+        }
     }
     #endregion
 
     #region 미사일 패턴 코루틴
     private IEnumerator MissileAttack()
     {
-        _isAttacking = true;
+        _isMissileAttacking = true;
 
-        // 4방향 벡터 정의 (X-Z 평면)
-        Vector3[] directions = new Vector3[]
-        { Vector3.right, Vector3.left};
+        int attackCount = 0;
+        int maxAttacks = 3;
 
-        while (!isDead)
+        while (!isDead && attackCount < maxAttacks)
         {
-            // 랜덤하게 방향 선택
-            Vector3 randomDirection = directions[Random.Range(0, directions.Length)];
-
-            // 선택된 방향으로 스폰 위치 계산
-            Vector3 spawnPos = transform.position + randomDirection * transform.localScale.z;
+            Vector3 backwardDirection = -transform.forward;
+            float sideOffset = Random.Range(-5f, 5f);
+            Vector3 rightDirection = transform.right * sideOffset;
+            Vector3 spawnPos = transform.position + backwardDirection * transform.localScale.z + rightDirection;
             spawnPos.y = 0;
 
-            GameObject missileObj = GameManager.Instance.PoolManager.GetFromPool(missilePrefab, spawnPos, Quaternion.identity);
+            GameObject missileObj = GameManager.Instance.PoolManager.GetFromPool(missilePrefab, spawnPos, Quaternion.identity, null, _isPhase2);
+            Missile missile = missileObj.GetComponent<Missile>();
+            if (missile != null && _target != null)
+            {
+                missile.SetAttackDamage(misileAttackDamage);
+            }
 
+            attackCount++;
             yield return new WaitForSeconds(3f);
         }
 
-        _isAttacking = false;
-        baseState = MonsterState.Attack;
+        missileAttackCoolTime = 7f;
+        _isMissileAttacking = false;
     }
     #endregion
 
     #region 쿨타임 컨트롤러
     private void CoolTimeController()
     {
-        if (bulletAttackCoolTime > 0)
-            bulletAttackCoolTime -= Time.deltaTime;
-        if (missileAttackCoolTime > 0)
-            missileAttackCoolTime -= Time.deltaTime;
+        if (shotgunttackCoolTime > 0) shotgunttackCoolTime -= Time.deltaTime;
+        if (missileAttackCoolTime > 0) missileAttackCoolTime -= Time.deltaTime;
+        if (laserTurretSpawnCoolTime > 0) laserTurretSpawnCoolTime -= Time.deltaTime;
     }
     #endregion
 
     #region 랜덤 스킬 사용
     private void TryUseSkill()
     {
-        // 사용 가능한 스킬 코루틴 리스트
         List<IEnumerator> availableSkills = new List<IEnumerator>();
 
-        if (bulletAttackCoolTime <= 0)
+        if (shotgunttackCoolTime <= 0 && !_isShotgunAttacking && !_isIceTankSpawning && _isPhase2)
         {
-            availableSkills.Add(BulletAttack());
-        }
-        if (missileAttackCoolTime <= 0)
-        {
-            availableSkills.Add(MissileAttack()); availableSkills.Add(MissileAttack());
+            availableSkills.Add(ShotgunAttack());
         }
 
-        // 사용 가능한 스킬이 있으면 랜덤으로 선택
+        if (missileAttackCoolTime <= 0 && !_isMissileAttacking)
+        {
+            availableSkills.Add(MissileAttack());
+        }
+
+        if (laserTurretSpawnCoolTime <= 0 && !_isAttacking)
+        {
+            availableSkills.Add(SpawnLaserTurret());
+        }
+
         if (availableSkills.Count > 0)
         {
             int randomIndex = Random.Range(0, availableSkills.Count);
             StartCoroutine(availableSkills[randomIndex]);
         }
-        else
+        else if (!_isShotgunAttacking && !_isMissileAttacking)
         {
-            baseState = MonsterState.Attack;
+            baseState = MonsterState.Idle;
         }
     }
     #endregion
@@ -144,12 +297,22 @@ public class Omega_X7 : MonsterBase
 
         float healthRatio = (float)currentHealth / (float)maxHealth;
 
-        // 체력 임계값을 넘었을 때만 체크
         if (!_isPhase2 && healthRatio <= 0.7f && lastHealthCheckThreshold > 0.7f)
         {
             _isPhase2 = true;
+            StartCoroutine(SpawnIceTank());
         }
 
         lastHealthCheckThreshold = healthRatio;
+    }
+
+    protected override void Die()
+    {
+        if (monsterGrenade != null)
+        {
+            monsterGrenade.StopGrenadePattern();
+        }
+
+        base.Die();
     }
 }

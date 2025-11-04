@@ -1,7 +1,7 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 /// <summary>
-/// ÃßÈÄ GEAR ±â¼ú ¸ñ·Ï
+/// ì¶”í›„ GEAR ê¸°ìˆ  ëª©ë¡
 /// </summary>
 public class Skill_Three : SkillBase
 {
@@ -30,7 +30,7 @@ public class Skill_Three : SkillBase
 
         switch (choosedSkill.skillIdx)
         {
-            // Áß·ÂÀÚ ¹«±â
+            // ì¤‘ë ¥ì ë¬´ê¸°
             case 30:
                 ActiveTech skillAttack = new Skill_Three_Attack(choosedSkill);
                 if (_skillManager.attackTech != null)
@@ -42,9 +42,9 @@ public class Skill_Three : SkillBase
                 skillAttack.Activate(_skillManager, _skillManager.playScene.player);
                 break;
 
-            // ¼Ò¿ëµ¹ÀÌ
+            // ì†Œìš©ëŒì´
             case 31:
-                Debug.Log($"{choosedSkill.skillIdx} ¹ßµ¿, ½ºÅ³ ·¹º§ : {choosedSkill.skillLevel}");
+                Debug.Log($"{choosedSkill.skillIdx} ë°œë™, ìŠ¤í‚¬ ë ˆë²¨ : {choosedSkill.skillLevel}");
                 ActiveTech SkillGrenade = new Skill_Three_Grenade(choosedSkill);
                 if (_skillManager.bombTech != null)
                 {
@@ -55,9 +55,9 @@ public class Skill_Three : SkillBase
                 SkillGrenade.Activate(_skillManager, _skillManager.playScene.player);
                 break;
 
-            // ¹İµ¿
+            // ë°˜ë™
             case 32:
-                Debug.Log($"{choosedSkill.skillIdx} ¹ßµ¿, ½ºÅ³ ·¹º§ : {choosedSkill.skillLevel}");
+                Debug.Log($"{choosedSkill.skillIdx} ë°œë™, ìŠ¤í‚¬ ë ˆë²¨ : {choosedSkill.skillLevel}");
                 ActiveTech SkillSPAttack = new Skill_Three_SPAttack(choosedSkill);
                 if (_skillManager.skillTech != null)
                 {
@@ -68,9 +68,9 @@ public class Skill_Three : SkillBase
                 SkillSPAttack.Activate(_skillManager, _skillManager.playScene.player);
                 break;
 
-            // Àı´ë¿µ¿ª
+            // ì ˆëŒ€ì˜ì—­
             case 33:
-                Debug.Log($"{choosedSkill.skillIdx} ¹ßµ¿, ½ºÅ³ ·¹º§ : {choosedSkill.skillLevel}");
+                Debug.Log($"{choosedSkill.skillIdx} ë°œë™, ìŠ¤í‚¬ ë ˆë²¨ : {choosedSkill.skillLevel}");
                 ActiveTech skillDashAttack = new Skill_Three_Dash(choosedSkill);
                 if (_skillManager.dashTech != null)
                 {
@@ -82,48 +82,48 @@ public class Skill_Three : SkillBase
                 break;
 
 
-            // ºÒ¿î
+            // ë¶ˆìš´
             case 34:
-                Debug.Log($"{choosedSkill.skillIdx} ¹ßµ¿, ½ºÅ³ ·¹º§ : {choosedSkill.skillLevel}");
+                Debug.Log($"{choosedSkill.skillIdx} ë°œë™, ìŠ¤í‚¬ ë ˆë²¨ : {choosedSkill.skillLevel}");
                 ActivateMisfortune(choosedSkill);
                 break;
 
-            // Àû»ö ÆíÀÌ
+            // ì ìƒ‰ í¸ì´
             case 35:
-                Debug.Log($"{choosedSkill.skillIdx} ¹ßµ¿, ½ºÅ³ ·¹º§ : {choosedSkill.skillLevel}");
+                Debug.Log($"{choosedSkill.skillIdx} ë°œë™, ìŠ¤í‚¬ ë ˆë²¨ : {choosedSkill.skillLevel}");
                 ActivateRedShift(choosedSkill);
                 break;
 
-            // Áß·Â ÁõÆø
+            // ì¤‘ë ¥ ì¦í­
             case 36:
-                Debug.Log($"{choosedSkill.skillIdx} ¹ßµ¿, ½ºÅ³ ·¹º§ : {choosedSkill.skillLevel}");
+                Debug.Log($"{choosedSkill.skillIdx} ë°œë™, ìŠ¤í‚¬ ë ˆë²¨ : {choosedSkill.skillLevel}");
 
                 ActivateGravity(choosedSkill);
 
                 break;
 
-            // »ç°ÇÀÇ ÁöÆò¼±
+            // ì‚¬ê±´ì˜ ì§€í‰ì„ 
             case 37:
-                Debug.Log($"{choosedSkill.skillIdx} ¹ßµ¿, ½ºÅ³ ·¹º§ : {choosedSkill.skillLevel}");
+                Debug.Log($"{choosedSkill.skillIdx} ë°œë™, ìŠ¤í‚¬ ë ˆë²¨ : {choosedSkill.skillLevel}");
                 ActivateHorizon(choosedSkill);
                 break;
 
             default:
-                Debug.Log("¿¡·¯, ¹èÁ¤µÇÁö ¾ÊÀº idx");
+                Debug.Log("ì—ëŸ¬, ë°°ì •ë˜ì§€ ì•Šì€ idx");
                 break;
         }
 
     }
 
-    #region ºÒ¿î
+    #region ë¶ˆìš´
     private void ActivateMisfortune(SkillData skill)
     {
-        //Ã³À½ ½Àµæ½Ã
+        //ì²˜ìŒ ìŠµë“ì‹œ
         if (skill.skillLevel == 1)
         {
             skillManager.playerStatManager.AddKockBackDamageMulti(skill.skillBaseValue_1 + skill.skillLevelValue_1);
         }
-        // ±× ÀÌÈÄ´Â ·¹º§ °è¼ö¸¸ Ãß°¡
+        // ê·¸ ì´í›„ëŠ” ë ˆë²¨ ê³„ìˆ˜ë§Œ ì¶”ê°€
         else
         {
             skillManager.playerStatManager.AddKockBackDamageMulti(skill.skillLevelValue_1);
@@ -131,7 +131,7 @@ public class Skill_Three : SkillBase
         }
     }
     #endregion
-    #region Àû»öÆíÀÌ
+    #region ì ìƒ‰í¸ì´
     private void ActivateRedShift(SkillData skill)
     {
         _skillManager.playScene.player.playerModel.PlayerHit -= MakeRedshift;
@@ -163,15 +163,15 @@ public class Skill_Three : SkillBase
         GameManager.Instance.PoolManager.GetFromPool(_redshiftPrefab, playerPosition, rotation, null, redShiftData);
     }
     #endregion
-    #region Áß·Â ÁõÆø
+    #region ì¤‘ë ¥ ì¦í­
     public void ActivateGravity(SkillData choosedSkill)
     {
-        //Ã³À½ ½Àµæ½Ã
+        //ì²˜ìŒ ìŠµë“ì‹œ
         if (choosedSkill.skillLevel == 1)
         {
             skillManager.playerStatManager.AddKnockBackDistance(choosedSkill.skillLevelValue_1 + choosedSkill.skillBaseValue_1);
         }
-        // ±× ÀÌÈÄ´Â ·¹º§ °è¼ö¸¸ Ãß°¡
+        // ê·¸ ì´í›„ëŠ” ë ˆë²¨ ê³„ìˆ˜ë§Œ ì¶”ê°€
         else
         {
             skillManager.playerStatManager.AddKnockBackDistance(choosedSkill.skillLevelValue_1);
@@ -179,7 +179,7 @@ public class Skill_Three : SkillBase
         }
     }
     #endregion
-    #region »ç°ÇÀÇ ÁöÆò¼±
+    #region ì‚¬ê±´ì˜ ì§€í‰ì„ 
     public void ActivateHorizon(SkillData skill)
     {
         if (_playerHorizon != null)

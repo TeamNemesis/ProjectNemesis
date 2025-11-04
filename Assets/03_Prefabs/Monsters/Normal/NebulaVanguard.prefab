@@ -126,7 +126,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db81e7c10fa0dd84aa868668da686365, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxHealth: 100
+  _maxHealth: 150
   _currentHealth: 0
   _moveSpeed: 5
   isStunned: 0
@@ -140,19 +140,21 @@ MonoBehaviour:
   attackRange: 3.5
   detectionRange: 100
   attackDelay: 2
-  originalSpeed: 10
+  originalSpeed: 7
   targetTag: Player
   monsterSize: 1
   cost: 5
+  monsterRigidbody: {fileID: 0}
+  monsterCollider: {fileID: 0}
+  _isAttacking: 0
+  baseState: 0
   _knockBackDamage: 0
   player: {fileID: 0}
   agent: {fileID: 0}
   _target: {fileID: 0}
-  _isAttacking: 0
   _box_Length: 3
   _box_Height: 3
   _box_Width: 3
-  currentState: 0
 --- !u!195 &3184096094195697757
 NavMeshAgent:
   m_ObjectHideFlags: 0

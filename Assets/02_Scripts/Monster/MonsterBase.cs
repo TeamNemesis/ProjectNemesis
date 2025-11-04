@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -40,7 +40,7 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
     [SerializeField] protected MonsterState baseState = MonsterState.Idle;
 
 
-    #region ³Ë¹é
+    #region ë„‰ë°±
     [SerializeField] private float _knockBackDamage;
     [SerializeField] private Coroutine _knockBackCoroutine;
     #endregion
@@ -51,8 +51,11 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
     [SerializeField] protected NavMeshAgent agent;
     [SerializeField] protected Transform _target;
 
+    [Header("Animator")]
+    [SerializeField] protected Animator monsterAnimator;
+
     /// <summary>
-    /// °ø°İ·Â ¹İÈ¯
+    /// ê³µê²©ë ¥ ë°˜í™˜
     /// </summary>
     /// <returns></returns>
     public float GetAttackDamage()
@@ -65,7 +68,7 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
     }
 
     /// <summary>
-    /// °ø°İ·Â ¼³Á¤
+    /// ê³µê²©ë ¥ ì„¤ì •
     /// </summary>
     /// <param name="attackDamage"></param>
     public void SetAttackDamage(float attackDamage)
@@ -96,7 +99,7 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
     {
         base.Initialize();
 
-        // === »óÅÂ ÃÊ±âÈ­ ===
+        // === ìƒíƒœ ì´ˆê¸°í™” ===
         isDead = false;
         isPushed = false;
         isStunned = false;
@@ -104,10 +107,10 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
         isWeaken = false;
         _isAttacking = false;
 
-        // === »óÅÂ ¸Ó½Å ÃÊ±âÈ­ ===
+        // === ìƒíƒœ ë¨¸ì‹  ì´ˆê¸°í™” ===
         baseState = MonsterState.Idle;
 
-        // === ÄÄÆ÷³ÍÆ® ÃÊ±âÈ­ ===
+        // === ì»´í¬ë„ŒíŠ¸ ì´ˆê¸°í™” ===
         agent = GetComponentInChildren<NavMeshAgent>();
         if (agent != null && agent.isOnNavMesh)
         {
@@ -115,19 +118,20 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
             agent.isStopped = false;
             agent.speed = originalSpeed;
         }
+        monsterAnimator = GetComponentInChildren<Animator>();
 
-        // === Å¸°Ù ¼³Á¤ ===
+        // === íƒ€ê²Ÿ ì„¤ì • ===
         GameObject targetObj = GameObject.FindGameObjectWithTag(targetTag);
         if (targetObj != null)
             _target = targetObj.transform;
 
-        // === Ã¼·Â ÃÊ±âÈ­ ===
+        // === ì²´ë ¥ ì´ˆê¸°í™” ===
         SetCurrentHp(maxHealth);
 
-        // === µğ¹öÇÁ ÃÊ±âÈ­ ===
+        // === ë””ë²„í”„ ì´ˆê¸°í™” ===
         debuffHandler.InitializeMonster(agent);
 
-        // === ¹°¸® ÃÊ±âÈ­ (³Ë¹é °ü·Ã) ===
+        // === ë¬¼ë¦¬ ì´ˆê¸°í™” (ë„‰ë°± ê´€ë ¨) ===
         monsterRigidbody = GetComponentInChildren<Rigidbody>();
         if (monsterRigidbody != null)
         {
@@ -136,7 +140,7 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
 
         monsterCollider = GetComponentInChildren<Collider>();
 
-        // === ÄÚ·çÆ¾ Á¤¸® ===
+        // === ì½”ë£¨í‹´ ì •ë¦¬ ===
         if (_knockBackCoroutine != null)
         {
             StopCoroutine(_knockBackCoroutine);
@@ -151,11 +155,11 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
         Vector3 dir = (_target.position - transform.position).normalized;
         float dist = Vector3.Distance(transform.position, _target.position);
 
-        // È¥¶õ »óÅÂ¸é °Å¸®¸¸ Ã¼Å© (½Ã¾ß ¹«½Ã)
+        // í˜¼ë€ ìƒíƒœë©´ ê±°ë¦¬ë§Œ ì²´í¬ (ì‹œì•¼ ë¬´ì‹œ)
         DebuffHandler debuffHandler = GetComponent<DebuffHandler>();
         if (debuffHandler != null && debuffHandler.HasDebuff(Constants.DEBUFF_CONFUSION))
         {
-            return true;  // È¥¶õ »óÅÂ¸é Ç×»ó true
+            return true;  // í˜¼ë€ ìƒíƒœë©´ í•­ìƒ true
         }
 
         int mask = LayerMask.GetMask(targetTag, Constants.LAYER_MASK_WALL);
@@ -172,7 +176,7 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
 
     protected void LookAtPlayer()
     {
-        Vector3 dir = (_target.position - transform.position).normalized;
+        Vector3 dir = new Vector3(_target.position.x - transform.position.x, 0 , _target.position.z - transform.position.z).normalized;
         if (dir != Vector3.zero)
         {
             Quaternion targetRot = Quaternion.LookRotation(dir);
@@ -186,6 +190,65 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
         _maxHealth = (int)maxEliteHealth;
     }
 
+    #region ì´í™íŠ¸ ê´€ë¦¬
+    public void GetEffectFromPool(PoolableObject effectPrefab, Vector3 position, Quaternion rotation, float? customDuration = null)
+    {
+        if (effectPrefab == null)
+        {
+            return;
+        }
+
+        GameObject effectObj = GameManager.Instance.PoolManager.GetFromPool(
+            effectPrefab,
+            position,
+            rotation
+        );
+
+        if (effectObj == null)
+        {
+            return;
+        }
+
+        // ParticleSystem ì°¾ê¸° ë° ì¬ìƒ
+        ParticleSystem ps = effectObj.GetComponent<ParticleSystem>();
+        if (ps != null)
+        {
+            ps.Play();
+
+            // ì§€ì†ì‹œê°„ ê³„ì‚°
+            float duration = customDuration ?? (ps.main.duration + ps.main.startLifetime.constantMax);
+            StartCoroutine(ReturnEffectToPool(effectObj, duration));
+        }
+        else
+        {
+            // ParticleSystemì´ ì—†ìœ¼ë©´ ê¸°ë³¸ ì§€ì†ì‹œê°„ ì‚¬ìš©
+            float duration = customDuration ?? 2f;
+            StartCoroutine(ReturnEffectToPool(effectObj, duration));
+        }
+    }
+
+    public void GetEffectFromPool(PoolableObject effectPrefab, Transform spawnTransform, float? customDuration = null)
+    {
+        if (spawnTransform == null)
+        {
+            return;
+        }
+
+        GetEffectFromPool(effectPrefab, spawnTransform.position, spawnTransform.rotation, customDuration);
+    }
+
+    protected IEnumerator ReturnEffectToPool(GameObject effect, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        if (effect != null)
+        {
+            GameManager.Instance.PoolManager.ReleaseToPool(effect);
+        }
+    }
+
+    #endregion
+
     protected override void Die()
     {
         GameManager.Instance.CurrencyManager.AddCredit(cost);
@@ -193,7 +256,7 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
     }
 
 
-    #region ³Ë¹é
+    #region ë„‰ë°±
 
     protected virtual void OnCollisionEnter(Collision collision)
     {
@@ -201,7 +264,7 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
         {
             if (collision.gameObject.layer == LayerMask.NameToLayer(Constants.LAYER_MASK_WALL))
             {
-                Debug.Log("Ãæµ¹");
+                Debug.Log("ì¶©ëŒ");
                 TakeDamage(GameManager.Instance.PlayerStatManager.knockBackDamage * GameManager.Instance.PlayerStatManager.knockBackDamageMulti, null);
                 EndKnockBack();
             }
@@ -211,7 +274,7 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
 
 
     /// <summary>
-    /// ³Ë¹é ½ÇÇà
+    /// ë„‰ë°± ì‹¤í–‰
     /// </summary>
     /// <param name="pushDirection"></param>
     /// <param name="damage"></param>
@@ -225,12 +288,12 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
         }
         if (_knockBackCoroutine != null)
         {
-            Debug.Log("³Ë¹é ÁßÀÌ¹Ç·Î ³Ë¹é ¹«½Ã");
+            Debug.Log("ë„‰ë°± ì¤‘ì´ë¯€ë¡œ ë„‰ë°± ë¬´ì‹œ");
             return;
         }
         if (monsterSize == MonsterSize.BIG)
         {
-            Debug.Log("´ëÇüÀÌ¹Ç·Î ³Ë¹é ¹«½Ã");
+            Debug.Log("ëŒ€í˜•ì´ë¯€ë¡œ ë„‰ë°± ë¬´ì‹œ");
             return;
         }
         monsterCollider.isTrigger = false;
@@ -249,7 +312,7 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
 
 
     /// <summary>
-    /// ³Ë¹é ÄÚ·çÆ¾
+    /// ë„‰ë°± ì½”ë£¨í‹´
     /// </summary>
     /// <param name="pushDirection"></param>
     /// <param name="damage"></param>
@@ -264,7 +327,7 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
             time += Time.deltaTime;
             if (time > maxTime)
             {
-                Debug.Log("¼Óµµ°¡ ³Ê¹« ´À·Á °­Á¦ Á¾·á");
+                Debug.Log("ì†ë„ê°€ ë„ˆë¬´ ëŠë ¤ ê°•ì œ ì¢…ë£Œ");
                 break;
             }
             yield return null;
@@ -277,7 +340,6 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
         isPushed = false;
         monsterRigidbody.linearVelocity = Vector3.zero;
         monsterRigidbody.isKinematic = true;
-        monsterCollider.isTrigger = true;
         if (!isBindned)
         {
             agent.isStopped = false;
