@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 public static class Constants
@@ -193,6 +194,13 @@ public static class Constants
     #region ResourcesPath
     public static string RESOURCES_PATH_PLAYER_WEAPONSET = "ScriptableObjects/Player/PlayerWeaponSets";
     public static string RESOURCES_PATH_REWARD_DATA_SO = "ScriptableObjects/Rewards";
+
+
+    public const string RESOURCES_PATH_SKILLTOOLTIP = "SkillData/SkillTooltip/KeywordData";
+    public const string RESOURCES_PATH_SKILLTOOLTIPUI = "Prefabs/Skill/Skill_ToolTip";
+    public const string RESOURCES_PATH_PLAYERSTATDATA = "SkillData/PlayerStatData";
+    public static readonly string FILE_PATH_PLAYERSTAT = Path.Combine(Application.dataPath, "SkillData/PlayerStatData.json");
+
 
     #region Map
     public static string RESOURCES_PATH_ROOMDATASO = "ScriptableObjects/Map/Rooms";
