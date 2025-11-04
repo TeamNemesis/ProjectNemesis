@@ -136,22 +136,24 @@ MonoBehaviour:
   isDead: 0
   debuffHandler: {fileID: 0}
   maxEliteHealth: 0
-  attackDamage: 10
+  attackDamage: 7
   attackRange: 70
   detectionRange: 100
   attackDelay: 3
-  originalSpeed: 10
+  originalSpeed: 5
   targetTag: Player
   monsterSize: 1
   cost: 5
+  monsterRigidbody: {fileID: 0}
+  monsterCollider: {fileID: 0}
+  _isAttacking: 0
+  baseState: 0
   _knockBackDamage: 0
   player: {fileID: 0}
   agent: {fileID: 0}
   _target: {fileID: 0}
   aimingDelay: 0
-  _isAttacking: 0
   SquareDecalPrefab: {fileID: 7619084252263834349, guid: 5b43a6955e6566f4daab29cc6bdcd3d5, type: 3}
-  currentState: 0
 --- !u!195 &3854052272450954835
 NavMeshAgent:
   m_ObjectHideFlags: 0

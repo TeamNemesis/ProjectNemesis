@@ -19,6 +19,7 @@ public class PlayerRifleSpecialAttacker : PlayerSpecialAttacker
     public LayerMask wallMask;
     public LayerMask enemyMask;
     public float visualLifetime = 0.25f;
+    [SerializeField] Transform _firePoint;
 
     Coroutine _chargeRoutine;
     float _chargeTimer;
@@ -28,9 +29,10 @@ public class PlayerRifleSpecialAttacker : PlayerSpecialAttacker
 
     public override WeaponType WeaponType => WeaponType.Rifle; // 예시
 
-    public override void Initialize(Player player)
+    public void Initialize(Player player, Transform firePoint)
     {
         base.Initialize(player);
+        _firePoint = firePoint;
     }
 
     public override void StartCharge()
@@ -120,10 +122,9 @@ public class PlayerRifleSpecialAttacker : PlayerSpecialAttacker
 
         Debug.Log($"PlayerRifleSpecialAttacker.FireWithCharge ratio={ratio} frame={Time.frameCount}");
 
-
         float width = Mathf.Lerp(minWidth, maxWidth, ratio);
 
-        Vector3 origin = _player.transform.position + Vector3.up * 1.0f; // 보정
+        Vector3 origin = _firePoint.position;
         Vector3 dir = _player.transform.forward;
 
         if (laserPrefab != null)

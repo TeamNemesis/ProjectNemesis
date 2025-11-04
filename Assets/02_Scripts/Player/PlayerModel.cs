@@ -19,11 +19,13 @@ public class PlayerModel : CharacterModelBase
     /// </summary>
     private bool bIsAvoid;
 
+    #region 무적
     /// <summary>
     /// 무적 상태인지
     /// </summary>
     [SerializeField]
     private bool _bIsInvincibility;
+
     public bool bIsInvincibility { get { return _bIsInvincibility; } }
     public void SetIsInvincibility(bool bIsInvincibility)
     {
@@ -33,11 +35,34 @@ public class PlayerModel : CharacterModelBase
     // 남은 무적 시간
     private float _invincibilityTimeRemaining;
 
-
     /// <summary>
     /// 무적 활성에 대한 코루틴
     /// </summary>
     private Coroutine _invincibilityCoroutine;
+
+    #endregion
+
+    #region 전방무적
+    
+    [SerializeField]
+    /// <summary>
+    /// 전방 무적
+    /// </summary>
+    private bool _bIsFrontInvincibility;
+
+    /// <summary>
+    /// 전방 무적 시간
+    /// </summary>
+    private float _frontInvincibilityTimeRemaining;
+
+    /// <summary>
+    /// 전방 무적 코루틴
+    /// </summary>
+    private Coroutine _FrontInvincibilityCoroutine;
+
+
+    #endregion
+
 
     /// <summary>
     /// 회피율
@@ -58,9 +83,18 @@ public class PlayerModel : CharacterModelBase
     public override void TakeDamage(float damage, Transform attacker)
     {
         // 무적 상태라면 데미지X
-        if(_bIsInvincibility)
+        if (_bIsInvincibility)
         {
             return;
+        }
+
+        // 전방 무적이라면 데미지 x
+        if (_bIsFrontInvincibility)
+        {
+            if (IsAttackFront(attacker))
+            {
+                return;
+            }
         }
 
         // 회피가능하다면 확률 계산 후 회피
@@ -75,12 +109,12 @@ public class PlayerModel : CharacterModelBase
         }
 
         // 받는 피해 감소가 있다면 데미지 감소
-        if(bIsReduceDamage)
+        if (bIsReduceDamage)
         {
-            damage*=(1f-_damageReducePercent);
+            damage *= (1f - _damageReducePercent);
         }
 
-        if(attacker != null)
+        if (attacker != null)
         {
             OnPlayerHit(attacker);
         }
@@ -89,7 +123,9 @@ public class PlayerModel : CharacterModelBase
     }
     public override void Initialize()
     {
+        // 플레이어 json파일 데이터에서 최대체력 받아옴
         base.Initialize();
+        SetMaxHp((int)GameManager.Instance.PlayerStatManager.playerStatDataDic["playerHP"].GetEffectiveValue());
         SetCurrentHp(maxHealth); // 초기화 시 현재 체력을 최대 체력으로 설정
 
         // 필드값 초기화
@@ -138,7 +174,7 @@ public class PlayerModel : CharacterModelBase
         PlayerHit?.Invoke(monsterTransform);
     }
 
-
+    #region 무적
 
     public void PlayerInvincibility(float time)
     {
@@ -174,4 +210,56 @@ public class PlayerModel : CharacterModelBase
         _invincibilityCoroutine = null;
         Debug.LogError("무적 상태 종료");
     }
+    #endregion
+
+    public bool IsAttackFront(Transform attackerTransform)
+    {
+        // 플레이어 기준 정면 방향
+        Vector3 forward = transform.forward;
+
+        // 공격자 방향 벡터
+        Vector3 toAttacker = attackerTransform.position - transform.position;
+
+        // 두 벡터 사이의 각도 계산
+        float angle = Vector3.Angle(forward, toAttacker);
+
+        // ±90도 이내면 정면으로 간주
+        return angle <= 90f;
+    }
+
+    public void PlayerFrontInvincibility(float time)
+    {
+        // 무적 상태가 이미 활성화되어 있고, 남은 시간이 더 길면 무시
+        if (_bIsFrontInvincibility && _frontInvincibilityTimeRemaining >= time)
+        {
+            return;
+        }
+
+        Debug.LogError("전방 무적 시작");
+        // 기존 코루틴 중단
+        if (_FrontInvincibilityCoroutine != null)
+        {
+            StopCoroutine(_FrontInvincibilityCoroutine);
+            _FrontInvincibilityCoroutine = null;
+        }
+
+        // 새 시간으로 무적 재시작
+        _bIsFrontInvincibility = true;
+        _frontInvincibilityTimeRemaining = time;
+        _FrontInvincibilityCoroutine = StartCoroutine(PlayerFrontInvincibilityCoroutine());
+    }
+
+    private IEnumerator PlayerFrontInvincibilityCoroutine()
+    {
+        while (_frontInvincibilityTimeRemaining > 0f)
+        {
+            _frontInvincibilityTimeRemaining -= Time.deltaTime;
+            yield return null;
+        }
+
+        _bIsFrontInvincibility = false;
+        _FrontInvincibilityCoroutine = null;
+        Debug.LogError("전방 무적 상태 종료");
+    }
+
 }

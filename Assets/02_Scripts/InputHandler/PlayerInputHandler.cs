@@ -152,13 +152,21 @@ public class PlayerInputHandler : MonoBehaviour
     /// <param name="value"></param>
     public void OnGrenadeAttack(InputAction.CallbackContext value)
     {
+        
         if (value.started)
         {
+            if (EventBus.IsColosseumRoom)
+            {
+                Vector3 monsterPos = EventBus.SpawnedMonster.transform.position;
+                monsterPos.y = 0f;
+                OnGrenadeAttackInput?.Invoke(monsterPos);
+                return;
+            }
             // 우클릭 시작 시
             Vector3? target = GetMouseGroundPoint();
             if (target.HasValue)
             {
-                
+                Debug.Log($"유탄 공격 입력받음: {target.Value}");
                 OnGrenadeAttackInput?.Invoke(target.Value);
             }
         }

@@ -7,7 +7,7 @@ using UnityEngine;
 public class PlayerDashState : PlayerStateBase
 {
     float _dashDuration = 0.5f; // 기본 fallback duration
-    float _dashDistance = 4f;   // 대시 거리 (예시)
+    float _dashDistance;   // 대시 거리 (예시)
 
     bool _subscribed = false;
 
@@ -15,10 +15,16 @@ public class PlayerDashState : PlayerStateBase
     // 프로젝트에 따라 "Dash", "Roll", "Dash_Loop" 등 이름을 맞춰주세요.
     const string DashClipName = "RollForward";
 
-    public PlayerDashState(Player player, float dashDistance = 4f, float dashDuration = 0.5f) : base(player)
+    public PlayerDashState(Player player, float dashDuration = 0.5f) : base(player)
     {
-        _dashDistance = dashDistance;
+        _dashDistance = GameManager.Instance.PlayerStatManager.playerDashDistance*GameManager.Instance.PlayerStatManager.playerDashDistanceMulti;
+        GameManager.Instance.PlayerStatManager.OnPlayerDashDistanceMultiChange += SetDashDistance;
         _dashDuration = dashDuration;
+    }
+
+    public void SetDashDistance(float distanceMulti)
+    {
+        _dashDistance = GameManager.Instance.PlayerStatManager.playerDashDistance * distanceMulti;
     }
 
     public override void Enter()
@@ -35,7 +41,8 @@ public class PlayerDashState : PlayerStateBase
         _subscribed = true;
 
         // 대시 방향: 입력 벡터가 있으면 그쪽, 아니면 플레이어 앞 방향
-        Vector3 dir3 = _player.MoveInput.sqrMagnitude > 0.01f ? new Vector3(_player.MoveInput.x, 0f, _player.MoveInput.y).normalized : _player.transform.forward;
+        Vector3 dir3 = _player.MoveInput.sqrMagnitude > 0.01f ? new Vector3(_player.MoveInput.x, 0f, _player.MoveInput.z).normalized : _player.transform.forward;
+        Debug.LogError(_player.MoveInput);
 
         // 애니메이션 기반 duration 계산 시도
         float durationToUse = _dashDuration;

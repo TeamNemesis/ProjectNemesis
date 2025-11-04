@@ -6,23 +6,15 @@ using System.Collections.Specialized;
 /// 플레이어의 유탄공격을 담당하는 클래스
 /// 무기타입에 상관없이 공통으로 사용
 /// </summary>
-public class PlayerGrenadeAttacker : MonoBehaviour, IAttacker
+public class PlayerGrenadeAttacker : MonoBehaviour
 {
-    public WeaponType WeaponType => throw new NotImplementedException();
-
-    public bool IsAttacking => throw new NotImplementedException();
-
-    public event Action AttackStarted;
-    public event Action AttackEnded;
-
-    //
-    [SerializeField] private GameObject grenadePrefab;
-    [SerializeField] private GameObject explodeCircle;
-    [SerializeField] private float travelTime = 1.0f;     // 유탄이 도착하는 시간
-    [SerializeField] private float travelSpeed = 30.0f;
-    [SerializeField] private float explosionRadius = 3f;  // 폭발 반경
-    [SerializeField] private float explosionDamage = 30f; // 폭발 데미지
-    [SerializeField] private LayerMask enemyLayer;        // 적 탐지용
+    [SerializeField] string _grenadePath = "Prefabs/Bullet/Grenade";
+    [SerializeField] string _explodeCirclePath = "Prefabs/Effect/ExplodeCircle";
+    [SerializeField] float travelTime = 1.0f;     // 유탄이 도착하는 시간
+    [SerializeField] float _coolTime = 10.0f;   // 쿨타임
+    [SerializeField] float _timer = 0.0f;       // 쿨타임 타이머
+    [SerializeField] int _maxCount = 3;       // 최대 소지 개수
+    [SerializeField] int _currentCount = 0;   // 현재 소지 개수
 
     Vector3 _mousePos;
 
@@ -37,97 +29,74 @@ public class PlayerGrenadeAttacker : MonoBehaviour, IAttacker
     [SerializeField, Tooltip("이 거리 이상이면 '멀다'로 간주")]
     private float farDistance = 10f;
 
-    private Camera mainCam;
+    public event Action<int, int> OnGrenadeCountChanged; // 현재 유탄 개수, 최대 유탄 개수
+    public event Action<float, float> OnGrenadeCooltimeChanged; // 현재 쿨타임, 최대 쿨타임
 
-    
-    
-    public void EndAttack()
+    private void Update()
     {
-        throw new NotImplementedException();
+        // 쿨타임 처리
+        if(_currentCount < _maxCount)
+        {
+            _timer += Time.deltaTime;
+            OnGrenadeCooltimeChanged?.Invoke(_timer, _coolTime);
+            if (_timer >= _coolTime)
+            {
+                _currentCount++;
+                _timer = 0.0f;
+                OnGrenadeCountChanged?.Invoke(_currentCount, _maxCount);
+            }
+        }
+    }
+
+    public void Initialize()
+    {
+        _currentCount = _maxCount;
+        OnGrenadeCooltimeChanged?.Invoke(0.0f, _coolTime);
+        OnGrenadeCountChanged?.Invoke(_currentCount, _maxCount);
     }
 
     public void GrenadeAttack(Vector3 mousePos)
     {
         Debug.Log("유탄 공격 실행");
+        _currentCount--;
+        OnGrenadeCountChanged?.Invoke(_currentCount, _maxCount);
         LaunchGrenade(mousePos);
-    }
-
-    public void OnAnimationEnd()
-    {
-        throw new NotImplementedException();
-    }
-
-    public void OnAnimationFire()
-    {
-        throw new NotImplementedException();
     }
 
     public bool RequestAttack()
     {
+        if(_currentCount <= 0)
+        {
+            Debug.Log("유탄이 없습니다.");
+            return false;
+        }
+        
         GrenadeAttack(_mousePos);
         return true;
-        throw new NotImplementedException();
     }
 
     public void SetMousePos(Vector3 mousePos)
     {
         _mousePos = mousePos;
-        RequestAttack();
     }
 
+    /// <summary>
+    /// 유탄을 발사하는 함수
+    /// </summary>
+    /// <param name="targetPos"></param>
     private void LaunchGrenade(Vector3 targetPos)
     {
-        GameObject grenade = GameManager.Instance.PoolManager.GetFromPool("Prefabs/Bullet/Grenade", transform.position + Vector3.up * 1.0f, Quaternion.identity);
-        GameObject explodeRange = GameManager.Instance.PoolManager.GetFromPool("Prefabs/Effect/ExplodeCircle", targetPos + Vector3.up * 0.1f, Quaternion.Euler(90f, 0f, 0f));
-        StartCoroutine(ParabolaMove(grenade, targetPos));
-        Destroy(explodeRange, travelTime);
-    }
+        GameObject grenade = GameManager.Instance.PoolManager.GetFromPool(_grenadePath, transform.position + Vector3.up * 1.0f, Quaternion.identity);
+        GameObject explodeCircle = GameManager.Instance.PoolManager.GetFromPool(_explodeCirclePath, targetPos + Vector3.up * 0.1f, Quaternion.Euler(90f, 0f, 0f));
 
-    private IEnumerator ParabolaMove(GameObject grenade, Vector3 target)
-    {
-        Vector3 start = grenade.transform.position;
-        float elapsed = 0f;
-
-        float distance = Vector3.Distance(new Vector3(start.x, 0f, start.z), new Vector3(target.x, 0f, target.z));
-
-        float tDist = Mathf.InverseLerp(closeDistance, farDistance, distance);
-        float smooth = Mathf.SmoothStep(0f, 1f, tDist);
-        float parabolaHeight = Mathf.Lerp(maxParabolaHeight, minParabolaHeight, smooth);
-
-        if (distance < 0.2f)
-            parabolaHeight = Mathf.Min(parabolaHeight, maxParabolaHeight * 0.8f);
-
-        while (elapsed < travelTime)
+        PlayerGrenadeBullet bullet = grenade.GetComponent<PlayerGrenadeBullet>();
+        if(bullet == null)
         {
-            elapsed += Time.deltaTime;
-            float t = Mathf.Clamp01(elapsed / travelTime);
-
-            Vector3 flatPos = Vector3.Lerp(start, target, t);
-            float parabola = 4f * parabolaHeight * (t - t * t);
-            flatPos.y += parabola;
-
-            grenade.transform.position = flatPos;
-            yield return null;
+            Debug.Log("PlayerGrenadeBullet 컴포넌트가 없습니다.");
+            return;
         }
+        bullet.Initialize(transform, targetPos);
 
-        EventBus.GrenadeBomb(grenade.transform.position);
-        Explode(grenade.transform.position,grenade.transform);
-        Destroy(grenade);
-    }
-
-    private void Explode(Vector3 position,Transform grenadeTransform)
-    {
-        Collider[] hits = Physics.OverlapSphere(position, explosionRadius, enemyLayer);
-        foreach (Collider hit in hits)
-        {
-            IDamageable enemy = hit.GetComponent<IDamageable>();
-            if (enemy != null)
-            {
-                Transform monster = hit.transform;
-                EventBus.MonsterHit(WeaponType.None, ATTACKTYPE.GRENADE, monster, grenadeTransform);
-            }
-        }
-
-        Debug.Log("폭발 위치: " + position);
+        Destroy(explodeCircle, travelTime);
     }
 }

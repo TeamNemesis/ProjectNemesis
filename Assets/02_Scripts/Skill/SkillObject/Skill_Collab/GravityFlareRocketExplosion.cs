@@ -1,4 +1,4 @@
-using System.Collections;
+Ôªøusing System.Collections;
 using UnityEngine;
 
 public class GravityFlareRocketExplosionData
@@ -26,7 +26,7 @@ public class GravityFlareRocketExplosion : AreaDamageBase, IInitializePoolable
     public override void ActiveSkill(Transform target)
     {
         target.GetComponent<MonsterBase>().TakeDamage(_damage);
-        Debug.LogError("µ•πÃ¡ˆ" + _damage);
+        Debug.LogError("Îç∞ÎØ∏ÏßÄ" + _damage);
     }
     public void Initialize(object data)
     {
@@ -39,9 +39,9 @@ public class GravityFlareRocketExplosion : AreaDamageBase, IInitializePoolable
 
     public IEnumerator RemoveCoroutine()
     {
-        Debug.LogError("ªË¡¶ ƒ⁄∑Á∆æ Ω√¿€");
+        Debug.LogError("ÏÇ≠Ï†ú ÏΩîÎ£®Ìã¥ ÏãúÏûë");
         yield return new WaitForSeconds(Constants.SKILL_REMAIN);
-        Debug.LogError("ªË¡¶");
+        Debug.LogError("ÏÇ≠Ï†ú");
         GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
 
 

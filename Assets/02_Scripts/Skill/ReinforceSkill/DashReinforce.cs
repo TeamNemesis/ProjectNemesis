@@ -1,20 +1,20 @@
-using System;
+ï»¿using System;
 using UnityEngine;
 
 /// <summary>
-/// ºñºê¸£ °­È­ ´ë½¬ °­È­ (¾àÀ°°­½Ä)
+/// ë¹„ë¸Œë¥´ ê°•í™” ëŒ€ì‰¬ ê°•í™” (ì•½ìœ¡ê°•ì‹)
 /// </summary>
 public class Skill_One_Dash : ActiveTech
 {
     /// <summary>
-    /// ´ë½¬ ½ÃÀÛ µ¶ ÇÁ¸®ÆÕ
+    /// ëŒ€ì‰¬ ì‹œì‘ ë… í”„ë¦¬íŒ¹
     /// </summary>
     [SerializeField]
     private PoisonDash _poisonDashPrefab;
 
     private PoisonDashData _poisonDashData;
     /// <summary>
-    /// ´ë½¬ ½ÇÇà½Ã ½ÇÇàÇÒ ¾×¼Ç
+    /// ëŒ€ì‰¬ ì‹¤í–‰ì‹œ ì‹¤í–‰í•  ì•¡ì…˜
     /// </summary>
     public Action _DashTry;
 
@@ -25,21 +25,21 @@ public class Skill_One_Dash : ActiveTech
         {
             _poisonDashPrefab = Resources.Load<PoisonDash>("Prefabs/Skill/SkillObject/Skill_One/PoisonDash");
         }
-        // °ø°İ ÀûÁß ½Ã ÀÌº¥Æ®¿¡ Ãß°¡
+        // ê³µê²© ì ì¤‘ ì‹œ ì´ë²¤íŠ¸ì— ì¶”ê°€
         base.Activate(skillManager, player);
         _poisonDashData = new PoisonDashData(player,
-            _skillData.skillBaseValue_1 + _skillData.skillLevelValue_1 * _skillData.skillLevel, // µ¥¹ÌÁö
-            _skillData.skillBaseValue_2 + _skillData.skillLevelValue_2 * _skillData.skillLevel, // Èú·®
-            _skillData.skillBaseValue_3 + _skillData.skillLevelValue_3 * _skillData.skillLevel  // ¹üÀ§
+            _skillData.skillBaseValue_1 + _skillData.skillLevelValue_1 * _skillData.skillLevel, // ë°ë¯¸ì§€
+            _skillData.skillBaseValue_2 + _skillData.skillLevelValue_2 * _skillData.skillLevel, // íëŸ‰
+            _skillData.skillBaseValue_3 + _skillData.skillLevelValue_3 * _skillData.skillLevel  // ë²”ìœ„
             );
         _DashTry = () => ActiveTry(player);
         player.OnDashStarted += _DashTry;
     }
     public override void Deactivate(Player player, bool isSameSkill)
     {
-        // ¸®½ºÆ® Á¦°Å
+        // ë¦¬ìŠ¤íŠ¸ ì œê±°
         base.Deactivate(player, isSameSkill);
-        // ÀÌº¥Æ® ÇØÁ¦
+        // ì´ë²¤íŠ¸ í•´ì œ
         player.OnDashStarted -= _DashTry;
     }
 
@@ -58,19 +58,19 @@ public class Skill_One_Dash : ActiveTech
 }
 
 /// <summary>
-/// ÆÄÀÌ·Î ÇÏÆ® ´ë½¬ °­È­ (±ôÂ¦¼±¹°)
+/// íŒŒì´ë¡œ í•˜íŠ¸ ëŒ€ì‰¬ ê°•í™” (ê¹œì§ì„ ë¬¼)
 /// </summary>
 public class Skill_Two_Dash : ActiveTech
 {
     /// <summary>
-    /// ´ë½¬½Ã ³²±æ ÆøÅº
+    /// ëŒ€ì‰¬ì‹œ ë‚¨ê¸¸ í­íƒ„
     /// </summary>
     private DashReinforcePrefab _dashReinforcePrefab;
 
     private DashReinforceData _dashReinforceData;
 
     /// <summary>
-    /// ´ë½¬ ½ÇÇà½Ã ½ÇÇàÇÒ ¾×¼Ç
+    /// ëŒ€ì‰¬ ì‹¤í–‰ì‹œ ì‹¤í–‰í•  ì•¡ì…˜
     /// </summary>
     public Action _DashTry;
 
@@ -78,7 +78,7 @@ public class Skill_Two_Dash : ActiveTech
 
     public override void Activate(SkillManager skillManager, Player player)
     {
-        // °ø°İ ÀûÁß ½Ã ÀÌº¥Æ®¿¡ Ãß°¡
+        // ê³µê²© ì ì¤‘ ì‹œ ì´ë²¤íŠ¸ì— ì¶”ê°€
         base.Activate(skillManager, player);
         if (_dashReinforceData == null)
         {
@@ -86,7 +86,7 @@ public class Skill_Two_Dash : ActiveTech
         }
 
         _dashReinforceData = new DashReinforceData(
-            skillData.skillBaseValue_1 + skillData.skillLevelValue_1 * skillData.skillLevel // ½ºÅ³ ¹üÀ§
+            skillData.skillBaseValue_1 + skillData.skillLevelValue_1 * skillData.skillLevel // ìŠ¤í‚¬ ë²”ìœ„
             );
 
         _DashTry = () => ActiveTry(player);
@@ -94,10 +94,10 @@ public class Skill_Two_Dash : ActiveTech
     }
     public override void Deactivate(Player player, bool isSameSkill)
     {
-        // ¸®½ºÆ® Á¦°Å
+        // ë¦¬ìŠ¤íŠ¸ ì œê±°
         base.Deactivate(player, isSameSkill);
 
-        // ÀÌº¥Æ® ÇØÁ¦
+        // ì´ë²¤íŠ¸ í•´ì œ
         player.OnDashStarted -= _DashTry;
 
     }
@@ -118,7 +118,7 @@ public class Skill_Two_Dash : ActiveTech
 public class Skill_Three_Dash : ActiveTech
 {
     /// <summary>
-    /// ´ë½¬ ½ÃÀÛ ³Ë¹é ÇÁ¸®ÆÕ
+    /// ëŒ€ì‰¬ ì‹œì‘ ë„‰ë°± í”„ë¦¬íŒ¹
     /// </summary>
     [SerializeField]
     private KnockBackDash _knockBackDashPrefab;
@@ -126,7 +126,7 @@ public class Skill_Three_Dash : ActiveTech
     private KnockBackDashData _knockBackDashData;
 
     /// <summary>
-    /// ´ë½¬ ½ÇÇà½Ã ½ÇÇàÇÒ ¾×¼Ç
+    /// ëŒ€ì‰¬ ì‹¤í–‰ì‹œ ì‹¤í–‰í•  ì•¡ì…˜
     /// </summary>
     public Action _DashTry;
 
@@ -137,13 +137,13 @@ public class Skill_Three_Dash : ActiveTech
         {
             _knockBackDashPrefab = Resources.Load<KnockBackDash>("Prefabs/Skill/SkillObject/Skill_Three/KnockBackDash");
         }
-        // °ø°İ ÀûÁß ½Ã ÀÌº¥Æ®¿¡ Ãß°¡
+        // ê³µê²© ì ì¤‘ ì‹œ ì´ë²¤íŠ¸ì— ì¶”ê°€
         base.Activate(skillManager, player);
 
         _knockBackDashData = new KnockBackDashData(
-            _skillData.skillBaseValue_1 + _skillData.skillLevelValue_1 * _skillData.skillLevel, // µ¥¹ÌÁö
-            _skillData.skillBaseValue_2 + _skillData.skillLevelValue_2 * _skillData.skillLevel, // ³Ë¹é °Å¸®
-            _skillData.skillBaseValue_3 + _skillData.skillLevelValue_3 * _skillData.skillLevel  // ½ºÅ³ ¹İ°æ
+            _skillData.skillBaseValue_1 + _skillData.skillLevelValue_1 * _skillData.skillLevel, // ë°ë¯¸ì§€
+            _skillData.skillBaseValue_2 + _skillData.skillLevelValue_2 * _skillData.skillLevel, // ë„‰ë°± ê±°ë¦¬
+            _skillData.skillBaseValue_3 + _skillData.skillLevelValue_3 * _skillData.skillLevel  // ìŠ¤í‚¬ ë°˜ê²½
             );
         _DashTry = () => ActiveTry(player);
         player.OnDashStarted += _DashTry;
@@ -152,9 +152,9 @@ public class Skill_Three_Dash : ActiveTech
     }
     public override void Deactivate(Player player, bool isSameSkill)
     {
-        // ¸®½ºÆ® Á¦°Å
+        // ë¦¬ìŠ¤íŠ¸ ì œê±°
         base.Deactivate(player, isSameSkill);
-        // ÀÌº¥Æ® ÇØÁ¦
+        // ì´ë²¤íŠ¸ í•´ì œ
         player.OnDashStarted -= _DashTry;
     }
 
@@ -175,27 +175,49 @@ public class Skill_Three_Dash : ActiveTech
 
 
 /// <summary>
-/// GridForge Dash °­È­
+/// GridForge Dash ê°•í™”
 /// </summary>
 public class Skill_Four_Dash : ActiveTech
 {
+
+    private float _frontTime;
+    private Action _frontAction;
+
     public override void Activate(SkillManager skillManager, Player player)
     {
+
         base.Activate(skillManager, player);
+        if (_frontAction != null)
+        {
+            player.OnDashStarted -= _frontAction;
+        }
+
+        _frontTime = skillData.skillBaseValue_1 + skillData.skillLevelValue_1 * skillData.skillLevel;
+
+        _frontAction = () => ActiveTry(player);
+
+        player.OnDashStarted += _frontAction;
     }
 
     public override void Deactivate(Player player, bool isAnotherSkill)
     {
         base.Deactivate(player, isAnotherSkill);
+        player.OnDashStarted -= _frontAction;
+
+    }
+    public override void ActiveTry(Player player)
+    {
+        player.playerModel.PlayerFrontInvincibility(_frontTime);
     }
 
     public Skill_Four_Dash(SkillData skillData) : base(skillData)
     {
     }
+
 }
 
 /// <summary>
-/// LUX Á¦¾à Dash °­È­
+/// LUX ì œì•½ Dash ê°•í™”
 /// </summary>
 public class Skill_Five_Dash : ActiveTech
 {
@@ -229,10 +251,10 @@ public class Skill_Five_Dash : ActiveTech
 
     public override void ActiveTry(Player player)
     {
-        Debug.LogError("´ë½¬ ½ÃÀÛ");
+        Debug.LogError("ëŒ€ì‰¬ ì‹œì‘");
         if (!bIsAttackReinForce)
         {
-            Debug.LogError("°ø°İ·Â Áõ°¡");
+            Debug.LogError("ê³µê²©ë ¥ ì¦ê°€");
             GameManager.Instance.PlayerStatManager.AddPlayerAttackDamage(_attackReinForce);
             Debug.LogError(GameManager.Instance.PlayerStatManager.playerAttackDamage);
 

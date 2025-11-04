@@ -53,6 +53,7 @@ public class Player : MonoBehaviour
     [SerializeField] bool _isSpecialAttacking;             // 플레이어 특수공격 중 여부
 
     // 읽기 전용 프로퍼티로 외부 접근 제공
+    public PlayerWeaponController WeaponController => _weaponController;
     public PlayerNormalAttacker NormalAttacker => _normalAttacker;
     public PlayerSpecialAttacker SpecialAttacker => _specialAttacker;
     public PlayerAnimator Animator => _animator;
@@ -80,6 +81,8 @@ public class Player : MonoBehaviour
     public event Action OnDashStarted;
     public event Action<IInteractable> OnInteractableDetected;
     public event Action OnInteractableMissed;
+    public event Action<int, int> OnGrenadeCountChanged; // 현재 유탄 개수, 최대 유탄 개수
+    public event Action<float, float> OnGrenadeCooltimeChanged; // 현재 쿨타임, 최대 쿨타임
     #endregion
 
     [Header("----- 상태 캐시 -----")]
@@ -143,11 +146,15 @@ public class Player : MonoBehaviour
             if (attacker != null)
                 _specialAttackerMap[attacker.WeaponType] = attacker;
         }
+        _grenadeAttacker.OnGrenadeCooltimeChanged += GrenadeCoolTimeChanged;
+        _grenadeAttacker.OnGrenadeCountChanged += GrenadeCountChanged;
+        _grenadeAttacker.Initialize();
 
         _playerModel?.Initialize();
         _dasher?.Initialize(_characterController);
         _forwarder?.Initialize(this);
         _weaponController?.Initialize();
+        
 
         _interactionController?.Initialize();
         //_interactableGuideView.Initialize();
@@ -229,6 +236,8 @@ public class Player : MonoBehaviour
         // 1) 일반 공격 입력 처리
         if (_normalAttackPressed && TryConsumeNormalAttack())
         {
+            
+
             if (_normalAttacker != null && !IsDashing && !_isSpecialAttacking)
             {
                 bool accepted = false;
@@ -299,7 +308,7 @@ public class Player : MonoBehaviour
     }
     #endregion
 
-    #region 이동 관련 공개 메서드 (기존 로직 유지)
+    #region 이동 관련 공개 함수들
     public void SetToIdle()
     {
         _stateMachine.ChangeState(PlayerStateType.Idle);
@@ -313,6 +322,14 @@ public class Player : MonoBehaviour
 
     public void StopMove()
     {
+        if (EventBus.IsColosseumRoom)
+        {
+            Vector3 cameraForward = Camera.main.transform.forward;
+            cameraForward.y = 0f;
+            cameraForward.Normalize();
+            _mover.Rotate(cameraForward);
+        }
+
         _mover.Move(Vector3.zero);
         _animator.OnMove(0f);
     }
@@ -342,7 +359,7 @@ public class Player : MonoBehaviour
             RifleWeapon rifleWeapon = weapon as RifleWeapon;
 
             playerRifleNormalAttacker?.Initialize(this, rifleWeapon.FirePos);
-            playerRifleSpecialAttacker?.Initialize(this);
+            playerRifleSpecialAttacker?.Initialize(this, rifleWeapon.FirePos);
         }
 
         if (weapon.WeaponType == WeaponType.Blade)
@@ -358,16 +375,16 @@ public class Player : MonoBehaviour
     {
         if (attacker == null) return;
 
-        attacker.AttackStarted += OnAttackerStarted;
-        attacker.AttackEnded += OnAttackerEnded;
+        attacker.OnAttackStarted += OnAttackerStarted;
+        attacker.OnAttackEnded += OnAttackerEnded;
         Debug.Log("이벤트 구독 완료");
     }
 
     void UnsubscribeNormalAttacker(PlayerNormalAttacker attacker)
     {
         if (attacker == null) return;
-        attacker.AttackStarted -= OnAttackerStarted;
-        attacker.AttackEnded -= OnAttackerEnded;
+        attacker.OnAttackStarted -= OnAttackerStarted;
+        attacker.OnAttackEnded -= OnAttackerEnded;
     }
 
     void OnAttackerStarted()
@@ -424,7 +441,6 @@ public class Player : MonoBehaviour
         {
             Debug.Log(" Blade OnAnimationAttackEnd 호출됨");
             blade.Animation_OnComboWindowClose();
-            //blade.Animation_OnAttackEnd(); //
             return;
         }
 
@@ -440,7 +456,6 @@ public class Player : MonoBehaviour
         if (_specialAttacker != null && _specialAttacker.RequestSpecial())
         {
             _stateMachine.ChangeState(PlayerStateType.SpecialAttack);
-            Debug.LogError("특수공격 사용");
             OnSpecialAttackStarted?.Invoke();
         }
     }
@@ -454,12 +469,26 @@ public class Player : MonoBehaviour
     }
     #endregion
 
+    #region 유탄 공격 처리
     public void HandleGrenade(Vector3 mousePos)
     {
         _grenadeAttacker.SetMousePos(mousePos);
+        _grenadeAttacker.RequestAttack();
     }
 
-    #region 상호작용 처리 (기존 로직)
+    public void GrenadeCountChanged(int currentCount, int maxCount)
+    {
+        OnGrenadeCountChanged?.Invoke(currentCount, maxCount);
+    }
+
+    public void GrenadeCoolTimeChanged(float coolTimeRemaining, float maxCoolTime)
+    {
+        OnGrenadeCooltimeChanged?.Invoke(coolTimeRemaining, maxCoolTime);
+    }
+
+    #endregion
+
+    #region 상호작용 처리
     public void OnWeaponInteracted(WeaponType newWeaponType)
     {
         _weaponController.ChangeWeapon(newWeaponType);

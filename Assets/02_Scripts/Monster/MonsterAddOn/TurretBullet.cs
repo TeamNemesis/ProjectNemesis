@@ -92,6 +92,10 @@ public class TurretBullet : PoolableObject
         
         else
         {
+            if(other.CompareTag(Constants.TAG_ELECTIC))
+            {
+                return;
+            }
             if (lifeTimeCoroutine != null )
             {
                 StopCoroutine(lifeTimeCoroutine);
