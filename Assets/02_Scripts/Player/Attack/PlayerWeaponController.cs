@@ -99,8 +99,6 @@ public class PlayerWeaponController : MonoBehaviour
     }
 }
 
-#if UNITY_EDITOR
-
 [CustomEditor(typeof(Player))]
 public class WeaponControllerEditor : Editor
 {
@@ -118,4 +116,3 @@ public class WeaponControllerEditor : Editor
         }
     }
 }
-#endif

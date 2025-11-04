@@ -48,8 +48,6 @@ public class PlayScene : MonoBehaviour
 
     private void Start()
     {
-        GameManager.Instance.PlayerStatManager.Initialize();
-
         if (_player == null)
         {
             Debug.LogError("플레이어가 할당되지 않았습니다!");

@@ -12,8 +12,8 @@ public class BulletData
 public class Bullet : PoolableObject
 {
     [Header("----- 데이터로 빼기 전 임시 -----")]
-    [SerializeField] float _moveSpeed; // 탄환의 이동 속도
-    [SerializeField] float _lifeTime;   // 탄환의 생존 시간
+    [SerializeField] float _moveSpeed = 20f; // 탄환의 이동 속도
+    [SerializeField] float _lifeTime = 2f;   // 탄환의 생존 시간
 
     [Header("----- 읽기 전용 -----")]
     [SerializeField] float _lifeTimer;              // 생존 시간 타이머
@@ -38,8 +38,8 @@ public class Bullet : PoolableObject
     public void Initialize()
     {
         // 여기서 데이터 초기화 작업 수행 가능
-        _lifeTimer = GameManager.Instance.PlayerStatManager.playerBulletMoveSpeed;
-        _lifeTime = GameManager.Instance.PlayerStatManager.playerBulletLifeTime;
+        _lifeTimer = 0f;
+        _lifeTime = 2f;
     }
 
     public void SetMoveDir(Vector3 moveDir)

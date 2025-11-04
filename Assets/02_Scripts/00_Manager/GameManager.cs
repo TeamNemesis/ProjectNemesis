@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using UnityEditor.U2D.Aseprite;
+using UnityEngine;
 
 /// <summary>
 /// 게임 전체에서 싱글톤으로 접근 가능한 매니저 클래스
@@ -31,12 +32,11 @@ public class GameManager : MonoBehaviour
                     _instance._interactableManager = obj.AddComponent<InteractableManager>();
                     _instance._dataManager = obj.AddComponent<DataManager>();
                     _instance._playerStatManager = obj.AddComponent<PlayerStatManager>();
-                    
                     _instance._poolManager = obj.AddComponent<PoolManager>();
                     _instance._currencyManager = obj.AddComponent<CurrencyManager>();
 
                     _instance.Initialize();
-
+                    
 
                     // 씬 전환시 파괴되지 않도록 설정
                     DontDestroyOnLoad(obj);
@@ -59,40 +59,36 @@ public class GameManager : MonoBehaviour
             DontDestroyOnLoad(gameObject);
         }
 
+      
 
-
-
+        
     }
 
 
     void Initialize()
     {
 
-        if (_skillManger == null)
-        {
-            _skillManger = Resources.Load<SkillManager>("Prefabs/Skill/SkillManager");
-            _skillManger = Instantiate(_skillManger, transform);
-            _skillManger.name = "SkillManager";
-        }
+				if (_skillManger == null)
+				{
+						_skillManger = Resources.Load<SkillManager>("Prefabs/Skill/SkillManager");
+						_skillManger = Instantiate(_skillManger, transform);
+						_skillManger.name = "SkillManager";
+						DontDestroyOnLoad(_skillManger);
+				}
 
-        if (_uiManager == null)
-        {
-            _uiManager = Resources.Load<UIManager>("Prefabs/Skill/UIManager");
-            _uiManager = Instantiate(_uiManager, transform);
-            _uiManager.name = "UIManager";
-        }
-        if(_serverManager == null)
-        {
-            _serverManager = Resources.Load<ServerManager>("Prefabs/Skill/ServerManager");
-            _serverManager = Instantiate(_serverManager, transform);
-            _serverManager.name = "ServerManager";
-        }
-        _instance._resourceManager.Initialize();
+				if (_uiManager == null)
+				{
+						_uiManager = Resources.Load<UIManager>("Prefabs/Skill/UIManager");
+						_uiManager = Instantiate(_uiManager, transform);
+						_uiManager.name = "UIManager";
+						DontDestroyOnLoad(_uiManager);
+				}
+				_instance._resourceManager.Initialize();
         _instance._dataManager.Initialize(_instance._resourceManager);
         _skillManger.InitializeSkillManager();
         _uiManager.InitializeManager();
         _currencyManager.Initialize();
-        _serverManager.Initialize();
+        _playerStatManager.Initialize();
         _poolManager.Initialize(_instance._resourceManager);
     }
 
@@ -107,7 +103,7 @@ public class GameManager : MonoBehaviour
     public DataManager DataManager => _dataManager;
 
     [SerializeField] PlayerStatManager _playerStatManager; // 플레이어 스탯 매니저
-    public PlayerStatManager PlayerStatManager => _playerStatManager;
+    public PlayerStatManager PlayerStatManager =>_playerStatManager;
 
     [SerializeField] PoolManager _poolManager;                     // 풀 매니저
     public PoolManager PoolManager => _poolManager;
@@ -120,7 +116,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     [SerializeField]
     private SkillManager _skillManger;
-
+    
     public SkillManager skillManager { get { return _skillManger; } }
 
     /// <summary>
@@ -130,8 +126,5 @@ public class GameManager : MonoBehaviour
     private UIManager _uiManager;
     public UIManager UIManager { get { return _uiManager; } }
 
-    [SerializeField]
-    private ServerManager _serverManager;
-    public ServerManager serverManager { get { return _serverManager; } }
 
 }
