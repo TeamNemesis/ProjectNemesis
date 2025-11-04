@@ -2103,6 +2103,7 @@ Transform:
   - {fileID: 5388599727319912745}
   - {fileID: 6224622537590684683}
   - {fileID: 3332043851456456210}
+  - {fileID: 1614176044647202272}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4947942057351305763
@@ -2117,7 +2118,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16366c7266747e443b0627b093f86a87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rewardSpawnPoints: []
+  _rewardSpawnPoints:
+  - {fileID: 1614176044647202272}
   _monsterSpawnPoints: []
   _doorSpawnPointsLeft:
   - {fileID: 2118117269731150339}
@@ -3946,7 +3948,7 @@ GameObject:
   - component: {fileID: 3620539598508672950}
   m_Layer: 9
   m_Name: Ground_Lab
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -7013,6 +7015,37 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2, y: 0.25, z: 2}
   m_Center: {x: 0, y: -0.125, z: 0}
+--- !u!1 &8226658294884596147
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1614176044647202272}
+  m_Layer: 0
+  m_Name: RewardSpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1614176044647202272
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8226658294884596147}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 8}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3292964910245856048}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8402617891881101003
 GameObject:
   m_ObjectHideFlags: 0

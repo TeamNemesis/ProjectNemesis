@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2956221203757616455
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3251149521337539958}
+  m_Layer: 0
+  m_Name: shootPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3251149521337539958
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2956221203757616455}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0.6938}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7008747196455003394}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2999584611796180676
 GameObject:
   m_ObjectHideFlags: 0
@@ -33,7 +64,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7008747196455003396}
@@ -138,7 +169,7 @@ MonoBehaviour:
   attackDamage: 3
   attackRange: 100
   detectionRange: 100
-  attackDelay: 2.5
+  attackDelay: 1
   originalSpeed: 0
   targetTag: Player
   monsterSize: 0
@@ -151,8 +182,11 @@ MonoBehaviour:
   player: {fileID: 0}
   agent: {fileID: 0}
   _target: {fileID: 0}
+  monsterAnimator: {fileID: 0}
   bulletLifeTime: 8
   turretbullet: {fileID: 433645739003782474, guid: 32e7cbcd5d4ee5c498508d5492575fdb, type: 3}
+  shootPos: {fileID: 3251149521337539958}
+  muzzleFlashPrefab: {fileID: 5257073017889475926, guid: 7fc3b75163eac5c4db69fde545dbe967, type: 3}
 --- !u!195 &8993511308398464980
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -228,15 +262,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 8b753cd7277b22448a827f90e6efe768, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 8b753cd7277b22448a827f90e6efe768, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 8b753cd7277b22448a827f90e6efe768, type: 3}
       propertyPath: m_LocalScale.z
-      value: 1.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 8b753cd7277b22448a827f90e6efe768, type: 3}
       propertyPath: m_LocalPosition.x
@@ -244,7 +278,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 8b753cd7277b22448a827f90e6efe768, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.481
+      value: -0.5
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 8b753cd7277b22448a827f90e6efe768, type: 3}
       propertyPath: m_LocalPosition.z
@@ -290,11 +324,27 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: d872e79911ca62c43b8ac538f530aa79, type: 2}
+    - target: {fileID: 9500000, guid: 8b753cd7277b22448a827f90e6efe768, type: 3}
+      propertyPath: m_Avatar
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 9500000, guid: 8b753cd7277b22448a827f90e6efe768, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: a1d5d962c9ab7a249853739b699d3e05, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 400006, guid: 8b753cd7277b22448a827f90e6efe768, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3251149521337539958}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8b753cd7277b22448a827f90e6efe768, type: 3}
+--- !u!4 &7008747196455003394 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 400006, guid: 8b753cd7277b22448a827f90e6efe768, type: 3}
+  m_PrefabInstance: {fileID: 7008747196454616964}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7008747196455003396 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: 8b753cd7277b22448a827f90e6efe768, type: 3}

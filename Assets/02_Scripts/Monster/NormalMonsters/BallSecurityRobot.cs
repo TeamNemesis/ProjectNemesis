@@ -14,6 +14,8 @@ public class BallSecurityRobot : MonsterBase
     [Header("Effects"), SerializeField]
     private PoolableObject circlePrefab;     // AttackDecalEffect 프리팹 (Inspector에서 지정)
 
+    [SerializeField] private PoolableObject explosionEffectPrefab; // 폭발 이펙트 프리팹
+
     private void Update()
     {
         if (isDead || _target == null) return;
@@ -75,6 +77,10 @@ public class BallSecurityRobot : MonsterBase
         {
             _isAttacking = true;
 
+            agent.ResetPath();
+            agent.velocity = Vector3.zero;
+            agent.isStopped = true;
+
             // 자폭 카운트다운 원 생성 (로봇의 자식으로 붙임)
             if (circlePrefab != null)
             {
@@ -90,6 +96,7 @@ public class BallSecurityRobot : MonsterBase
             yield return new WaitForSeconds(attackDelay);
 
             CheckTarget();
+            GetEffectFromPool(explosionEffectPrefab, transform.position, Quaternion.identity);
 
             baseState = MonsterState.Die;
         }

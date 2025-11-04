@@ -9,7 +9,7 @@ using System.Collections.Specialized;
 public class PlayerGrenadeAttacker : MonoBehaviour
 {
     [SerializeField] string _grenadePath = "Prefabs/Bullet/Grenade";
-    [SerializeField] string _explodeCirclePath = "Prefabs/Effect/ExplodeCircle";
+    [SerializeField] string _explodeCirclePath = "Prefabs/Effect/Skill/ExplodeCircle";
     [SerializeField] float travelTime = 1.0f;     // 유탄이 도착하는 시간
     [SerializeField] float _coolTime = 10.0f;   // 쿨타임
     [SerializeField] float _timer = 0.0f;       // 쿨타임 타이머
@@ -53,6 +53,8 @@ public class PlayerGrenadeAttacker : MonoBehaviour
         _currentCount = _maxCount;
         OnGrenadeCooltimeChanged?.Invoke(0.0f, _coolTime);
         OnGrenadeCountChanged?.Invoke(_currentCount, _maxCount);
+        _explodeCirclePath = "Prefabs/Effect/Skill/ExplodeCircle";
+        _grenadePath = "Prefabs/Bullet/Grenade";
     }
 
     public void GrenadeAttack(Vector3 mousePos)
@@ -60,6 +62,11 @@ public class PlayerGrenadeAttacker : MonoBehaviour
         Debug.Log("유탄 공격 실행");
         _currentCount--;
         OnGrenadeCountChanged?.Invoke(_currentCount, _maxCount);
+        if (EventBus.HasMutant1)
+        {
+            StartCoroutine(Launch3GrenadeRoutine(mousePos));
+            return;
+        }
         LaunchGrenade(mousePos);
     }
 
@@ -98,5 +105,20 @@ public class PlayerGrenadeAttacker : MonoBehaviour
         bullet.Initialize(transform, targetPos);
 
         Destroy(explodeCircle, travelTime);
+    }
+
+    /// <summary>
+    /// 돌연변이 획득 시 유탄 3발 발사하는 코루틴
+    /// </summary>
+    IEnumerator Launch3GrenadeRoutine(Vector3 targetPos)
+    {
+        int count = 0;
+        while (count < 3)
+        {
+            LaunchGrenade(targetPos);
+            count++;
+            yield return new WaitForSeconds(0.2f);  // 발사간격은 나중에 튜닝
+        }
+
     }
 }
