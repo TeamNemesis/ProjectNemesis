@@ -42,10 +42,14 @@ public class PlayScene : MonoBehaviour
         _player.playerModel.OnHpChanged += _playSceneView.UpdateHPBar;
         _player.OnInteractableDetected += _playSceneView.ShowInteractionUI;
         _player.OnInteractableMissed += _playSceneView.HideInteractionUI;
+        _player.OnGrenadeCooltimeChanged += _playSceneView.UpdateGrenadeCoolTime;
+        _player.OnGrenadeCountChanged += _playSceneView.UpdateGrenadeCount;
     }
 
     private void Start()
     {
+        GameManager.Instance.PlayerStatManager.Initialize();
+
         if (_player == null)
         {
             Debug.LogError("플레이어가 할당되지 않았습니다!");

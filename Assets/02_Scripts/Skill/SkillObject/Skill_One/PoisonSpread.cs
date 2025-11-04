@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using UnityEngine;
 
 
@@ -16,12 +16,12 @@ public class PoisonSpread : AreaDamageBase,IInitializePoolable
 
 
     /// <summary>
-    /// ½ºÅ³¿¡ ¸Â´Â È¿°ú ¹ßµ¿
+    /// ìŠ¤í‚¬ì— ë§ëŠ” íš¨ê³¼ ë°œë™
     /// </summary>
     /// <param name="target"></param>
     public override void ActiveSkill(Transform target)
     {
-        // µ¶ Àû¿ë
+        // ë… ì ìš©
         target.GetComponent<DebuffHandler>().ApplyDebuff(DebuffHandler.DebuffData.CreatePoison());
 
     }

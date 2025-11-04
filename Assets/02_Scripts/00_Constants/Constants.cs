@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 public static class Constants
@@ -194,6 +195,13 @@ public static class Constants
     public static string RESOURCES_PATH_PLAYER_WEAPONSET = "ScriptableObjects/Player/PlayerWeaponSets";
     public static string RESOURCES_PATH_REWARD_DATA_SO = "ScriptableObjects/Rewards";
 
+
+    public const string RESOURCES_PATH_SKILLTOOLTIP = "SkillData/SkillTooltip/KeywordData";
+    public const string RESOURCES_PATH_SKILLTOOLTIPUI = "Prefabs/Skill/Skill_ToolTip";
+    public const string RESOURCES_PATH_PLAYERSTATDATA = "SkillData/PlayerStatData";
+    public static readonly string FILE_PATH_PLAYERSTAT = Path.Combine(Application.dataPath, "SkillData/PlayerStatData.json");
+
+
     #region Map
     public static string RESOURCES_PATH_ROOMDATASO = "ScriptableObjects/Map/Rooms";
     public static string RESOURCES_PATH_DOOR_PREFAB = "Prefabs/Map/Doors/Door";
@@ -206,18 +214,23 @@ public static class Constants
     #region knockBack
     public const float KNOCKBACK_COOLTIME = 5f;
     public const float KNOCKBACK_POWER = 10f;
-    #endregion
+		#endregion
 
-    #region Util
+		#region localization
+		public const string STRING_Korean = "ko";
+		#endregion
 
-    /// <summary>
-    /// origin과 가장 가까운 List의 요소 반환
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="origin"></param>
-    /// <param name="targetList"></param>
-    /// <returns></returns>
-    public static T GetNearestObject<T>(Transform origin, List<T> targetList)  where T : Component
+
+		#region Util
+
+		/// <summary>
+		/// origin과 가장 가까운 List의 요소 반환
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="origin"></param>
+		/// <param name="targetList"></param>
+		/// <returns></returns>
+		public static T GetNearestObject<T>(Transform origin, List<T> targetList)  where T : Component
     {
         if(targetList == null)
         {

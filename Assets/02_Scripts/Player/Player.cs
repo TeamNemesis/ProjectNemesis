@@ -81,6 +81,8 @@ public class Player : MonoBehaviour
     public event Action OnDashStarted;
     public event Action<IInteractable> OnInteractableDetected;
     public event Action OnInteractableMissed;
+    public event Action<int, int> OnGrenadeCountChanged; // 현재 유탄 개수, 최대 유탄 개수
+    public event Action<float, float> OnGrenadeCooltimeChanged; // 현재 쿨타임, 최대 쿨타임
     #endregion
 
     [Header("----- 상태 캐시 -----")]
@@ -144,11 +146,15 @@ public class Player : MonoBehaviour
             if (attacker != null)
                 _specialAttackerMap[attacker.WeaponType] = attacker;
         }
+        _grenadeAttacker.OnGrenadeCooltimeChanged += GrenadeCoolTimeChanged;
+        _grenadeAttacker.OnGrenadeCountChanged += GrenadeCountChanged;
+        _grenadeAttacker.Initialize();
 
         _playerModel?.Initialize();
         _dasher?.Initialize(_characterController);
         _forwarder?.Initialize(this);
         _weaponController?.Initialize();
+        
 
         _interactionController?.Initialize();
         //_interactableGuideView.Initialize();
@@ -463,13 +469,26 @@ public class Player : MonoBehaviour
     }
     #endregion
 
+    #region 유탄 공격 처리
     public void HandleGrenade(Vector3 mousePos)
     {
         _grenadeAttacker.SetMousePos(mousePos);
         _grenadeAttacker.RequestAttack();
     }
 
-    #region 상호작용 처리 (기존 로직)
+    public void GrenadeCountChanged(int currentCount, int maxCount)
+    {
+        OnGrenadeCountChanged?.Invoke(currentCount, maxCount);
+    }
+
+    public void GrenadeCoolTimeChanged(float coolTimeRemaining, float maxCoolTime)
+    {
+        OnGrenadeCooltimeChanged?.Invoke(coolTimeRemaining, maxCoolTime);
+    }
+
+    #endregion
+
+    #region 상호작용 처리
     public void OnWeaponInteracted(WeaponType newWeaponType)
     {
         _weaponController.ChangeWeapon(newWeaponType);

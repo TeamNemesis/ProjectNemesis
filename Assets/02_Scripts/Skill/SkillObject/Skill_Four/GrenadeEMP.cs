@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using UnityEngine;
 
 public class GrenadeEMPData
@@ -34,12 +34,12 @@ public class GrenadeEMP : AreaDamageBase, IInitializePoolable
 		}
 
 		/// <summary>
-		/// ½ºÅ³¿¡ ¸Â´Â È¿°ú ¹ßµ¿
+		/// ìŠ¤í‚¬ì— ë§ëŠ” íš¨ê³¼ ë°œë™
 		/// </summary>
 		/// <param name="target"></param>
 		public override void ActiveSkill(Transform target)
 		{
-				// ¼Ó¹Ú Àû¿ë
+				// ì†ë°• ì ìš©
 				target.GetComponent<DebuffHandler>().ApplyDebuff(DebuffHandler.DebuffData.CreateBinding(_time));
 
 		}

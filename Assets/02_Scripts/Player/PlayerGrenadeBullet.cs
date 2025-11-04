@@ -9,7 +9,6 @@ public class PlayerGrenadeBullet : MonoBehaviour
     [SerializeField] private float travelTime = 1.0f;     // 유탄이 도착하는 시간
     [SerializeField] private float travelSpeed = 30.0f;
     [SerializeField] private float explosionRadius = 3f;  // 폭발 반경
-    [SerializeField] private float explosionDamage = 30f; // 폭발 데미지
     [SerializeField] private LayerMask enemyLayer;        // 적 탐지용
 
     // --- 새로 추가된 파라미터 (튜닝용) ---
@@ -79,10 +78,12 @@ public class PlayerGrenadeBullet : MonoBehaviour
         foreach (Collider hit in hits)
         {
             IDamageable enemy = hit.GetComponent<IDamageable>();
+            Debug.Log("IDamageable 컴포넌트 탐색 시도: " + (enemy != null ? "성공" : "실패"));  
             if (enemy != null)
             {
                 Transform monster = hit.transform;
                 EventBus.MonsterHit(WeaponType.None, ATTACKTYPE.GRENADE, monster, grenadeTransform);
+                Debug.Log(monster.name + "에게 폭발 데미지 적용");
             }
         }
 

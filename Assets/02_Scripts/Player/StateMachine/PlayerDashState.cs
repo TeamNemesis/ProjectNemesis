@@ -7,7 +7,7 @@ using UnityEngine;
 public class PlayerDashState : PlayerStateBase
 {
     float _dashDuration = 0.5f; // 기본 fallback duration
-    float _dashDistance = 4f;   // 대시 거리 (예시)
+    float _dashDistance;   // 대시 거리 (예시)
 
     bool _subscribed = false;
 
@@ -15,10 +15,16 @@ public class PlayerDashState : PlayerStateBase
     // 프로젝트에 따라 "Dash", "Roll", "Dash_Loop" 등 이름을 맞춰주세요.
     const string DashClipName = "RollForward";
 
-    public PlayerDashState(Player player, float dashDistance = 4f, float dashDuration = 0.5f) : base(player)
+    public PlayerDashState(Player player, float dashDuration = 0.5f) : base(player)
     {
-        _dashDistance = dashDistance;
+        _dashDistance = GameManager.Instance.PlayerStatManager.playerDashDistance*GameManager.Instance.PlayerStatManager.playerDashDistanceMulti;
+        GameManager.Instance.PlayerStatManager.OnPlayerDashDistanceMultiChange += SetDashDistance;
         _dashDuration = dashDuration;
+    }
+
+    public void SetDashDistance(float distanceMulti)
+    {
+        _dashDistance = GameManager.Instance.PlayerStatManager.playerDashDistance * distanceMulti;
     }
 
     public override void Enter()

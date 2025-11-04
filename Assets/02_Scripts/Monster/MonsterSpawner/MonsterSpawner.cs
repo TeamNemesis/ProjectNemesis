@@ -239,7 +239,7 @@ public class MonsterSpawner : MonoBehaviour
         {
             return;
         }
-        
+
         PoolableObject spawnRandomElite = monster[UnityEngine.Random.Range(0, monster.Count)];
         // 랜덤 스폰 위치 선택
         Transform spawnPos = spawnPositions[UnityEngine.Random.Range(0, spawnPositions.Count)];
@@ -255,8 +255,6 @@ public class MonsterSpawner : MonoBehaviour
             monsterbase.SetEliteMaxHealth(roomNumber);
             monsterbase.OnDieEvent += () => OnMonsterDeath(spawnedMonster);
         }
-        EventBus.SpawnedMonster = monsterbase;
-        Debug.Log("Elite Monster Spawned: " + spawnedMonster.name);
     }
 
     /// <summary>
@@ -341,8 +339,8 @@ public class MonsterSpawner : MonoBehaviour
             OnMonsterSpawned?.Invoke(monsterBase);
             monsterBase.OnDieEvent += () => OnMonsterDeath(spawned);
         }
+    }
 #endif
 
 
-    }
 }

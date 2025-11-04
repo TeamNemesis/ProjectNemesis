@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using UnityEngine;
 
 public class reflect : MonoBehaviour
@@ -11,7 +11,7 @@ public class reflect : MonoBehaviour
 
     public void StartReflectCoroutine(float time)
     {
-        // ³²Àº ½Ã°£ÀÌ ´õ ±æ´Ù¸é ¸®ÅÏ
+        // ë‚¨ì€ ì‹œê°„ì´ ë” ê¸¸ë‹¤ë©´ ë¦¬í„´
         if(time < _remainTime)
         {
             return;

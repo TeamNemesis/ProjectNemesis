@@ -11,6 +11,7 @@ public class SecurityDogEModel : MonsterBase
 
     private float fixedYPosition;
     private Quaternion fixedRotation;
+    private Coroutine attackCoroutine; // 공격 코루틴 참조 저장
 
     // Start() 제거!
 
@@ -97,7 +98,7 @@ public class SecurityDogEModel : MonsterBase
         if (distance <= attackRange && CanSeePlayer())
         {
             _isAttacking = true;
-            StartCoroutine(PerformAttack());
+            attackCoroutine = StartCoroutine(PerformAttack());
         }
         else
         {
@@ -206,6 +207,7 @@ public class SecurityDogEModel : MonsterBase
 
         _isAttacking = false;
         baseState = MonsterState.Move;
+        attackCoroutine = null;
     }
 
     protected override void OnCollisionEnter(Collision collision)
@@ -224,19 +226,76 @@ public class SecurityDogEModel : MonsterBase
             // 타겟이 맞는지 확인
             if (collision.gameObject.CompareTag(targetTag))
             {
+                // 속도 즉시 정지
                 if (monsterRigidbody != null)
                 {
                     monsterRigidbody.linearVelocity = Vector3.zero;
                     monsterRigidbody.angularVelocity = Vector3.zero;
                 }
 
+                // 데미지 적용
                 var playerHealth = collision.gameObject.GetComponent<IDamageable>();
                 if (playerHealth != null)
                 {
                     playerHealth.TakeDamage(attackDamage, transform);
                 }
+
+                // NavMesh 즉시 복원
+                StartCoroutine(RestoreNavMeshImmediately());
             }
         }
+    }
+
+    private IEnumerator RestoreNavMeshImmediately()
+    {
+        // 진행 중인 공격 코루틴 중단
+        if (attackCoroutine != null)
+        {
+            StopCoroutine(attackCoroutine);
+            attackCoroutine = null;
+        }
+
+        // Rigidbody 정리
+        if (monsterRigidbody != null)
+        {
+            monsterRigidbody.linearVelocity = Vector3.zero;
+            monsterRigidbody.angularVelocity = Vector3.zero;
+
+            // 킨마틱 모드로 복원
+            if (!monsterRigidbody.isKinematic)
+            {
+                monsterRigidbody.isKinematic = true;
+            }
+
+            // Rigidbody 제약 해제
+            monsterRigidbody.constraints = RigidbodyConstraints.None;
+        }
+
+        // 약간의 대기 시간 (물리 처리 완료)
+        yield return new WaitForSeconds(0.1f);
+
+        // NavMeshAgent 재활성화
+        if (!agent.enabled)
+        {
+            // NavMesh 위에 있는지 확인
+            UnityEngine.AI.NavMeshHit hit;
+            if (!agent.isOnNavMesh && UnityEngine.AI.NavMesh.SamplePosition(transform.position, out hit, 5f, UnityEngine.AI.NavMesh.AllAreas))
+            {
+                transform.position = hit.position;
+            }
+
+            agent.enabled = true;
+
+            if (agent.isOnNavMesh)
+            {
+                agent.isStopped = false;
+            }
+        }
+
+        // 쿨타임 리셋 및 상태 전환
+        currentCoolTime = 0f;
+        _isAttacking = false;
+        baseState = MonsterState.Move;
     }
 
 }

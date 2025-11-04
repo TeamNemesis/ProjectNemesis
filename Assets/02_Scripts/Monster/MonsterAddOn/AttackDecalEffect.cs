@@ -32,17 +32,12 @@ public class AttackDecalEffect : PoolableObject
         // 최종 스케일을 반지름 기준으로 설정 (x,y,z 동일)
         targetScale = Vector3.one * radius * 2f;
         gameObject.transform.localScale = targetScale; // BaseCircle도 맞춰줌
-        // 기존 코루틴 중지
-        if (growRoutine != null)
-        {
-            StopCoroutine(growRoutine);
-        }
 
-        // 초기화
+        StopAllCoroutines();
+
         countCircle.transform.localScale = Vector3.zero;
         countCircle.SetActive(true);
 
-        // 코루틴 시작
         growRoutine = StartCoroutine(GrowAndRelease(duration));
     }
 
