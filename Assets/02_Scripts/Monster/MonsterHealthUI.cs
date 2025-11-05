@@ -27,7 +27,7 @@ public class MonsterHealthUI : PoolableObject, IInitializePoolable, IReleasePool
     private Image fillImage;
 
     // 추가: MonsterHealthUIRoot 전역 Canvas
-    private static Canvas monsterHealthUIRoot;
+    public static Canvas monsterHealthUIRoot;
 
     private void Awake()
     {

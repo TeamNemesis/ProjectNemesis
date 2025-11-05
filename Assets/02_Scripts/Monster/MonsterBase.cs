@@ -131,9 +131,9 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
 
         // === 컴포넌트 초기화 ===
         agent = GetComponentInChildren<NavMeshAgent>();
+        agent.enabled = true;
         if (agent != null && agent.isOnNavMesh)
         {
-            agent.enabled = true;
             agent.isStopped = false;
             agent.speed = originalSpeed;
         }
@@ -176,24 +176,21 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
         // === UI 초기화 (풀에서 가져오기) ===
         if (healthUI == null && GameManager.Instance != null && GameManager.Instance.PoolManager != null)
         {
-            // 풀에서 UI 가져오기 - 부모 없이 Hierarchy 최상위에 생성
             GameObject uiObj = GameManager.Instance.PoolManager.GetFromPool(
                 healthUIPrefabPath,
                 Vector3.zero,
                 Quaternion.identity,
-                null,  // ← 부모를 null로
+                MonsterHealthUI.monsterHealthUIRoot != null ? MonsterHealthUI.monsterHealthUIRoot.transform : null,
                 this
             );
-            MonsterHealthUI healthUI = uiObj.GetComponent<MonsterHealthUI>();
-            healthUI.Initialize(transform);
 
-            if (uiObj != null)
+            // 지역 변수 제거, 멤버 healthUI 사용
+            healthUI = uiObj.GetComponent<MonsterHealthUI>();
+
+            if (healthUI != null)
             {
-                healthUI = uiObj.GetComponent<MonsterHealthUI>();
-                if (healthUI != null)
-                {
-                    healthUI.SetMonster(this);
-                }
+                healthUI.Initialize(transform);
+                healthUI.SetMonster(this);
             }
         }
 
