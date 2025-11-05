@@ -502,6 +502,7 @@ public class PlayerStatManager : MonoBehaviour
         {
             InitializeStatByReflection(stat);
         }
+        EventBus.OnMonsterHit += TakeDamage;
     }
 
     public void InitPlayerStat()

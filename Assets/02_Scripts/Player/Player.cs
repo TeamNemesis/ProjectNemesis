@@ -233,10 +233,11 @@ public class Player : MonoBehaviour
     #region 상태 전환 평가 및 처리
     void EvaluateTransitions()
     {
+        Debug.Log(" Player: Evaluating state transitions");
         // 1) 일반 공격 입력 처리
         if (_normalAttackPressed && TryConsumeNormalAttack())
         {
-            
+            Debug.Log(" Player: normal attack input detected");
 
             if (_normalAttacker != null && !IsDashing && !_isSpecialAttacking)
             {

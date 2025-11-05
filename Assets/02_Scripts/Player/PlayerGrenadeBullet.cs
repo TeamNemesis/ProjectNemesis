@@ -11,6 +11,9 @@ public class PlayerGrenadeBullet : MonoBehaviour
     [SerializeField] private float explosionRadius = 3f;  // 폭발 반경
     [SerializeField] private LayerMask enemyLayer;        // 적 탐지용
 
+    [SerializeField] float _mutatntSpeedMultiplier = 1.5f;
+    [SerializeField] float _mutantTravelTime = 3f;
+
     // --- 새로 추가된 파라미터 (튜닝용) ---
     [Header("Parabola Height Tuning")]
     [SerializeField, Tooltip("짧은 거리(가까움)일 때의 최대 포물선 높이")]
@@ -24,6 +27,11 @@ public class PlayerGrenadeBullet : MonoBehaviour
 
     public void Initialize(Transform firePoint, Vector3 target)
     {
+        if(EventBus.HasMutant2)
+        {
+            StartCoroutine(DirectMoveRoutine(firePoint, target));
+            return;
+        }
         StartCoroutine(ParabolaMove(firePoint, target));
     }
 
@@ -57,9 +65,28 @@ public class PlayerGrenadeBullet : MonoBehaviour
         EventBus.GrenadeBomb(transform.position);
     }
 
+    IEnumerator DirectMoveRoutine(Transform firePoint, Vector3 target)
+    {
+        while(true)
+        {
+            Vector3 direction = (target - firePoint.position).normalized;
+            transform.position += direction * travelSpeed * _mutatntSpeedMultiplier * Time.deltaTime;
+            yield return null;
+        }
+    }
+
     private void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("Ground") || other.CompareTag("Wall"))
+        if(EventBus.HasMutant2)
+        {
+            if(other.CompareTag(Constants.TAG_GROUND) || other.CompareTag(Constants.TAG_WALL) || other.CompareTag(Constants.TAG_MONSTER))
+            {
+                Explode(transform.position, transform);
+                Destroy(gameObject);
+                return;
+            }
+        }
+        if (other.CompareTag(Constants.TAG_GROUND) || other.CompareTag(Constants.TAG_WALL))
         {
             Explode(transform.position, transform);
             Destroy(gameObject);
@@ -68,17 +95,24 @@ public class PlayerGrenadeBullet : MonoBehaviour
 
     private void Explode(Vector3 position, Transform grenadeTransform)
     {
+        // non-alloc array
         Collider[] hits = new Collider[10];
         int hitCount = Physics.OverlapSphereNonAlloc(position, explosionRadius, hits, enemyLayer);
-        if(hitCount == 0)
+
+        if (hitCount <= 0)
         {
             Debug.Log("폭발했지만 적을 맞추지 못함");
             return;
         }
-        foreach (Collider hit in hits)
+
+        for (int i = 0; i < hitCount; i++)
         {
+            Collider hit = hits[i];
+            if (hit == null)
+                continue;
+
             IDamageable enemy = hit.GetComponent<IDamageable>();
-            Debug.Log("IDamageable 컴포넌트 탐색 시도: " + (enemy != null ? "성공" : "실패"));  
+            Debug.Log("IDamageable 컴포넌트 탐색 시도: " + (enemy != null ? "성공" : "실패"));
             if (enemy != null)
             {
                 Transform monster = hit.transform;

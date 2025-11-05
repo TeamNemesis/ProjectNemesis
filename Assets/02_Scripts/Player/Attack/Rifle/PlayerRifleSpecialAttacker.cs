@@ -27,7 +27,7 @@ public class PlayerRifleSpecialAttacker : PlayerSpecialAttacker
     // 중복 발사 방지 플래그
     bool _hasFired = false;
 
-    public override WeaponType WeaponType => WeaponType.Rifle; // 예시
+    public override WeaponType WeaponType => WeaponType.Rifle;
 
     public void Initialize(Player player, Transform firePoint)
     {

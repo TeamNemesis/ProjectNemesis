@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerHackingDeviceSpecailAttacker : PlayerSpecialAttacker
+public class PlayerHackingDeviceSpecialAttacker : PlayerSpecialAttacker
 {
     public override WeaponType WeaponType => WeaponType.HackingDevice;
 

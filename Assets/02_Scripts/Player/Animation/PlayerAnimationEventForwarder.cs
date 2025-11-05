@@ -14,13 +14,13 @@ public class PlayerAnimationEventForwarder : MonoBehaviour
     {
         if (_player == null) return;
         _player.OnAttackFireEvent(); // Player 쪽에 해당 public 메서드가 있어야 함
-        Debug.Log("OnAttackFireEvent forwarded to Player.");
+        //Debug.Log("OnAttackFireEvent forwarded to Player.");
     }
 
     public void OnAttackEndEvent()
     {
         if (_player == null) return;
         _player.OnAttackEndEvent();
-        Debug.Log("OnAttackEndEvent forwarded to Player.");
+        //Debug.Log("OnAttackEndEvent forwarded to Player.");
     }
 }

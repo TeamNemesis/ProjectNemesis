@@ -228,7 +228,7 @@ public class MonsterSpawner : MonoBehaviour
             MonsterBase monsterbase = spawnedMonster.GetComponent<MonsterBase>();
 
             activeMonsters.Add(spawnedMonster);
-
+            EventBus.AddMonster(monsterbase);
 
             if (monsterbase != null)
             {
@@ -256,12 +256,13 @@ public class MonsterSpawner : MonoBehaviour
         MonsterBase monsterbase = spawnedMonster.GetComponent<MonsterBase>();
 
         activeMonsters.Add(spawnedMonster);
-        EventBus.SpawnedMonster = monsterbase;
+        EventBus.EliteBoss = monsterbase;
 
         if (monsterbase != null)
         {
             monsterbase.SetEliteMaxHealth(roomNumber);
             monsterbase.OnDieEvent += () => OnMonsterDeath(spawnedMonster);
+            monsterbase.OnDieEvent += () => EventBus.RemoveMonster(monsterbase);
         }
     }
 
@@ -364,8 +365,10 @@ public class MonsterSpawner : MonoBehaviour
         if (monsterBase != null)
         {
             activeMonsters.Add(spawned);
+            EventBus.AddMonster(monsterBase);
             OnMonsterSpawned?.Invoke(monsterBase);
             monsterBase.OnDieEvent += () => OnMonsterDeath(spawned);
+            monsterBase.OnDieEvent += () => EventBus.RemoveMonster(monsterBase);
         }
     }
 #endif
