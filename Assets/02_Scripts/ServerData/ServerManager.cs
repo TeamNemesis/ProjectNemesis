@@ -175,6 +175,7 @@ public class ServerManager : MonoBehaviour
         if (!File.Exists(Constants.FILE_PATH_PLAYERSTAT))
         {
             ShowPopup("업로드할 JSON 파일이 존재하지 않습니다.");
+            DownloadJsonToLocal(true);
             SetLoading(false);
             return;
         }
@@ -355,16 +356,23 @@ public class ServerManager : MonoBehaviour
         SetLoading(false);
     }
 
+
     public void OnClickGoogleLogin()
     {
-#if UNITY_ANDROID
-        SetLoading(true);
+        #if UNITY_ANDROID
+    SetLoading(true);
 
         try
         {
+            // 현재 액티비티에서 직접 메소드를 호출하는 대신,
+            // 저희가 만든 프록시 액티비티를 실행하는 인텐트(Intent)를 만듭니다.
             AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
-            AndroidJavaObject activity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
-            activity.Call("startGoogleLogin"); // Java에서 로그인 시작
+            AndroidJavaObject currentActivity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
+
+            // GoogleSignInProxyActivity를 명시적으로 지정하여 인텐트를 생성합니다.
+            // 이때, 저희 라이브러리의 네임스페이스가 아닌, 실제 클래스의 패키지 경로를 사용합니다.
+            AndroidJavaObject intent = new AndroidJavaObject("android.content.Intent", currentActivity, new AndroidJavaClass("com.Avengers.projectNemesis.GoogleSignInProxyActivity"));
+            currentActivity.Call("startActivity", intent);
         }
         catch (System.Exception ex)
         {
@@ -374,9 +382,9 @@ public class ServerManager : MonoBehaviour
 #endif
     }
 
-		public async void OnGoogleLoginSuccess(string idToken)
+    public async void OnGoogleLoginSuccess(string idToken)
 		{
-				SetLoading(true);
+				//SetLoading(true);
 
 				try
 				{
