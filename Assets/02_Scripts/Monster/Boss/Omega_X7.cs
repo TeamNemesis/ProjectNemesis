@@ -10,8 +10,6 @@ public class Omega_X7 : MonsterBase
 
 
     [Header("Missile")]
-    [SerializeField] private int missileAttackCounter = 0;
-    [SerializeField] private int maxMissileAttackCount = 5;
     [SerializeField] private float misileAttackDamage = 20f;
 
     [Header("Shotgun Attack")]

@@ -189,7 +189,6 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
 
             if (healthUI != null)
             {
-                healthUI.Initialize(transform);
                 healthUI.SetMonster(this);
             }
         }

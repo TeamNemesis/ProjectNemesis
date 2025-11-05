@@ -6,8 +6,9 @@ public class LaserTurret : MonsterBase
     private float lifeTime = 12f;
     private Coroutine lifeTimeCoroutine;
 
-    private void OnEnable()
+    public override void Initialize(object data = null)
     {
+        base.Initialize(data);
         StartLifeTime();
     }
 
