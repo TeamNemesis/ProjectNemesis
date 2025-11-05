@@ -13,7 +13,7 @@ public enum MonsterSize
 
 public class MonsterBase : CharacterModelBase, IInitializePoolable
 {
-    protected enum MonsterState
+    public enum MonsterState
     {
         Idle,
         Move,
@@ -55,6 +55,10 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
     [SerializeField] protected Animator monsterAnimator;
     [SerializeField] protected bool hasDieAnimation = false;
 
+    [Header("UI")]
+    [SerializeField] private MonsterHealthUI healthUI;
+    [SerializeField] private string healthUIPrefabPath = "Prefabs/UI/MonsterHealthUI";
+
     /// <summary>
     /// 공격력 반환
     /// </summary>
@@ -66,6 +70,10 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
     public MonsterSize GetMonsterSize()
     {
         return monsterSize;
+    }
+    public MonsterState GetMonsterState()
+    {
+        return baseState;
     }
 
     /// <summary>
@@ -89,6 +97,14 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
     {
         _target = target;
     }
+    public int GetMaxHealth()
+    {
+        return maxHealth;
+    }
+    public int GetCurrentHealth()
+    {
+        return currentHealth;
+    }
 
 
     private void Start()
@@ -99,6 +115,8 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
     public virtual void Initialize(object data = null)
     {
         base.Initialize();
+
+        Debug.Log($"[MonsterBase] Initialize 시작 - {gameObject.name}");
 
         // === 상태 초기화 ===
         isDead = false;
@@ -155,8 +173,34 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
             _knockBackCoroutine = null;
         }
 
+        // === UI 초기화 (풀에서 가져오기) ===
+        if (healthUI == null && GameManager.Instance != null && GameManager.Instance.PoolManager != null)
+        {
+            // 풀에서 UI 가져오기 - 부모 없이 Hierarchy 최상위에 생성
+            GameObject uiObj = GameManager.Instance.PoolManager.GetFromPool(
+                healthUIPrefabPath,
+                Vector3.zero,
+                Quaternion.identity,
+                null,  // ← 부모를 null로
+                this
+            );
+            MonsterHealthUI healthUI = uiObj.GetComponent<MonsterHealthUI>();
+            healthUI.Initialize(transform);
+
+            if (uiObj != null)
+            {
+                healthUI = uiObj.GetComponent<MonsterHealthUI>();
+                if (healthUI != null)
+                {
+                    healthUI.SetMonster(this);
+                }
+            }
+        }
+
         // === 모든 코루틴 정리 (사망 애니메이션 코루틴 포함) ===
         StopAllCoroutines();
+
+        Debug.Log($"[MonsterBase] Initialize 완료 - {gameObject.name}");
     }
 
     protected bool CanSeePlayer()
@@ -185,9 +229,10 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
         return false;
     }
 
+
     protected void LookAtPlayer()
     {
-        Vector3 dir = new Vector3(_target.position.x - transform.position.x, 0 , _target.position.z - transform.position.z).normalized;
+        Vector3 dir = new Vector3(_target.position.x - transform.position.x, 0, _target.position.z - transform.position.z).normalized;
         if (dir != Vector3.zero)
         {
             Quaternion targetRot = Quaternion.LookRotation(dir);
@@ -302,8 +347,15 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
 
     private void CompleteDeath()
     {
+        // UI 풀로 반환
+        if (healthUI != null && GameManager.Instance != null && GameManager.Instance.PoolManager != null)
+        {
+            GameManager.Instance.PoolManager.ReleaseToPoolByInterface(healthUI);
+            healthUI = null;
+        }
+
         GameManager.Instance.CurrencyManager.AddCredit(cost);
-        base.Die(); // 이제 안전하게 호출 가능
+        base.Die();
     }
 
     #endregion
@@ -325,6 +377,16 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
         }
     }
 
+    public override void TakeDamage(float damage, Transform attacker = null)
+    {
+        base.TakeDamage(damage, attacker);
+
+        if (healthUI != null)
+        {
+            healthUI.OnHealthChanged();
+        }
+    }
+
 
     /// <summary>
     /// 넉백 실행
@@ -334,8 +396,8 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
     public void KnockBackEnemy(Vector3 pushDirection, float damage, float knockBackDistance)
     {
         TakeDamage(damage, null);
-        
-        if(isDead)
+
+        if (isDead)
         {
             return;
         }
@@ -404,14 +466,14 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
         yield return new WaitForSeconds(knockBackCoolTime);
         _knockBackCoroutine = null;
     }
-		#endregion
+    #endregion
 
 #if UNITY_EDITOR
-		public void SetDebugStats(int hp, float speed)
-		{
-				_maxHealth = hp;
-				_currentHealth= hp;
-				_moveSpeed = speed;
-		}
+    public void SetDebugStats(int hp, float speed)
+    {
+        _maxHealth = hp;
+        _currentHealth = hp;
+        _moveSpeed = speed;
+    }
 #endif
 }

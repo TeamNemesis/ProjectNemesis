@@ -31,14 +31,19 @@ public class UIManager : MonoBehaviour
 		private List<SkillBtn> _activeChooseButtons = new List<SkillBtn>();
 
 
-		public void InitializeManager()
+    [Header("=== Monster HP UI ===")]
+    [SerializeField] private Canvas _worldUICanvas; // HP바용 Canvas (Overlay 모드)
+    public Canvas WorldUICanvas => _worldUICanvas; // 외부에서 접근 가능
+
+
+    public void InitializeManager()
 		{
 				if (_skillBtnPrefab == null)
 						_skillBtnPrefab = Resources.Load<SkillBtn>("Prefabs/Skill/SkillBtnPrefab");
 
 				if (_skillChooseBtnPrefab == null)
 						_skillChooseBtnPrefab = Resources.Load<SkillBtn>("Prefabs/Skill/SkillChoosePrefab");
-		}
+    }
 
 		public void MakeCurrentSkillList()
 		{
