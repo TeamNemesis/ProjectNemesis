@@ -106,12 +106,6 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
         return currentHealth;
     }
 
-
-    private void Start()
-    {
-        Initialize();
-    }
-
     public virtual void Initialize(object data = null)
     {
         base.Initialize();
