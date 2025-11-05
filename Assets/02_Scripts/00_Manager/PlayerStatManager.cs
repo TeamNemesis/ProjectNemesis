@@ -468,6 +468,10 @@ public class PlayerStatManager : MonoBehaviour
                         break;
                     case WeaponType.Rifle:
                         damage = Mathf.Lerp(playerRifleSPAttackMinDamage,playerRifleMaxChargeDamage,playerRifleChargeRatio) * playerSPAttackDamage * playerSPAttackValue;
+                        if(Mathf.Approximately(playerRifleChargeRatio,1f))
+                        {
+                            damage *= 2f;
+                        }
 
                         break;
                     case WeaponType.HackingDevice:
