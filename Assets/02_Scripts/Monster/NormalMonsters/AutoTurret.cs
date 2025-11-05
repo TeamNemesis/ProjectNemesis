@@ -1,11 +1,8 @@
 using System.Collections;
 using UnityEngine;
-
 public class AutoTurret : MonsterBase
 {
-
     [SerializeField] float bulletLifeTime = 8f;
-
     [SerializeField]
     private enum State
     {
@@ -13,19 +10,15 @@ public class AutoTurret : MonsterBase
         Attack, // 공격
         Die     // 죽음
     }
-
     [Header("TurretBulletPrefab"), SerializeField]
     private PoolableObject turretbullet; // 터렛 총알 프리펩
-
     [SerializeField] private Transform shootPos;
-
     [SerializeField] private PoolableObject muzzleFlashPrefab;
 
     private void Update()
     {
         if (isDead || _target == null) return;
         if (isStunned) return;
-
         switch (baseState)
         {
             case MonsterState.Idle:
@@ -59,18 +52,19 @@ public class AutoTurret : MonsterBase
         monsterAnimator.SetTrigger("Attack");
         GetEffectFromPool(muzzleFlashPrefab, shootPos.position, shootPos.rotation);
         _isAttacking = true;
-
         if (_target != null && Vector3.Distance(transform.position, _target.position) <= attackRange)
         {
             GameObject bullet = GameManager.Instance.PoolManager.GetFromPool(turretbullet, transform.position, transform.rotation);
             TurretBullet turretBullet = bullet.GetComponent<TurretBullet>();
             if (turretBullet != null)
             {
-                turretBullet.Initialize(targetTag, attackDamage, bulletLifeTime , gameObject);
+                // 혼란 상태인지 확인 (targetTag가 Monster면 혼란 상태)
+                bool isConfused = (targetTag == Constants.TAG_MONSTER);
+                turretBullet.Initialize(targetTag, attackDamage, bulletLifeTime, gameObject, isConfused);
             }
             yield return new WaitForSeconds(attackDelay);
         }
-        
+
         _isAttacking = false;
         baseState = MonsterState.Idle; // 공격 후 다시 대기 상태로 전환
     }
