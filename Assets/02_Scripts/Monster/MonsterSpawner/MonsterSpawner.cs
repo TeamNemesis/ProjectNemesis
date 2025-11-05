@@ -72,6 +72,13 @@ public class MonsterSpawner : MonoBehaviour
     public void EliteSpawner(List<Transform> positions, int roomNumber = 1)
     {
         EliteSpawnerSetting(positions);
+
+        // Elite 스폰은 단일 웨이브로 처리
+        isWaveActive = true;
+        currentWaveIndex = 1; // Elite는 1개 웨이브로 간주
+        waitingWaves.Clear();
+        waitingWaves.Add(new List<MonsterSpawnInfo>()); // 빈 웨이브 추가 (카운트 체크용)
+
         SpawnSolo(eliteMonsterPrefabs, roomNumber);
     }
 
@@ -272,8 +279,18 @@ public class MonsterSpawner : MonoBehaviour
         {
             isWaveActive = false;
 
-            // 다음 웨이브 시작
-            StartCoroutine(StartNextWaveWithDelay(2f));
+            // 현재 웨이브가 마지막 웨이브인지 확인
+            if (currentWaveIndex >= waitingWaves.Count)
+            {
+                // Elite 스폰이거나 마지막 웨이브인 경우 즉시 완료 처리
+                Debug.Log("모든 몬스터 처치 완료");
+                OnAllWavesCompleted?.Invoke();
+            }
+            else
+            {
+                // 다음 웨이브가 있는 경우 딜레이 후 시작
+                StartCoroutine(StartNextWaveWithDelay(2f));
+            }
         }
     }
 
@@ -284,6 +301,16 @@ public class MonsterSpawner : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
         StartNextWave();
+    }
+
+    private void CheckWaveClear()
+    {
+        if (currentWaveIndex >= waitingWaves.Count)
+        {
+            Debug.Log("모든 웨이브 완료");
+            OnAllWavesCompleted?.Invoke();
+            return;
+        }
     }
 
 #if UNITY_EDITOR

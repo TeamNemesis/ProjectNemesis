@@ -51,6 +51,9 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
     [SerializeField] protected NavMeshAgent agent;
     [SerializeField] protected Transform _target;
 
+    [Header("Animator")]
+    [SerializeField] protected Animator monsterAnimator;
+
     /// <summary>
     /// 공격력 반환
     /// </summary>
@@ -115,6 +118,7 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
             agent.isStopped = false;
             agent.speed = originalSpeed;
         }
+        monsterAnimator = GetComponentInChildren<Animator>();
 
         // === 타겟 설정 ===
         GameObject targetObj = GameObject.FindGameObjectWithTag(targetTag);
