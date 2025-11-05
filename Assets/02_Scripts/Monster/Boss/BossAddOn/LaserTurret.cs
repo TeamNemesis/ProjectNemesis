@@ -34,8 +34,8 @@ public class LaserTurret : MonsterBase
     private IEnumerator LifeTimeCoroutine()
     {
         yield return new WaitForSeconds(lifeTime);
-
         // 풀로 반환
+        baseState = MonsterState.Die;
         GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
 
         lifeTimeCoroutine = null; // 코루틴 참조 정리
