@@ -12,12 +12,13 @@ public class Skill_Mutant : SkillBase
             // 폭격 클러스터
             case 70:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
-
+                EventBus.HasMutant1 = true;
                 break;
 
                 // 로켓런쳐
             case 71:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
+                EventBus.HasMutant2 = true;
 
                 break;
 
@@ -30,6 +31,8 @@ public class Skill_Mutant : SkillBase
                 // 유도 탄환
             case 73:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
+                EventBus.HasMutant3 = true;
+
                 break;
 
             case 74:
@@ -48,6 +51,7 @@ public class Skill_Mutant : SkillBase
                 // 에너지 구체
             case 76:
                 Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
+                EventBus.HasMutant4 = true;
 
                 break;
 

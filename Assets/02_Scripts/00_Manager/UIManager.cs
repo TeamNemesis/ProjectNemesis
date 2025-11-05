@@ -125,12 +125,12 @@ public class UIManager : MonoBehaviour
             onRewardSelect?.Invoke();
     }
 
-		#region skill choose
-		public SkillBtn MakeSkillBtn()
-		{
-				SkillBtn skillBtn = GameManager.Instance.PoolManager
-						.GetFromPool(_skillChooseBtnPrefab, Vector3.zero, _skillChooseBtnPrefab.transform.rotation, _parentPanel.transform)
-						.GetComponent<SkillBtn>();
+    #region skill choose
+    public SkillBtn MakeSkillBtn()
+    {
+        SkillBtn skillBtn = GameManager.Instance.PoolManager
+                .GetFromPool(_skillChooseBtnPrefab, Vector3.zero, _skillChooseBtnPrefab.transform.rotation, _parentPanel.transform)
+                .GetComponent<SkillBtn>();
 
         _activeChooseButtons.Add(skillBtn);
         return skillBtn;
@@ -185,4 +185,5 @@ public class UIManager : MonoBehaviour
 
         _listPanel.SetActive(false);
     }
+    #endregion
 }
