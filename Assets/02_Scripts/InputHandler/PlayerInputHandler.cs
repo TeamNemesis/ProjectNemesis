@@ -78,7 +78,9 @@ public class PlayerInputHandler : MonoBehaviour
     /// <param name="value"></param>
     public void OnMove(InputAction.CallbackContext value)
     { 
-        if(value.performed)
+        if(EventBus.IsRewardSelecting)
+            return;
+        if (value.performed)
         {
             Vector2 moveDir = value.ReadValue<Vector2>();
             _moveDir = new Vector3(moveDir.x, 0, moveDir.y);
@@ -93,6 +95,8 @@ public class PlayerInputHandler : MonoBehaviour
 
     void OnNormalAttackStarted(InputAction.CallbackContext ctx)
     {
+        if (EventBus.IsRewardSelecting)
+            return;
         // 누르기 시작: 코루틴 시작
         if (_holdAttackRoutine == null)
             _holdAttackRoutine = StartCoroutine(HoldAttackRoutine());
@@ -100,6 +104,8 @@ public class PlayerInputHandler : MonoBehaviour
 
     void OnNormalAttackCanceled(InputAction.CallbackContext ctx)
     {
+        if (EventBus.IsRewardSelecting)
+            return;
         // 누름 끝: 코루틴 중지
         if (_holdAttackRoutine != null)
         {
@@ -110,6 +116,8 @@ public class PlayerInputHandler : MonoBehaviour
 
     IEnumerator HoldAttackRoutine()
     {
+        if (_holdAttackRoutine == null)
+            yield break;
         // 즉시 한 번 공격 실행하고, interval마다 반복
         OnNomralAttackInput?.Invoke();
 
@@ -126,6 +134,8 @@ public class PlayerInputHandler : MonoBehaviour
     /// <param name="value"></param>
     public void OnDash(InputAction.CallbackContext value)
     {
+        if (EventBus.IsRewardSelecting)
+            return;
         if (value.started)
         {
             Debug.Log("대시 입력받음");
@@ -139,6 +149,8 @@ public class PlayerInputHandler : MonoBehaviour
     /// <param name="value"></param>
     public void OnInteract(InputAction.CallbackContext value)
     {
+        if (EventBus.IsRewardSelecting)
+            return;
         if (value.started)
         {
             Debug.Log("상호작용 입력받음");
@@ -152,7 +164,8 @@ public class PlayerInputHandler : MonoBehaviour
     /// <param name="value"></param>
     public void OnGrenadeAttack(InputAction.CallbackContext value)
     {
-        
+        if (EventBus.IsRewardSelecting)
+            return; 
         if (value.started)
         {
             if (EventBus.IsColosseumRoom)
@@ -182,6 +195,8 @@ public class PlayerInputHandler : MonoBehaviour
     /// </summary>
     private Vector3? GetMouseGroundPoint()
     {
+        if (EventBus.IsRewardSelecting)
+            return null;
         Ray ray = mainCam.ScreenPointToRay(Mouse.current.position.ReadValue());
         if (Physics.Raycast(ray, out RaycastHit hit, 200f, _groundLayer ))
         {
@@ -199,6 +214,8 @@ public class PlayerInputHandler : MonoBehaviour
     /// <param name="value"></param>
     public void OnSpecialAttack(InputAction.CallbackContext value)
     {
+        if (EventBus.IsRewardSelecting)
+            return;
         if (value.started)
         {
             Debug.Log("특수공격 입력받음");
