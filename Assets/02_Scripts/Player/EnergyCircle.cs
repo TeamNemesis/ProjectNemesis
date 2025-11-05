@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using System.Collections;
 using UnityEngine;
 
 /// <summary>
@@ -13,6 +14,8 @@ public class EnergyCircle : MonoBehaviour
     [SerializeField] float _initialDamage = 5f;     // 초기 데미지
     [SerializeField] float _maxDamage = 20f;        // 풀 차지시 데미지
     [SerializeField] float _bonusDamage = 20f;      // 풀 차지시 보너스로 제공되는 데미지
+    [SerializeField] float _moveSpeed = 5f;         // 구체 이동 속도
+    [SerializeField] float _lifetime = 10f;          // 발사 후 생존 시간
 
     [Header("----- 발사시 받아올 값 -----")]
     [SerializeField] float _expansionDuration;      // 최소 0초부터 1.5초까지 받아옴
@@ -21,16 +24,25 @@ public class EnergyCircle : MonoBehaviour
     [Header("----- 런타임 데이터 -----")]
     [SerializeField] float _currentRadius;
     [SerializeField] float _currentDamage;
+    [SerializeField] float _timer;
 
     public void Initialize(float expansionDuration, Vector3 moveDir)
     {
         _expansionDuration = expansionDuration;
         _moveDir = moveDir;
+        SetEnergyCircle(_expansionDuration);
+
     }
 
     private void Update()
     {
         Move(_moveDir);
+        // 혹시라도 벽에 부딪히지 않고 일정 시간 지나면 자동 소멸
+        _timer += Time.deltaTime;
+        if(_timer >= _lifetime)
+        {
+            GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
+        }
     }
 
     void SetEnergyCircle(float expansionDuration)
@@ -46,17 +58,24 @@ public class EnergyCircle : MonoBehaviour
             _currentRadius += _bonusRadius;
             _currentDamage += _bonusDamage;
         }
-        Vector3 currentScale = transform.localScale;
+        Vector3 currentScale = Vector3.one * 0.5f;
         transform.localScale = currentScale * _currentRadius;
     }
 
     void Move(Vector3 moveDir)
     {
-        transform.position += moveDir * Time.deltaTime;
+        transform.position += moveDir * _moveSpeed * Time.deltaTime;
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        
+        if (other.CompareTag(Constants.TAG_MONSTER))
+        {
+            GameManager.Instance.PlayerStatManager.TakeDamage(WeaponType.Rifle, ATTACKTYPE.SPECIALATTACK, other.transform);
+        }
+        if(other.CompareTag(Constants.TAG_WALL))
+        {
+            GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
+        }
     }
 }

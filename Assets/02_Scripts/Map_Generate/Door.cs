@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Resources;
 using UnityEngine;
 
@@ -19,6 +20,9 @@ public class Door : MonoBehaviour
 {
     [SerializeField] DoorInteractor _doorInteractor; // 반드시 프리팹에 연결되어 있어야 함
     [SerializeField] DoorView _doorView;             // 시각적 표현 담당(아이콘, 프리뷰 등)
+    [SerializeField] Animator _doorAnim;            // 문 애니메이터
+
+    Coroutine _doorOpenCoroutine;
 
     // RoomInfo는 런타임에 주입만 받고 프리팹에 저장되지 않도록 SerializeField 제거
     RoomInfo _roomInfo;
@@ -79,6 +83,14 @@ public class Door : MonoBehaviour
     // OnInteracted 중계
     void OnDoorInteracted(IInteractable interactable)
     {
+        // 문 열리는 애니메이션 재생하는 코루틴
+        _doorOpenCoroutine = StartCoroutine(DoorOpenAnimationRoutine(interactable));
+    }
+
+    IEnumerator DoorOpenAnimationRoutine(IInteractable interactable)
+    {
+        _doorAnim.SetTrigger(Constants.ANIPARAM_ONDOOROPEN);
+        yield return new WaitForSeconds(1.5f);
         DoorInteracted?.Invoke(interactable);
     }
 
@@ -88,6 +100,7 @@ public class Door : MonoBehaviour
         // 이벤트 해제
         if (_doorInteractor != null)
             _doorInteractor.OnInteracted -= OnDoorInteracted;
+        _doorOpenCoroutine = null;
 
         // 매니저에서 해제
         //if (_interactableManager != null)

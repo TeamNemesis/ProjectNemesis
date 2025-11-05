@@ -195,6 +195,7 @@ public static class Constants
     public static string ANIPARAM_ONSPECIALATTACKEND = "OnSpecialAttackEnd";
     public static string ANIPARAM_ONGRENADEATTACK = "OnGrenadeAttack";
     public static string ANIPARAM_ONDASH = "OnDash";
+    public static string ANIPARAM_ONDOOROPEN = "OnDoorOpen";
     #endregion
 
     #region ResourcesPath

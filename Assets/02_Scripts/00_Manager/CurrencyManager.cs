@@ -8,10 +8,12 @@ public class CurrencyManager : MonoBehaviour
 {
     [Header("----- 데이터(임시) -----")]
     [SerializeField] int _startingCredit = 100;
+    [SerializeField] int _creditLimitPerRoom = 50;
 
     [Header("----- 읽기 전용 -----")]
     [SerializeField] int _currentCredit;
     [SerializeField] int _currentChrome;
+    [SerializeField] int _roomCredit;       // 이번 방에서 획득한 골드
 
     public int CurrentGold => _currentCredit;
     public int CurrentChrome => _currentChrome;
@@ -40,6 +42,24 @@ public class CurrencyManager : MonoBehaviour
     public void GetCurrentCurrency()
     {
         OnChromeChanged?.Invoke(_currentChrome);
+        OnCreditChanged?.Invoke(_currentCredit);
+    }
+
+    /// <summary>
+    /// 몬스터 처치로 인한 골드 획득
+    /// </summary>
+    /// <param name="cost"></param>
+    public void AddCreditByMonsterDeath(int cost)
+    {
+        if(_roomCredit >= _creditLimitPerRoom)
+        {
+            return;
+        }
+        if ( _roomCredit + cost > _creditLimitPerRoom)
+        {
+            cost = _creditLimitPerRoom - _roomCredit;
+        }
+        _currentCredit += cost;
         OnCreditChanged?.Invoke(_currentCredit);
     }
 

@@ -73,10 +73,10 @@ public static class EventBus
         IsRewardSelecting = isSelecting;
     }
 
-    public static bool HasMutant1 { get; set; }
-    public static bool HasMutant2 { get; set; }
-    public static bool HasMutant3 { get; set; }
-    public static bool HasMutant4 { get; set; }
+    public static bool HasMutant1 { get; set; } // 유탄 1
+    public static bool HasMutant2 { get; set; } // 유탄 2
+    public static bool HasMutant3 { get; set; } // 일반공격 유도
+    public static bool HasMutant4 { get; set; } // 특수공격 에너지구체
 
     // --- 몬스터 리스트 관리 (null-safe, 캡슐화) ---
     // 외부에서 직접 리스트를 교체하지 못하도록 internal로 초기화하고, 추가/제거 API 제공
@@ -120,6 +120,13 @@ public static class EventBus
             }
         }
         return nearestMonster != null ? nearestMonster.transform : null;
+    }
+
+    static bool _canGetInput = true;
+    public static bool CanGetInput => _canGetInput;
+    public static void SetCanGetInput(bool canGetInput)
+    {
+        _canGetInput = canGetInput;
     }
 }
 

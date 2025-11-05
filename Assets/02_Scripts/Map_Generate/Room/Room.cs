@@ -9,6 +9,7 @@ public abstract class Room : MonoBehaviour
 {
     [SerializeField] protected Transform[] _rewardSpawnPoints;        // 보상 오브젝트 스폰 위치들 (프리팹에 세팅)
     [SerializeField] protected Transform[] _monsterSpawnPoints = null;    // 몬스터 스폰 위치들 (프리팹에 세팅)
+    [SerializeField] protected Transform _playerSpawnPoint;         // 플레이어 스폰 위치 (프리팹에 세팅)
 
     [Header("Door spawn points (setup on prefab)")]
     [SerializeField] protected Transform[] _doorSpawnPointsLeft;
@@ -20,6 +21,7 @@ public abstract class Room : MonoBehaviour
     // 구조적 데이터는 프리팹에 보관 (인스펙터에서 볼 수 있음)
     public Transform[] RewardSpawnPoints => _rewardSpawnPoints;
     public Transform[] MonsterSpawnPoints => _monsterSpawnPoints;
+    public Transform PlayerSpawnPoint => _playerSpawnPoint;
     public Transform[] DoorSpawnPointsLeft => _doorSpawnPointsLeft;
     public Transform[] DoorSpawnPointsRight => _doorSpawnPointsRight;
 

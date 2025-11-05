@@ -302,7 +302,7 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
 
     private void CompleteDeath()
     {
-        GameManager.Instance.CurrencyManager.AddCredit(cost);
+        GameManager.Instance.CurrencyManager.AddCreditByMonsterDeath(cost);
         base.Die(); // 이제 안전하게 호출 가능
     }
 
