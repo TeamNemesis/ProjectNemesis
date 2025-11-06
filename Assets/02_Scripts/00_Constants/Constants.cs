@@ -225,7 +225,9 @@ public static class Constants
 
 		#region localization
 		public const string STRING_Korean = "ko";
-    public const string PREF_KEY = "LanguageIndex";
+    public const string LOCAL_PREF_KEY = "LanguageIndex";
+    public const string RESOLUTION_PREF_KEY = "ResolutionIndex";
+
     #endregion
 
 

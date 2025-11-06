@@ -19,9 +19,9 @@ public class LocalDropdown : MonoBehaviour
         UpdateDropdown(LocalizationSettings.SelectedLocale);
 
         // 저장된 언어 인덱스 기준으로 드롭다운 UI 동기화
-        if (PlayerPrefs.HasKey(Constants.PREF_KEY))
+        if (PlayerPrefs.HasKey(Constants.LOCAL_PREF_KEY))
         {
-            int savedIndex = PlayerPrefs.GetInt(Constants.PREF_KEY);
+            int savedIndex = PlayerPrefs.GetInt(Constants.LOCAL_PREF_KEY);
             languageDropdown.value = savedIndex;
             languageDropdown.RefreshShownValue();
         }
@@ -69,7 +69,7 @@ public class LocalDropdown : MonoBehaviour
         {
             LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[index];
 
-            PlayerPrefs.SetInt(Constants.PREF_KEY, index);
+            PlayerPrefs.SetInt(Constants.LOCAL_PREF_KEY, index);
             PlayerPrefs.Save();
         }
     }

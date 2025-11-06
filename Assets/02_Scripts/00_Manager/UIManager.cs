@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Localization.Settings;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
@@ -36,14 +37,39 @@ public class UIManager : MonoBehaviour
     private SkillTooltip _skillTooltip;
     public SkillTooltip skillTooltip { get { return _skillTooltip; } }
 
-    
 
+
+    private void ApplySavedResolution()
+    {
+        int savedIndex = PlayerPrefs.HasKey(Constants.RESOLUTION_PREF_KEY) ? PlayerPrefs.GetInt(Constants.RESOLUTION_PREF_KEY) : 0;
+
+        switch (savedIndex)
+        {
+            case 0: // default 가장 높음
+
+                QualitySettings.SetQualityLevel(0);
+
+                break;
+            case 1: // High
+                QualitySettings.SetQualityLevel(1);
+                break;
+            case 2: // Middle
+                QualitySettings.SetQualityLevel(2);
+                break;
+            case 3: // Low
+                QualitySettings.SetQualityLevel(3);
+                break;
+            default:
+                Debug.LogWarning("저장된 해상도 인덱스가 유효하지 않습니다.");
+                break;
+        }
+    }
 
     private void ApplySavedLanguage()
     {
-        if (PlayerPrefs.HasKey(Constants.PREF_KEY))
+        if (PlayerPrefs.HasKey(Constants.LOCAL_PREF_KEY))
         {
-            int savedIndex = PlayerPrefs.GetInt(Constants.PREF_KEY);
+            int savedIndex = PlayerPrefs.GetInt(Constants.LOCAL_PREF_KEY);
 
             if (savedIndex >= 0 && savedIndex < LocalizationSettings.AvailableLocales.Locales.Count)
             {
@@ -73,12 +99,16 @@ public class UIManager : MonoBehaviour
 
         // 초기화 완료 후 언어 설정
         ApplySavedLanguage();
+
+        // 해상도 설정
+       // ApplySavedResolution();
     }
 
 
     public void MakeCurrentSkillList()
     {
         _listPanel.SetActive(true);
+        EventBus.SetCanGetInput(false);
         List<SkillData> list = GameManager.Instance.skillManager.GetChooseSkillList();
         if (list == null) return;
 
@@ -151,7 +181,7 @@ public class UIManager : MonoBehaviour
         }
 
         _skillBtnPanel.SetActive(isActive);
-
+        EventBus.SetCanGetInput(!isActive);
         if (!isActive)
             onRewardSelect?.Invoke();
     }
@@ -217,4 +247,17 @@ public class UIManager : MonoBehaviour
         _listPanel.SetActive(false);
     }
     #endregion
+
+    public void SetInput(bool isLock)
+    {
+        EventBus.SetCanGetInput(isLock);
+    }
+    public void SetInputAtIntroSettingPanel()
+    {
+        if (SceneManager.GetActiveScene().buildIndex != 1)
+        {
+            EventBus.SetCanGetInput(true);
+        }
+    }
+    
 }
