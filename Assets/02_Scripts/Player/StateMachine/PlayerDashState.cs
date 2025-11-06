@@ -22,9 +22,9 @@ public class PlayerDashState : PlayerStateBase
         _dashDuration = dashDuration;
     }
 
-    public void SetDashDistance(float distanceMulti)
+    public void SetDashDistance()
     {
-        _dashDistance = GameManager.Instance.PlayerStatManager.playerDashDistance * distanceMulti;
+        _dashDistance = GameManager.Instance.PlayerStatManager.playerDashDistance * GameManager.Instance.PlayerStatManager.playerDashDistanceMulti;
     }
 
     public override void Enter()

@@ -125,7 +125,7 @@ public class UIManager : MonoBehaviour
             onRewardSelect?.Invoke();
     }
 
-
+    #region skill choose
     public SkillBtn MakeSkillBtn()
     {
         SkillBtn skillBtn = GameManager.Instance.PoolManager
@@ -185,4 +185,5 @@ public class UIManager : MonoBehaviour
 
         _listPanel.SetActive(false);
     }
+    #endregion
 }
