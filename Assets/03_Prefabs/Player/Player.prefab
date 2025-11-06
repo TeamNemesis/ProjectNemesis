@@ -2556,6 +2556,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d275a53a0d5f21747b98724b7c533980, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _player: {fileID: 0}
   _isAttacking: 0
   fallbackEnd: 0.05
   _firePoint: {fileID: 0}
@@ -3165,6 +3166,7 @@ MonoBehaviour:
   minWidth: 0.05
   maxWidth: 0.6
   laserPrefab: {fileID: 4218594688661822969, guid: 6d1137ed252299f41b0dcf9d3e2a4e5c, type: 3}
+  _energyCirclePrefabPath: Prefabs/Bullet/EnergyCircle
   maxDistance: 100
   wallMask:
     serializedVersion: 2
@@ -3173,6 +3175,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1024
   visualLifetime: 0.25
+  _firePoint: {fileID: 0}
 --- !u!1 &1666556754587289400
 GameObject:
   m_ObjectHideFlags: 0
@@ -3376,15 +3379,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e11405ac3bb6b34d8bf1bbf8d173135, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  grenadePrefab: {fileID: 0}
-  explodeCircle: {fileID: 0}
+  _grenadePath: Prefabs/Bullet/Grenade
+  _explodeCirclePath: Prefabs/Effect/Skill/ExplodeCircle
   travelTime: 1
-  travelSpeed: 30
-  explosionRadius: 3
-  explosionDamage: 30
-  enemyLayer:
-    serializedVersion: 2
-    m_Bits: 0
+  _coolTime: 10
+  _timer: 0
+  _maxCount: 3
+  _currentCount: 0
   maxParabolaHeight: 15
   minParabolaHeight: 10
   closeDistance: 2
@@ -5422,8 +5423,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a7ceaed8ab002c4c8bf91a329a9ec1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isAttacking: 0
   _player: {fileID: 0}
+  _isAttacking: 0
   _maxCombo: 3
   _comboInputWindow: 0.5
   _currentCombo: 0
@@ -12763,6 +12764,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a68aac929387c6479cd349d26dd843c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _player: {fileID: 0}
   _isAttacking: 0
 --- !u!1 &6592843661023637782
 GameObject:
@@ -13552,13 +13554,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxDistance: 20
   moveSpeed: 25
+  stopDistance: 1.5
   grappleMask:
     serializedVersion: 2
     m_Bits: 0
-  enemyMask:
-    serializedVersion: 2
-    m_Bits: 0
-  stopDistance: 1.5
+  line: {fileID: 0}
 --- !u!1 &7144462926331018159
 GameObject:
   m_ObjectHideFlags: 0

@@ -581,7 +581,7 @@ public class Player : MonoBehaviour
 
         // 문으로 1만큼 이동하는 연출 재생
         _characterController.enabled = false; // 충돌 방지 위해 비활성화
-        float moveDuration = 3.0f; // 이동 시간
+        float moveDuration = 1.0f; // 이동 시간
         float elapsed = 0f; // 경과 시간
         Vector3 startPos = transform.position; // 시작 위치
         Vector3 endPos = doorInteractor.transform.position; // 끝 위치 (문 중앙)

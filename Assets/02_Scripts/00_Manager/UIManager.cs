@@ -102,7 +102,7 @@ public class UIManager : MonoBehaviour
         ApplySavedLanguage();
 
         // 해상도 설정
-        ApplySavedResolution();
+       // ApplySavedResolution();
     }
 
 
