@@ -123,7 +123,7 @@ public class PlayerInputHandler : MonoBehaviour
     private void Update()
     {
         OnMoveInput?.Invoke(_moveDir);
-        Debug.Log($"{EventBus.IsRewardSelecting}");
+       
         // Update에 임시로
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {

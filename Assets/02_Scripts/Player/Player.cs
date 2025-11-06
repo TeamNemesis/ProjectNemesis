@@ -26,7 +26,6 @@ public class Player : MonoBehaviour
     [Header("----- 상호작용 컴포넌트 -----")]
     [SerializeField] InteractionController _interactionController;      // 상호작용 컨트롤러
     [SerializeField] InteractableDetector _interactableDetector;        // 상호작용 감지기
-    [SerializeField] InteractionGuideView _interactableGuideView;       // 상호작용 안내 뷰
 
     [SerializeField] bool _isInteractable; // 상호작용 가능 여부
 
@@ -261,7 +260,7 @@ public class Player : MonoBehaviour
     #region 상태 전환 평가 및 처리
     void EvaluateTransitions()
     {
-        Debug.Log(" Player: Evaluating state transitions");
+       
         // 1) 일반 공격 입력 처리
         if (_normalAttackPressed && TryConsumeNormalAttack())
         {
@@ -581,7 +580,7 @@ public class Player : MonoBehaviour
 
         // 문으로 1만큼 이동하는 연출 재생
         _characterController.enabled = false; // 충돌 방지 위해 비활성화
-        float moveDuration = 3.0f; // 이동 시간
+        float moveDuration = 1.0f; // 이동 시간
         float elapsed = 0f; // 경과 시간
         Vector3 startPos = transform.position; // 시작 위치
         Vector3 endPos = doorInteractor.transform.position; // 끝 위치 (문 중앙)

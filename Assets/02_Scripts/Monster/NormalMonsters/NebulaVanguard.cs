@@ -8,6 +8,10 @@ public class NebulaVanguard : MonsterBase
     [SerializeField] private float _box_Height = 3;
     [SerializeField] private float _box_Width = 3;
 
+    // 애니메이션 파라미터 이름 상수
+    private readonly int IsMove_Hash = Animator.StringToHash("IsMove");
+    private readonly int Attack_Hash = Animator.StringToHash("Attack");
+
     private void Update()
     {
         if (isDead || _target == null) return;
@@ -38,10 +42,14 @@ public class NebulaVanguard : MonsterBase
         }
     }
 
-
-
     private void HandleIdle()
     {
+        // 애니메이션: Idle 상태에서는 이동 중지
+        if (monsterAnimator != null)
+        {
+            monsterAnimator.SetBool(IsMove_Hash, false);
+        }
+
         // 플레이어와 거리
         float distance = Vector3.Distance(transform.position, _target.position);
         if (distance <= detectionRange && CanSeePlayer())
@@ -49,22 +57,45 @@ public class NebulaVanguard : MonsterBase
             baseState = MonsterState.Move;
         }
     }
+
     private void HandleMove()
     {
         if (_target == null) return;
+
         float distance = Vector3.Distance(transform.position, _target.position);
+
         if (distance > detectionRange || !CanSeePlayer())
         {
             agent.ResetPath();
+
+            // 애니메이션: 이동 중지
+            if (monsterAnimator != null)
+            {
+                monsterAnimator.SetBool(IsMove_Hash, false);
+            }
+
             baseState = MonsterState.Idle;
             return;
         }
 
         agent.SetDestination(_target.position);
 
+        // 애니메이션: 이동 중
+        if (monsterAnimator != null)
+        {
+            monsterAnimator.SetBool(IsMove_Hash, true);
+        }
+
         if (distance <= attackRange && CanSeePlayer())
         {
             agent.ResetPath();
+
+            // 애니메이션: 공격 준비를 위해 이동 중지
+            if (monsterAnimator != null)
+            {
+                monsterAnimator.SetBool(IsMove_Hash, false);
+            }
+
             baseState = MonsterState.Attack;
         }
     }
@@ -76,18 +107,20 @@ public class NebulaVanguard : MonsterBase
 
         if (_target != null && distance <= attackRange)
         {
+            // 애니메이션: 공격 트리거 발동
+            if (monsterAnimator != null)
+            {
+                monsterAnimator.SetTrigger(Attack_Hash);
+            }
+
             // 몬스터 기준 중심 위치 설정
             Vector3 center = transform.position + transform.forward * (_box_Length / 2f);
-
             // 박스의 반 크기
             Vector3 halfExtents = new Vector3(_box_Width / 2f, _box_Height / 2f, _box_Length / 2f);
-
             // 박스의 회전 (몬스터 정면을 기준으로 정렬)
             Quaternion orientation = Quaternion.LookRotation(transform.forward);
-
             // 박스 영역 안의 적 탐색
             Collider[] hitTarget = Physics.OverlapBox(center, halfExtents, orientation);
-
 
             foreach (Collider target in hitTarget)
             {
@@ -104,12 +137,13 @@ public class NebulaVanguard : MonsterBase
                     }
                 }
             }
+
             yield return new WaitForSeconds(attackDelay);
         }
+
         _isAttacking = false;
         baseState = MonsterState.Move; // 공격 후 다시 추격 상태로 전환
     }
-
 
     void OnDrawGizmosSelected()
     {

@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class SettingPanel : MonoBehaviour
 {
@@ -6,6 +8,28 @@ public class SettingPanel : MonoBehaviour
     [SerializeField] GameObject playPanel;
 
 
+    public void OnOpenSetting()
+    {
+        EventBus.SetCanGetInput(false);
+        if(SceneManager.GetActiveScene().buildIndex !=1)
+        {
+            introPanel.SetActive(true);
+        }
+        else
+        {
+            playPanel.SetActive(true);
+        }
+    }
 
+
+    public void OnBtnClick_GameExit()
+    {
+        Application.Quit();
+    }
+
+    public void OnBtnClick_Re()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
 
 }

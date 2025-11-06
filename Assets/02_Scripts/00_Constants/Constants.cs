@@ -225,19 +225,22 @@ public static class Constants
 
 		#region localization
 		public const string STRING_Korean = "ko";
-		#endregion
+    public const string LOCAL_PREF_KEY = "LanguageIndex";
+    public const string RESOLUTION_PREF_KEY = "ResolutionIndex";
+
+    #endregion
 
 
-		#region Util
+    #region Util
 
-		/// <summary>
-		/// origin과 가장 가까운 List의 요소 반환
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="origin"></param>
-		/// <param name="targetList"></param>
-		/// <returns></returns>
-		public static T GetNearestObject<T>(Transform origin, List<T> targetList)  where T : Component
+    /// <summary>
+    /// origin과 가장 가까운 List의 요소 반환
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="origin"></param>
+    /// <param name="targetList"></param>
+    /// <returns></returns>
+    public static T GetNearestObject<T>(Transform origin, List<T> targetList)  where T : Component
     {
         if(targetList == null)
         {
