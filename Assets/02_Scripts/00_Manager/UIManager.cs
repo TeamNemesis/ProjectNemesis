@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Localization.Settings;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
@@ -44,21 +45,19 @@ public class UIManager : MonoBehaviour
 
         switch (savedIndex)
         {
-            case 0: // PC, default
-#if UNITY_STANDALONE_WIN
-                QualitySettings.SetQualityLevel(1);
-#elif UNITY_ANDROID
+            case 0: // default 가장 높음
+
                 QualitySettings.SetQualityLevel(0);
-#endif
+
                 break;
             case 1: // High
-                QualitySettings.SetQualityLevel(2);
+                QualitySettings.SetQualityLevel(1);
                 break;
             case 2: // Middle
-                QualitySettings.SetQualityLevel(3);
+                QualitySettings.SetQualityLevel(2);
                 break;
             case 3: // Low
-                QualitySettings.SetQualityLevel(4);
+                QualitySettings.SetQualityLevel(3);
                 break;
             default:
                 Debug.LogWarning("저장된 해상도 인덱스가 유효하지 않습니다.");
@@ -109,6 +108,7 @@ public class UIManager : MonoBehaviour
     public void MakeCurrentSkillList()
     {
         _listPanel.SetActive(true);
+        EventBus.SetCanGetInput(false);
         List<SkillData> list = GameManager.Instance.skillManager.GetChooseSkillList();
         if (list == null) return;
 
@@ -181,7 +181,7 @@ public class UIManager : MonoBehaviour
         }
 
         _skillBtnPanel.SetActive(isActive);
-
+        EventBus.SetCanGetInput(!isActive);
         if (!isActive)
             onRewardSelect?.Invoke();
     }
@@ -247,4 +247,17 @@ public class UIManager : MonoBehaviour
         _listPanel.SetActive(false);
     }
     #endregion
+
+    public void SetInput(bool isLock)
+    {
+        EventBus.SetCanGetInput(isLock);
+    }
+    public void SetInputAtIntroSettingPanel()
+    {
+        if (SceneManager.GetActiveScene().buildIndex != 1)
+        {
+            EventBus.SetCanGetInput(true);
+        }
+    }
+    
 }
