@@ -85,6 +85,20 @@ public class MonsterSpawner : MonoBehaviour
         SpawnSolo(eliteMonsterPrefabs, roomNumber);
     }
 
+    public void BossSpawner(List<Transform> positions, int roomNumber = 1)
+    {
+        // Elite와 동일한 로직
+        EliteSpawnerSetting(positions);
+
+        // Boss 스폰은 단일 웨이브로 처리
+        isWaveActive = true;
+        currentWaveIndex = 1; // Elite는 1개 웨이브로 간주
+        waitingWaves.Clear();
+        waitingWaves.Add(new List<MonsterSpawnInfo>()); // 빈 웨이브 추가 (카운트 체크용)
+
+        SpawnBoss(bossMonsterPrefabs);
+    }
+
     /// <summary>
     /// 몬스터 스폰 시작
     /// </summary>
@@ -255,6 +269,32 @@ public class MonsterSpawner : MonoBehaviour
         Transform spawnPos = spawnPositions[UnityEngine.Random.Range(0, spawnPositions.Count)];
 
         GameObject spawnedMonster = GameManager.Instance.PoolManager.GetFromPool(spawnRandomElite, spawnPos.position, spawnPos.rotation);
+        OnMonsterSpawned?.Invoke(spawnedMonster.GetComponent<MonsterBase>());
+        MonsterBase monsterbase = spawnedMonster.GetComponent<MonsterBase>();
+
+        activeMonsters.Add(spawnedMonster);
+        EventBus.EliteBoss = monsterbase;
+
+        if (monsterbase != null)
+        {
+            monsterbase.SetEliteMaxHealth(roomNumber);
+            monsterbase.OnDieEvent += () => OnMonsterDeath(spawnedMonster);
+            monsterbase.OnDieEvent += () => EventBus.RemoveMonster(monsterbase);
+        }
+    }
+
+    private void SpawnBoss(List<PoolableObject> monster, int roomNumber = 1)
+    {
+        if (spawnPositions == null)
+        {
+            return;
+        }
+
+        PoolableObject spawnBoss = monster[UnityEngine.Random.Range(0, monster.Count)];
+        // 랜덤 스폰 위치 선택
+        Transform spawnPos = spawnPositions[UnityEngine.Random.Range(0, spawnPositions.Count)];
+
+        GameObject spawnedMonster = GameManager.Instance.PoolManager.GetFromPool(spawnBoss, spawnPos.position, spawnPos.rotation);
         OnMonsterSpawned?.Invoke(spawnedMonster.GetComponent<MonsterBase>());
         MonsterBase monsterbase = spawnedMonster.GetComponent<MonsterBase>();
 
