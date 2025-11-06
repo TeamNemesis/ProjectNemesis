@@ -16,7 +16,7 @@ public class PlayerGrenadeAttacker : MonoBehaviour
     [SerializeField] int _maxCount = 3;       // 최대 소지 개수
     [SerializeField] int _currentCount = 0;   // 현재 소지 개수
 
-    Vector3 _mousePos;
+    public Vector3 _mousePos;
 
     // --- 새로 추가된 파라미터 (튜닝용) ---
     [Header("Parabola Height Tuning")]
