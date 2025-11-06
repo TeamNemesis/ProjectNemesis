@@ -25,9 +25,12 @@ public class PlayerGrenadeBullet : MonoBehaviour
     [SerializeField, Tooltip("이 거리 이상이면 '멀다'로 간주")]
     private float farDistance = 10f;
 
+    private bool isExplode;
+
     public void Initialize(Transform firePoint, Vector3 target)
     {
-        if(EventBus.HasMutant2)
+        isExplode = false;
+        if (EventBus.HasMutant2)
         {
             StartCoroutine(DirectMoveRoutine(firePoint, target));
             return;
@@ -62,12 +65,12 @@ public class PlayerGrenadeBullet : MonoBehaviour
             yield return null;
         }
 
-        
+
     }
 
     IEnumerator DirectMoveRoutine(Transform firePoint, Vector3 target)
     {
-        while(true)
+        while (true)
         {
             Vector3 direction = (target - firePoint.position).normalized;
             transform.position += direction * travelSpeed * _mutatntSpeedMultiplier * Time.deltaTime;
@@ -77,11 +80,16 @@ public class PlayerGrenadeBullet : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(EventBus.HasMutant2)
+        if (isExplode)
         {
-            if(other.CompareTag(Constants.TAG_GROUND) || other.CompareTag(Constants.TAG_WALL) || other.CompareTag(Constants.TAG_MONSTER))
+            return;
+        }
+        if (EventBus.HasMutant2)
+        {
+            if (other.CompareTag(Constants.TAG_GROUND) || other.CompareTag(Constants.TAG_WALL) || other.CompareTag(Constants.TAG_MONSTER))
             {
                 Explode(transform.position, transform);
+                isExplode = true;
                 Destroy(gameObject);
                 return;
             }
@@ -89,6 +97,8 @@ public class PlayerGrenadeBullet : MonoBehaviour
         if (other.CompareTag(Constants.TAG_GROUND) || other.CompareTag(Constants.TAG_WALL))
         {
             Explode(transform.position, transform);
+            isExplode = true;
+
             Destroy(gameObject);
         }
     }

@@ -12,6 +12,8 @@ public class Skill_One_SPAttack : ActiveTech
     private Player _player;
 
     private Action _AttackTry;
+
+    private SkillEffect _skillEffectPrefab; //이펙트
     /// <summary>   
     /// 공격 한 번 당 한 번만 적용하도록 하기 위한 필드값
     /// </summary>
@@ -23,6 +25,11 @@ public class Skill_One_SPAttack : ActiveTech
         base.Activate(skillManager, player);
         _player = player;
         _AttackTry = () => ActiveTry(player);
+
+        if(_skillEffectPrefab == null )             //여기서 로드
+        {
+            _skillEffectPrefab = Resources.Load<SkillEffect>("Prefabs/Skill/SkillObject/Skill_One/Cube");
+        }
         player.OnSpecialAttackStarted += _AttackTry;
         EventBus.OnMonsterHit += HitEnemy;
 
@@ -58,6 +65,7 @@ public class Skill_One_SPAttack : ActiveTech
         if (isHit) return;
 
         isHit = true;
+        GameManager.Instance.PoolManager.GetFromPool(_skillEffectPrefab, _player.transform.position, Quaternion.identity);  //생성
         _player.playerModel.Heal(Constants.SKILL_ONE_SPATTACKHEAL);
     }
 
