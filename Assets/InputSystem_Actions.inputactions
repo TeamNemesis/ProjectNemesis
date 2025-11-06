@@ -897,6 +897,34 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "SettingUI",
+            "id": "b125211e-0ae9-4cdf-bae6-fc6e6a62e5e4",
+            "actions": [
+                {
+                    "name": "OpenSetting",
+                    "type": "Button",
+                    "id": "7824c8b9-74b5-4c14-8b56-cbf0929de6b9",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "Press",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "9654ae9a-7a11-41b0-838e-c4cac0cb8555",
+                    "path": "<Keyboard>/u",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "OpenSetting",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": [

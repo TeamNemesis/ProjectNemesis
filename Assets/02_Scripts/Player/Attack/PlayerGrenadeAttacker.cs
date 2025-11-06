@@ -11,7 +11,7 @@ public class PlayerGrenadeAttacker : MonoBehaviour
     [SerializeField] string _grenadePath = "Prefabs/Bullet/Grenade";
     [SerializeField] string _explodeCirclePath = "Prefabs/Effect/Skill/ExplodeCircle";
     [SerializeField] float travelTime = 1.0f;     // 유탄이 도착하는 시간
-    [SerializeField] float _coolTime = 10.0f;   // 쿨타임
+    [SerializeField] float _coolTime;   // 쿨타임
     [SerializeField] float _timer = 0.0f;       // 쿨타임 타이머
     [SerializeField] int _maxCount = 3;       // 최대 소지 개수
     [SerializeField] int _currentCount = 0;   // 현재 소지 개수
@@ -32,6 +32,17 @@ public class PlayerGrenadeAttacker : MonoBehaviour
     public event Action<int, int> OnGrenadeCountChanged; // 현재 유탄 개수, 최대 유탄 개수
     public event Action<float, float> OnGrenadeCooltimeChanged; // 현재 쿨타임, 최대 쿨타임
 
+    /// <summary>
+    /// 쿨타임 설정
+    /// </summary>
+    public void SetCoolTime()
+    {
+        _coolTime = GameManager.Instance.PlayerStatManager.grenadeCoolTime * GameManager.Instance.PlayerStatManager.grenadeCoolTimeMulti;
+        OnGrenadeCooltimeChanged?.Invoke(_timer, _coolTime);
+
+    }
+
+
     private void Update()
     {
         // 쿨타임 처리
@@ -51,6 +62,8 @@ public class PlayerGrenadeAttacker : MonoBehaviour
     public void Initialize()
     {
         _currentCount = _maxCount;
+        _coolTime = GameManager.Instance.PlayerStatManager.grenadeCoolTime * GameManager.Instance.PlayerStatManager.grenadeCoolTimeMulti;
+        GameManager.Instance.PlayerStatManager.OnGrenadeCoolTimeMultiChange += SetCoolTime;
         OnGrenadeCooltimeChanged?.Invoke(0.0f, _coolTime);
         OnGrenadeCountChanged?.Invoke(_currentCount, _maxCount);
         _explodeCirclePath = "Prefabs/Effect/Skill/ExplodeCircle";
