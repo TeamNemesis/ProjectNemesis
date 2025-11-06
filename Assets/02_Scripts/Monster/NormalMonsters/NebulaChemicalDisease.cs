@@ -10,12 +10,22 @@ public class NebulaChemicalDisease : MonsterBase
 
     [Header("PoisonFieldPrefab"),SerializeField]
     private PoolableObject poisonFieldPrefab; // 독성 구름 프리팹
+    [SerializeField] private PoolableObject grenadeObject; // 독성 유탄 프리팹
 
     [Header("AttackDecalPrefab"),SerializeField]
     private PoolableObject attackDecalPrefab; // 공격 장판 프리팹
 
-    [Header("AttackDecalPrefab"), SerializeField]
-    private PoolableObject strayBullet; // 유탄 프리펩
+    // 유탄 포물선 높이 조절 변수
+    private float maxParabolaHeight = 10f;
+    private float minParabolaHeight = 5f;
+    private float closeDistance = 5f;
+    private float farDistance = 10f;
+
+    // 애니메이션 파라미터 이름 상수
+    private readonly int IsMove_Hash = Animator.StringToHash("IsMove");
+    private readonly int Attack_Hash = Animator.StringToHash("Attack");
+
+
 
     private void Update()
     {
@@ -61,19 +71,41 @@ public class NebulaChemicalDisease : MonsterBase
     private void HandleMove()
     {
         if (_target == null) return;
+
         float distance = Vector3.Distance(transform.position, _target.position);
+
         if (distance > detectionRange || !CanSeePlayer())
         {
             agent.ResetPath();
+
+            // 애니메이션: 이동 중지
+            if (monsterAnimator != null)
+            {
+                monsterAnimator.SetBool(IsMove_Hash, false);
+            }
+
             baseState = MonsterState.Idle;
             return;
         }
 
         agent.SetDestination(_target.position);
 
+        // 애니메이션: 이동 중
+        if (monsterAnimator != null)
+        {
+            monsterAnimator.SetBool(IsMove_Hash, true);
+        }
+
         if (distance <= attackRange && CanSeePlayer())
         {
             agent.ResetPath();
+
+            // 애니메이션: 공격 준비를 위해 이동 중지
+            if (monsterAnimator != null)
+            {
+                monsterAnimator.SetBool(IsMove_Hash, false);
+            }
+
             baseState = MonsterState.Attack;
         }
     }
@@ -83,12 +115,21 @@ public class NebulaChemicalDisease : MonsterBase
         _isAttacking = true;
         if (_target != null && Vector3.Distance(transform.position, _target.position) <= attackRange)
         {
+
+            // 애니메이션: 공격 트리거 발동
+            if (monsterAnimator != null)
+            {
+                monsterAnimator.SetTrigger(Attack_Hash);
+            }
+
             poisonFieldPrefab.GetComponent<PoisonField>().SetLifeTime(_poisonFieldDuration); // 독성 구름 지속 시간 설정
 
             Vector3 attackPos = _target.position;
 
             GameObject decalObj = GameManager.Instance.PoolManager.GetFromPool(attackDecalPrefab, attackPos, attackDecalPrefab.transform.rotation);
             decalObj.GetComponent<AttackDecalEffect>().Play(_poisonFieldDelay, _poisonFieldRadius / 2);
+
+            StartCoroutine(GrenadeVisualEffect(transform.position + Vector3.up, attackPos, _poisonFieldDelay));
 
             // 장판 생성 후 딜레이동안 대기
             yield return new WaitForSeconds(_poisonFieldDelay);
@@ -103,4 +144,43 @@ public class NebulaChemicalDisease : MonsterBase
         _isAttacking = false;
         baseState = MonsterBase.MonsterState.Move; // 공격 후 다시 추격 상태로 전환
     }
+
+    private IEnumerator GrenadeVisualEffect(Vector3 startPos, Vector3 targetPos, float duration)
+    {
+        if (grenadeObject == null)
+            yield break;
+
+        GameObject grenade = GameManager.Instance.PoolManager.GetFromPool(
+            grenadeObject,
+            startPos,
+            Quaternion.identity
+        );
+
+        if (grenade == null)
+            yield break;
+
+        float elapsed = 0f;
+        float distance = Vector3.Distance(startPos, targetPos);
+
+        // 거리 비례 포물선 높이 계산
+        float tDist = Mathf.InverseLerp(closeDistance, farDistance, distance);
+        float smooth = Mathf.SmoothStep(0f, 1f, tDist);
+        float parabolaHeight = Mathf.Lerp(maxParabolaHeight, minParabolaHeight, smooth);
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / duration);
+
+            Vector3 flatPos = Vector3.Lerp(startPos, targetPos, t);
+            float parabola = 4f * parabolaHeight * (t - t * t);
+            flatPos.y += parabola;
+
+            grenade.transform.position = flatPos;
+            yield return null;
+        }
+
+        GameManager.Instance.PoolManager.ReleaseToPool(grenade);
+    }
+
 }
