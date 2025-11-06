@@ -10,7 +10,6 @@ public class ResolutionDropdown : MonoBehaviour
     [SerializeField] private string tableName;
     [SerializeField] private string[] stringKeys;
 
-    private const string PREF_KEY = "ResolutionIndex";
 
     private void OnEnable()
     {
@@ -20,9 +19,9 @@ public class ResolutionDropdown : MonoBehaviour
         UpdateDropdown(LocalizationSettings.SelectedLocale);
 
         // 저장된 설정값 불러오기
-        if (PlayerPrefs.HasKey(PREF_KEY))
+        if (PlayerPrefs.HasKey(Constants.RESOLUTION_PREF_KEY))
         {
-            int savedIndex = PlayerPrefs.GetInt(PREF_KEY);
+            int savedIndex = PlayerPrefs.GetInt(Constants.RESOLUTION_PREF_KEY);
             resolutionDropdown.value = savedIndex;
             resolutionDropdown.RefreshShownValue();
             ChangeResolution(savedIndex);
@@ -34,7 +33,9 @@ public class ResolutionDropdown : MonoBehaviour
             resolutionDropdown.RefreshShownValue();
             ChangeResolution(0);
         }
+
     }
+   
 
     private void OnDisable()
     {
@@ -63,30 +64,31 @@ public class ResolutionDropdown : MonoBehaviour
     private void ChangeResolution(int index)
     {
         // 설정값 저장
-        PlayerPrefs.SetInt(PREF_KEY, index);
+        PlayerPrefs.SetInt(Constants.RESOLUTION_PREF_KEY, index);
         PlayerPrefs.Save();
 
         switch (index)
         {
             case 0: // PC, default
 #if UNITY_STANDALONE_WIN
-                QualitySettings.SetQualityLevel(1); // 예: PC
+                QualitySettings.SetQualityLevel(0); // 예: PC
 #elif UNITY_ANDROID
                 QualitySettings.SetQualityLevel(0); // 예: Mobile
 #endif
                 break;
             case 1: // High
-                QualitySettings.SetQualityLevel(2);
+                QualitySettings.SetQualityLevel(1);
                 break;
             case 2: // Middle
-                QualitySettings.SetQualityLevel(3);
+                QualitySettings.SetQualityLevel(2);
                 break;
             case 3: // Low
-                QualitySettings.SetQualityLevel(4);
+                QualitySettings.SetQualityLevel(3);
                 break;
             default:
                 Debug.LogError("해당 사항 없음");
                 break;
         }
+
     }
 }
