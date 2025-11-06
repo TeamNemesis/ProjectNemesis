@@ -26,7 +26,6 @@ public class Player : MonoBehaviour
     [Header("----- 상호작용 컴포넌트 -----")]
     [SerializeField] InteractionController _interactionController;      // 상호작용 컨트롤러
     [SerializeField] InteractableDetector _interactableDetector;        // 상호작용 감지기
-    [SerializeField] InteractionGuideView _interactableGuideView;       // 상호작용 안내 뷰
 
     [SerializeField] bool _isInteractable; // 상호작용 가능 여부
 

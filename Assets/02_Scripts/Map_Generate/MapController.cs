@@ -147,6 +147,10 @@ public class MapController : MonoBehaviour
         {
             _monsterController.SpawnElite(CurrentRoomCount, spawnPoints);
         }
+        else if( room.RoomInfo.RoomType == RoomType.Boss)
+        {
+            _monsterController.SpawnBoss(spawnPoints);
+        }
         else
         {
             _monsterController.SpawnMonster(roomCost, spawnPoints);
