@@ -11,6 +11,9 @@ public class MonsterSpawner : MonoBehaviour
     [Header("Elite Monster Prefabs"), SerializeField]
     private List<PoolableObject> eliteMonsterPrefabs = new List<PoolableObject>(3);
 
+    [Header("Boss Monster Prefabs"), SerializeField]
+    private List<PoolableObject> bossMonsterPrefabs = new List<PoolableObject>(1);
+
     [Header("Spawn Settings")]
     // 방의 최대 스폰 포인트
     private int maxSpawnPoint;

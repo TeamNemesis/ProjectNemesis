@@ -3,13 +3,6 @@ using UnityEngine;
 public class AutoTurret : MonsterBase
 {
     [SerializeField] float bulletLifeTime = 8f;
-    [SerializeField]
-    private enum State
-    {
-        Idle,   // 플레이어를 아직 못 찾았거나 감지 범위 밖일 때
-        Attack, // 공격
-        Die     // 죽음
-    }
     [Header("TurretBulletPrefab"), SerializeField]
     private PoolableObject turretbullet; // 터렛 총알 프리펩
     [SerializeField] private Transform shootPos;
