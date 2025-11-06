@@ -12,7 +12,6 @@ public class NebulaChemicalDisease : MonsterBase
     [Header("PoisonFieldPrefab"), SerializeField]
     private PoolableObject poisonFieldPrefab; // 독성 구름 프리팹
     [SerializeField] private PoolableObject grenadeObject; // 독성 유탄 프리팹
-    private List<GameObject> activeGrenades;
 
     [Header("AttackDecalPrefab"), SerializeField]
     private PoolableObject attackDecalPrefab; // 공격 장판 프리팹
@@ -22,11 +21,6 @@ public class NebulaChemicalDisease : MonsterBase
     private float minParabolaHeight = 5f;
     private float closeDistance = 5f;
     private float farDistance = 10f;
-
-    // 애니메이션 파라미터 이름 상수
-    private readonly int IsMove_Hash = Animator.StringToHash("IsMove");
-    private readonly int Attack_Hash = Animator.StringToHash("Attack");
-
 
 
     private void Update()
@@ -157,7 +151,6 @@ public class NebulaChemicalDisease : MonsterBase
             startPos,
             Quaternion.identity
         );
-        activeGrenades.Add(grenade);
 
         if (grenade == null)
             yield break;
@@ -184,18 +177,6 @@ public class NebulaChemicalDisease : MonsterBase
         }
 
         GameManager.Instance.PoolManager.ReleaseToPool(grenade);
-    }
-
-    protected override void Die()
-    {
-        if (activeGrenades != null)
-        {
-            foreach (GameObject grenade in activeGrenades)
-            {
-                GameManager.Instance.PoolManager.ReleaseToPool(grenade);
-            }
-        }
-        base.Die();
     }
 
 }

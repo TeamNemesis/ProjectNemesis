@@ -13,6 +13,7 @@ public class SecurityDogEModel : MonsterBase
     private Quaternion fixedRotation;
     private Coroutine attackCoroutine; // 공격 코루틴 참조 저장
 
+
     private void Update()
     {
         if (isDead || _target == null) return;
@@ -44,47 +45,57 @@ public class SecurityDogEModel : MonsterBase
 
     private void HandleIdle()
     {
-        // Idle 애니메이션 재생
+        // 애니메이션: Idle 상태에서는 이동 중지
         if (monsterAnimator != null)
         {
-            monsterAnimator.SetBool("IsMoving", false);
+            monsterAnimator.SetBool(IsMove_Hash, false);
         }
 
+        // 플레이어와 거리
         float distance = Vector3.Distance(transform.position, _target.position);
         if (distance <= detectionRange && CanSeePlayer())
         {
             baseState = MonsterState.Move;
         }
     }
-
     private void HandleMove()
     {
-        if (!agent.enabled || !agent.isOnNavMesh)
-        {
-            return;
-        }
         if (_target == null) return;
-
-        // Move 애니메이션 재생
-        if (monsterAnimator != null)
-        {
-            monsterAnimator.SetBool("IsMoving", true);
-        }
 
         float distance = Vector3.Distance(transform.position, _target.position);
 
         if (distance > detectionRange || !CanSeePlayer())
         {
             agent.ResetPath();
+
+            // 애니메이션: 이동 중지
+            if (monsterAnimator != null)
+            {
+                monsterAnimator.SetBool(IsMove_Hash, false);
+            }
+
             baseState = MonsterState.Idle;
             return;
         }
 
         agent.SetDestination(_target.position);
 
+        // 애니메이션: 이동 중
+        if (monsterAnimator != null)
+        {
+            monsterAnimator.SetBool(IsMove_Hash, true);
+        }
+
         if (distance <= attackRange && CanSeePlayer())
         {
             agent.ResetPath();
+
+            // 애니메이션: 공격 준비를 위해 이동 중지
+            if (monsterAnimator != null)
+            {
+                monsterAnimator.SetBool(IsMove_Hash, false);
+            }
+
             baseState = MonsterState.Attack;
         }
     }
@@ -122,6 +133,11 @@ public class SecurityDogEModel : MonsterBase
 
         if (distance < attackRange)
         {
+            // 애니메이션: 공격 트리거 발동
+            if (monsterAnimator != null)
+            {
+                monsterAnimator.SetTrigger(Attack_Hash);
+            }
             // Y축 위치와 회전값 저장
             fixedYPosition = transform.position.y;
             fixedRotation = transform.rotation;
@@ -129,12 +145,6 @@ public class SecurityDogEModel : MonsterBase
             // NavMeshAgent 정지 및 비활성화
             agent.isStopped = true;
             agent.ResetPath();
-
-            // IsMoving 먼저 false로
-            if (monsterAnimator != null)
-            {
-                monsterAnimator.SetBool("IsMoving", false);
-            }
 
             yield return new WaitForSeconds(0.1f);
 
@@ -154,21 +164,7 @@ public class SecurityDogEModel : MonsterBase
                                                RigidbodyConstraints.FreezeRotation;
             }
 
-            // 점프 대기 애니메이션 직접 재생
-            if (monsterAnimator != null)
-            {
-                Debug.Log("JumpWaiting 애니메이션 재생 시도");
-                monsterAnimator.Play("JumpWaiting"); // 애니메이션 State 이름을 직접 입력
-            }
-
             yield return new WaitForSeconds(jumpPrepareTime);
-
-            // 돌진 공격 애니메이션 직접 재생
-            if (monsterAnimator != null)
-            {
-                Debug.Log("Attack 애니메이션 재생 시도");
-                monsterAnimator.Play("Attack"); // 애니메이션 State 이름을 직접 입력
-            }
 
             // 점프 방향 계산
             Vector3 jumpDirection = (_target.position - transform.position).normalized;
@@ -284,12 +280,6 @@ public class SecurityDogEModel : MonsterBase
         {
             StopCoroutine(attackCoroutine);
             attackCoroutine = null;
-        }
-
-        // 애니메이션을 Idle 상태로 전환
-        if (monsterAnimator != null)
-        {
-            monsterAnimator.SetBool("IsMoving", false);
         }
 
         // Rigidbody 정리
