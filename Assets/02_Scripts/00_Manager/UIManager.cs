@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Localization.Settings;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
@@ -107,6 +108,7 @@ public class UIManager : MonoBehaviour
     public void MakeCurrentSkillList()
     {
         _listPanel.SetActive(true);
+        EventBus.SetCanGetInput(false);
         List<SkillData> list = GameManager.Instance.skillManager.GetChooseSkillList();
         if (list == null) return;
 
@@ -179,7 +181,7 @@ public class UIManager : MonoBehaviour
         }
 
         _skillBtnPanel.SetActive(isActive);
-
+        EventBus.SetCanGetInput(!isActive);
         if (!isActive)
             onRewardSelect?.Invoke();
     }
@@ -245,4 +247,17 @@ public class UIManager : MonoBehaviour
         _listPanel.SetActive(false);
     }
     #endregion
+
+    public void SetInput(bool isLock)
+    {
+        EventBus.SetCanGetInput(isLock);
+    }
+    public void SetInputAtIntroSettingPanel()
+    {
+        if (SceneManager.GetActiveScene().buildIndex != 1)
+        {
+            EventBus.SetCanGetInput(true);
+        }
+    }
+    
 }

@@ -10,6 +10,7 @@ public class SettingPanel : MonoBehaviour
 
     public void OnOpenSetting()
     {
+        EventBus.SetCanGetInput(false);
         if(SceneManager.GetActiveScene().buildIndex !=1)
         {
             introPanel.SetActive(true);
