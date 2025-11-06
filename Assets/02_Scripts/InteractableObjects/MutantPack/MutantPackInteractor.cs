@@ -13,7 +13,7 @@ public class MutantPackInteractor : RewardInteractableObject
 
     public override void Initialize()
     {
-        
+        base.Initialize();
     }
 
     // 보상 플로우(예: UI열고 플레이어가 선택하면 확정되는 경우)

@@ -250,6 +250,7 @@ public class MonsterSpawner : MonoBehaviour
             if (monsterbase != null)
             {
                 monsterbase.OnDieEvent += () => OnMonsterDeath(spawnedMonster);
+                monsterbase.OnDieEvent += () => EventBus.RemoveMonster(monsterbase);
             }
         }
     }

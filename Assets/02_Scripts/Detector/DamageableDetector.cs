@@ -52,7 +52,6 @@ public class DamageableDetector : MonoBehaviour
                 IDamageable damageable = collider.GetComponentInParent<IDamageable>();
                 if (damageable != null)
                 {
-                    Debug.Log("공격 판정", collider);
                     OnDetected.Invoke(damageable);
                 }
             }

@@ -49,7 +49,6 @@ public class PlayerNormalAttackState : PlayerStateBase
     {
         // 상태 내부에서 직접 ChangeState 하지 말고, Player에게 요청하게 하자
         
-        Debug.Log("SetIsNormalttacking false in HandleAttackEnded");
         _player.SetToIdle();
     }
 }

@@ -122,8 +122,6 @@ public class PlayerRifleSpecialAttacker : PlayerSpecialAttacker
         if (_hasFired) return;
         _hasFired = true;
 
-        Debug.Log($"PlayerRifleSpecialAttacker.FireWithCharge ratio={ratio} frame={Time.frameCount}");
-
         float width = Mathf.Lerp(minWidth, maxWidth, ratio);
 
         Vector3 origin = _firePoint.position;

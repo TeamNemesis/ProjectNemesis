@@ -3386,10 +3386,7 @@ MonoBehaviour:
   _timer: 0
   _maxCount: 3
   _currentCount: 0
-  maxParabolaHeight: 15
-  minParabolaHeight: 10
-  closeDistance: 2
-  farDistance: 10
+  _mousePos: {x: 0, y: 0, z: 0}
 --- !u!1 &1701970611488711744
 GameObject:
   m_ObjectHideFlags: 0
@@ -17211,7 +17208,6 @@ MonoBehaviour:
   _groundLayer:
     serializedVersion: 2
     m_Bits: 512
-  _groundCheckDistance: 0.1
   _groundCheckRadius: 0.3
   _coyoteTime: 0.12
 --- !u!114 &1484459335462496411

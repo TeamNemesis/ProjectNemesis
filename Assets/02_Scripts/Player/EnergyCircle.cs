@@ -31,7 +31,7 @@ public class EnergyCircle : MonoBehaviour
         _expansionDuration = expansionDuration;
         _moveDir = moveDir;
         SetEnergyCircle(_expansionDuration);
-
+        _timer = 0f;
     }
 
     private void Update()
@@ -72,6 +72,7 @@ public class EnergyCircle : MonoBehaviour
         if (other.CompareTag(Constants.TAG_MONSTER))
         {
             GameManager.Instance.PlayerStatManager.TakeDamage(WeaponType.Rifle, ATTACKTYPE.SPECIALATTACK, other.transform);
+            GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
         }
         if(other.CompareTag(Constants.TAG_WALL))
         {

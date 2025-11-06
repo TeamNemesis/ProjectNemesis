@@ -12,7 +12,7 @@ public class PlayerGrenadeBullet : MonoBehaviour
     [SerializeField] private LayerMask enemyLayer;        // 적 탐지용
 
     [SerializeField] float _mutatntSpeedMultiplier = 1.5f;
-    [SerializeField] float _mutantTravelTime = 3f;
+    //[SerializeField] float _mutantTravelTime = 3f;
 
     // --- 새로 추가된 파라미터 (튜닝용) ---
     [Header("Parabola Height Tuning")]
@@ -102,7 +102,6 @@ public class PlayerGrenadeBullet : MonoBehaviour
         EventBus.GrenadeBomb(position);
         if (hitCount <= 0)
         {
-            Debug.Log("폭발했지만 적을 맞추지 못함");
             return;
         }
 
@@ -113,16 +112,12 @@ public class PlayerGrenadeBullet : MonoBehaviour
                 continue;
 
             IDamageable enemy = hit.GetComponent<IDamageable>();
-            Debug.Log("IDamageable 컴포넌트 탐색 시도: " + (enemy != null ? "성공" : "실패"));
             if (enemy != null)
             {
                 Transform monster = hit.transform;
                 EventBus.MonsterHit(WeaponType.None, ATTACKTYPE.GRENADE, monster, grenadeTransform);
-                Debug.Log(monster.name + "에게 폭발 데미지 적용");
             }
         }
-
-        Debug.Log("폭발 위치: " + position);
     }
 
     private void OnDestroy()

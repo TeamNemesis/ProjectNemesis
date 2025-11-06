@@ -18,17 +18,6 @@ public class PlayerGrenadeAttacker : MonoBehaviour
 
     public Vector3 _mousePos;
 
-    // --- 새로 추가된 파라미터 (튜닝용) ---
-    [Header("Parabola Height Tuning")]
-    [SerializeField, Tooltip("짧은 거리(가까움)일 때의 최대 포물선 높이")]
-    private float maxParabolaHeight = 15f;
-    [SerializeField, Tooltip("먼 거리(멀리)일 때의 최소 포물선 높이")]
-    private float minParabolaHeight = 10f;
-    [SerializeField, Tooltip("이 거리 이하이면 '가깝다'로 간주")]
-    private float closeDistance = 2f;
-    [SerializeField, Tooltip("이 거리 이상이면 '멀다'로 간주")]
-    private float farDistance = 10f;
-
     public event Action<int, int> OnGrenadeCountChanged; // 현재 유탄 개수, 최대 유탄 개수
     public event Action<float, float> OnGrenadeCooltimeChanged; // 현재 쿨타임, 최대 쿨타임
 
@@ -72,7 +61,6 @@ public class PlayerGrenadeAttacker : MonoBehaviour
 
     public void GrenadeAttack(Vector3 mousePos)
     {
-        Debug.Log("유탄 공격 실행");
         _currentCount--;
         OnGrenadeCountChanged?.Invoke(_currentCount, _maxCount);
         if (EventBus.HasMutant1)

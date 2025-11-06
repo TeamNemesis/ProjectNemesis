@@ -127,7 +127,6 @@ public class NormalRoom : Room
         //}
 
         reward.OnRewardGiven += RewardSelectionFinished;
-        Debug.Log("NormalRoom.SpawnReward: Reward spawned successfully.");
         reward.Initialize();
 
         // 마지막으로 보상 참조를 배열로 담아 반환 (이 배열이 '새로운 오브젝트 생성'을 의미하는 것은 아님)

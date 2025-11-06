@@ -136,7 +136,14 @@ public class MapController : MonoBehaviour
         UpdateCurrentRoomState(room);
 
         // 문 생성 처리
-        CreateDoorsForCurrentRoom();
+        if (EventBus.IsColosseumRoom)
+        {
+            // 콜로세움일경우 일단 문 생성하지말고 아래 로직 진행
+        }
+        else
+        {
+            CreateDoorsForCurrentRoom();
+        }
 
         // 여기서 방 타입별로 스폰할 몬스터 정해주고
         // 스폰위치 업데이트 해주고 몬스터 스폰해야함.
@@ -146,6 +153,7 @@ public class MapController : MonoBehaviour
         if (room.RoomInfo.RoomType == RoomType.Colosseum)
         {
             _monsterController.SpawnElite(CurrentRoomCount, spawnPoints);
+            EventBus.EliteBoss.OnDieEvent += CreateDoorsForCurrentRoom;
         }
         else if( room.RoomInfo.RoomType == RoomType.Boss)
         {
@@ -163,7 +171,7 @@ public class MapController : MonoBehaviour
     {
         _currentRoom = room;
         _currentRoomCount++;
-        Debug.Log($"[MapController] Entered room #{_currentRoomCount} type={room.RoomInfo?.RoomType.ToString() ?? "null"}");
+        GameManager.Instance.CurrencyManager.ResetRoomCredit();
 
         if (room.RoomInfo?.RoomType == RoomType.Lab)
             _hasLabRoomAppeared = true;
@@ -268,7 +276,6 @@ public class MapController : MonoBehaviour
             if (door != null)
             {
                 created.Add(door);
-                Debug.Log($"[MapController] Spawned door #{i} type={nextRoomInfo.RoomType} at {door.transform.position}");
             }
             else
             {
@@ -281,6 +288,11 @@ public class MapController : MonoBehaviour
         // Lab 포함 여부 갱신(선택지에 lab 포함돼있으면 표시)
         if (Array.Exists(doorTypes, t => t == RoomType.Lab))
             _hasLabRoomAppeared = true;
+
+        if (EventBus.IsColosseumRoom)
+        {
+            EventBus.EliteBoss.OnDieEvent -= CreateDoorsForCurrentRoom;
+        }
     }
 
     // DoorSpawner가 parent 파라미터를 지원하는 경우를 고려해 안전하게 호출
@@ -292,24 +304,25 @@ public class MapController : MonoBehaviour
             return null;
         }
 
-        // 기본 SpawnDoor(Transform, RoomInfo)
         Door door = _doorSpawner.SpawnDoor(position, info);
-        _currentRoom.OnRewardSelectionFinished += door.OnRewardSelectionCompleted;
-        Debug.Log("OnRewardSelectionFinished event subscribed to door.OnRewardSelectionCompleted");
-        if (_currentRoom.RoomInfo.RoomType == RoomType.Start || _currentRoom.RoomInfo.RoomType == RoomType.Shop)
+        if (door == null) return null;
+
+        // 구독: 반드시 같은 구독이 중복으로 등록되지 않도록 방어
+        if (_currentRoom != null)
+        {
+            _currentRoom.OnRewardSelectionFinished -= door.OnRewardSelectionCompleted; // 중복 등록 방지
+            _currentRoom.OnRewardSelectionFinished += door.OnRewardSelectionCompleted;
+        }
+
+        if (_currentRoom?.RoomInfo?.RoomType == RoomType.Start || _currentRoom?.RoomInfo?.RoomType == RoomType.Shop)
         {
             door.OnRewardSelectionCompleted();
         }
+
         if (door != null && parent != null)
             door.transform.SetParent(parent, worldPositionStays: true);
 
         return door;
-        //}
-        //catch (Exception ex)
-        //{
-        //    Debug.LogError($"TrySpawnDoor exception: {ex}");
-        //    return null;
-        //}
     }
 
     // doorTypes 배열을 요청 개수(count)만큼 채움: 마지막 값 또는 Normal로 채움
@@ -328,15 +341,62 @@ public class MapController : MonoBehaviour
 
     void DestroyCurrentRoomObjects()
     {
-
-        // PoolableObject 찾아서 반환 처리
-        var poolables = _currentRoom.PoolableObjectsInRoom;
-        foreach (var poolableObj in poolables)
+        // 0) 안전: _currentRoom이 null이면 할 일 없음
+        if (_currentRoom == null)
         {
-            GameManager.Instance.PoolManager.ReleaseToPool(poolableObj);
+            Debug.LogWarning("[MapController] DestroyCurrentRoomObjects: no current room");
+            _currentDoors = null;
+            return;
         }
 
-        // 먼저 문들 파괴
+        // 1) 먼저 문들이 _currentRoom 이벤트(구독)에서 안전하게 언구독되도록 처리
+        if (_currentDoors != null && _currentRoom != null)
+        {
+            foreach (var door in _currentDoors)
+            {
+                if (door == null) continue;
+                try
+                {
+                    _currentRoom.OnRewardSelectionFinished -= door.OnRewardSelectionCompleted;
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogWarning($"Failed to unsubscribe door handler: {ex}");
+                }
+            }
+        }
+
+        // 2) 관련 코루틴 정리 (플레이어 상호작용 등)
+        if (_doorInteractionRoutine != null)
+        {
+            StopCoroutine(_doorInteractionRoutine);
+            _doorInteractionRoutine = null;
+        }
+        if (_goNextRoomRoutine != null)
+        {
+            StopCoroutine(_goNextRoomRoutine);
+            _goNextRoomRoutine = null;
+        }
+
+        // 3) PoolableObject 찾아서 반환 처리 (PoolManager가 즉시 Destroy/Deactivate 한다면 이후 순서 중요)
+        var poolables = _currentRoom.PoolableObjectsInRoom;
+        if (poolables != null)
+        {
+            foreach (var poolableObj in poolables)
+            {
+                try
+                {
+                    if (GameManager.Instance?.PoolManager != null)
+                        GameManager.Instance.PoolManager.ReleaseToPool(poolableObj);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogWarning($"ReleaseToPool failed for {poolableObj?.name}: {ex}");
+                }
+            }
+        }
+
+        // 4) 먼저 문들 파괴 (이미 이벤트 언구독했으므로 안전)
         if (_currentDoors != null)
         {
             foreach (var door in _currentDoors)
@@ -344,7 +404,6 @@ public class MapController : MonoBehaviour
                 if (door == null) continue;
                 if (door.gameObject.scene.IsValid())
                 {
-                    Debug.Log($"[MapController] Destroying door instance: {door.name}");
                     Destroy(door.gameObject);
                 }
                 else
@@ -355,12 +414,11 @@ public class MapController : MonoBehaviour
             _currentDoors = null;
         }
 
-        // 그 다음 방 파괴
+        // 5) 그 다음 방 파괴
         if (_currentRoom != null)
         {
             if (_currentRoom.gameObject.scene.IsValid())
             {
-                Debug.Log($"[MapController] Destroying room instance: {_currentRoom.name}");
                 Destroy(_currentRoom.gameObject);
             }
             else
@@ -374,7 +432,6 @@ public class MapController : MonoBehaviour
     void StartReward()
     {
         _currentRoom.SpawnReward();
-        Debug.Log("보상 선택 시작");
     }
 
     IEnumerator GoToNextRoomRoutine()

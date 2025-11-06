@@ -99,7 +99,6 @@ public class Bullet : PoolableObject
     {
         if(other.CompareTag(Constants.TAG_MONSTER))
         {
-            Debug.Log("몬스터 충돌 감지");
             EventBus.MonsterHit(WeaponType.Rifle, ATTACKTYPE.NORMAL, other.transform,transform);
             GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
         }
