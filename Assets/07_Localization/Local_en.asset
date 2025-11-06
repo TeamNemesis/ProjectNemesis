@@ -16,7 +16,8 @@ MonoBehaviour:
     m_Code: en
   m_SharedData: {fileID: 11400000, guid: 89d7a238c26be59409a5d636443bffbf, type: 2}
   m_Metadata:
-    m_Items: []
+    m_Items:
+    - rid: 1421545532286304257
   m_TableData:
   - m_Id: 5102046474240
     m_Localized: hi
@@ -96,6 +97,8 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 2059728871604224
     m_Localized: Game Close
+    m_Metadata:
+      m_Items: []
   - m_Id: 2065516961873920
     m_Localized: TotalDamage
     m_Metadata:
@@ -112,6 +115,25 @@ MonoBehaviour:
     m_Localized: Heal
     m_Metadata:
       m_Items: []
+  - m_Id: 2105167574581248
+    m_Localized: Vengeance continues...
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2106575975727104
+    m_Localized: Back To Title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2111396187324416
+    m_Localized: 'Clear Time : '
+    m_Metadata:
+      m_Items:
+      - rid: 1421545532286304257
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 1421545532286304257
+      type: {class: SmartFormatTag, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_Entries: 
+        m_SharedEntries:
+        - id: 2111396187324416
