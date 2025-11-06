@@ -2,6 +2,7 @@
 using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 
 /// <summary>
@@ -14,6 +15,7 @@ public class Skill_One_SPAttack : ActiveTech
     private Action _AttackTry;
 
     private SkillEffect _skillEffectPrefab; //이펙트
+    
     /// <summary>   
     /// 공격 한 번 당 한 번만 적용하도록 하기 위한 필드값
     /// </summary>
@@ -28,7 +30,7 @@ public class Skill_One_SPAttack : ActiveTech
 
         if(_skillEffectPrefab == null )             //여기서 로드
         {
-            _skillEffectPrefab = Resources.Load<SkillEffect>("Prefabs/Skill/SkillObject/Skill_One/Cube");
+            _skillEffectPrefab = Resources.Load<SkillEffect>("Prefabs/Effect/Skill/Bloodlust");
         }
         player.OnSpecialAttackStarted += _AttackTry;
         EventBus.OnMonsterHit += HitEnemy;
@@ -52,6 +54,8 @@ public class Skill_One_SPAttack : ActiveTech
     public override void ActiveTry(Player player)
     {
         isHit = false;
+
+        
     }
 
     public override void HitEnemy(WeaponType weapon, ATTACKTYPE attack, Transform transform,Transform attackerTransform)
@@ -115,20 +119,29 @@ public class Skill_Three_SPAttack: ActiveTech
 {
     private float _reflectionTime;
     private reflect _playerReflect;
-    
+    private SkillEffect _backlashPrefab;
+
+
     public override void Activate(SkillManager skillManager, Player player)
     {
+        if (_backlashPrefab == null)             //여기서 로드
+        {
+            _backlashPrefab = Resources.Load<SkillEffect>("Prefabs/Effect/Skill/Backlash_Player");
+        }
         base.Activate(skillManager, player);
         _reflectionTime = _skillData.skillBaseValue_1 + _skillData.skillLevelValue_1*_skillData.skillLevel;
-
+        
         _playerReflect = player.GetComponent<reflect>();
+        
         if (_playerReflect == null)
         {
             Debug.LogWarning("Reflect component not found on player.");
-            _playerReflect = player.AddComponent<reflect>();    
+            _playerReflect = player.AddComponent<reflect>();
+            
         }
         player.OnSpecialAttackStarted -= ActiveTry;
         player.OnSpecialAttackStarted += ActiveTry;
+        GameManager.Instance.PoolManager.GetFromPool(_backlashPrefab, player.transform.position, Quaternion.identity);  //생성
     }
 
     public override void Deactivate(Player player, bool isAnotherSkill)
