@@ -143,7 +143,8 @@ public class Omega_X7 : MonsterBase
         {
             if (iceTank != null && iceTank.activeInHierarchy)
             {
-                GameManager.Instance.PoolManager.ReleaseToPool(iceTank);
+                IceTank icetankState  = iceTank.GetComponent<IceTank>();
+                icetankState.SetStateDie();
                 survivingIceTankCount++;
             }
         }
