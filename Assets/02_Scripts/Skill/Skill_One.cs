@@ -17,6 +17,8 @@ public class Skill_One : SkillBase
     private PoisonSpreadData _hitPoisonSpreadData;
     private Action<Transform> PoisonSpreadAction;
 
+    private GameObject SporeBurstPrefab;
+
     /// <summary>
     /// 진화에 필요한 스택
     /// </summary>
@@ -187,7 +189,22 @@ public class Skill_One : SkillBase
         poisonSpread.Initialize();
     }
 
+    #endregion
 
+    #region 포자 퍼뜨리기
+    public void SporeBurst(PlayerGrenadeAttacker grenade)
+    {
+        Vector3 position = grenade._mousePos;
+        position.y = 0;
+
+    }
+    #endregion
+
+    #region 피의 갈증
+
+    #endregion
+
+    #region 약육강식
 
     #endregion
 
