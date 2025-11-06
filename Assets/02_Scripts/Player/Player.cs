@@ -600,6 +600,7 @@ public class Player : MonoBehaviour
         EventBus.SetCanGetInput(true); // 입력 잠금 해제    
         yield return null;
         // 상호작용 완료 후 처리 (맵 전환 등)는 MapController에서 담당
+        doorInteractor.ToggleInteraction(true);
     }
     #endregion
 }
