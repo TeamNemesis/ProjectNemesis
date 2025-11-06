@@ -26,7 +26,7 @@ public class PlayScene : MonoBehaviour
         _inputHandler.OnMoveInput += OnMoveInput;
         _inputHandler.OnDashInput += () => _player.SetDashPressed(true);
         _inputHandler.OnNomralAttackInput += () => _player.SetNormalAttackPressed(true);
-        _inputHandler.OnGrenadeAttackInput += _player.HandleGrenade;
+        _inputHandler.OnGrenadeAttackInput += _player.GrenadeAttack;
         _inputHandler.OnSpecialAttackInput += _player.HandleSpecialStarted;
         _inputHandler.OnSpecialAttackInputCanceled += _player.HandleSpecialCanceled;
         _inputHandler.OnInteractInput += _player.ExecuteInteraction;
@@ -44,10 +44,14 @@ public class PlayScene : MonoBehaviour
         _player.OnInteractableMissed += _playSceneView.HideInteractionUI;
         _player.OnGrenadeCooltimeChanged += _playSceneView.UpdateGrenadeCoolTime;
         _player.OnGrenadeCountChanged += _playSceneView.UpdateGrenadeCount;
+        _mapController.OnDoorInteractionFinished += _playSceneView.RoomLoading;
+        _playSceneView.OnRoomLoadingComplete += _mapController.SpawnRoom;
     }
 
     private void Start()
     {
+        GameManager.Instance.PlayerStatManager.Initialize();
+
         if (_player == null)
         {
             Debug.LogError("플레이어가 할당되지 않았습니다!");

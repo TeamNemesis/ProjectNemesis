@@ -5,19 +5,19 @@ public class ShopRoom : Room
 {
     Dictionary<ShopItemType, string> _shopItemPathMap = new()
     {
-        { ShopItemType.MutantPack , "Prefabs/ShopItems/MutantPack" },
-        {ShopItemType.HealPack , "Prefabs/ShopItems/HealPack" },
-        {ShopItemType.TechSelectPack , "Prefabs/ShopItems/TechSelectPack" },
-        {ShopItemType.TechUpgradePack , "Prefabs/ShopItems/TechUpgradePack" },
+        { ShopItemType.MutantPack , "Prefabs/ShopItems/MutantPack_Shop" },
+        {ShopItemType.HealPack , "Prefabs/ShopItems/HealPack_Shop" },
+        {ShopItemType.TechSelectPack , "Prefabs/ShopItems/TechSelectPack_Shop" },
+        {ShopItemType.TechUpgradePack , "Prefabs/ShopItems/TechUpgradePack_Shop" },
     };
 
     Dictionary<TechSelectPackType, string> _techSelectPackPathMap = new()
     {
-        {TechSelectPackType.Company1, "Prefabs/ShopItems/TechSelectPack_Company1" },
-        {TechSelectPackType.Company2, "Prefabs/ShopItems/TechSelectPack_Company2" },
-        {TechSelectPackType.Company3, "Prefabs/ShopItems/TechSelectPack_Company3" },
-        {TechSelectPackType.Company4, "Prefabs/ShopItems/TechSelectPack_Company4" },
-        {TechSelectPackType.Company5, "Prefabs/ShopItems/TechSelectPack_Company5" },
+        {TechSelectPackType.Company1, "Prefabs/ShopItems/TechSelectPack_Company1_Shop" },
+        {TechSelectPackType.Company2, "Prefabs/ShopItems/TechSelectPack_Company2_Shop" },
+        {TechSelectPackType.Company3, "Prefabs/ShopItems/TechSelectPack_Company3_Shop" },
+        {TechSelectPackType.Company4, "Prefabs/ShopItems/TechSelectPack_Company4_Shop" },
+        {TechSelectPackType.Company5, "Prefabs/ShopItems/TechSelectPack_Company5_Shop" },
     };
 
     public override IInteractable[] SpawnReward()

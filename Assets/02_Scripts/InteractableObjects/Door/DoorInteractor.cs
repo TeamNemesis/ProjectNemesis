@@ -7,6 +7,7 @@ using UnityEngine;
 public class DoorInteractor : InteractableObject
 {
     [SerializeField] string _instruction;
+    [SerializeField] Collider _interactionCollider;
 
     [SerializeField] InteractableType _interactableType = InteractableType.Door;
 
@@ -55,6 +56,9 @@ public class DoorInteractor : InteractableObject
         // 상호작용 시작
         _isInteracting = true;
 
+        // 플레이어 입력 끄기
+        EventBus.SetCanGetInput(false);
+
         Debug.Log("문과 상호작용 함: " + name);
         OnInteracted?.Invoke(this);
 
@@ -78,6 +82,7 @@ public class DoorInteractor : InteractableObject
     public void ToggleInteraction(bool canInteract)
     {
         _canInteract = canInteract;
+        _interactionCollider.enabled = canInteract;
     }
 
     public override void GetInteractionMessage(out string title, out string instruction)

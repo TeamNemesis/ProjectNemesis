@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
 
 /// <summary>
@@ -9,6 +10,8 @@ public class RoomSpawner : MonoBehaviour
 {
     public event Action<Room> OnRoomSpawned; // 방이 생성될 때 발생하는 이벤트
     public event Action OnRewardSelectionFinished;  // 보상 선택이 완료되었을 때 발생하는 이벤트
+
+    Coroutine _roomSpawnedEventRoutine;
 
     public void Initialize()
     {
@@ -89,9 +92,23 @@ public class RoomSpawner : MonoBehaviour
             return null;
         }
 
-        // 이벤트는 초기화 이후에 발생
-        OnRoomSpawned?.Invoke(room);
+        // 플레이어 입력 켜주기
+        EventBus.SetCanGetInput(true);
+
+        // 이벤트는 패널 켜지는 시간 고려해서 코루틴으로 1초 후에 호출
+        if (_roomSpawnedEventRoutine != null)
+        {
+            StopCoroutine(_roomSpawnedEventRoutine);
+        }
+        _roomSpawnedEventRoutine = StartCoroutine(RoomSpawnedEventRoutine(room));
         return room;
+    }
+
+    IEnumerator RoomSpawnedEventRoutine(Room room)
+    {
+        yield return new WaitForSeconds(1f);
+        OnRoomSpawned?.Invoke(room);
+        _roomSpawnedEventRoutine = null;
     }
 
     public void RaiseRewardSelectionFinishedEvent()

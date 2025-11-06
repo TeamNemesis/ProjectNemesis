@@ -344,7 +344,7 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
             healthUI = null;
         }
 
-        GameManager.Instance.CurrencyManager.AddCredit(cost);
+        GameManager.Instance.CurrencyManager.AddCreditByMonsterDeath(cost);
         base.Die();
     }
 
