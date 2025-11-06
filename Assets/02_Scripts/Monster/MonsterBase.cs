@@ -54,6 +54,8 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
     [Header("Animator")]
     [SerializeField] protected Animator monsterAnimator;
     [SerializeField] protected bool hasDieAnimation = false;
+    protected readonly int IsMove_Hash = Animator.StringToHash("IsMove");
+    protected readonly int Attack_Hash = Animator.StringToHash("Attack");
 
     [Header("UI")]
     [SerializeField] private MonsterHealthUI healthUI;

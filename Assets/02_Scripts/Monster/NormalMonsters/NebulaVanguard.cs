@@ -8,19 +8,10 @@ public class NebulaVanguard : MonsterBase
     [SerializeField] private float _box_Height = 3;
     [SerializeField] private float _box_Width = 3;
 
-    // 애니메이션 파라미터 이름 상수
-    private readonly int IsMove_Hash = Animator.StringToHash("IsMove");
-    private readonly int Attack_Hash = Animator.StringToHash("Attack");
-
     private void Update()
     {
         if (isDead || _target == null) return;
         if (isStunned) return;
-
-        if (CanSeePlayer())
-        {
-            LookAtPlayer();
-        }
 
         switch (baseState)
         {
