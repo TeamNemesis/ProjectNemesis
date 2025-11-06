@@ -44,21 +44,19 @@ public class UIManager : MonoBehaviour
 
         switch (savedIndex)
         {
-            case 0: // PC, default
-#if UNITY_STANDALONE_WIN
-                QualitySettings.SetQualityLevel(1);
-#elif UNITY_ANDROID
+            case 0: // default 가장 높음
+
                 QualitySettings.SetQualityLevel(0);
-#endif
+
                 break;
             case 1: // High
-                QualitySettings.SetQualityLevel(2);
+                QualitySettings.SetQualityLevel(1);
                 break;
             case 2: // Middle
-                QualitySettings.SetQualityLevel(3);
+                QualitySettings.SetQualityLevel(2);
                 break;
             case 3: // Low
-                QualitySettings.SetQualityLevel(4);
+                QualitySettings.SetQualityLevel(3);
                 break;
             default:
                 Debug.LogWarning("저장된 해상도 인덱스가 유효하지 않습니다.");
