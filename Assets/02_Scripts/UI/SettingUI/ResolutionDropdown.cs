@@ -69,12 +69,9 @@ public class ResolutionDropdown : MonoBehaviour
 
         switch (index)
         {
-            case 0: // PC, default
-#if UNITY_STANDALONE_WIN
-                QualitySettings.SetQualityLevel(0); // 예: PC
-#elif UNITY_ANDROID
-                QualitySettings.SetQualityLevel(0); // 예: Mobile
-#endif
+            case 0: // default, 가장 높음
+                QualitySettings.SetQualityLevel(0);
+
                 break;
             case 1: // High
                 QualitySettings.SetQualityLevel(1);

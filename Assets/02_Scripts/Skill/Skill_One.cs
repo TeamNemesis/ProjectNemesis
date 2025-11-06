@@ -17,6 +17,8 @@ public class Skill_One : SkillBase
     private PoisonSpreadData _hitPoisonSpreadData;
     private Action<Transform> PoisonSpreadAction;
 
+    
+
     /// <summary>
     /// 진화에 필요한 스택
     /// </summary>
@@ -187,9 +189,12 @@ public class Skill_One : SkillBase
         poisonSpread.Initialize();
     }
 
-
-
     #endregion
+
+    
+    
+
+    
 
     #region 진화
     public void SkillLevelUp()

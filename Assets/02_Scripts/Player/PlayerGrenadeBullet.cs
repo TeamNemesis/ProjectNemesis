@@ -62,7 +62,7 @@ public class PlayerGrenadeBullet : MonoBehaviour
             yield return null;
         }
 
-        EventBus.GrenadeBomb(transform.position);
+        
     }
 
     IEnumerator DirectMoveRoutine(Transform firePoint, Vector3 target)
@@ -99,6 +99,7 @@ public class PlayerGrenadeBullet : MonoBehaviour
         Collider[] hits = new Collider[10];
         int hitCount = Physics.OverlapSphereNonAlloc(position, explosionRadius, hits, enemyLayer);
 
+        EventBus.GrenadeBomb(position);
         if (hitCount <= 0)
         {
             Debug.Log("폭발했지만 적을 맞추지 못함");
