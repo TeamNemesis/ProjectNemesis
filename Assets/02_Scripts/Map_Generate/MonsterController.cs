@@ -30,6 +30,12 @@ public class MonsterController : MonoBehaviour
         _monsterSpawner.EliteSpawner(tempList, currentRoomCount);
     }
 
+    public void SpawnBoss(Transform[] monsterSpawnPoints)
+    {
+        List<Transform> tempList = new List<Transform>(monsterSpawnPoints);
+        _monsterSpawner.BossSpawner(tempList);
+    }
+
     public void AllMonsterDefeated()
     {
         OnAllMonsterDefeated?.Invoke();

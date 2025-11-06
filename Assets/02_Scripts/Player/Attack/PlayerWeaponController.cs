@@ -116,6 +116,7 @@ public class WeaponControllerEditor : Editor
         {
             player.WeaponController.ChangeWeapon(WeaponType.Blade);
         }
+        
     }
 }
 #endif

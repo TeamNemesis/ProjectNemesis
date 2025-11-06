@@ -30,5 +30,13 @@ public class EventBusEditor : Editor
             EventBus.HasMutant3 = false;
             EventBus.HasMutant4 = false;
         }
+        if (GUILayout.Button("플레이어 데미지 20배 증가"))
+        {
+            GameManager.Instance.PlayerStatManager.AddTotalMultiDamage(20f);
+        }
+        if (GUILayout.Button("플레이어 데미지 20배 감소"))
+        {
+            GameManager.Instance.PlayerStatManager.AddTotalMultiDamage(-20f);
+        }
     }
 }

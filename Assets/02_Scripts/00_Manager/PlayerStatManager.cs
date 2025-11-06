@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 using System.IO;
+using UnityEditor;
 
 public class PlayerStatManager : MonoBehaviour
 {
@@ -251,9 +252,9 @@ public class PlayerStatManager : MonoBehaviour
     public void AddPlayerDashDistanceMulti(float plusDashDistanceMulti)
     {
         _playerDashDistanceMulti += plusDashDistanceMulti;
-        OnPlayerDashDistanceMultiChange?.Invoke(_playerDashDistanceMulti);
+        OnPlayerDashDistanceMultiChange?.Invoke();
     }
-    public event Action<float> OnPlayerDashDistanceMultiChange;
+    public event Action OnPlayerDashDistanceMultiChange;
     /// <summary>
     /// 플레이어 애니메이션 일반 공격 재생 속도
     /// </summary>
@@ -313,9 +314,9 @@ public class PlayerStatManager : MonoBehaviour
     public void AddGrenadeCoolTimeMulti(float grenadeCoolTime)
     {
         _grenadeCoolTimeMulti += grenadeCoolTime;
-        OnGrenadeCoolTimeMultiChange?.Invoke(_grenadeCoolTimeMulti);
+        OnGrenadeCoolTimeMultiChange?.Invoke();
     }
-    public event Action<float> OnGrenadeCoolTimeMultiChange;
+    public event Action OnGrenadeCoolTimeMultiChange;
 
     #endregion
 
@@ -468,6 +469,10 @@ public class PlayerStatManager : MonoBehaviour
                         break;
                     case WeaponType.Rifle:
                         damage = Mathf.Lerp(playerRifleSPAttackMinDamage,playerRifleMaxChargeDamage,playerRifleChargeRatio) * playerSPAttackDamage * playerSPAttackValue;
+                        if(Mathf.Approximately(playerRifleChargeRatio,1f))
+                        {
+                            damage *= 2f;
+                        }
 
                         break;
                     case WeaponType.HackingDevice:

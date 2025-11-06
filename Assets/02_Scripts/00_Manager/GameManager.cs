@@ -90,7 +90,7 @@ public class GameManager : MonoBehaviour
         _instance._resourceManager.Initialize();
         _instance._dataManager.Initialize(_instance._resourceManager);
         _skillManger.InitializeSkillManager();
-        _uiManager.InitializeManager();
+        StartCoroutine(_uiManager.InitializeManager());
         _currencyManager.Initialize();
         //_serverManager.Initialize();
         _poolManager.Initialize(_instance._resourceManager);

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Localization.Settings;
@@ -36,14 +37,74 @@ public class UIManager : MonoBehaviour
     public SkillTooltip skillTooltip { get { return _skillTooltip; } }
 
 
-    public void InitializeManager()
+
+    private void ApplySavedResolution()
     {
+        int savedIndex = PlayerPrefs.HasKey(Constants.RESOLUTION_PREF_KEY) ? PlayerPrefs.GetInt(Constants.RESOLUTION_PREF_KEY) : 0;
+
+        switch (savedIndex)
+        {
+            case 0: // PC, default
+#if UNITY_STANDALONE_WIN
+                QualitySettings.SetQualityLevel(1);
+#elif UNITY_ANDROID
+                QualitySettings.SetQualityLevel(0);
+#endif
+                break;
+            case 1: // High
+                QualitySettings.SetQualityLevel(2);
+                break;
+            case 2: // Middle
+                QualitySettings.SetQualityLevel(3);
+                break;
+            case 3: // Low
+                QualitySettings.SetQualityLevel(4);
+                break;
+            default:
+                Debug.LogWarning("저장된 해상도 인덱스가 유효하지 않습니다.");
+                break;
+        }
+    }
+
+    private void ApplySavedLanguage()
+    {
+        if (PlayerPrefs.HasKey(Constants.LOCAL_PREF_KEY))
+        {
+            int savedIndex = PlayerPrefs.GetInt(Constants.LOCAL_PREF_KEY);
+
+            if (savedIndex >= 0 && savedIndex < LocalizationSettings.AvailableLocales.Locales.Count)
+            {
+                LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[savedIndex];
+            }
+        }
+        else
+        {
+            // 기본값 설정 (예: 첫 번째 로케일)
+            LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[0];
+        }
+    }
+
+    
+
+    public IEnumerator InitializeManager()
+    {
+
         if (_skillBtnPrefab == null)
             _skillBtnPrefab = Resources.Load<SkillBtn>("Prefabs/Skill/SkillBtnPrefab");
 
         if (_skillChooseBtnPrefab == null)
             _skillChooseBtnPrefab = Resources.Load<SkillBtn>("Prefabs/Skill/SkillChoosePrefab");
+
+        // Localization 시스템 초기화 완료까지 대기
+        yield return LocalizationSettings.InitializationOperation;
+
+        // 초기화 완료 후 언어 설정
+        ApplySavedLanguage();
+
+        // 해상도 설정
+       // ApplySavedResolution();
     }
+
 
     public void MakeCurrentSkillList()
     {
@@ -125,7 +186,7 @@ public class UIManager : MonoBehaviour
             onRewardSelect?.Invoke();
     }
 
-
+    #region skill choose
     public SkillBtn MakeSkillBtn()
     {
         SkillBtn skillBtn = GameManager.Instance.PoolManager
@@ -185,4 +246,5 @@ public class UIManager : MonoBehaviour
 
         _listPanel.SetActive(false);
     }
+    #endregion
 }
