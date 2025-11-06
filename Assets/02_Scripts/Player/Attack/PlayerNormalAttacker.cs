@@ -54,7 +54,6 @@ public abstract class PlayerNormalAttacker : MonoBehaviour, IAttacker
     {
         if (!_isAttacking) return;
         _isAttacking = false;
-        Debug.Log("PlayerNormalAttacker.EndAttack: Attack ended.");
         OnAttackEnded?.Invoke();
     }
 

@@ -27,7 +27,6 @@ public static class EventBus
 
     public static void Evolution()
     {
-        Debug.LogError("이벤트 버스 호출");
         OnEvolution?.Invoke();
     }
 
@@ -61,7 +60,6 @@ public static class EventBus
     public static void SetColosseumRoom(bool isColosseum)
     {
         IsColosseumRoom = isColosseum;
-        Debug.Log("IsColosseumRoom set to: " + isColosseum);
         OnColosseumRoomSet?.Invoke(isColosseum);
     }
 
@@ -102,10 +100,8 @@ public static class EventBus
     }
     public static Transform GetNearestMonsterFromMe(Transform player)
     {
-        Debug.Log(" 현재 몬스터 수: " + (CurrentMonsterList != null ? CurrentMonsterList.Count.ToString() : "null"));
         if (CurrentMonsterList == null || CurrentMonsterList.Count == 0)
         {
-            Debug.Log("현재 몬스터가 없습니다.");
             return null;
         }
         MonsterBase nearestMonster = null;

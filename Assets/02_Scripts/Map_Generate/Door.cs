@@ -133,7 +133,6 @@ public class Door : MonoBehaviour
     /// </summary>
     public void OnRewardSelectionCompleted()
     {
-        Debug.Log("Door: OnRewardSelectionCompleted called.");
         // 상호작용 활성화
         _doorInteractor.ToggleInteraction(true);
         // 뷰에서 보상 보여주기

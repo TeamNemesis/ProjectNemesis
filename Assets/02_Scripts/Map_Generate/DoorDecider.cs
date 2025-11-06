@@ -63,17 +63,14 @@ public class DoorDecider : MonoBehaviour
         // 특수 규칙: 시작 방, 보스 직전, 보스 방
         if (currentRoomIndex == 1)
         {
-            Debug.Log("[DoorDecider] GetNextDoorCount: start room -> force 1");
             return 1;
         }
         if (currentRoomIndex == 13)
         {
-            Debug.Log("[DoorDecider] GetNextDoorCount: pre-boss -> force 1");
             return 1;
         }
         if (currentRoomIndex == 14)
         {
-            Debug.Log("[DoorDecider] GetNextDoorCount: boss room -> force 0");
             return 0;
         }
 
@@ -109,8 +106,6 @@ public class DoorDecider : MonoBehaviour
     /// <returns>count 길이의 RoomType 배열(또는 count==0이면 빈 배열)</returns>
     public RoomType[] GetNextRoomTypes(int count, RoomType currentRoomType, int currentRoomIndex, bool hasLabRoomAppeared, out int normalRoomCount)
     {
-        Debug.Log($"[DoorDecider] GetNextRoomTypes called: count={count}, currentRoomType={currentRoomType}, currentRoomIndex={currentRoomIndex}, hasLab={hasLabRoomAppeared}");
-
         ValidateGetNextRoomTypesArgs(count, currentRoomIndex);
 
         // 요청이 0이면 빈 배열 반환
@@ -133,7 +128,6 @@ public class DoorDecider : MonoBehaviour
         FillRemainingSlots(types, candidate, count);
 
         normalRoomCount = types.Count(x => x == RoomType.Normal);
-        Debug.Log($"[DoorDecider] Selected types: {string.Join(", ", types)} (normalCount={normalRoomCount})");
         return types.ToArray();
     }
 
@@ -165,12 +159,10 @@ public class DoorDecider : MonoBehaviour
         if (currentRoomIndex == 12)
         {
             types.Add(RoomType.Shop);
-            Debug.Log("[DoorDecider] Rule applied: index==12 -> include Shop");
         }
         if (currentRoomIndex == 13)
         {
             types.Add(RoomType.Boss);
-            Debug.Log("[DoorDecider] Rule applied: index==13 -> include Boss");
         }
         return types;
     }

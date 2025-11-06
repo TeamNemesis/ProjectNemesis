@@ -27,7 +27,6 @@ public abstract class PlayerSpecialAttacker : MonoBehaviour
     protected virtual void OnSpecialFiredInvoke()
     {
         OnSpecialFired?.Invoke();
-        Debug.Log("OnSpecialFired invoked in OnSpecialFiredInvoke.");
     }
 
     protected Player _player;
@@ -67,7 +66,6 @@ public abstract class PlayerSpecialAttacker : MonoBehaviour
         IsCharging = false;
         Fire();
         OnSpecialFired?.Invoke();
-        Debug.Log("OnSpecialFired invoked in StopChargeAndFire.");
         EndSpecial(); // 기본적으로 발사 후 종료
     }
 

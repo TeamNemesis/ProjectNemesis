@@ -42,7 +42,6 @@ public class PlayerDashState : PlayerStateBase
 
         // 대시 방향: 입력 벡터가 있으면 그쪽, 아니면 플레이어 앞 방향
         Vector3 dir3 = _player.MoveInput.sqrMagnitude > 0.01f ? new Vector3(_player.MoveInput.x, 0f, _player.MoveInput.z).normalized : _player.transform.forward;
-        Debug.LogError(_player.MoveInput);
 
         // 애니메이션 기반 duration 계산 시도
         float durationToUse = _dashDuration;
@@ -61,7 +60,6 @@ public class PlayerDashState : PlayerStateBase
                 //if (animComp != null) animatorSpeed = Mathf.Max(0.0001f, animComp.speed);
 
                 durationToUse = clipLength / animatorSpeed;
-                Debug.Log("PlayerDashState.Enter: Using animation clip length for dash duration: " + durationToUse);
 
                 // 참고: 상태별 speed multiplier(Animator State의 Speed)나 트랜지션 블렌딩을 정확히 반영하려면
                 // AnimationEvent를 사용하여 애니메이션 끝에 직접 FinishDashFromAnimation을 호출하는 것이 가장 정확합니다.

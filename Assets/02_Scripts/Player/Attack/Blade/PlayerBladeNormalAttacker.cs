@@ -20,7 +20,7 @@ public class PlayerBladeNormalAttacker : PlayerNormalAttacker
     [SerializeField] bool _queued = false; // 다음 콤보 입력이 큐잉되었는지 여부
 
     public override event Action OnAttackStarted;
-    public override event Action OnAttackEnded;
+    //public override event Action OnAttackEnded;
 
     public override WeaponType WeaponType => WeaponType.Blade;
 

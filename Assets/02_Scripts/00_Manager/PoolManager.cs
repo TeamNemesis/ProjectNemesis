@@ -37,7 +37,6 @@ public class PoolManager : MonoBehaviour
 
         if (availablePools[prefabObject.name].Count == 0)
         {
-            Debug.LogWarning($"'{prefabObject.name}' 풀이 비어있습니다! 새로운 오브젝트를 생성합니다.");
             GameObject newObj = CreateNewObject(prefabObject, position, rotation, parentTransform);
 
             if (poolable is IInitializePoolable)
@@ -118,7 +117,6 @@ public class PoolManager : MonoBehaviour
 
         if (availablePools[key].Count == 0)
         {
-            Debug.LogWarning($"'{key}' 풀이 비어있습니다! 새로운 오브젝트를 생성합니다.");
             GameObject newObj = CreateNewObject(prefab, position, rotation, parentTransform);
 
             if (newObj != null && newObj.TryGetComponent<PoolableObject>(out var poolableComp))
@@ -186,7 +184,6 @@ public class PoolManager : MonoBehaviour
 
         newObj.SetActive(true);
         inUsePools[prefabObject.name].Add(newObj);
-        Debug.Log($"'{prefabObject.name}' 풀의 새로운 오브젝트가 생성되었습니다.");
         return newObj;
     }
 

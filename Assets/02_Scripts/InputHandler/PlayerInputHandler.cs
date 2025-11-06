@@ -79,7 +79,6 @@ public class PlayerInputHandler : MonoBehaviour
         }
         else
         {
-            Debug.Log($"NormalAttack found. enabled={normal.enabled}, type={normal.type}, interactions='{normal.interactions}'");
         }
 
         // 기존 등록 (원래대로)
@@ -91,16 +90,11 @@ public class PlayerInputHandler : MonoBehaviour
         {
             normal.started += OnNormalAttackStarted;
             normal.canceled += OnNormalAttackCanceled;
-
-            // 임시: performed로도 바인딩하여 performed가 찍히는지 확인
-            normal.performed += ctx => Debug.Log($"NormalAttack PERFORMED, phase={ctx.phase}");
         }
         actionMap["GrenadeAttack"].started += OnGrenadeAttack;
         actionMap["GrenadeAttack"].canceled += OnGrenadeAttack;
         actionMap["SpecialAttack"].started += OnSpecialAttack;
         actionMap["SpecialAttack"].canceled += OnSpecialAttack;
-
-        Debug.Log($"PlayerInputHandler Awake: EventBus.IsRewardSelecting={EventBus.IsRewardSelecting}");
     }
 
     private void OnDestroy()
@@ -123,14 +117,6 @@ public class PlayerInputHandler : MonoBehaviour
     private void Update()
     {
         OnMoveInput?.Invoke(_moveDir);
-       
-        // Update에 임시로
-        if (Mouse.current.leftButton.wasPressedThisFrame)
-        {
-            bool overUI = UnityEngine.EventSystems.EventSystem.current != null
-                && UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject();
-            Debug.Log($"Left mouse pressed. overUI={overUI}");
-        }
     }
 
     /// <summary>
@@ -177,7 +163,6 @@ public class PlayerInputHandler : MonoBehaviour
     //}
     void OnNormalAttackStarted(InputAction.CallbackContext ctx)
     {
-        Debug.Log($"OnNormalAttackStarted called. phase={ctx.phase}, started? {ctx.started}");
         if (EventBus.IsRewardSelecting) return;
 
         if (_holdAttackRoutine == null)
@@ -186,7 +171,6 @@ public class PlayerInputHandler : MonoBehaviour
 
     void OnNormalAttackCanceled(InputAction.CallbackContext ctx)
     {
-        Debug.Log($"OnNormalAttackCanceled called. phase={ctx.phase}, canceled? {ctx.canceled}");
         if (EventBus.IsRewardSelecting) return;
         if (_holdAttackRoutine != null)
         {
@@ -198,7 +182,6 @@ public class PlayerInputHandler : MonoBehaviour
     IEnumerator HoldAttackRoutine()
     {
         // 즉시 한 번 공격 실행하고, interval마다 반복
-        Debug.Log(" 일반공격 입력받음 ");
         OnNomralAttackInput?.Invoke();
 
         while (true)
@@ -218,7 +201,6 @@ public class PlayerInputHandler : MonoBehaviour
             return;
         if (value.started)
         {
-            Debug.Log("대시 입력받음");
             OnDashInput?.Invoke();
         }
     }
@@ -233,7 +215,6 @@ public class PlayerInputHandler : MonoBehaviour
             return;
         if (value.started)
         {
-            Debug.Log("상호작용 입력받음");
             OnInteractInput?.Invoke();
         }
     }
@@ -259,7 +240,6 @@ public class PlayerInputHandler : MonoBehaviour
             Vector3? target = GetMouseGroundPoint();
             if (target.HasValue)
             {
-                Debug.Log($"유탄 공격 입력받음: {target.Value}");
                 OnGrenadeAttackInput?.Invoke(target.Value);
             }
         }
@@ -298,12 +278,10 @@ public class PlayerInputHandler : MonoBehaviour
             return;
         if (value.started)
         {
-            Debug.Log("특수공격 입력받음");
             OnSpecialAttackInput?.Invoke();
         }
         if(value.canceled)
         {
-            Debug.Log("특수공격 입력끝남");
             OnSpecialAttackInputCanceled?.Invoke();
         }
     }

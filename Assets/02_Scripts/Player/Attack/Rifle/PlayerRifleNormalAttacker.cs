@@ -73,7 +73,6 @@ public class PlayerRifleNormalAttacker : PlayerNormalAttacker
     public void OnAnimationAttackEnd()
     {
         EndNow();
-        Debug.Log("PlayerRifleNormalAttacker: OnAnimationAttackEnd called.");
     }
 
     public override void EndAttack()
@@ -87,8 +86,6 @@ public class PlayerRifleNormalAttacker : PlayerNormalAttacker
         {
             _player.StopCoroutine(_endRoutine); _endRoutine = null;
         }
-        Debug.Log("PlayerRifleNormalAttacker: EndNow called.");
         base.EndAttack();
-        Debug.Log("PlayerRifleNormalAttacker: Attack ended.");
     }
 }

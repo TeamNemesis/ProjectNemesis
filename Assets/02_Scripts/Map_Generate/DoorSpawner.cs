@@ -54,7 +54,6 @@ public class DoorSpawner : MonoBehaviour
         // Door이 IInteractable이고 내부에서 이벤트를 제공하는 구조라면 구독
         door.DoorInteracted += OnDoorInteracted;
 
-        Debug.Log($"SpawnDoor: instantiated door '{go.name}' at {position.position} (sceneValid={go.scene.IsValid()}) for RoomType {info.RoomType}");
         return door;
     }
 

@@ -4917,6 +4917,7 @@ GameObject:
   - component: {fileID: 2815757881529460263}
   - component: {fileID: 902891817465751042}
   - component: {fileID: -4103207054427678467}
+  - component: {fileID: 4020482221601774876}
   m_Layer: 0
   m_Name: EnergyCircle
   m_TagString: Untagged
@@ -9969,10 +9970,24 @@ MonoBehaviour:
   _maxDamage: 20
   _bonusDamage: 20
   _moveSpeed: 5
+  _lifetime: 10
   _expansionDuration: 0
   _moveDir: {x: 0, y: 0, z: 0}
   _currentRadius: 0
   _currentDamage: 0
+  _timer: 0
+--- !u!114 &4020482221601774876
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2520398529560456130}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc722e1497ebce346b87739747660c61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4155133493877675561
 GameObject:
   m_ObjectHideFlags: 0

@@ -264,8 +264,6 @@ public class Player : MonoBehaviour
         // 1) 일반 공격 입력 처리
         if (_normalAttackPressed && TryConsumeNormalAttack())
         {
-            Debug.Log(" Player: normal attack input detected");
-
             if (_normalAttacker != null && !IsDashing && !_isSpecialAttacking)
             {
                 bool accepted = false;
@@ -281,7 +279,6 @@ public class Player : MonoBehaviour
 
                 if (!accepted)
                 {
-                    Debug.Log("Player: attack request was rejected (cooldown, busy, etc.)");
                 }
                 return;
             }
@@ -405,7 +402,6 @@ public class Player : MonoBehaviour
 
         attacker.OnAttackStarted += OnAttackerStarted;
         attacker.OnAttackEnded += OnAttackerEnded;
-        Debug.Log("이벤트 구독 완료");
     }
 
     void UnsubscribeNormalAttacker(PlayerNormalAttacker attacker)
@@ -417,7 +413,6 @@ public class Player : MonoBehaviour
 
     void OnAttackerStarted()
     {
-        Debug.Log("Player: attacker started -> change to NormalAttack state");
         _stateMachine.ChangeState(PlayerStateType.NormalAttack);
         _isNormalAttacking = true;
         OnNormalAttackStarted?.Invoke();
@@ -425,7 +420,6 @@ public class Player : MonoBehaviour
 
     void OnAttackerEnded()
     {
-        Debug.Log("Player: attacker ended -> return to Idle");
         _isNormalAttacking = false;
         _stateMachine.ChangeState(PlayerStateType.Idle);
     }
@@ -433,8 +427,6 @@ public class Player : MonoBehaviour
     public void OnAttackFireEvent()
     {
         if (_normalAttacker == null) return;
-
-        Debug.Log(" OnAttackFireEvent 호출됨");
 
         if (_normalAttacker is PlayerRifleNormalAttacker rifle)
         {
@@ -457,17 +449,13 @@ public class Player : MonoBehaviour
     {
         if (_normalAttacker == null) return;
 
-        Debug.Log(" OnAttackEndEvent 호출됨");
-
         if (_normalAttacker is PlayerRifleNormalAttacker rifle)
         {
-            Debug.Log(" Rifle OnAnimationAttackEnd 호출됨");
             rifle.OnAnimationAttackEnd();
             return;
         }
         if (_normalAttacker is PlayerBladeNormalAttacker blade)
         {
-            Debug.Log(" Blade OnAnimationAttackEnd 호출됨");
             blade.Animation_OnComboWindowClose();
             return;
         }
@@ -530,7 +518,6 @@ public class Player : MonoBehaviour
             Debug.LogError("Player.OnDoorInteracted 호출 시 roomInfo가 null입니다! 호출자 스택을 확인하세요.");
             return;
         }
-        Debug.Log(roomInfo.RoomType + " 방으로 가는 문과 상호작용 함");
     }
 
     public void ExecuteInteraction()
@@ -565,7 +552,6 @@ public class Player : MonoBehaviour
         DoorInteractor doorInteractor = _interactableDetector.DetectedInteractable as DoorInteractor;
         if (doorInteractor == null)
         {
-            Debug.Log("현재 감지된 상호작용 대상이 문이 아닙니다.");
             yield break;
         }
         EventBus.SetCanGetInput(false); // 입력 잠금
