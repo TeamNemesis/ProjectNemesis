@@ -9,12 +9,13 @@ using UnityEngine;
 public class PlayerRifleSpecialAttacker : PlayerSpecialAttacker
 {
     [Header("Charge")]
-    public float maxChargeTime = 3f;
+    public float maxChargeTime = 1.5f;
     public float minWidth = 0.05f;
     public float maxWidth = 0.6f;
 
     [Header("Laser")]
     public GameObject laserPrefab; // LineRenderer 포함된 프리팹
+    [SerializeField] string _energyCirclePrefabPath = "Prefabs/Bullet/EnergyCircle";
     public float maxDistance = 100f;
     public LayerMask wallMask;
     public LayerMask enemyMask;
@@ -32,6 +33,7 @@ public class PlayerRifleSpecialAttacker : PlayerSpecialAttacker
     public void Initialize(Player player, Transform firePoint)
     {
         base.Initialize(player);
+        maxChargeTime = 1.5f;
         _firePoint = firePoint;
     }
 
@@ -126,6 +128,22 @@ public class PlayerRifleSpecialAttacker : PlayerSpecialAttacker
 
         Vector3 origin = _firePoint.position;
         Vector3 dir = _player.transform.forward;
+
+        if(EventBus.HasMutant4)
+        {
+            // 돌연변이 4 획득시 에너지 구체 발사
+            GameObject energyCirclePrefab = GameManager.Instance.PoolManager.GetFromPool(_energyCirclePrefabPath, origin, Quaternion.identity);
+            if (energyCirclePrefab != null)
+            {
+                Vector3 moveDir = dir;
+                var energyCircle = energyCirclePrefab.GetComponent<EnergyCircle>();
+                if (energyCircle != null)
+                {
+                    energyCircle.Initialize(maxChargeTime * ratio, moveDir);
+                }
+            }
+            return;
+        }
 
         if (laserPrefab != null)
         {

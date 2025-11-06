@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -62,6 +63,7 @@ public class Player : MonoBehaviour
     public PlayerWeaponSet CurrentWeaponSet => _currentWeaponSet;
 
     // MoveInput은 world-space Vector3로 노출
+    public bool CanGetInput => EventBus.CanGetInput;
     public Vector3 MoveInput => _moveInput;
     public bool DashPressed => _dashPressed;
     public bool NormalAttackPressed => _normalAttackPressed;
@@ -149,12 +151,13 @@ public class Player : MonoBehaviour
         _grenadeAttacker.OnGrenadeCooltimeChanged += GrenadeCoolTimeChanged;
         _grenadeAttacker.OnGrenadeCountChanged += GrenadeCountChanged;
         _grenadeAttacker.Initialize();
+        _mover.Initialize(this);
 
         _playerModel?.Initialize();
         _dasher?.Initialize(_characterController);
         _forwarder?.Initialize(this);
         _weaponController?.Initialize();
-        
+
 
         _interactionController?.Initialize();
         //_interactableGuideView.Initialize();
@@ -216,11 +219,36 @@ public class Player : MonoBehaviour
 
     #region 입력 플래그 Setters (InputHandler -> Player)
     // 외부에서 world-space Vector3를 전달하도록 통일
-    public void SetMoveInput(Vector3 moveInput) => _moveInput = moveInput;
-    public void SetDashPressed(bool isPressed) => _dashPressed = isPressed;
-    public void SetNormalAttackPressed(bool isPressed) => _normalAttackPressed = isPressed;
-    public void SetGrenadeAttackPressed(bool isPressed) => _grenadeAttackPressed = isPressed;
-    public void SetSpecialAttackPressed(bool isPressed) => _specialAttackPressed = isPressed;
+    public void SetMoveInput(Vector3 moveInput)
+    {
+        if (!EventBus.CanGetInput)
+        {
+            _moveInput = Vector3.zero;
+            return;   // 입력 잠금 상태면 무시
+        }
+
+        _moveInput = moveInput;
+    }
+    public void SetDashPressed(bool isPressed)
+    {
+        if (!EventBus.CanGetInput) return;   // 입력 잠금 상태면 무시
+        _dashPressed = isPressed;
+    }
+    public void SetNormalAttackPressed(bool isPressed)
+    {
+        if( !EventBus.CanGetInput) return;   // 입력 잠금 상태면 무시
+        _normalAttackPressed = isPressed;
+    }
+    public void SetGrenadeAttackPressed(bool isPressed)
+    {
+        if (!EventBus.CanGetInput) return;   // 입력 잠금 상태면 무시
+        _grenadeAttackPressed = isPressed;
+    }
+    public void SetSpecialAttackPressed(bool isPressed)
+    {
+        if (!EventBus.CanGetInput) return;   // 입력 잠금 상태면 무시
+        _specialAttackPressed = isPressed;
+    }
     #endregion
 
     #region 상태 플래그 Setters (상태 Enter/Exit에서 호출)
@@ -468,13 +496,14 @@ public class Player : MonoBehaviour
             _specialAttacker.StopChargeAndFire();
         }
     }
-    #endregion
+ #endregion
 
     #region 유탄 공격 처리
-    public void HandleGrenade(Vector3 mousePos)
+    public void GrenadeAttack(Vector3 mousePos)
     {
         _grenadeAttacker.SetMousePos(mousePos);
         _grenadeAttacker.RequestAttack();
+        _grenadeAttackPressed = false;
     }
 
     public void GrenadeCountChanged(int currentCount, int maxCount)
@@ -524,6 +553,53 @@ public class Player : MonoBehaviour
     {
         _isInteractable = false;
         OnInteractableMissed?.Invoke();
+    }
+
+    /// <summary>
+    /// 플레이어가 문과 상호작용할 때 실행되는 연출용 코루틴
+    /// 문이 열리고 난 뒤에 위치를 문 앞으로 이동시킨 후 문으로 들어가는 연출을 재생함
+    /// MapController에서 호출
+    /// </summary>
+    /// <returns></returns>
+    public IEnumerator DoorInteractionRoutine()
+    {
+        DoorInteractor doorInteractor = _interactableDetector.DetectedInteractable as DoorInteractor;
+        if (doorInteractor == null)
+        {
+            Debug.Log("현재 감지된 상호작용 대상이 문이 아닙니다.");
+            yield break;
+        }
+        EventBus.SetCanGetInput(false); // 입력 잠금
+                              
+        // 플레이어를 문의 위치에서 1만큼 앞으로 이동
+        Vector3 targetPos = doorInteractor.transform.position + doorInteractor.transform.forward * 5f;
+        targetPos.y = transform.position.y; // Y축은 현재 플레이어 높이 유지
+        gameObject.SetActive(false); // 이동 중 충돌 방지를 위해 비활성화
+        transform.position = targetPos;     // 플레이어를 문 앞으로 이동
+        transform.forward = -doorInteractor.transform.forward;  // 문 쪽을 바라보게 회전
+        gameObject.SetActive(true);
+
+        // 문으로 1만큼 이동하는 연출 재생
+        _characterController.enabled = false; // 충돌 방지 위해 비활성화
+        float moveDuration = 3.0f; // 이동 시간
+        float elapsed = 0f; // 경과 시간
+        Vector3 startPos = transform.position; // 시작 위치
+        Vector3 endPos = doorInteractor.transform.position; // 끝 위치 (문 중앙)
+        doorInteractor.ToggleInteraction(false);
+        while (elapsed < moveDuration)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / moveDuration);
+            transform.position = Vector3.Lerp(startPos, endPos, t);
+            _animator.OnMove(1f); // 걷기 애니메이션 재생
+            yield return null;
+        }
+        transform.position = endPos; // 정확히 끝 위치로 설정
+        _characterController.enabled = true; // 충돌 방지 위해 다시 활성화
+
+        EventBus.SetCanGetInput(true); // 입력 잠금 해제    
+        yield return null;
+        // 상호작용 완료 후 처리 (맵 전환 등)는 MapController에서 담당
     }
     #endregion
 }

@@ -10,8 +10,6 @@ public class Omega_X7 : MonsterBase
 
 
     [Header("Missile")]
-    [SerializeField] private int missileAttackCounter = 0;
-    [SerializeField] private int maxMissileAttackCount = 5;
     [SerializeField] private float misileAttackDamage = 20f;
 
     [Header("Shotgun Attack")]
@@ -48,11 +46,13 @@ public class Omega_X7 : MonsterBase
 
     [SerializeField] private MonsterGrenade monsterGrenade;
 
-    public override void Initialize()
+    public override void Initialize(object data = null)
     {
-        base.Initialize();
+        base.Initialize(data);
 
         monsterGrenade = GetComponentInChildren<MonsterGrenade>();
+
+        Invoke(nameof(DisableAgent), 0.1f);
     }
 
     private void Update()
@@ -75,6 +75,21 @@ public class Omega_X7 : MonsterBase
                 break;
         }
     }
+
+    private void DisableAgent()
+    {
+        if (agent != null && agent.isOnNavMesh) // ← NavMesh 확인
+        {
+            agent.isStopped = true;
+            agent.enabled = false;
+        }
+        else if (agent != null)
+        {
+            // 아직 NavMesh 안 올라갔으면 재시도
+            Invoke(nameof(DisableAgent), 0.1f);
+        }
+    }
+
 
     private void HandleIdle()
     {
@@ -128,7 +143,8 @@ public class Omega_X7 : MonsterBase
         {
             if (iceTank != null && iceTank.activeInHierarchy)
             {
-                GameManager.Instance.PoolManager.ReleaseToPool(iceTank);
+                IceTank icetankState  = iceTank.GetComponent<IceTank>();
+                icetankState.SetStateDie();
                 survivingIceTankCount++;
             }
         }

@@ -4,16 +4,16 @@ using UnityEngine;
 public class TurretBullet : PoolableObject
 {
     private float speed = 7f;
-    private float lifeTime; 
+    private float lifeTime;
     private float damage;
     [SerializeField] private string targetTag;
-
     private GameObject owner;
     private Coroutine lifeTimeCoroutine;
-
-    //변경된 부분
     private Vector3 moveDir = Vector3.forward;
-    
+
+    // 추가: 혼란 상태의 몬스터가 쏜 총알인지 구별
+    private bool isConfusedShot = false;
+
     public void SetDamage(float damage)
     {
         this.damage = damage;
@@ -27,21 +27,20 @@ public class TurretBullet : PoolableObject
         this.lifeTime = lifeTime;
     }
 
-    public void Initialize(string targetTag, float damage, float lifeTime, GameObject owner)
+    public void Initialize(string targetTag, float damage, float lifeTime, GameObject owner, bool isConfusedShot = false)
     {
         SetTarget(targetTag);
         SetDamage(damage);
         SetLifeTime(lifeTime);
         this.owner = owner;
+        this.isConfusedShot = isConfusedShot;
         StartLifeTime();
     }
 
-
     private void Update()
     {
-        transform.Translate(moveDir * speed * Time.deltaTime); 
+        transform.Translate(moveDir * speed * Time.deltaTime);
     }
-
 
     private void StartLifeTime()
     {
@@ -49,7 +48,6 @@ public class TurretBullet : PoolableObject
         {
             StopCoroutine(lifeTimeCoroutine);
         }
-
         lifeTimeCoroutine = StartCoroutine(LifeTimeCoroutine());
     }
 
@@ -59,29 +57,55 @@ public class TurretBullet : PoolableObject
         GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
     }
 
-
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject == owner)
         {
             return;
         }
+
+        // 몬스터 태그 처리
+        if (other.CompareTag(Constants.TAG_MONSTER))
+        {
+            // 혼란 상태의 총알이 아니면 몬스터 통과
+            if (!isConfusedShot)
+            {
+                return;
+            }
+
+            // 혼란 상태의 총알이면 데미지 처리
+            IDamageable damageable = other.GetComponent<IDamageable>();
+            if (damageable != null)
+            {
+                damageable.TakeDamage(damage, transform);
+            }
+
+            if (lifeTimeCoroutine != null)
+            {
+                StopCoroutine(lifeTimeCoroutine);
+                lifeTimeCoroutine = null;
+            }
+            GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
+            return;
+        }
+
+        // 타겟 태그 처리
         if (other.CompareTag(targetTag))
         {
             IDamageable damageable = other.GetComponent<IDamageable>();
-            // 변경된 부분
             reflect reflectable = other.GetComponent<reflect>();
+
             if (reflectable != null && reflectable.isReflecting == true)
             {
                 Reflect(other);
                 return;
             }
-            //
+
             if (damageable != null)
             {
                 damageable.TakeDamage(damage, transform);
             }
- 
+
             if (lifeTimeCoroutine != null)
             {
                 StopCoroutine(lifeTimeCoroutine);
@@ -89,14 +113,11 @@ public class TurretBullet : PoolableObject
             }
             GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
         }
-        
-        else
+        // Electric 태그는 통과
+        else if (!other.CompareTag(Constants.TAG_ELECTIC))
         {
-            if(other.CompareTag(Constants.TAG_ELECTIC))
-            {
-                return;
-            }
-            if (lifeTimeCoroutine != null )
+            // 그 외 오브젝트(벽 등)에 부딪히면 제거
+            if (lifeTimeCoroutine != null)
             {
                 StopCoroutine(lifeTimeCoroutine);
                 lifeTimeCoroutine = null;
@@ -105,22 +126,19 @@ public class TurretBullet : PoolableObject
         }
     }
 
-    //변경 부분
     private void Reflect(Collider reflector)
     {
-        moveDir = -moveDir; // 방향 전환
-
-        targetTag = Constants.TAG_MONSTER; // 타겟태그 변경
-        owner = reflector.gameObject; // 주인 변경
-
+        moveDir = -moveDir;
+        targetTag = Constants.TAG_MONSTER;
+        owner = reflector.gameObject;
+        isConfusedShot = true; // 반사된 총알은 몬스터에게 데미지
     }
 
-    //초기화
     private void OnDisable()
     {
         moveDir = Vector3.forward;
         targetTag = Constants.TAG_PLAYER;
         owner = null;
+        isConfusedShot = false;
     }
-
 }
