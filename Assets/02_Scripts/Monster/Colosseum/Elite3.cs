@@ -21,6 +21,8 @@ public class Elite3 : MonsterBase
     [SerializeField] private PoolableObject eliteBulletPrefab;
     [SerializeField] private PoolableObject waveAttackPrefab;
 
+    private List<GameObject> spawnedWaveAttacks = new List<GameObject>();
+
     [Header("CoolTimes")]
     [SerializeField] private float bulletAttackCoolTime = 5f;
     [SerializeField] private float missileAttackCoolTime = 7f;
@@ -79,7 +81,9 @@ public class Elite3 : MonsterBase
                 {
                     float angle = i * 36f + angleOffset;
                     Quaternion bulletRotation = Quaternion.Euler(0, angle, 0);
-                    GameObject bullet = GameManager.Instance.PoolManager.GetFromPool(eliteBulletPrefab, transform.position, bulletRotation);
+                    Vector3 spawnPos = transform.position;
+                    spawnPos.y = 0.5f;
+                    GameObject bullet = GameManager.Instance.PoolManager.GetFromPool(eliteBulletPrefab, spawnPos, bulletRotation);
                     EliteBullet elitetBullet = bullet.GetComponent<EliteBullet>();
                     if (elitetBullet != null)
                     {
@@ -179,10 +183,27 @@ public class Elite3 : MonsterBase
         {
             _isPhase2 = true;
             Vector3 pos = transform.position;
-            pos.y = 0;
-            GameManager.Instance.PoolManager.GetFromPool(waveAttackPrefab, pos, Quaternion.identity);
+            pos.y = 0.1f;
+            GameObject wave = GameManager.Instance.PoolManager.GetFromPool(waveAttackPrefab, pos, Quaternion.identity);
+            spawnedWaveAttacks.Add(wave);
         }
 
         lastHealthCheckThreshold = healthRatio;
+    }
+
+    protected override void Die()
+    {
+        base.Die();
+
+        //家券等 waveAttackPrefab 馆券 贸府
+        foreach (GameObject wave in spawnedWaveAttacks)
+        {
+            if (wave != null)
+            {
+                GameManager.Instance.PoolManager.ReleaseToPool(wave);
+            }
+        }
+
+        spawnedWaveAttacks.Clear();
     }
 }
