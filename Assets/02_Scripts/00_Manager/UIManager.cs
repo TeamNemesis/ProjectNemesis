@@ -20,7 +20,6 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject _skillBtnPanel;
     [SerializeField] private GameObject _parentPanel;
     [SerializeField] private SkillBtn _skillChooseBtnPrefab;
-
     public event Action onRewardSelect;
     #region 스킬 리스트
     /// <summary>
@@ -94,6 +93,8 @@ public class UIManager : MonoBehaviour
         if (_skillChooseBtnPrefab == null)
             _skillChooseBtnPrefab = Resources.Load<SkillBtn>("Prefabs/Skill/SkillChoosePrefab");
 
+        _skillTooltip.Initialize();
+
         // Localization 시스템 초기화 완료까지 대기
         yield return LocalizationSettings.InitializationOperation;
 
@@ -101,7 +102,7 @@ public class UIManager : MonoBehaviour
         ApplySavedLanguage();
 
         // 해상도 설정
-       // ApplySavedResolution();
+        ApplySavedResolution();
     }
 
 
@@ -170,15 +171,7 @@ public class UIManager : MonoBehaviour
 
     public void SetActiveSkillBtnPanel(bool isActive)
     {
-        // 보상패널 활성화 상태를 이벤트버스에 설정
-        EventBus.SetIsRewardSelecting(isActive);
-        Debug.Log("현재 보상 선택 상태: " + isActive);
-        // 콜로세움이면 마우스 커서 켜주기
-        if (EventBus.IsColosseumRoom)
-        {
-            Cursor.lockState = isActive ? CursorLockMode.None : CursorLockMode.Locked;
-            Cursor.visible = isActive; // 커서 보이게/숨기기
-        }
+        SetInput(!isActive);
 
         _skillBtnPanel.SetActive(isActive);
         EventBus.SetCanGetInput(!isActive);
@@ -251,13 +244,20 @@ public class UIManager : MonoBehaviour
     public void SetInput(bool isLock)
     {
         EventBus.SetCanGetInput(isLock);
+        if (EventBus.IsColosseumRoom)
+        {
+            Cursor.lockState = !isLock ? CursorLockMode.None : CursorLockMode.Locked;
+            Cursor.visible = !isLock; // 커서 보이게/숨기기
+        }
     }
     public void SetInputAtIntroSettingPanel()
     {
-        if (SceneManager.GetActiveScene().buildIndex != 1)
+        if (SceneManager.GetActiveScene().buildIndex == 0)
         {
             EventBus.SetCanGetInput(true);
         }
     }
+
+
     
 }

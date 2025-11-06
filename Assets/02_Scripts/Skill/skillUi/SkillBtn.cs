@@ -12,7 +12,8 @@ public class SkillBtn : PoolableObject, IPointerEnterHandler, IPointerExitHandle
 		[SerializeField] private Text _skillScirpt;
 		[SerializeField] private Text _skillIDX;
 		[SerializeField] private Text _skillLevel;
-
+		
+		[SerializeField] 
 		private float _currentTime;
 		[SerializeField]
 		private float _tooltipTime;
@@ -62,9 +63,7 @@ public class SkillBtn : PoolableObject, IPointerEnterHandler, IPointerExitHandle
 						_currentTime += Time.deltaTime;
 						if (_currentTime > _tooltipTime)
 						{
-								Debug.LogWarning("툴팁 생성");
 								GameManager.Instance.UIManager.skillTooltip.ShowTooltip(skillData);
-								Debug.LogWarning(_bIsPointerEnter);
 								_bIsPointerEnter = false;
 						}
 				}
@@ -85,13 +84,11 @@ public class SkillBtn : PoolableObject, IPointerEnterHandler, IPointerExitHandle
 
 		public void OnPointerEnter(PointerEventData eventData)
 		{
-				Debug.LogWarning("Enter");
 				_bIsPointerEnter = true;
 		}
 
 		public void OnPointerExit(PointerEventData eventData)
 		{
-				Debug.LogWarning("Out");
 
 				_currentTime = 0f;
 				_bIsPointerEnter = false;

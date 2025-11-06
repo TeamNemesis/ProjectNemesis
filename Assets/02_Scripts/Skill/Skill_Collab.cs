@@ -54,7 +54,6 @@ public class Skill_Collab : SkillBase
             case Constants.INDEX_FIVE_ONE:
                 _skillManager.skill_One.SkillNumUp(skilldata, num);
                 _skillManager.skill_Five.SkillNumUp(skilldata, num);
-                Debug.Log("collab" + _skillManager.skill_One.skillNum);
                 break;
             case Constants.INDEX_ONE_TWO:
                 _skillManager.skill_One.SkillNumUp(skilldata, num);
@@ -83,13 +82,11 @@ public class Skill_Collab : SkillBase
         {
             // 폭군
             case 60:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 ActiveTyrant(choosedSkill);
                 break;
 
             // 최상위 포식자
             case 61:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 skillManager.playScene.MapController.MonsterController.MonsterSpawner.OnMonsterSpawned -= ConnectWeakneHeal;
                 ActivePredator(choosedSkill);
                 skillManager.playScene.MapController.MonsterController.MonsterSpawner.OnMonsterSpawned += ConnectWeakneHeal;
@@ -97,24 +94,21 @@ public class Skill_Collab : SkillBase
 
             // GravityFlare
             case 62:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 ActiveGravityFlare(choosedSkill);
                 break;
 
             // 전자기 폭풍
             case 63:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 ActivateElecVortex(choosedSkill);
                 break;
 
             // 전기 인간
             case 64:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 ActivateElectricMan(choosedSkill);
                 break;
 
             default:
-                Debug.Log("에러, 배정되지 않은 idx");
+                Debug.Log("배정되지 않은 idx");
                 break;
 
         }
@@ -148,11 +142,10 @@ public class Skill_Collab : SkillBase
             if (nearestMonster != null)
             {
                 nearestMonster.TakeDamage(_tyrantDamage);
-                Debug.LogError("폭군 데미지");
             }
             else
             {
-                Debug.LogError("몬스터 베이스가 없음");
+                Debug.Log("몬스터 베이스 없음");
             }
         }
         else
@@ -211,7 +204,6 @@ public class Skill_Collab : SkillBase
     #region GravityFlare
     public void ActiveGravityFlare(SkillData skill)
     {
-        Debug.LogError("연결");
         if(_explosionPrefab == null)
         {
             _explosionPrefab = Resources.Load<GravityFlareRocketExplosion>("Prefabs/Skill/SkillObject/Skill_Collab/GravityFlareRocketExplosion");
@@ -231,7 +223,6 @@ public class Skill_Collab : SkillBase
     {
 
         Vector3 playerPosition = skillManager.playScene.player.transform.position;
-        Debug.LogError("playerPosition : " + playerPosition + " position : " + position);
         position.y = 0;
         playerPosition.y = 0;
         Vector3 direction = position - playerPosition;
@@ -239,7 +230,6 @@ public class Skill_Collab : SkillBase
         playerPosition.y += Constants.MISSILIE_HEIGHT;
 
         _rocketData = new GravityFlareRocketData( _explosionData, _explosionPrefab);
-        Debug.LogError(direction);
         GameManager.Instance.PoolManager.GetFromPool(_rocketPrefab, playerPosition, Quaternion.LookRotation(direction), null, _rocketData);
     }
     #endregion

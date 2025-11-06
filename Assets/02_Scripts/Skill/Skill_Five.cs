@@ -21,7 +21,6 @@ public class Skill_Five : SkillBase
         {
             // 약화 약물
             case 50:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 ActiveTech skillAttack = new Skill_Five_Attack(choosedSkill);
                 if (_skillManager.attackTech != null)
                 {
@@ -32,7 +31,6 @@ public class Skill_Five : SkillBase
 
             // 환각 구름
             case 51:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 ActiveTech skillGrenade = new Skill_Five_Grenade(choosedSkill);
                 if (_skillManager.bombTech != null)
                 {
@@ -43,7 +41,6 @@ public class Skill_Five : SkillBase
 
             // 섬망
             case 52:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 ActiveTech skillSPAttack = new Skill_Five_SPAttack(choosedSkill);
                 if (_skillManager.skillTech != null)
                 {
@@ -54,7 +51,6 @@ public class Skill_Five : SkillBase
 
             // 아드레날린 레이스
             case 53:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 ActiveTech skillDash = new Skill_Five_Dash(choosedSkill);
                 if (_skillManager.dashTech != null)
                 {
@@ -66,19 +62,16 @@ public class Skill_Five : SkillBase
 
             // 선택편향
             case 54:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 ActivateSelective(choosedSkill);
                 break;
 
             // 불릿 타임
             case 55:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 ActiveBulletTime(choosedSkill);
                 break;
 
             // 케타민 드리프트
             case 56:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 if(_draftCoroutine!=null)
                 {
                     StopCoroutine(_draftCoroutine );
@@ -93,7 +86,6 @@ public class Skill_Five : SkillBase
 
             // 정제
             case 57:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
 
                 _addTotalDamage = choosedSkill.skillBaseValue_1+ choosedSkill.skillLevelValue_1*choosedSkill.skillLevel;
                 skillManager.playScene.MapController.MonsterController.MonsterSpawner.OnMonsterSpawned -= ConnectRefinement;
@@ -177,7 +169,6 @@ public class Skill_Five : SkillBase
     public void AddTotalDamageWhenMonsterDie()
     {
         skillManager.playerStatManager.AddTotalMultiDamage(_addTotalDamage);
-        Debug.Log(skillManager.playerStatManager.totalMultiDamage);
     }
     #endregion
 }

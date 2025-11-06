@@ -27,27 +27,21 @@ public abstract class ActiveTech
         switch (_skillData.skillTag)
         {
             case Constants.SKILL_TAG_ATTACK:
-                Debug.Log("일반공격 변경");
                 skillManager.SetAttackTech(this);
                 break;
             case Constants.SKILL_TAG_GEN:
-								Debug.Log("유탄 변경");
 								skillManager.SetBombTech(this);
                 break;
             case Constants.SKILL_TAG_SP:
-								Debug.Log("특수공격 변경");
 								skillManager.SetSkillTech(this);
                 break;
             case Constants.SKILL_TAG_DASH:
-								Debug.Log("대쉬 변경");
 								skillManager.SetDashTech(this);
                 break;
             default:
-                Debug.Log("skill Tag : " + _skillData.skillTag);
                 break;
         }
 
-        Debug.Log("스킬교체 Active" + _skillData.skillIdx);
     }
 
     /// <summary>
@@ -56,7 +50,6 @@ public abstract class ActiveTech
     public virtual void Deactivate(Player player,bool isAnotherSkill)
     {
         _skillData.RemoveList(isAnotherSkill);
-        Debug.Log("스킬 교체" + _skillData.skillIdx);
     }
 
     /// <summary>
@@ -64,7 +57,6 @@ public abstract class ActiveTech
     /// </summary>  
     public virtual void HitEnemy(WeaponType weaponType, ATTACKTYPE attackType, Transform monster,Transform attacker = null)
     {
-        Debug.Log("스킬 사용 ");
     }
 
     /// <summary>

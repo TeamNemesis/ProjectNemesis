@@ -241,7 +241,6 @@ public class Skill_Five_Dash : ActiveTech
         if (bIsAttackReinForce)
         {
             GameManager.Instance.PlayerStatManager.AddPlayerAttackDamage(-_attackReinForce);
-            Debug.LogError(GameManager.Instance.PlayerStatManager.playerAttackDamage);
             bIsAttackReinForce = false;
         }
         player.OnDashStarted -= _dashAction;
@@ -251,12 +250,9 @@ public class Skill_Five_Dash : ActiveTech
 
     public override void ActiveTry(Player player)
     {
-        Debug.LogError("대쉬 시작");
         if (!bIsAttackReinForce)
         {
-            Debug.LogError("공격력 증가");
             GameManager.Instance.PlayerStatManager.AddPlayerAttackDamage(_attackReinForce);
-            Debug.LogError(GameManager.Instance.PlayerStatManager.playerAttackDamage);
 
             bIsAttackReinForce = true;
         }
@@ -270,7 +266,6 @@ public class Skill_Five_Dash : ActiveTech
             {
 
                 GameManager.Instance.PlayerStatManager.AddPlayerAttackDamage(-_attackReinForce);
-                Debug.LogError(GameManager.Instance.PlayerStatManager.playerAttackDamage);
                 bIsAttackReinForce = false;
             }
         }

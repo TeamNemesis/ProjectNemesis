@@ -41,7 +41,6 @@ public class Skill_Four : SkillBase
         {
             // 찌릿찌릿
             case 40:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 ActiveTech skillAttack = new Skill_Four_Attack(choosedSkill);
                 if (_skillManager.attackTech != null)
                 {
@@ -52,7 +51,6 @@ public class Skill_Four : SkillBase
 
             // EMP
             case 41:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 ActiveTech skillGrenade = new Skill_Four_Grenade(choosedSkill);
                 if (_skillManager.bombTech != null)
                 {
@@ -63,7 +61,6 @@ public class Skill_Four : SkillBase
 
             // 급속냉동
             case 42:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 ActiveTech skillSPAttack = new Skill_Four_SPAttack(choosedSkill);
                 if (_skillManager.skillTech != null)
                 {
@@ -74,7 +71,6 @@ public class Skill_Four : SkillBase
 
             // 플라즈마 쉴드
             case 43:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 ActiveTech skillDash = new Skill_Four_Dash(choosedSkill);
                 if (_skillManager.dashTech != null)
                 {
@@ -84,26 +80,22 @@ public class Skill_Four : SkillBase
                 break;
             // 취약
             case 44:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 ActivateWeaken(choosedSkill);
                 break;
 
             // 점진되는 고통
             case 45:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 _skillManager.playScene.player.playerModel.GetDebuffHandler().ConnectIncreasePain();
                 break;
 
             // 드론무리
             case 46:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 ActivateSpawnDrone(choosedSkill.skillLevel);
                 break;
 
 
             // 강화된 추진력
             case 47:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 ActivateThrust(choosedSkill);
                 break;
 
@@ -141,7 +133,6 @@ public class Skill_Four : SkillBase
         Transform playerTransform = _skillManager.playScene.player.transform;
         Drone drone = GameManager.Instance.PoolManager.GetFromPool(dronePrefab,Vector3.zero , playerTransform.rotation,playerTransform).GetComponent<Drone>();
         droneList.Add(drone);
-        Debug.Log(droneList.Count);
         float x = 0 - (float)(skillLevel - 1) / 2;
 
         for (int i = 0; i < skillLevel; i++)

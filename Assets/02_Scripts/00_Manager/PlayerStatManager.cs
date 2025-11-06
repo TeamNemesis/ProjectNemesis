@@ -229,7 +229,6 @@ public class PlayerStatManager : MonoBehaviour
     {
         _playerMoveSpeedMulti += plusMoveSpeed;
         OnPlayerMoveSpeedChange?.Invoke(_playerMoveSpeed * _playerMoveSpeedMulti);
-        Debug.LogError(_playerMoveSpeed * _playerMoveSpeedMulti); 
     }
 
 
@@ -489,7 +488,6 @@ public class PlayerStatManager : MonoBehaviour
             default:
                 break;
         }
-        Debug.LogError("현재 데미지 : " + damage + attackType + weaponType);
         
         monster.GetComponent<MonsterBase>().TakeDamage(damage, attackerTransform);
     }
@@ -581,7 +579,7 @@ public class PlayerStatManager : MonoBehaviour
     public void UploadToFirebase()
     {
         SaveCurrentLevelsToJson();
-        GameManager.Instance.serverManager.UploadPlayerStatFromLocal();
+        GameManager.Instance.serverManager.downloadManager.UploadPlayerStatFromLocal();
     }
 
    

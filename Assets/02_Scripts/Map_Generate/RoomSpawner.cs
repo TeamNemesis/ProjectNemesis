@@ -114,6 +114,5 @@ public class RoomSpawner : MonoBehaviour
     public void RaiseRewardSelectionFinishedEvent()
     {
         OnRewardSelectionFinished?.Invoke();
-        Debug.LogError("보상 선택 끝");
     }
 }

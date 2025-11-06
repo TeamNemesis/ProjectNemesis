@@ -27,7 +27,6 @@ public static class EventBus
 
     public static void Evolution()
     {
-        Debug.LogError("이벤트 버스 호출");
         OnEvolution?.Invoke();
     }
 
@@ -43,7 +42,6 @@ public static class EventBus
 
     public static void MonsterKnockBack(Vector3 monsterPosition)
     {
-        Debug.LogError("이벤트 호출");
         OnMonsterKnockBack?.Invoke(monsterPosition);
     }
 
