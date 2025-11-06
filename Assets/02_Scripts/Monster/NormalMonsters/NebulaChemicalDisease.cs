@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class NebulaChemicalDisease : MonsterBase
@@ -8,11 +9,12 @@ public class NebulaChemicalDisease : MonsterBase
     [SerializeField] private float _poisonFieldRadius = 3f;   // 독성 구름 반경
     [SerializeField] private float _poisonFieldDelay = 2f;
 
-    [Header("PoisonFieldPrefab"),SerializeField]
+    [Header("PoisonFieldPrefab"), SerializeField]
     private PoolableObject poisonFieldPrefab; // 독성 구름 프리팹
     [SerializeField] private PoolableObject grenadeObject; // 독성 유탄 프리팹
+    private List<GameObject> activeGrenades;
 
-    [Header("AttackDecalPrefab"),SerializeField]
+    [Header("AttackDecalPrefab"), SerializeField]
     private PoolableObject attackDecalPrefab; // 공격 장판 프리팹
 
     // 유탄 포물선 높이 조절 변수
@@ -57,7 +59,7 @@ public class NebulaChemicalDisease : MonsterBase
         }
     }
 
-    
+
 
     private void HandleIdle()
     {
@@ -135,7 +137,7 @@ public class NebulaChemicalDisease : MonsterBase
             yield return new WaitForSeconds(_poisonFieldDelay);
 
             GameObject poisonObj = GameManager.Instance.PoolManager.GetFromPool(poisonFieldPrefab, attackPos, poisonFieldPrefab.transform.rotation);// 플레이어에게 독성 구름 발사
-            PoisonField poisonField =  poisonObj.GetComponent<PoisonField>();
+            PoisonField poisonField = poisonObj.GetComponent<PoisonField>();
             poisonField.Initialize(targetTag, _poisonFieldDuration, _poisonFieldRadius);
 
             // 독성 구름을 발사한 후 일정 시간 대기
@@ -155,6 +157,7 @@ public class NebulaChemicalDisease : MonsterBase
             startPos,
             Quaternion.identity
         );
+        activeGrenades.Add(grenade);
 
         if (grenade == null)
             yield break;
@@ -181,6 +184,18 @@ public class NebulaChemicalDisease : MonsterBase
         }
 
         GameManager.Instance.PoolManager.ReleaseToPool(grenade);
+    }
+
+    protected override void Die()
+    {
+        if (activeGrenades != null)
+        {
+            foreach (GameObject grenade in activeGrenades)
+            {
+                GameManager.Instance.PoolManager.ReleaseToPool(grenade);
+            }
+        }
+        base.Die();
     }
 
 }
