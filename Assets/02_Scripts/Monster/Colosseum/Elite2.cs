@@ -186,8 +186,10 @@ public class Elite2 : MonsterBase
                 {
                     float angle = i * 45f;
                     Quaternion rotation = Quaternion.Euler(0, angle, 0);
+                    Vector3 spawnpos = transform.position;
+                    spawnpos.y = 0.5f;
 
-                    GameObject bullet = GameManager.Instance.PoolManager.GetFromPool(eliteBulletPrefab, transform.position, rotation);
+                    GameObject bullet = GameManager.Instance.PoolManager.GetFromPool(eliteBulletPrefab, spawnpos, rotation);
                     EliteBullet elitetBullet = bullet.GetComponent<EliteBullet>();
                     if (elitetBullet != null)
                     {

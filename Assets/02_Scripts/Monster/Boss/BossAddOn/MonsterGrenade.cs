@@ -11,9 +11,6 @@ public class MonsterGrenade : PoolableObject
 
     public bool IsAttacking;
 
-    public event Action AttackStarted;
-    public event Action AttackEnded;
-
 
     [SerializeField] private float travelTime = 3.0f;     // À¯ÅºÀÌ µµÂøÇÏ´Â ½Ã°£
     [SerializeField] private float explosionRadius = 3f;  // Æø¹ß ¹Ý°æ

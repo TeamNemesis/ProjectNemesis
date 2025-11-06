@@ -147,6 +147,7 @@ Transform:
   - {fileID: 846722975916144351}
   - {fileID: 6733111030821040354}
   - {fileID: 8357785256233297652}
+  - {fileID: 1514461811983800129}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7462445572853828289
@@ -163,6 +164,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _rewardSpawnPoints: []
   _monsterSpawnPoints: []
+  _playerSpawnPoint: {fileID: 1514461811983800129}
   _doorSpawnPointsLeft: []
   _doorSpawnPointsRight: []
 --- !u!114 &8126799139224512326
@@ -1143,6 +1145,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 5258413249026071167}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &9160619285575994949
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1514461811983800129}
+  m_Layer: 0
+  m_Name: PlayerSpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1514461811983800129
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9160619285575994949}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -40}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5258413249026071167}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &248623997464804229
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1728,6 +1761,10 @@ PrefabInstance:
       value: Wall Plain_17
       objectReference: {fileID: 0}
     - target: {fileID: 8730245854331329977, guid: b2452a5c2cd649a4db9eebcd16f7b155, type: 3}
+      propertyPath: m_TagString
+      value: Wall
+      objectReference: {fileID: 0}
+    - target: {fileID: 8730245854331329977, guid: b2452a5c2cd649a4db9eebcd16f7b155, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 0
       objectReference: {fileID: 0}
@@ -1812,6 +1849,10 @@ PrefabInstance:
     - target: {fileID: 8155917259377269984, guid: 20d9c287fff82dd49bc0a9b23650f1e1, type: 3}
       propertyPath: m_Name
       value: Wall Support_8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8155917259377269984, guid: 20d9c287fff82dd49bc0a9b23650f1e1, type: 3}
+      propertyPath: m_TagString
+      value: Wall
       objectReference: {fileID: 0}
     - target: {fileID: 8155917259377269984, guid: 20d9c287fff82dd49bc0a9b23650f1e1, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -2328,6 +2369,10 @@ PrefabInstance:
     - target: {fileID: 8155917259377269984, guid: 20d9c287fff82dd49bc0a9b23650f1e1, type: 3}
       propertyPath: m_Name
       value: Wall Support_5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8155917259377269984, guid: 20d9c287fff82dd49bc0a9b23650f1e1, type: 3}
+      propertyPath: m_TagString
+      value: Wall
       objectReference: {fileID: 0}
     - target: {fileID: 8155917259377269984, guid: 20d9c287fff82dd49bc0a9b23650f1e1, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -4648,6 +4693,10 @@ PrefabInstance:
       value: Wall Plain_6
       objectReference: {fileID: 0}
     - target: {fileID: 8730245854331329977, guid: b2452a5c2cd649a4db9eebcd16f7b155, type: 3}
+      propertyPath: m_TagString
+      value: Wall
+      objectReference: {fileID: 0}
+    - target: {fileID: 8730245854331329977, guid: b2452a5c2cd649a4db9eebcd16f7b155, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 0
       objectReference: {fileID: 0}
@@ -6022,6 +6071,10 @@ PrefabInstance:
     - target: {fileID: 8155917259377269984, guid: 20d9c287fff82dd49bc0a9b23650f1e1, type: 3}
       propertyPath: m_Name
       value: Wall Support
+      objectReference: {fileID: 0}
+    - target: {fileID: 8155917259377269984, guid: 20d9c287fff82dd49bc0a9b23650f1e1, type: 3}
+      propertyPath: m_TagString
+      value: Wall
       objectReference: {fileID: 0}
     - target: {fileID: 8155917259377269984, guid: 20d9c287fff82dd49bc0a9b23650f1e1, type: 3}
       propertyPath: m_StaticEditorFlags

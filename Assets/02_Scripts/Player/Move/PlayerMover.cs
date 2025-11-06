@@ -23,6 +23,7 @@ public class PlayerMover : MonoBehaviour
     [SerializeField] float _coyoteTime = 0.12f; // 바닥 사라져도 잠깐은 떨어지지 않게
     float _coyoteTimer;
 
+    Player _player;
     Vector3 _horizontalVelocity; // x,z 이동 속도 (월드스페이스)
     float _verticalVelocity;
     Quaternion _targetRotation;
@@ -75,6 +76,7 @@ public class PlayerMover : MonoBehaviour
         Vector3 move = new Vector3(_horizontalVelocity.x, _verticalVelocity, _horizontalVelocity.z) * Time.deltaTime;
         if (_controller != null)
         {
+            if (_player.CanGetInput == false) return;
             _controller.Move(move);
         }
         else
@@ -84,6 +86,11 @@ public class PlayerMover : MonoBehaviour
 
         // 5) 회전 보간
         transform.rotation = Quaternion.RotateTowards(transform.rotation, _targetRotation, _rotSpeed * Time.deltaTime);
+    }
+
+    public void Initialize(Player player)
+    {
+        _player = player;
     }
 
     public void Rotate(Vector3 direction)

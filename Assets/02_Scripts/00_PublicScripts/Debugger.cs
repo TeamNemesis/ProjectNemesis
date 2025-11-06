@@ -19,11 +19,16 @@ public class EventBusEditor : Editor
         {
             EventBus.HasMutant3 = true;
         }
+        if(GUILayout.Button("돌연변이 4 획득"))
+        {
+            EventBus.HasMutant4 = true;
+        }
         if (GUILayout.Button("돌연변이 모두 제거"))
         {
             EventBus.HasMutant1 = false;
             EventBus.HasMutant2 = false;
             EventBus.HasMutant3 = false;
+            EventBus.HasMutant4 = false;
         }
     }
 }
