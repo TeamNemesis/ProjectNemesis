@@ -29,13 +29,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1104232704343825006}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 6, y: 6, z: 6}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8466363583261330775}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!33 &6923329333344253470
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -410,6 +410,7 @@ GameObject:
   - component: {fileID: 2273730008469070559}
   - component: {fileID: 511591350558910089}
   - component: {fileID: 309578340252374626}
+  - component: {fileID: 6775091778205545387}
   m_Layer: 6
   m_Name: Door
   m_TagString: Untagged
@@ -450,6 +451,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _doorInteractor: {fileID: 2273730008469070559}
   _doorView: {fileID: 309578340252374626}
+  _doorAnim: {fileID: 6775091778205545387}
 --- !u!114 &2273730008469070559
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -463,6 +465,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _guidePoint: {fileID: 4481659392101411729}
+  _instruction: 
+  _interactionCollider: {fileID: 511591350558910089}
   _interactableType: 0
   _roomInfo:
     RoomType: 0
@@ -501,6 +505,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _rewardText: {fileID: 3565565224388016213}
+--- !u!95 &6775091778205545387
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3394557516210102622}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 5f0e07f7fea9dc64690c180354cc20e2, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &3906542737680920874
 GameObject:
   m_ObjectHideFlags: 0
@@ -556,14 +582,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4274500516935725665}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: -1, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: 15, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3190154376449346796}
   m_Father: {fileID: 8466363583261330775}
-  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -180, z: 0}
 --- !u!1 &6728668164354348754
 GameObject:
   m_ObjectHideFlags: 0
@@ -804,7 +830,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7796490173122355389}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 6, y: 6, z: 6}
   m_ConstrainProportionsScale: 0
@@ -812,7 +838,7 @@ Transform:
   - {fileID: 2303851758408400023}
   - {fileID: 7076599505858415400}
   m_Father: {fileID: 8466363583261330775}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!1 &8533507469606319040
 GameObject:
   m_ObjectHideFlags: 0

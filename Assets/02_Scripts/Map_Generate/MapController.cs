@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -21,6 +22,9 @@ public class MapController : MonoBehaviour
     [SerializeField] bool _hasLabRoomAppeared = false;
     [SerializeField] Player _player;
 
+    Coroutine _goNextRoomRoutine;
+    Coroutine _doorInteractionRoutine;
+
     public MonsterController MonsterController => _monsterController;
     public RoomSpawner RoomSpawner => _roomSpawner;
     public DoorSpawner DoorSpawner => _doorSpawner;
@@ -35,6 +39,12 @@ public class MapController : MonoBehaviour
     /// 룸 로딩이 끝나고 전투 시작시 발행하는 이벤트
     /// </summary>
     public event Action OnRoomStart;
+
+    /// <summary>
+    /// 문과의 상호작용과 플레이어의 이동이 모두 끝났을 때 발행하는 이벤트
+    /// PlaySceneView에서 로딩 패널을 제어하기 위해 사용
+    /// </summary>
+    public event Action<DoorInteractor> OnDoorInteractionFinished;
 
     public void Initialize(Player player)
     {
@@ -52,21 +62,61 @@ public class MapController : MonoBehaviour
         _monsterController.Initialize();
     }
 
+    /// <summary>
+    /// 문과 상호작용 했을 때 호출되는 함수
+    /// </summary>
+    /// <param name="interactable"></param>
     void OnDoorInteracted(IInteractable interactable)
     {
         if (interactable is DoorInteractor doorInteractor && doorInteractor.RoomInfo != null)
         {
-            DestroyCurrentRoomObjects();
-            Room room = _roomSpawner.SpawnRoom(doorInteractor.RoomInfo);
-            // 콜로세움 방 진입 시 처리
-            if (doorInteractor.RoomInfo.RoomType == RoomType.Colosseum)
+            if(_goNextRoomRoutine != null)
             {
-                EventBus.SetColosseumRoom(true);
+                StopCoroutine(_goNextRoomRoutine);
             }
+            // 여기서 방 넘어갈 때 이펙트나 로딩화면 처리
+            _goNextRoomRoutine = StartCoroutine(GoNextRoomRoutine(doorInteractor));
         }
         else
         {
             Debug.LogError("OnDoorInteracted: interactable is not a DoorInteractor or RoomInfo is null");
+        }
+    }
+
+    /// <summary>
+    /// 문을 상호작용 한 시점부터 다음 방을 생성하고 진입할때까지의 코루틴
+    /// </summary>
+    /// <param name="doorInteractor"></param>
+    /// <returns></returns>
+    IEnumerator GoNextRoomRoutine(DoorInteractor doorInteractor)
+    {
+        // 1. 플레이어의 문 상호작용 루틴 시작
+        _doorInteractionRoutine = StartCoroutine(_player.DoorInteractionRoutine());
+        // 위에 코루틴이 끝날 때까지 대기
+        yield return _doorInteractionRoutine;
+        // 2. 문 상호작용 루틴이 끝나면 로딩 패널을 켰다가 커주기 위해 이벤트를 하나 발행
+        OnDoorInteractionFinished?.Invoke(doorInteractor);
+        // 3. 1초 뒤 현재 방 오브젝트들 파괴
+        yield return new WaitForSeconds(1.0f);
+        DestroyCurrentRoomObjects();
+        // 4. 로딩 패널이 켜지고 꺼진 이벤트를 받아서 다음 방 생성
+        // 이건 PlayScene에서 이벤트 연결로 처리
+
+        _goNextRoomRoutine = null;
+        _doorInteractionRoutine = null;
+    }
+
+    public void SpawnRoom(DoorInteractor doorInteractor)
+    {
+        Room room = _roomSpawner.SpawnRoom(doorInteractor.RoomInfo);
+        // 플레이어 스폰 위치를 정해주자
+        _player.gameObject.SetActive(false);
+        _player.transform.position = room.PlayerSpawnPoint.position;
+        _player.gameObject.SetActive(true);
+        // 콜로세움 방 진입 시 처리
+        if (doorInteractor.RoomInfo.RoomType == RoomType.Colosseum)
+        {
+            EventBus.SetColosseumRoom(true);
         }
     }
 
@@ -78,25 +128,20 @@ public class MapController : MonoBehaviour
             return;
         }
 
-        // 플레이어 스폰 위치를 정해주자
-        _player.gameObject.SetActive(false);
-        _player.transform.position = new Vector3(10f, 0.1f, 10f);
-        _player.gameObject.SetActive(true);
-        Debug.Log($"{_player.transform.position} 위치로 플레이어 이동 완료");
+        // 방 생성 후 효과 처리
 
-        // 상태 갱신 (작은 메서드로 분리)
+        
+
+        // 상태 갱신
         UpdateCurrentRoomState(room);
-        Debug.Log($"{_player.transform.position} 위치로 플레이어 이동 완료");
 
         // 문 생성 처리
         CreateDoorsForCurrentRoom();
-        Debug.Log($"{_player.transform.position} 위치로 플레이어 이동 완료");
 
         // 여기서 방 타입별로 스폰할 몬스터 정해주고
         // 스폰위치 업데이트 해주고 몬스터 스폰해야함.
-        // 지금은 테스트용으로 노말 방에서만 생성
 
-        int roomCost = _currentRoomCount * 10; // 예시: 방 번호에 비례하는 비용
+        int roomCost = _currentRoomCount * Constants.ROOMCOSTMULTIPLIER;
         Transform[] spawnPoints = room.MonsterSpawnPoints;
         if (room.RoomInfo.RoomType == RoomType.Colosseum)
         {
@@ -108,8 +153,6 @@ public class MapController : MonoBehaviour
         }
 
         OnRoomStart?.Invoke();
-        Debug.Log($"{_player.transform.position} 위치로 플레이어 이동 완료");
-
     }
 
     void UpdateCurrentRoomState(Room room)
@@ -327,6 +370,13 @@ public class MapController : MonoBehaviour
     void StartReward()
     {
         _currentRoom.SpawnReward();
+        Debug.Log("보상 선택 시작");
+    }
+
+    IEnumerator GoToNextRoomRoutine()
+    {
+        yield return new WaitForSeconds(1.0f);
+        // 다음 방으로 이동 처리
     }
 
 #if UNITY_EDITOR

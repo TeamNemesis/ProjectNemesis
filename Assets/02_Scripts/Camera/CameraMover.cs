@@ -50,6 +50,12 @@ public class CameraMover : MonoBehaviour
             Debug.LogError("CameraMover.Initialize: target이 null입니다!");
     }
 
+    private void OnEnable()
+    {
+        transform.position = new Vector3(0, 2, -5); // 초기 위치 설정
+        transform.rotation = Quaternion.Euler(30f, 0f, 0f);
+    }
+
     void Update()
     {
         if (_target == null) return;

@@ -1,3 +1,6 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Localization.Components;
@@ -16,13 +19,31 @@ public class PlaySceneView : MonoBehaviour
     [SerializeField] Slider _grenadeCooltimeSlider;
     [SerializeField] TextMeshProUGUI _grenadeCountText;
 
+    [Header("----- 방 로딩 패널 -----")]
+    [SerializeField] GameObject _roomLoadingPanel;
+    [SerializeField] TextMeshProUGUI _roomLoadingText;
+
+    [Header("----- 상호작용 패널 -----")]
     [SerializeField] GameObject _interactionPanel;
     [SerializeField] TextMeshProUGUI _interactionTitleText;
     [SerializeField] TextMeshProUGUI _interactionInstructionText;
+
+    [Header("----- 로컬라이즈 컴포넌트 -----")]
     [SerializeField] LocalizeStringEvent localizeStringEvent;
 
+    Dictionary<int, string> _roomLoadingTextMap = new Dictionary<int, string>()
+{
+    { 0, "방의 종류에는 실험실, 일반 전투방, 암시장, 콜로세움, 보스 전투방이 있습니다." },
+    { 1, "돌연변이 정수는 네뷸라사의 비밀 기술로, 2차 기업전쟁을 일으키게 된 원인입니다." },
+    { 2, "기업은 5개가 존재하고, 기업마다 고유한 컨셉의 기술을 제공합니다." },
+    { 3, "기본공격, 대쉬, 특수공격, 유탄을 직접적으로 강화하는 기술은 다른 기술 습득시 대체됩니다." },
+    { 4, "주인공은 네뷸라사에 맹렬한 증오를 가지고 있습니다." }
+};
+    Coroutine _roomLoadingRoutine;
 
-		public void Initialize()
+    public event Action<DoorInteractor> OnRoomLoadingComplete;
+
+    public void Initialize()
     {
         GameManager.Instance.CurrencyManager.GetCurrentCurrency();
         HideInteractionUI();
@@ -60,7 +81,7 @@ public class PlaySceneView : MonoBehaviour
     {
         interactable.GetInteractionMessage(out string title, out string instruction);
         _interactionTitleText.text = title;
-				localizeStringEvent.StringReference.SetReference("New Table", instruction);
+        localizeStringEvent.StringReference.SetReference("New Table", instruction);
     }
 
     public void UpdateGrenadeCoolTime(float currentCooltime, float maxCooltime)
@@ -72,5 +93,48 @@ public class PlaySceneView : MonoBehaviour
     public void UpdateGrenadeCount(int currentCount, int maxCount)
     {
         _grenadeCountText.text = $"{currentCount} / {maxCount}";
+    }
+
+    public void RoomLoading(DoorInteractor doorInteractor)
+    {
+        _roomLoadingRoutine = StartCoroutine(RoomLoadingRoutine(doorInteractor));
+    }
+
+    /// <summary>
+    /// 룸 로딩 시 실행할 코루틴
+    /// 랜덤으로 로딩 텍스트를 보여줌
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator RoomLoadingRoutine(DoorInteractor doorInteractor)
+    {
+        int rand = UnityEngine.Random.Range(0, _roomLoadingTextMap.Count);
+        switch (rand)
+        {
+            case 0:
+                _roomLoadingText.text = _roomLoadingTextMap[0];
+                break;
+            case 1:
+                _roomLoadingText.text = _roomLoadingTextMap[1];
+                break;
+            case 2:
+                _roomLoadingText.text = _roomLoadingTextMap[2];
+                break;
+            case 3:
+                _roomLoadingText.text = _roomLoadingTextMap[3];
+                break;
+            case 4:
+                _roomLoadingText.text = _roomLoadingTextMap[4];
+                break;
+            default:
+                break;
+        }
+        _roomLoadingPanel.SetActive(true);
+        yield return new WaitForSeconds(2.0f);
+        OnRoomLoadingComplete?.Invoke(doorInteractor);
+
+        // 잠시 대기 후 패널 비활성화(플레이어 카메라 변화때문에)
+        yield return new WaitForSeconds(0.5f);
+        _roomLoadingPanel.SetActive(false);
+        _roomLoadingRoutine = null;
     }
 }

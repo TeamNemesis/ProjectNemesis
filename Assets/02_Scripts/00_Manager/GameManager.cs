@@ -81,18 +81,18 @@ public class GameManager : MonoBehaviour
             _uiManager = Instantiate(_uiManager, transform);
             _uiManager.name = "UIManager";
         }
-        if(_serverManager == null)
-        {
-            _serverManager = Resources.Load<ServerManager>("Prefabs/Skill/ServerManager");
-            _serverManager = Instantiate(_serverManager, transform);
-            _serverManager.name = "ServerManager";
-        }
+        //if(_serverManager == null)
+        //{
+        //    _serverManager = Resources.Load<ServerManager>("Prefabs/Skill/ServerManager");
+        //    _serverManager = Instantiate(_serverManager, transform);
+        //    _serverManager.name = "ServerManager";
+        //}
         _instance._resourceManager.Initialize();
         _instance._dataManager.Initialize(_instance._resourceManager);
         _skillManger.InitializeSkillManager();
         _uiManager.InitializeManager();
         _currencyManager.Initialize();
-        _serverManager.Initialize();
+        //_serverManager.Initialize();
         _poolManager.Initialize(_instance._resourceManager);
     }
 

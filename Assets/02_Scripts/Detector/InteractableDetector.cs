@@ -20,6 +20,8 @@ public class InteractableDetector : MonoBehaviour
     IInteractable _detectedInteractable;                // 현재 감지한 Interactable 객체
     Collider[] _hits = new Collider[10];                // 감지된 콜라이더 배열
 
+    public IInteractable DetectedInteractable => _detectedInteractable; // 현재 감지한 Interactable 객체 공개용 프로퍼티
+
     /// <summary>
     /// 상호작용 가능한 물체를 감지했을 때 호출되는 이벤트
     /// </summary>

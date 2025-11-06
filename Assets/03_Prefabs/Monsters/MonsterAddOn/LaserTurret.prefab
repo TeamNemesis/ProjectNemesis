@@ -180,7 +180,7 @@ MonoBehaviour:
   attackDelay: 0.5
   originalSpeed: 0
   targetTag: Player
-  monsterSize: 2
+  monsterSize: 1
   cost: 0
   monsterRigidbody: {fileID: 0}
   monsterCollider: {fileID: 0}
@@ -190,6 +190,10 @@ MonoBehaviour:
   player: {fileID: 0}
   agent: {fileID: 0}
   _target: {fileID: 0}
+  monsterAnimator: {fileID: 0}
+  hasDieAnimation: 0
+  healthUI: {fileID: 0}
+  healthUIPrefabPath: Prefabs/UI/MonsterHealthUI
 --- !u!195 &3381086347271698201
 NavMeshAgent:
   m_ObjectHideFlags: 0
