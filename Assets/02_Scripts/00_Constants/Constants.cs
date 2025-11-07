@@ -218,6 +218,11 @@ public static class Constants
 
     #endregion
 
+    #region Scene Names
+    public const string SCENE_NAME_INTRO = "IntroScene";
+    public const string SCENE_NAME_PLAY = "Player";
+    #endregion
+
     #region knockBack
     public const float KNOCKBACK_COOLTIME = 5f;
     public const float KNOCKBACK_POWER = 10f;

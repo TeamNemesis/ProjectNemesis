@@ -34,6 +34,7 @@ public class GameManager : MonoBehaviour
                     
                     _instance._poolManager = obj.AddComponent<PoolManager>();
                     _instance._currencyManager = obj.AddComponent<CurrencyManager>();
+                    _instance._sceneLoadManager = obj.AddComponent<SceneLoadManager>();
 
                     _instance.Initialize();
 
@@ -134,4 +135,6 @@ public class GameManager : MonoBehaviour
     private ServerManager _serverManager;
     public ServerManager serverManager { get { return _serverManager; } }
 
+    [SerializeField] SceneLoadManager _sceneLoadManager;
+    public SceneLoadManager SceneLoadManager => _sceneLoadManager;
 }

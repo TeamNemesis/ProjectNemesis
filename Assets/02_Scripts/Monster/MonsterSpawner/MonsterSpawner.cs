@@ -305,6 +305,8 @@ public class MonsterSpawner : MonoBehaviour
         {
             monsterbase.SetEliteMaxHealth(roomNumber);
             monsterbase.OnDieEvent += () => OnMonsterDeath(spawnedMonster);
+            monsterbase.OnDieEvent -= () => EventBus.BossDead();
+            monsterbase.OnDieEvent += () => EventBus.BossDead();
         }
     }
 

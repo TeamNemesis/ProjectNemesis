@@ -116,6 +116,12 @@ public class PlayerInputHandler : MonoBehaviour
 
     private void Update()
     {
+        // 일반공격 입력중에는 이동 입력 벡터를 0으로
+        if (_holdAttackRoutine != null)
+        {
+            OnMoveInput?.Invoke(Vector3.zero);
+            return;
+        }
         OnMoveInput?.Invoke(_moveDir);
     }
 

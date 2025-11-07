@@ -28,6 +28,13 @@ public class PlaySceneView : MonoBehaviour
     [SerializeField] TextMeshProUGUI _interactionTitleText;
     [SerializeField] TextMeshProUGUI _interactionInstructionText;
 
+    [Header("----- 게임 승리 및 오버 패널 -----")]
+    [SerializeField] GameObject _gameOverPanel;
+    [SerializeField] GameObject _gameClearPanel;
+
+    [Header("----- 게임 타이머 -----")]
+    [SerializeField] TextMeshProUGUI _gameTimerText;
+
     [Header("----- 로컬라이즈 컴포넌트 -----")]
     [SerializeField] LocalizeStringEvent localizeStringEvent;
 
@@ -45,8 +52,13 @@ public class PlaySceneView : MonoBehaviour
 
     public void Initialize()
     {
+        EventBus.OnBossDead += ShowGameClearPanel;
+
         GameManager.Instance.CurrencyManager.GetCurrentCurrency();
         HideInteractionUI();
+
+        // 처음 시작하면 유탄 슬라이더를 꽉 채우기
+        UpdateGrenadeCoolTime(1.0f, 1.0f);
     }
 
     public void UpdateHPBar(int currentHp, int maxHp)
@@ -107,6 +119,7 @@ public class PlaySceneView : MonoBehaviour
     /// <returns></returns>
     IEnumerator RoomLoadingRoutine(DoorInteractor doorInteractor)
     {
+        EventBus.SetCanTimeRun(false);
         int rand = UnityEngine.Random.Range(0, _roomLoadingTextMap.Count);
         switch (rand)
         {
@@ -135,6 +148,23 @@ public class PlaySceneView : MonoBehaviour
         // 잠시 대기 후 패널 비활성화(플레이어 카메라 변화때문에)
         yield return new WaitForSeconds(0.5f);
         _roomLoadingPanel.SetActive(false);
+        EventBus.SetCanTimeRun(true);
         _roomLoadingRoutine = null;
+    }
+
+    public void ShowGameOverPanel()
+    {
+        _gameOverPanel.SetActive(true);
+    }
+
+    public void ShowGameClearPanel()
+    {
+        _gameClearPanel.SetActive(true);
+    }
+
+    public void UpdateTimer(float timeInSeconds)
+    {
+        TimeSpan timeSpan = TimeSpan.FromSeconds(timeInSeconds);
+        _gameTimerText.text = string.Format("{0:D2}:{1:D2}", timeSpan.Minutes, timeSpan.Seconds);
     }
 }

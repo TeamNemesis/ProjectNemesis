@@ -63,6 +63,12 @@ public static class EventBus
         OnColosseumRoomSet?.Invoke(isColosseum);
     }
 
+    public static event Action OnBossDead;
+    public static void BossDead()
+    {
+        OnBossDead?.Invoke();
+    }
+
     public static MonsterBase EliteBoss { get; set; }
 
     public static bool IsRewardSelecting = false;
@@ -123,6 +129,13 @@ public static class EventBus
     public static void SetCanGetInput(bool canGetInput)
     {
         _canGetInput = canGetInput;
+    }
+
+    static bool _canTimerun = true;
+    public static bool CanTimeRun => _canTimerun;
+    public static void SetCanTimeRun(bool canTimeRun)
+    {
+        _canTimerun = canTimeRun;
     }
 }
 

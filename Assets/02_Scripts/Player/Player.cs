@@ -84,6 +84,7 @@ public class Player : MonoBehaviour
     public event Action OnInteractableMissed;
     public event Action<int, int> OnGrenadeCountChanged; // 현재 유탄 개수, 최대 유탄 개수
     public event Action<float, float> OnGrenadeCooltimeChanged; // 현재 쿨타임, 최대 쿨타임
+    public event Action OnPlayerDead;
     #endregion
 
     [Header("----- 상태 캐시 -----")]
@@ -153,6 +154,7 @@ public class Player : MonoBehaviour
         _mover.Initialize(this);
 
         _playerModel?.Initialize();
+        _playerModel.OnDieEvent += () => OnPlayerDead?.Invoke();
         _dasher?.Initialize(_characterController);
         _forwarder?.Initialize(this);
         _weaponController?.Initialize();

@@ -1,4 +1,5 @@
-﻿using Unity.Cinemachine;
+﻿using System.Collections;
+using Unity.Cinemachine;
 using UnityEngine;
 
 public class PlayScene : MonoBehaviour
@@ -10,7 +11,10 @@ public class PlayScene : MonoBehaviour
     [SerializeField] PlaySceneView _playSceneView;                 // 플레이 씬 뷰
     [SerializeField] CameraMover _cameraMover;                     // 카메라 무버
     [SerializeField] CinemachineBrain _cinemachineBrain;         // 시네머신 브레인
-    [SerializeField] bool _isColosseumRoom = false;               // 콜로세움 방 여부  
+    [SerializeField] TimeChecker _timeChecker;                     // 클리어 타임 체크 컴포넌트
+
+    [Header("----- 읽기 전용 속성 -----")]
+    [SerializeField] bool _isColosseumRoom = false;               // 콜로세움 방 여부
 
     public MapController MapController => _mapController;
     public Player player => _player;
@@ -46,6 +50,8 @@ public class PlayScene : MonoBehaviour
         _player.OnGrenadeCountChanged += _playSceneView.UpdateGrenadeCount;
         _mapController.OnDoorInteractionFinished += _playSceneView.RoomLoading;
         _playSceneView.OnRoomLoadingComplete += _mapController.SpawnRoom;
+        _timeChecker.OnTimeUpdated += _playSceneView.UpdateTimer;
+        _mapController.OnStartRoomExited += _timeChecker.StartTimeCheck;
     }
 
     private void Start()
@@ -58,6 +64,7 @@ public class PlayScene : MonoBehaviour
             return;
         }
         _player.Initialize();
+        _player.OnPlayerDead += _playSceneView.ShowGameOverPanel;
 
         if (MapController == null)
         {
@@ -79,8 +86,16 @@ public class PlayScene : MonoBehaviour
         }
         _cameraMover.Initialize(_player);
 
+        if (_timeChecker == null)
+        {
+            Debug.LogError("TimeChecker가 할당되지 않았습니다!");
+            return;
+        }
+        _timeChecker.Initialize();
+
         GameManager.Instance.skillManager.SetPlayScene(this);
 
+        
     }
 
     private void Update()
