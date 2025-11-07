@@ -154,7 +154,7 @@ MonoBehaviour:
   agent: {fileID: 0}
   _target: {fileID: 0}
   monsterAnimator: {fileID: 0}
-  hasDieAnimation: 0
+  hasDieAnimation: 1
   healthUI: {fileID: 0}
   healthUIPrefabPath: Prefabs/UI/MonsterHealthUI
   _poisonFieldDuration: 5
@@ -163,7 +163,6 @@ MonoBehaviour:
   poisonFieldPrefab: {fileID: 294633856658633526, guid: c6fc3eaefac9ff8438430d7b62ef1a5e, type: 3}
   grenadeObject: {fileID: 691228176029213295, guid: 26fb37ec9009493459860efbbdc988d2, type: 3}
   attackDecalPrefab: {fileID: 4171473842588414540, guid: e1cdcf7ba7eac0445a237bf39c1ee586, type: 3}
-  strayBullet: {fileID: 0}
 --- !u!195 &6429540665350499895
 NavMeshAgent:
   m_ObjectHideFlags: 0

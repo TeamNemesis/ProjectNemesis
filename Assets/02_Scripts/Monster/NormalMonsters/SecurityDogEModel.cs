@@ -60,7 +60,7 @@ public class SecurityDogEModel : MonsterBase
     }
     private void HandleMove()
     {
-        if (_target == null) return;
+        if (_target == null || _isAttacking) return;
 
         float distance = Vector3.Distance(transform.position, _target.position);
 
@@ -78,7 +78,10 @@ public class SecurityDogEModel : MonsterBase
             return;
         }
 
-        agent.SetDestination(_target.position);
+        if (agent.isOnNavMesh)
+        {
+            agent.SetDestination(_target.position);
+        }
 
         // 애니메이션: 이동 중
         if (monsterAnimator != null)
@@ -88,14 +91,15 @@ public class SecurityDogEModel : MonsterBase
 
         if (distance <= attackRange && CanSeePlayer())
         {
-            agent.ResetPath();
-
+            if (agent.isOnNavMesh)
+            {
+                agent.ResetPath();
+            }
             // 애니메이션: 공격 준비를 위해 이동 중지
             if (monsterAnimator != null)
             {
                 monsterAnimator.SetBool(IsMove_Hash, false);
             }
-
             baseState = MonsterState.Attack;
         }
     }
@@ -178,7 +182,10 @@ public class SecurityDogEModel : MonsterBase
                 {
                     monsterRigidbody.isKinematic = false;
                 }
-
+                if(baseState == MonsterState.Die)
+                {
+                    yield break;
+                }
                 monsterRigidbody.AddForce(jumpDirection * jumpForce, ForceMode.Impulse);
 
                 // 돌진 시간
@@ -205,7 +212,6 @@ public class SecurityDogEModel : MonsterBase
             }
             else
             {
-                Debug.LogError("monsterRigidbody가 null입니다!");
                 yield return new WaitForSeconds(1f);
             }
 
