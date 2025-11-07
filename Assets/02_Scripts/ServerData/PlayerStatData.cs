@@ -64,7 +64,7 @@ public class PlayerStatData
             case "float":
                 return (float)_defaultValue + (float)_upgradeValue * _currentLevel;
             case "bool":
-                return _defaultValue;
+                return _currentLevel==1;
             case "string":
                 return _defaultValue;
             default:
@@ -192,7 +192,7 @@ public class PlayerStatJsonData
             case "float":
                 return float.TryParse(value, out var f) ? f : 0f;
             case "bool":
-                return value == "1" || value.ToLower() == "true";
+                return value == "1" || value.ToLower() == "True";
             case "string":
                 return value;
             default:
