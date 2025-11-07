@@ -1,4 +1,5 @@
-﻿using Firebase.Auth;
+﻿using Firebase;
+using Firebase.Auth;
 using Firebase.Database;
 using System.Collections.Generic;
 using System.IO;
@@ -25,38 +26,50 @@ public class ServerManager : MonoBehaviour
     public Button logoutBtn;
 
     private FirebaseAuth auth;
-    private FirebaseUser currentUser;
-    private DatabaseReference dbRef;
+    private FirebaseUser _currentUser;
+    public FirebaseUser currentUser { get { return _currentUser; } }
+    private DatabaseReference _dbRef;
+    public DatabaseReference dbRef { get { return _dbRef; } }
 
-    
     private bool shouldChangeScene = false;
+    private DownloadManager _downloadManager;
+    public DownloadManager downloadManager { get { return _downloadManager; } } 
 
-    public void Initialize()
+
+    public async void Initialize()
     {
         auth = FirebaseAuth.DefaultInstance;
-        dbRef = FirebaseDatabase.DefaultInstance.RootReference;
+        _dbRef = FirebaseDatabase.DefaultInstance.RootReference;
 
         resendEmailBtn.gameObject.SetActive(false);
 
         bool isMobile = Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer;
 
-        googleLoginBtn.gameObject.SetActive(isMobile);
-        linkEmailBtn.gameObject.SetActive(isMobile);
+
 
         if (isMobile)
         {
             googleLoginBtn.onClick.AddListener(OnClickGoogleLogin);
-            linkEmailBtn.onClick.AddListener(() => {
+            linkEmailBtn.onClick.AddListener(() =>
+            {
                 _ = LinkEmailToGoogleAccount();
             });
         }
-
-        
+        var dependencyStatus = await FirebaseApp.CheckAndFixDependenciesAsync();
+        if (dependencyStatus == DependencyStatus.Available)
+        {
+            FirebaseApp app = FirebaseApp.DefaultInstance;
+            auth = FirebaseAuth.DefaultInstance;
+        }
+        else
+        {
+            Debug.LogError($"Firebase 초기화 실패: {dependencyStatus}");
+        }
 
 
         if (auth.CurrentUser != null)
         {
-            currentUser = auth.CurrentUser;
+            _currentUser = auth.CurrentUser;
 
             if (!currentUser.IsEmailVerified)
             {
@@ -67,6 +80,13 @@ public class ServerManager : MonoBehaviour
 
             ShowPopup("자동 로그인되었습니다. 계속 진행하려면 확인 버튼을 눌러주세요.", true); // 자동 로그인 후 씬 전환
         }
+
+
+        _downloadManager = GetComponent<DownloadManager>();
+        _downloadManager.Initialize(this);
+
+        googleLoginBtn.gameObject.SetActive(isMobile);
+        linkEmailBtn.gameObject.SetActive(isMobile);
     }
 
     public async void OnClickSignUp()
@@ -81,7 +101,7 @@ public class ServerManager : MonoBehaviour
         try
         {
             var registerTask = await auth.CreateUserWithEmailAndPasswordAsync(emailInput.text, pwInput.text);
-            currentUser = registerTask.User;
+            _currentUser = registerTask.User;
 
             await currentUser.SendEmailVerificationAsync();
             ShowPopup("회원가입이 완료되었습니다. 이메일 인증을 진행해주세요.");
@@ -93,7 +113,7 @@ public class ServerManager : MonoBehaviour
             };
             await dbRef.Child("playerStats").Child(currentUser.UserId).SetValueAsync(userData);
 
-            await DownloadJsonToLocal(fromGameBase: true);
+            await _downloadManager.DownloadJsonToLocal(fromGameBase: true);
         }
         catch (System.Exception ex)
         {
@@ -115,11 +135,11 @@ public class ServerManager : MonoBehaviour
         try
         {
             var loginTask = await auth.SignInWithEmailAndPasswordAsync(emailInput.text, pwInput.text);
-            currentUser = loginTask.User;
+            _currentUser = loginTask.User;
 
-            await currentUser.ReloadAsync();
+            await _currentUser.ReloadAsync();
 
-            if (!currentUser.IsEmailVerified)
+            if (!_currentUser.IsEmailVerified)
             {
                 ShowPopup("이메일 인증이 완료되지 않았습니다. 인증 후 다시 로그인해주세요.");
                 resendEmailBtn.gameObject.SetActive(true);
@@ -131,7 +151,7 @@ public class ServerManager : MonoBehaviour
             ShowPopup("로그인 성공", true); // 로그인 후 씬 전환
             resendEmailBtn.gameObject.SetActive(false);
 
-            await DownloadJsonToLocal(fromGameBase: false);
+            await _downloadManager.DownloadJsonToLocal(fromGameBase: false);
         }
         catch (System.Exception ex)
         {
@@ -147,7 +167,7 @@ public class ServerManager : MonoBehaviour
         try
         {
             var loginTask = await auth.SignInWithEmailAndPasswordAsync(emailInput.text, pwInput.text);
-            currentUser = loginTask.User;
+            _currentUser = loginTask.User;
 
             await currentUser.SendEmailVerificationAsync();
             ShowPopup("인증 메일을 다시 전송했습니다. 이메일을 확인해주세요.");
@@ -161,102 +181,8 @@ public class ServerManager : MonoBehaviour
         SetLoading(false);
     }
 
-    public async void UploadPlayerStatFromLocal()
-    {
-        SetLoading(true);
 
-        if (currentUser == null)
-        {
-            ShowPopup("로그인된 사용자가 없어 업로드할 수 없습니다.");
-            SetLoading(false);
-            return;
-        }
-
-        if (!File.Exists(Constants.FILE_PATH_PLAYERSTAT))
-        {
-            ShowPopup("업로드할 JSON 파일이 존재하지 않습니다.");
-            DownloadJsonToLocal(true);
-            SetLoading(false);
-            return;
-        }
-
-        string jsonText = File.ReadAllText(Constants.FILE_PATH_PLAYERSTAT);
-
-        var data = new Dictionary<string, object>
-        {
-            { "playerStatJson", jsonText },
-            { "updateTime", ServerValue.Timestamp }
-        };
-
-        await dbRef.Child("playerStats").Child(currentUser.UserId).UpdateChildrenAsync(data);
-
-        Debug.Log("JSON 파일을 성공적으로 업로드했습니다.");
-        SetLoading(false);
-    }
-
-    public async void DownloadPlayerStatToLocal()
-    {
-        await DownloadJsonToLocal(fromGameBase: false);
-    }
-
-    private async Task DownloadJsonToLocal(bool fromGameBase)
-    {
-        SetLoading(true);
-
-        string jsonText = null;
-
-        try
-        {
-            if (fromGameBase)
-            {
-                var snapshot = await dbRef.Child("gameBaseJson").GetValueAsync();
-                if (snapshot != null && snapshot.Exists)
-                {
-                    jsonText = snapshot.GetRawJsonValue();
-                }
-                else
-                {
-                    ShowPopup("초기 게임 데이터가 Firebase에 없습니다.");
-                }
-            }
-            else
-            {
-                if (currentUser == null)
-                {
-                    ShowPopup("로그인된 사용자가 없습니다.");
-                    SetLoading(false);
-                    return;
-
-                }
-
-                var snapshot = await dbRef.Child("playerStats").Child(currentUser.UserId).GetValueAsync();
-                if (snapshot != null && snapshot.Exists && snapshot.HasChild("playerStatJson"))
-                {
-                    jsonText = snapshot.Child("playerStatJson").Value.ToString();
-                }
-                else
-                {
-                    ShowPopup("사용자 데이터가 Firebase에 없습니다.");
-                }
-            }
-
-            if (!string.IsNullOrEmpty(jsonText) && jsonText != "null")
-            {
-                string folderPath = Path.GetDirectoryName(Constants.FILE_PATH_PLAYERSTAT);
-                if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
-                File.WriteAllText(Constants.FILE_PATH_PLAYERSTAT, jsonText);
-                Debug.Log("JSON 데이터를 성공적으로 저장했습니다.");
-            }
-
-            UploadPlayerStatFromLocal();
-        }
-        catch (System.Exception ex)
-        {
-            ShowError("데이터 다운로드 중 오류가 발생했습니다.", "DownloadJson 오류: " + ex.Message);
-        }
-
-        SetLoading(false);
-    }
+   
 
     public async void DeleteAccount()
     {
@@ -345,7 +271,7 @@ public class ServerManager : MonoBehaviour
             var emailCredential = EmailAuthProvider.GetCredential(emailInput.text, pwInput.text);
             var linkTask = await auth.CurrentUser.LinkWithCredentialAsync(emailCredential);
 
-            currentUser = linkTask.User;
+            _currentUser = linkTask.User;
             ShowPopup(" 이메일 계정이 Google 계정에 성공적으로 연결되었습니다.");
         }
         catch (System.Exception ex)
@@ -359,7 +285,7 @@ public class ServerManager : MonoBehaviour
 
     public void OnClickGoogleLogin()
     {
-        #if UNITY_ANDROID
+#if UNITY_ANDROID
     SetLoading(true);
 
         try
@@ -383,29 +309,29 @@ public class ServerManager : MonoBehaviour
     }
 
     public async void OnGoogleLoginSuccess(string idToken)
-		{
-				//SetLoading(true);
+    {
+        //SetLoading(true);
 
-				try
-				{
-						Credential credential = GoogleAuthProvider.GetCredential(idToken, null);
-						FirebaseUser firebaseUser = await auth.SignInWithCredentialAsync(credential);
+        try
+        {
+            Credential credential = GoogleAuthProvider.GetCredential(idToken, null);
+            FirebaseUser firebaseUser = await auth.SignInWithCredentialAsync(credential);
 
-						currentUser = firebaseUser;
-						ShowPopup("Google 로그인 성공", true);
+            _currentUser = firebaseUser;
+            ShowPopup("Google 로그인 성공", true);
 
-						await DownloadJsonToLocal(fromGameBase: false);
-				}
-				catch (System.Exception ex)
-				{
-						ShowError("Google 로그인 중 오류가 발생했습니다.", "Google 로그인 오류: " + ex.Message);
-						auth.SignOut();
-				}
+            await _downloadManager.DownloadJsonToLocal(fromGameBase: false);
+        }
+        catch (System.Exception ex)
+        {
+            ShowError("Google 로그인 중 오류가 발생했습니다.", "Google 로그인 오류: " + ex.Message);
+            auth.SignOut();
+        }
 
-				SetLoading(false);
-		}
+        SetLoading(false);
+    }
 
-		private void ShowPopup(string message, bool changeSceneOnConfirm = false)
+    public void ShowPopup(string message, bool changeSceneOnConfirm = false)
     {
         shouldChangeScene = changeSceneOnConfirm;
 
@@ -450,13 +376,13 @@ public class ServerManager : MonoBehaviour
     }
 
 
-    private void ShowError(string userMessage, string logMessage)
+    public void ShowError(string userMessage, string logMessage)
     {
         ShowPopup(userMessage);
         Debug.LogError(logMessage);
     }
 
-    private void SetLoading(bool isActive)
+    public void SetLoading(bool isActive)
     {
         if (loadingPanel != null)
             loadingPanel.SetActive(isActive);
@@ -464,7 +390,8 @@ public class ServerManager : MonoBehaviour
 
     public void OnClickSceneBtn()
     {
-        SceneManager.LoadScene(1);
+        GameManager.Instance.SceneLoadManager.LoadIntroScene();
+        EventBus.SetCanGetInput(true);
     }
 
 

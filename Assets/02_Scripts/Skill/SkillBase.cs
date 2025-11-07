@@ -58,7 +58,6 @@ public abstract class SkillBase : MonoBehaviour
 
     public virtual void InitializeSkill(SkillManager skillManager)
     {
-        Debug.Log("skill Initialize");
         ReadJsonFile();
         _skillManager = skillManager;
         _skillNum = 0;

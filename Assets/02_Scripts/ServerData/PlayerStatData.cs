@@ -95,6 +95,20 @@ public class PlayerStatData
     {
         _currentLevel = Mathf.Clamp(level, 0, _maxLevel);
     }
+
+    public bool LevelUp()
+    {
+        if(_currentLevel < _maxLevel)
+        {
+            _currentLevel++;
+            GameManager.Instance.PlayerStatManager.InitializeStatByReflection(this);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 }
 
 

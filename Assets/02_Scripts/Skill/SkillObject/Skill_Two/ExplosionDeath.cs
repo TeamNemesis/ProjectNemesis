@@ -26,7 +26,6 @@ public class ExplosionDeath : AreaDamageBase,IInitializePoolable
         _areaExtent = Constants.EXPLOSIONDEATH_EXTENT;
         CheckTarget();
         StartCoroutine(DestroyExplosionCoroutine(0.5f, this));
-        Debug.LogWarning("폭사 발동");
     }
 
     public override void ActiveSkill(Transform target)
@@ -37,7 +36,6 @@ public class ExplosionDeath : AreaDamageBase,IInitializePoolable
     public IEnumerator DestroyExplosionCoroutine(float time, PoolableObject gameObject)
     {
         yield return new WaitForSeconds(time);
-        Debug.LogWarning("폭사 제거");
         GameManager.Instance.PoolManager.ReleaseToPoolByInterface(gameObject);
     }
 

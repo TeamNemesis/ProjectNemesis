@@ -19,6 +19,10 @@ public class PlayerModel : CharacterModelBase
     /// </summary>
     private bool bIsAvoid;
 
+    #region 부활
+    private bool bCanRevive;
+    #endregion
+
     #region 무적
     /// <summary>
     /// 무적 상태인지
@@ -121,12 +125,26 @@ public class PlayerModel : CharacterModelBase
 
         base.TakeDamage(damage, attacker);
     }
+
+    protected override void Die()
+    {
+        if(bCanRevive)
+        {
+            SettingMaxHp((int)GameManager.Instance.PlayerStatManager.playerStatDataDic["playerHP"].GetEffectiveValue());
+            bCanRevive = false;
+            return;
+        }
+        base.Die();
+
+    }
     public override void Initialize()
     {
         // 플레이어 json파일 데이터에서 최대체력 받아옴
         base.Initialize();
-        SetMaxHp((int)GameManager.Instance.PlayerStatManager.playerStatDataDic["playerHP"].GetEffectiveValue());
+        SettingMaxHp((int)GameManager.Instance.PlayerStatManager.playerStatDataDic["playerHP"].GetEffectiveValue());
         SetCurrentHp(maxHealth); // 초기화 시 현재 체력을 최대 체력으로 설정
+
+        bCanRevive = (bool)GameManager.Instance.PlayerStatManager.playerStatDataDic["playerRevive"].GetEffectiveValue();
 
         // 필드값 초기화
         _bIsInvincibility = false;

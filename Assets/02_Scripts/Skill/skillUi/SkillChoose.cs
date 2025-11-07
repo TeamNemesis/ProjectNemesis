@@ -68,7 +68,6 @@ public class SkillChoose : MonoBehaviour
         SkillBase tempSkillCompany = _skillCompany;
         if(_skillCompany == null)
         {
-            Debug.Log("Company Error");
             GameManager.Instance.UIManager.SetActiveSkillBtnPanel(false);
             return;
         }
@@ -84,12 +83,10 @@ public class SkillChoose : MonoBehaviour
 
         if (skillNum == 0)
         {
-            Debug.Log("Error");
             GameManager.Instance.UIManager.SetActiveSkillBtnPanel(false);
             return;
         }
 
-        Debug.Log(skillNum);
         for (int i = 0; i < Mathf.Min(Constants.SKILLCNT, skillNum); i++)
         {
             int tempNum = 0;
@@ -155,8 +152,6 @@ public class SkillChoose : MonoBehaviour
 
         if (tempSkillCompany == null || !CheckMutantSkill(tempSkillCompany))
         {
-            Debug.Log("Error");
-            Debug.Log(CheckMutantSkill(tempSkillCompany));
             GameManager.Instance.UIManager.SetActiveSkillBtnPanel(false);
             return;
         }
@@ -227,7 +222,6 @@ public class SkillChoose : MonoBehaviour
     /// <returns></returns>
     private bool CheckMutantSkill(SkillBase techCompany)
     {
-        Debug.Log(techCompany.skillList.Count);
         foreach (SkillData skillData in techCompany.skillList)
         {
             if (string.IsNullOrEmpty(skillData.skillTag))
@@ -235,7 +229,6 @@ public class SkillChoose : MonoBehaviour
             string[] tags = skillData.skillTag.Split(';');
             foreach (string tag in tags)
             {
-                Debug.Log(tag);
                 if (tagToWeaponType.TryGetValue(tag.Trim(), out WeaponType weaponType))
                 {
                     if (weaponType == GameManager.Instance.skillManager.playScene.player.CurrentWeaponSet.WeaponType || weaponType == WeaponType.None)
@@ -261,7 +254,6 @@ public class SkillChoose : MonoBehaviour
 
         if (upgradeSkillNum == 0)
         {
-            Debug.Log("대신 돈을 드립니다.");
             GameManager.Instance.CurrencyManager.AddCredit(100);
             GameManager.Instance.UIManager.SetActiveSkillBtnPanel(false);
             return;
@@ -279,7 +271,6 @@ public class SkillChoose : MonoBehaviour
                 loopCnt++;
             }
             while (SetUpgradeSkillBtn(tempNum) && loopCnt < Constants.LOOPCNT);
-            Debug.Log("Loop : " + loopCnt);
             loopCnt = 0;
         }
 
@@ -309,7 +300,6 @@ public class SkillChoose : MonoBehaviour
     {
         if (skillBtn.skillData == null)
         {
-            Debug.Log("skillData is Null");
         }
         if (skillBtn.skillData.ChooseSkill())
         {

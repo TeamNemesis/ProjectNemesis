@@ -26,7 +26,6 @@ public class GravityFlareRocketExplosion : AreaDamageBase, IInitializePoolable
     public override void ActiveSkill(Transform target)
     {
         target.GetComponent<MonsterBase>().TakeDamage(_damage);
-        Debug.LogError("데미지" + _damage);
     }
     public void Initialize(object data)
     {
@@ -39,9 +38,7 @@ public class GravityFlareRocketExplosion : AreaDamageBase, IInitializePoolable
 
     public IEnumerator RemoveCoroutine()
     {
-        Debug.LogError("삭제 코루틴 시작");
         yield return new WaitForSeconds(Constants.SKILL_REMAIN);
-        Debug.LogError("삭제");
         GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
 
 

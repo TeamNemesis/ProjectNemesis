@@ -45,9 +45,6 @@ public class Skill_One_Attack : ActiveTech
         {
             return;
         }
-
-        Debug.Log("Use " + _skillData.skillIdx);
-
         transform.GetComponent<DebuffHandler>().ApplyDebuff(DebuffHandler.DebuffData.CreatePoison());
     }
     public Skill_One_Attack(SkillData choosedSkill) : base(choosedSkill)
@@ -81,7 +78,6 @@ public class Skill_Two_Attack : ActiveTech
         // 스킬 효과 적용 (플레이어 일반 공격력에 접근하여 공격력 추가)
         plusDamage = _skillData.skillBaseValue_1 + _skillData.skillLevelValue_1 * _skillData.skillLevel;
         GameManager.Instance.PlayerStatManager.AddPlayerAttackDamage(plusDamage);
-        Debug.Log(GameManager.Instance.PlayerStatManager.playerAttackDamage);
 
         ActiveSkillEvent?.Invoke(_skillData.skillIdx, plusDamage);
         // 공격 적중 시 이벤트에 추가
@@ -98,7 +94,6 @@ public class Skill_Two_Attack : ActiveTech
 
         // 공격력 복귀
         GameManager.Instance.PlayerStatManager.AddPlayerAttackDamage(-plusDamage);
-        Debug.Log(GameManager.Instance.PlayerStatManager.playerAttackDamage);
         DeactiveSkillEvent?.Invoke(_skillData.skillIdx);
         Drone[] drones = player.transform.GetComponentsInChildren<Drone>();
         if (drones.Length > 0)
@@ -205,7 +200,6 @@ public class Skill_Four_Attack : ActiveTech
     }
     public override void Deactivate(Player player, bool isSameSkill)
     {
-        Debug.Log("40번 스킬 해제");
         // 리스트 제거
         base.Deactivate(player, isSameSkill);
         // 이벤트 해제
@@ -241,7 +235,6 @@ public class Skill_Four_Attack : ActiveTech
         {
             stack = 10;
         }
-        Debug.Log("stack : " + stack);
     }
 
     public override void HitEnemy(WeaponType weapon, ATTACKTYPE attack, Transform transform, Transform attackerTransform)

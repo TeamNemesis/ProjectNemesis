@@ -11,13 +11,18 @@ public class SettingPanel : MonoBehaviour
     public void OnOpenSetting()
     {
         EventBus.SetCanGetInput(false);
-        if(SceneManager.GetActiveScene().buildIndex !=1)
+        if(SceneManager.GetActiveScene().buildIndex ==0)
         {
             introPanel.SetActive(true);
         }
         else
         {
             playPanel.SetActive(true);
+            if (EventBus.IsColosseumRoom)
+            {
+                Cursor.lockState = true ? CursorLockMode.None : CursorLockMode.Locked;
+                Cursor.visible = true; // 커서 보이게/숨기기
+            }
         }
     }
 

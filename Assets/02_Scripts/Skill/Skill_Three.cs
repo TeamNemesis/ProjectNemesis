@@ -44,7 +44,6 @@ public class Skill_Three : SkillBase
 
             // 소용돌이
             case 31:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 ActiveTech SkillGrenade = new Skill_Three_Grenade(choosedSkill);
                 if (_skillManager.bombTech != null)
                 {
@@ -57,7 +56,6 @@ public class Skill_Three : SkillBase
 
             // 반동
             case 32:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 ActiveTech SkillSPAttack = new Skill_Three_SPAttack(choosedSkill);
                 if (_skillManager.skillTech != null)
                 {
@@ -70,7 +68,6 @@ public class Skill_Three : SkillBase
 
             // 절대영역
             case 33:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 ActiveTech skillDashAttack = new Skill_Three_Dash(choosedSkill);
                 if (_skillManager.dashTech != null)
                 {
@@ -84,19 +81,16 @@ public class Skill_Three : SkillBase
 
             // 불운
             case 34:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 ActivateMisfortune(choosedSkill);
                 break;
 
             // 적색 편이
             case 35:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 ActivateRedShift(choosedSkill);
                 break;
 
             // 중력 증폭
             case 36:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
 
                 ActivateGravity(choosedSkill);
 
@@ -104,7 +98,6 @@ public class Skill_Three : SkillBase
 
             // 사건의 지평선
             case 37:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 ActivateHorizon(choosedSkill);
                 break;
 
@@ -156,7 +149,6 @@ public class Skill_Three : SkillBase
             Constants.GetNearestObject(_skillManager.playScene.player.transform, skillManager.playScene.MapController.MonsterController.MonsterSpawner.ActiveMonsters).transform.position
             - playerPosition;
         }
-        Debug.Log(monsterTransform.gameObject.name + monsterTransform.position);
         RedShiftData redShiftData = new RedShiftData(direction, _redshiftSpeed, _redshiftExtent, _redshiftKnockBackDistance, _redshiftDamage);
         playerPosition.y = 0;
         Quaternion rotation = Quaternion.LookRotation(direction);

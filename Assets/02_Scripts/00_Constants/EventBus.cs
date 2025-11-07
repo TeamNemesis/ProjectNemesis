@@ -42,7 +42,6 @@ public static class EventBus
 
     public static void MonsterKnockBack(Vector3 monsterPosition)
     {
-        Debug.LogError("이벤트 호출");
         OnMonsterKnockBack?.Invoke(monsterPosition);
     }
 

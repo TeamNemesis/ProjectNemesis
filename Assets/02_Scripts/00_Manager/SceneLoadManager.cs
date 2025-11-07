@@ -7,6 +7,12 @@ using UnityEngine.SceneManagement;
 public class SceneLoadManager : MonoBehaviour
 {
  
+    public void LoadIntroScene()
+    {
+        SceneManager.LoadScene(Constants.SCENE_NAME_INTRO);
+
+    }
+
     public void LoadPlayScene()
     {
         SceneManager.LoadScene(Constants.SCENE_NAME_PLAY);
