@@ -171,7 +171,7 @@ MonoBehaviour:
   isDead: 0
   debuffHandler: {fileID: 0}
   maxEliteHealth: 0
-  attackDamage: 10
+  attackDamage: 5
   attackRange: 1000
   detectionRange: 1000
   attackDelay: 0.5
@@ -188,7 +188,7 @@ MonoBehaviour:
   agent: {fileID: 0}
   _target: {fileID: 0}
   monsterAnimator: {fileID: 0}
-  hasDieAnimation: 0
+  hasDieAnimation: 1
   healthUI: {fileID: 0}
   healthUIPrefabPath: Prefabs/UI/MonsterHealthUI
   laserAttackCount: 0
@@ -201,6 +201,7 @@ MonoBehaviour:
   attackDecalPrefab: {fileID: 4171473842588414540, guid: e1cdcf7ba7eac0445a237bf39c1ee586, type: 3}
   poisonFieldPrefab: {fileID: 294633856658633526, guid: c6fc3eaefac9ff8438430d7b62ef1a5e, type: 3}
   eliteBulletPrefab: {fileID: 5248596736412313402, guid: d48011a799ce2aa49b2e2b81fc593843, type: 3}
+  grenadeObjectPrefab: {fileID: 691228176029213295, guid: 26fb37ec9009493459860efbbdc988d2, type: 3}
   bulletAttackCoolTime: 5
   poisonLaserAttackCoolTime: 5
   poisonFieldAttackCoolTime: 10
@@ -239,6 +240,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2224343961088005874}
     m_Modifications:
+    - target: {fileID: 1558112111843461079, guid: 2a0e715ce2ee3a348b45b35ba5ee5da1, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 7842b8e9a8885704cb960cb3d92a867a, type: 2}
     - target: {fileID: 5619955484700641987, guid: 2a0e715ce2ee3a348b45b35ba5ee5da1, type: 3}
       propertyPath: m_Name
       value: Elite2 Model

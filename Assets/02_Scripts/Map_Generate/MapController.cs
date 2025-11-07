@@ -41,6 +41,11 @@ public class MapController : MonoBehaviour
     public event Action OnRoomStart;
 
     /// <summary>
+    /// 시작 방에서 나갈 때 발행하는 이벤트(시간 체크용)
+    /// </summary>
+    public event Action OnStartRoomExited;
+
+    /// <summary>
     /// 문과의 상호작용과 플레이어의 이동이 모두 끝났을 때 발행하는 이벤트
     /// PlaySceneView에서 로딩 패널을 제어하기 위해 사용
     /// </summary>
@@ -76,6 +81,11 @@ public class MapController : MonoBehaviour
             }
             // 여기서 방 넘어갈 때 이펙트나 로딩화면 처리
             _goNextRoomRoutine = StartCoroutine(GoNextRoomRoutine(doorInteractor));
+            if(_currentRoom.RoomInfo.RoomType == RoomType.Start)
+            {
+                // 시작 방에서 나갈 때 시간 체크를 위한 이벤트 발행
+                OnStartRoomExited?.Invoke();
+            }
         }
         else
         {

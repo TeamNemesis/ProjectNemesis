@@ -154,7 +154,7 @@ MonoBehaviour:
   agent: {fileID: 0}
   _target: {fileID: 0}
   monsterAnimator: {fileID: 0}
-  hasDieAnimation: 0
+  hasDieAnimation: 1
   healthUI: {fileID: 0}
   healthUIPrefabPath: Prefabs/UI/MonsterHealthUI
   aimingDelay: 0
@@ -238,7 +238,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6910985499104066236, guid: d949ebc8dd7c1d74e820121230e3d6c5, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.039
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 6910985499104066236, guid: d949ebc8dd7c1d74e820121230e3d6c5, type: 3}
       propertyPath: m_LocalPosition.z

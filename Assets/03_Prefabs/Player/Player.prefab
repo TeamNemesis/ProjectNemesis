@@ -2560,7 +2560,7 @@ MonoBehaviour:
   _isAttacking: 0
   fallbackEnd: 0.05
   _firePoint: {fileID: 0}
-  _bulletPrefab: {fileID: -8901218431766360776, guid: 753ae3df63cb2b34886c16993b63cd3a, type: 3}
+  _bulletPrefab: {fileID: 8045412887812446879, guid: 64de39c8161194c4b8238682b793f245, type: 3}
 --- !u!1 &1496173967093029273
 GameObject:
   m_ObjectHideFlags: 0
@@ -17039,8 +17039,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 7780520282912648580}
   - {fileID: 7967725277612350839}
@@ -17235,7 +17235,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4dd914b0022246a47a8ce199a9933656, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxHealth: 10000
+  _maxHealth: 10
   _currentHealth: 0
   _moveSpeed: 5
   isStunned: 0

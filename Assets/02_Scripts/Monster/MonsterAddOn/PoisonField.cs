@@ -32,7 +32,7 @@ public class PoisonField : PoolableObject
 
     public void Initialize(string targetTag, float lifeTime, float poisonFieldRadius)
     {
-
+        StopAllCoroutines();
         if (poisonRenderer != null)
         {
             // 인스턴스 머티리얼 생성 (공유 머티리얼 영향 방지)

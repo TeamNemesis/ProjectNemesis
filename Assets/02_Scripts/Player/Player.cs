@@ -53,6 +53,7 @@ public class Player : MonoBehaviour
     [SerializeField] bool _isSpecialAttacking;             // 플레이어 특수공격 중 여부
 
     // 읽기 전용 프로퍼티로 외부 접근 제공
+    public PlayerMover Mover => _mover;
     public PlayerWeaponController WeaponController => _weaponController;
     public PlayerNormalAttacker NormalAttacker => _normalAttacker;
     public PlayerSpecialAttacker SpecialAttacker => _specialAttacker;
@@ -84,6 +85,7 @@ public class Player : MonoBehaviour
     public event Action OnInteractableMissed;
     public event Action<int, int> OnGrenadeCountChanged; // 현재 유탄 개수, 최대 유탄 개수
     public event Action<float, float> OnGrenadeCooltimeChanged; // 현재 쿨타임, 최대 쿨타임
+    public event Action OnPlayerDead;
     #endregion
 
     [Header("----- 상태 캐시 -----")]
@@ -121,7 +123,7 @@ public class Player : MonoBehaviour
         if (_weaponController != null)
             _weaponController.OnWeaponChanged += OnWeaponChanged;
 
-        SubscribeNormalAttacker(_normalAttacker);
+        //SubscribeNormalAttacker(_normalAttacker);
 
         // 상호작용 관련 이벤트 구독
         if (_interactionController != null)
@@ -153,6 +155,7 @@ public class Player : MonoBehaviour
         _mover.Initialize(this);
 
         _playerModel?.Initialize();
+        _playerModel.OnDieEvent += () => OnPlayerDead?.Invoke();
         _dasher?.Initialize(_characterController);
         _forwarder?.Initialize(this);
         _weaponController?.Initialize();
@@ -181,10 +184,10 @@ public class Player : MonoBehaviour
             _dasher.DashEnded -= OnDasherEnded;
         }
 
-        if (_normalAttacker != null)
-        {
-            UnsubscribeNormalAttacker(_normalAttacker);
-        }
+        //if (_normalAttacker != null)
+        //{
+        //    UnsubscribeNormalAttacker(_normalAttacker);
+        //}
 
         if (_weaponController != null)
         {
@@ -347,14 +350,6 @@ public class Player : MonoBehaviour
 
     public void StopMove()
     {
-        if (EventBus.IsColosseumRoom)
-        {
-            Vector3 cameraForward = Camera.main.transform.forward;
-            cameraForward.y = 0f;
-            cameraForward.Normalize();
-            _mover.Rotate(cameraForward);
-        }
-
         _mover.Move(Vector3.zero);
         _animator.OnMove(0f);
     }
@@ -369,13 +364,13 @@ public class Player : MonoBehaviour
         _currentWeaponSet = GameManager.Instance.DataManager.WeaponSetMap[weapon.WeaponType];
 
         // 먼저 할당하기 전에 이전 구독 해제
-        if (prevAttacker != null)
-            UnsubscribeNormalAttacker(prevAttacker);
+        //if (prevAttacker != null)
+        //    UnsubscribeNormalAttacker(prevAttacker);
 
         _normalAttacker = _normalAttackerMap.ContainsKey(weapon.WeaponType) ? _normalAttackerMap[weapon.WeaponType] : null;
         _specialAttacker = _specialAttackerMap.ContainsKey(weapon.WeaponType) ? _specialAttackerMap[weapon.WeaponType] : null;
 
-        SubscribeNormalAttacker(_normalAttacker);
+        //SubscribeNormalAttacker(_normalAttacker);
 
         if (weapon.WeaponType == WeaponType.Rifle)
         {
@@ -396,33 +391,33 @@ public class Player : MonoBehaviour
         _animator.SetAnimator(_currentWeaponSet.AnimController);
     }
 
-    void SubscribeNormalAttacker(PlayerNormalAttacker attacker)
-    {
-        if (attacker == null) return;
+    //void SubscribeNormalAttacker(PlayerNormalAttacker attacker)
+    //{
+    //    if (attacker == null) return;
 
-        attacker.OnAttackStarted += OnAttackerStarted;
-        attacker.OnAttackEnded += OnAttackerEnded;
-    }
+    //    attacker.OnAttackStarted += OnAttackerStarted;
+    //    attacker.OnAttackEnded += OnAttackerEnded;
+    //}
 
-    void UnsubscribeNormalAttacker(PlayerNormalAttacker attacker)
-    {
-        if (attacker == null) return;
-        attacker.OnAttackStarted -= OnAttackerStarted;
-        attacker.OnAttackEnded -= OnAttackerEnded;
-    }
+    //void UnsubscribeNormalAttacker(PlayerNormalAttacker attacker)
+    //{
+    //    if (attacker == null) return;
+    //    attacker.OnAttackStarted -= OnAttackerStarted;
+    //    attacker.OnAttackEnded -= OnAttackerEnded;
+    //}
 
-    void OnAttackerStarted()
-    {
-        _stateMachine.ChangeState(PlayerStateType.NormalAttack);
-        _isNormalAttacking = true;
-        OnNormalAttackStarted?.Invoke();
-    }
+    //void OnAttackerStarted()
+    //{
+    //    _stateMachine.ChangeState(PlayerStateType.NormalAttack);
+    //    _isNormalAttacking = true;
+    //    OnNormalAttackStarted?.Invoke();
+    //}
 
-    void OnAttackerEnded()
-    {
-        _isNormalAttacking = false;
-        _stateMachine.ChangeState(PlayerStateType.Idle);
-    }
+    //void OnAttackerEnded()
+    //{
+    //    _isNormalAttacking = false;
+    //    _stateMachine.ChangeState(PlayerStateType.Idle);
+    //}
 
     public void OnAttackFireEvent()
     {
