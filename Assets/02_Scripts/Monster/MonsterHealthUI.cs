@@ -45,43 +45,6 @@ public class MonsterHealthUI : PoolableObject, IInitializePoolable, IReleasePool
     private Slider currentSlider;
     private Image currentFillImage;
 
-    // Awake: 전역 설정만 (Canvas 생성, 부모 설정)
-    private void Start()
-    {
-        rectTransform = GetComponent<RectTransform>();
-
-        // MonsterHealthUIRoot 생성 (전역, 한 번만)
-        if (monsterHealthUIRoot == null)
-        {
-            GameObject rootObj = new GameObject("MonsterHealthUIRoot");
-            monsterHealthUIRoot = rootObj.AddComponent<Canvas>();
-            monsterHealthUIRoot.renderMode = RenderMode.ScreenSpaceOverlay;
-            monsterHealthUIRoot.sortingOrder = 100;
-
-            CanvasScaler scaler = rootObj.AddComponent<CanvasScaler>();
-            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            scaler.referenceResolution = new Vector2(1920, 1080);
-            scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
-            scaler.matchWidthOrHeight = 1f;
-
-            rootObj.AddComponent<GraphicRaycaster>();
-
-            // RectTransform 설정 (원점으로 고정)
-            RectTransform rootRect = rootObj.GetComponent<RectTransform>();
-            if (rootRect != null)
-            {
-                rootRect.anchorMin = Vector2.zero;
-                rootRect.anchorMax = Vector2.one;
-                rootRect.anchoredPosition = Vector2.zero;
-                rootRect.sizeDelta = Vector2.zero;
-                rootRect.pivot = new Vector2(0.5f, 0.5f);
-            }
-        }
-
-        // 부모 설정
-        transform.SetParent(monsterHealthUIRoot.transform, true);
-    }
-
     private void LateUpdate()
     {
         if (monsterBase == null || monsterTransform == null)
