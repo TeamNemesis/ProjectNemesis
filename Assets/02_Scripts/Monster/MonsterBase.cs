@@ -53,9 +53,12 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
 
     [Header("Animator")]
     [SerializeField] protected Animator monsterAnimator;
+    [SerializeField] protected Vector3 originalSkinTransform;
     [SerializeField] protected bool hasDieAnimation = false;
+    [SerializeField] protected bool checkOnce = false;
     protected readonly int IsMove_Hash = Animator.StringToHash("IsMove");
     protected readonly int Attack_Hash = Animator.StringToHash("Attack");
+    protected readonly int Die_Hash = Animator.StringToHash("Die");
 
     [Header("UI")]
     [SerializeField] private MonsterHealthUI healthUI;
@@ -112,8 +115,6 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
     {
         base.Initialize();
 
-        Debug.Log($"[MonsterBase] Initialize 시작 - {gameObject.name}");
-
         // === 상태 초기화 ===
         isDead = false;
         isPushed = false;
@@ -133,11 +134,24 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
             agent.isStopped = false;
             agent.speed = originalSpeed;
         }
-        monsterAnimator = GetComponentInChildren<Animator>();
+        if (monsterAnimator == null)
+        {
+            monsterAnimator = GetComponentInChildren<Animator>();
+        }
 
         // === 애니메이터 초기화 ===
         if (monsterAnimator != null)
         {
+            Transform skinTransform = monsterAnimator.transform;
+
+            if (!checkOnce)
+            {
+                originalSkinTransform = skinTransform.localPosition;
+                checkOnce = true;
+            }
+            skinTransform.localPosition = originalSkinTransform;
+            skinTransform.localRotation = Quaternion.identity;
+
             monsterAnimator.Rebind();
             monsterAnimator.Update(0f);
         }
@@ -191,8 +205,6 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
 
         // === 모든 코루틴 정리 (사망 애니메이션 코루틴 포함) ===
         StopAllCoroutines();
-
-        Debug.Log($"[MonsterBase] Initialize 완료 - {gameObject.name}");
     }
 
     protected bool CanSeePlayer()
@@ -301,9 +313,14 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
     protected override void Die()
     {
         if (isDead) return;
-
         isDead = true;
         baseState = MonsterState.Die;
+
+        if (monsterAnimator != null)
+        {
+            monsterAnimator.SetBool(IsMove_Hash, false);
+            monsterAnimator.ResetTrigger(Attack_Hash);
+        }
 
         if (agent != null && agent.isOnNavMesh)
         {
@@ -313,7 +330,7 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
 
         if (hasDieAnimation && monsterAnimator != null)
         {
-            monsterAnimator.SetTrigger("Die");
+            monsterAnimator.SetTrigger(Die_Hash);
             StartCoroutine(WaitForDieAnimation());
         }
         else
