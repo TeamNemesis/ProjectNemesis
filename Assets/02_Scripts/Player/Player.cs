@@ -53,6 +53,7 @@ public class Player : MonoBehaviour
     [SerializeField] bool _isSpecialAttacking;             // 플레이어 특수공격 중 여부
 
     // 읽기 전용 프로퍼티로 외부 접근 제공
+    public PlayerMover Mover => _mover;
     public PlayerWeaponController WeaponController => _weaponController;
     public PlayerNormalAttacker NormalAttacker => _normalAttacker;
     public PlayerSpecialAttacker SpecialAttacker => _specialAttacker;
@@ -349,14 +350,6 @@ public class Player : MonoBehaviour
 
     public void StopMove()
     {
-        if (EventBus.IsColosseumRoom)
-        {
-            Vector3 cameraForward = Camera.main.transform.forward;
-            cameraForward.y = 0f;
-            cameraForward.Normalize();
-            _mover.Rotate(cameraForward);
-        }
-
         _mover.Move(Vector3.zero);
         _animator.OnMove(0f);
     }
