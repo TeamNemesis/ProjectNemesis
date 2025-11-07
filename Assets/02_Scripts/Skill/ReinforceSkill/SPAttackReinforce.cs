@@ -15,6 +15,7 @@ public class Skill_One_SPAttack : ActiveTech
     private Action _AttackTry;
 
     private SkillEffect _skillEffectPrefab; //이펙트
+
     
     /// <summary>   
     /// 공격 한 번 당 한 번만 적용하도록 하기 위한 필드값
@@ -119,15 +120,16 @@ public class Skill_Three_SPAttack: ActiveTech
 {
     private float _reflectionTime;
     private reflect _playerReflect;
-    private SkillEffect _backlashPrefab;
+
+    private SkillEffect _backlashPrefab;    //반동 이펙트
+    private Player _player;                 //플레이어 위치에 생성
 
 
     public override void Activate(SkillManager skillManager, Player player)
     {
-        if (_backlashPrefab == null)             //여기서 로드
-        {
-            _backlashPrefab = Resources.Load<SkillEffect>("Prefabs/Effect/Skill/Backlash_Player");
-        }
+        //추가
+        _player = player;
+
         base.Activate(skillManager, player);
         _reflectionTime = _skillData.skillBaseValue_1 + _skillData.skillLevelValue_1*_skillData.skillLevel;
         
@@ -141,7 +143,7 @@ public class Skill_Three_SPAttack: ActiveTech
         }
         player.OnSpecialAttackStarted -= ActiveTry;
         player.OnSpecialAttackStarted += ActiveTry;
-        GameManager.Instance.PoolManager.GetFromPool(_backlashPrefab, player.transform.position, Quaternion.identity);  //생성
+        
     }
 
     public override void Deactivate(Player player, bool isAnotherSkill)
@@ -153,13 +155,24 @@ public class Skill_Three_SPAttack: ActiveTech
 
     public void ActiveTry()
     {
+        
         if (_playerReflect == null)
         {
             Debug.LogWarning("Reflect component not found on player.");
             return;
         }
-        
+
+        //로드
+        if (_backlashPrefab == null)
+        {
+            _backlashPrefab = Resources.Load<SkillEffect>("Prefabs/Effect/Skill/Backlash_Player");
+        }
+        //생성
+        GameManager.Instance.PoolManager.GetFromPool(_backlashPrefab, _player.transform.position, Quaternion.identity);
+
         _playerReflect.StartReflectCoroutine(_reflectionTime);
+
+
     }
 
     
