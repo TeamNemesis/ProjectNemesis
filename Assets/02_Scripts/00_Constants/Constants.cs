@@ -226,6 +226,7 @@ public static class Constants
     #endregion
 
     #region Scene Names
+    public const string SCENE_NAME_LOGIN = "LoginScene";
     public const string SCENE_NAME_INTRO = "IntroScene";
     public const string SCENE_NAME_PLAY = "Player";
     #endregion

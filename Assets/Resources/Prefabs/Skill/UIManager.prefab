@@ -5821,6 +5821,7 @@ MonoBehaviour:
   _skillValueScriptText: {fileID: 3017384485633890481}
   _skillLevelText: {fileID: 8309648595576700197}
   _parentContent: {fileID: 6172900564164755599}
+  _upgradePanel: {fileID: 2578443968597463663}
   _skillBtnPanel: {fileID: 2131672189545265708}
   _parentPanel: {fileID: 5865017217408300059}
   _skillChooseBtnPrefab: {fileID: 8030981063769365910, guid: 82165b846db56dc42a408dc9c4000c02, type: 3}
@@ -6076,6 +6077,50 @@ PrefabInstance:
     - target: {fileID: 1845682842676313872, guid: 0fc2a5a1f14061b4c9cf32bd3ce927cf, type: 3}
       propertyPath: 'stringKeys.Array.data[1]'
       value: English
+      objectReference: {fileID: 0}
+    - target: {fileID: 2854578064416465995, guid: 0fc2a5a1f14061b4c9cf32bd3ce927cf, type: 3}
+      propertyPath: m_Actions
+      value: 
+      objectReference: {fileID: -944628639613478452, guid: f9a37007548323e44a2d3442712edd84, type: 3}
+    - target: {fileID: 2854578064416465995, guid: 0fc2a5a1f14061b4c9cf32bd3ce927cf, type: 3}
+      propertyPath: m_ActionEvents.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2854578064416465995, guid: 0fc2a5a1f14061b4c9cf32bd3ce927cf, type: 3}
+      propertyPath: m_ActionEvents.Array.data[0].m_ActionId
+      value: 7824c8b9-74b5-4c14-8b56-cbf0929de6b9
+      objectReference: {fileID: 0}
+    - target: {fileID: 2854578064416465995, guid: 0fc2a5a1f14061b4c9cf32bd3ce927cf, type: 3}
+      propertyPath: m_ActionEvents.Array.data[0].m_ActionName
+      value: 'SettingUI/New action[/Keyboard/u]'
+      objectReference: {fileID: 0}
+    - target: {fileID: 2854578064416465995, guid: 0fc2a5a1f14061b4c9cf32bd3ce927cf, type: 3}
+      propertyPath: m_ActionEvents.Array.data[0].m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2854578064416465995, guid: 0fc2a5a1f14061b4c9cf32bd3ce927cf, type: 3}
+      propertyPath: m_ActionEvents.Array.data[0].m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2854578064416465995, guid: 0fc2a5a1f14061b4c9cf32bd3ce927cf, type: 3}
+      propertyPath: m_ActionEvents.Array.data[0].m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 8799830750287696855}
+    - target: {fileID: 2854578064416465995, guid: 0fc2a5a1f14061b4c9cf32bd3ce927cf, type: 3}
+      propertyPath: m_ActionEvents.Array.data[0].m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2854578064416465995, guid: 0fc2a5a1f14061b4c9cf32bd3ce927cf, type: 3}
+      propertyPath: m_ActionEvents.Array.data[0].m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnOpenSetting
+      objectReference: {fileID: 0}
+    - target: {fileID: 2854578064416465995, guid: 0fc2a5a1f14061b4c9cf32bd3ce927cf, type: 3}
+      propertyPath: m_ActionEvents.Array.data[0].m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: SettingPanel, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 2854578064416465995, guid: 0fc2a5a1f14061b4c9cf32bd3ce927cf, type: 3}
+      propertyPath: m_ActionEvents.Array.data[0].m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 3082180721974662484, guid: 0fc2a5a1f14061b4c9cf32bd3ce927cf, type: 3}
       propertyPath: m_StringReference.m_TableEntryReference.m_KeyId

@@ -390,7 +390,7 @@ public class ServerManager : MonoBehaviour
 
     public void OnClickSceneBtn()
     {
-        SceneManager.LoadScene(1);
+        GameManager.Instance.SceneLoadManager.LoadIntroScene();
         EventBus.SetCanGetInput(true);
     }
 
