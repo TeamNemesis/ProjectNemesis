@@ -2,6 +2,7 @@
 using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 
 /// <summary>
@@ -12,6 +13,10 @@ public class Skill_One_SPAttack : ActiveTech
     private Player _player;
 
     private Action _AttackTry;
+
+    private SkillEffect _skillEffectPrefab; //이펙트
+
+    
     /// <summary>   
     /// 공격 한 번 당 한 번만 적용하도록 하기 위한 필드값
     /// </summary>
@@ -23,6 +28,11 @@ public class Skill_One_SPAttack : ActiveTech
         base.Activate(skillManager, player);
         _player = player;
         _AttackTry = () => ActiveTry(player);
+
+        if(_skillEffectPrefab == null )             //여기서 로드
+        {
+            _skillEffectPrefab = Resources.Load<SkillEffect>("Prefabs/Effect/Skill/Bloodlust");
+        }
         player.OnSpecialAttackStarted += _AttackTry;
         EventBus.OnMonsterHit += HitEnemy;
 
@@ -45,6 +55,8 @@ public class Skill_One_SPAttack : ActiveTech
     public override void ActiveTry(Player player)
     {
         isHit = false;
+
+        
     }
 
     public override void HitEnemy(WeaponType weapon, ATTACKTYPE attack, Transform transform,Transform attackerTransform)
@@ -58,6 +70,7 @@ public class Skill_One_SPAttack : ActiveTech
         if (isHit) return;
 
         isHit = true;
+        GameManager.Instance.PoolManager.GetFromPool(_skillEffectPrefab, _player.transform.position, Quaternion.identity);  //생성
         _player.playerModel.Heal(Constants.SKILL_ONE_SPATTACKHEAL);
     }
 
@@ -107,19 +120,30 @@ public class Skill_Three_SPAttack: ActiveTech
 {
     private float _reflectionTime;
     private reflect _playerReflect;
-    
+
+    private SkillEffect _backlashPrefab;    //반동 이펙트
+    private Player _player;                 //플레이어 위치에 생성
+
+
     public override void Activate(SkillManager skillManager, Player player)
     {
+        //추가
+        _player = player;
+
         base.Activate(skillManager, player);
         _reflectionTime = _skillData.skillBaseValue_1 + _skillData.skillLevelValue_1*_skillData.skillLevel;
-
+        
         _playerReflect = player.GetComponent<reflect>();
+        
         if (_playerReflect == null)
         {
-            _playerReflect = player.AddComponent<reflect>();    
+            Debug.LogWarning("Reflect component not found on player.");
+            _playerReflect = player.AddComponent<reflect>();
+            
         }
         player.OnSpecialAttackStarted -= ActiveTry;
         player.OnSpecialAttackStarted += ActiveTry;
+        
     }
 
     public override void Deactivate(Player player, bool isAnotherSkill)
@@ -131,12 +155,23 @@ public class Skill_Three_SPAttack: ActiveTech
 
     public void ActiveTry()
     {
+        
         if (_playerReflect == null)
         {
             return;
         }
-        
+
+        //로드
+        if (_backlashPrefab == null)
+        {
+            _backlashPrefab = Resources.Load<SkillEffect>("Prefabs/Effect/Skill/Backlash_Player");
+        }
+        //생성
+        GameManager.Instance.PoolManager.GetFromPool(_backlashPrefab, _player.transform.position, Quaternion.identity);
+
         _playerReflect.StartReflectCoroutine(_reflectionTime);
+
+
     }
 
     

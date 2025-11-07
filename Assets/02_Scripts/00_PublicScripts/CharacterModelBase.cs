@@ -40,7 +40,7 @@ public abstract class CharacterModelBase : PoolableObject, IDamageable
     }
 
     [SerializeField]
-    protected float _moveSpeed = 5; // 이동 속도
+    protected float _moveSpeed; // 이동 속도
     public float moveSpeed { get { return _moveSpeed; } }
     public void SetMoveSpeed(float speed)
     {
@@ -175,7 +175,6 @@ public abstract class CharacterModelBase : PoolableObject, IDamageable
     protected virtual void Die()
     {
         OnDieEvent?.Invoke();
-        Debug.LogWarning("몬스터 죽음");
         isDead = true;
         GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
         OnDieEvent = null;

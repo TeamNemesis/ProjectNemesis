@@ -209,7 +209,10 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
 
     protected bool CanSeePlayer()
     {
-        if (_target == null) return false;
+        if (_target == null)
+        {
+            return false;
+        }
 
         Vector3 dir = (_target.position - transform.position).normalized;
         float dist = Vector3.Distance(transform.position, _target.position);
@@ -222,8 +225,9 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
         }
 
         int mask = LayerMask.GetMask(targetTag, Constants.LAYER_MASK_WALL);
-        if (Physics.Raycast(transform.position + Vector3.up * 0.3f, dir, out RaycastHit hit, dist, mask))
+        if (Physics.Raycast(transform.position + Vector3.up * 2f, dir, out RaycastHit hit, dist, mask))
         {
+            Debug.Log($"{hit.transform.name}");
             if (hit.transform == _target)
             {
                 return true;
