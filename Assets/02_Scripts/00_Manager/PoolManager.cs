@@ -203,7 +203,6 @@ public class PoolManager : MonoBehaviour
 
         if (!inUsePools.ContainsKey(obj.name))
         {
-            Debug.LogWarning($"'{obj.name}' 풀에 반환할 수 없습니다. 풀이 존재하지 않습니다.");
             Destroy(obj);
             return;
         }
@@ -220,7 +219,6 @@ public class PoolManager : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning($"오브젝트 '{obj.name}'은 이 풀에서 사용 중이 아닙니다.");
         }
     }
 
@@ -232,7 +230,6 @@ public class PoolManager : MonoBehaviour
     {
         if (!inUsePools.ContainsKey(obj.name))
         {
-            Debug.LogWarning($"'{obj.name}' 풀에 반환할 수 없습니다. 풀이 존재하지 않습니다.");
             Destroy(obj);
             return;
         }
@@ -247,7 +244,6 @@ public class PoolManager : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning($"오브젝트 '{obj.name}'은 이 풀에서 사용 중이 아닙니다.");
         }
     }
 
