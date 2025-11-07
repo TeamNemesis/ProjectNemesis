@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Elite1 : MonsterBase
 {
+    [Header("임시")]
+    [SerializeField] Collider _collider;
     [Header("Local Stats")]
     [SerializeField] private float _box_Length = 3;
     [SerializeField] private float _box_Height = 3;
