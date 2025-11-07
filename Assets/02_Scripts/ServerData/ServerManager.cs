@@ -33,7 +33,7 @@ public class ServerManager : MonoBehaviour
 
     private bool shouldChangeScene = false;
     private DownloadManager _downloadManager;
-    public DownloadManager downloadManager { get { return _downloadManager; } } 
+    public DownloadManager downloadManager { get { return _downloadManager; } }
 
 
     public async void Initialize()
@@ -106,14 +106,7 @@ public class ServerManager : MonoBehaviour
             await currentUser.SendEmailVerificationAsync();
             ShowPopup("회원가입이 완료되었습니다. 이메일 인증을 진행해주세요.");
 
-            var userData = new Dictionary<string, object>
-            {
-                { "playerStatJson", "" },
-                { "updateTime", ServerValue.Timestamp }
-            };
-            await dbRef.Child("playerStats").Child(currentUser.UserId).SetValueAsync(userData);
-
-            await _downloadManager.DownloadJsonToLocal(fromGameBase: true);
+            await SaveUserEmailOnSignUp();
         }
         catch (System.Exception ex)
         {
@@ -121,6 +114,26 @@ public class ServerManager : MonoBehaviour
         }
 
         SetLoading(false);
+    }
+
+    public async Task SaveUserEmailOnSignUp()
+    {
+        var user = FirebaseAuth.DefaultInstance.CurrentUser;
+        if (user == null) return;
+
+        string uid = user.UserId;
+        string email = user.Email;
+
+        var userData = new Dictionary<string, object>
+    {
+        { "email", email }
+    };
+
+        await FirebaseDatabase.DefaultInstance
+            .RootReference
+            .Child("users")
+            .Child(uid)
+            .UpdateChildrenAsync(userData);
     }
 
     public async void OnClickLogin()
@@ -182,7 +195,7 @@ public class ServerManager : MonoBehaviour
     }
 
 
-   
+
 
     public async void DeleteAccount()
     {
@@ -394,5 +407,9 @@ public class ServerManager : MonoBehaviour
         EventBus.SetCanGetInput(true);
     }
 
+    public void ServerStart()
+    {
+        mainCanvas.SetActive(true);
+    }
 
 }

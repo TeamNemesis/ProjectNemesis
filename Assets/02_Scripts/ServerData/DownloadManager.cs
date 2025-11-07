@@ -1,4 +1,5 @@
-﻿using Firebase.Database;
+﻿using Firebase.Auth;
+using Firebase.Database;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -116,5 +117,22 @@ public class DownloadManager : MonoBehaviour
         }
 
         _serverManager.SetLoading(false);
+    }
+
+
+    public async Task UploadClearTime(float clearTime)
+    {
+        var user = FirebaseAuth.DefaultInstance.CurrentUser;
+        if (user == null) return;
+
+        string uid = user.UserId;
+
+        await FirebaseDatabase.DefaultInstance
+            .RootReference
+            .Child("users")
+            .Child(uid)
+            .Child("clearTimes")
+            .Push()
+            .SetValueAsync(clearTime);
     }
 }
