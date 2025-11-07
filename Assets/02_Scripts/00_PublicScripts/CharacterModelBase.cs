@@ -81,7 +81,6 @@ public abstract class CharacterModelBase : PoolableObject, IDamageable
     public virtual void Initialize()
     {
         debuffHandler = GetComponent<DebuffHandler>();
-        OnDieEvent += ()=>Debug.LogWarning("죽음");
     }
 
     /// <summary>
