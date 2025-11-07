@@ -392,6 +392,7 @@ public enum InteractableType
     Reward,
     ShopItem,
     Weapon,
+    Reinforce,
 }
 
 /// <summary>
