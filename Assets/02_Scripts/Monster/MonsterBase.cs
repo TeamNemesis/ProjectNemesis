@@ -227,7 +227,6 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
         int mask = LayerMask.GetMask(targetTag, Constants.LAYER_MASK_WALL);
         if (Physics.Raycast(transform.position + Vector3.up * 2f, dir, out RaycastHit hit, dist, mask))
         {
-            Debug.Log($"{hit.transform.name}");
             if (hit.transform == _target)
             {
                 return true;
