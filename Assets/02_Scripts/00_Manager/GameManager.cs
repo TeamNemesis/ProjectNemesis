@@ -31,7 +31,7 @@ public class GameManager : MonoBehaviour
                     _instance._interactableManager = obj.AddComponent<InteractableManager>();
                     _instance._dataManager = obj.AddComponent<DataManager>();
                     _instance._playerStatManager = obj.AddComponent<PlayerStatManager>();
-                    
+                    _instance._languageManager = obj.AddComponent<LanguageManager>();
                     _instance._poolManager = obj.AddComponent<PoolManager>();
                     _instance._currencyManager = obj.AddComponent<CurrencyManager>();
 
@@ -81,18 +81,18 @@ public class GameManager : MonoBehaviour
             _uiManager = Instantiate(_uiManager, transform);
             _uiManager.name = "UIManager";
         }
-        //if(_serverManager == null)
-        //{
-        //    _serverManager = Resources.Load<ServerManager>("Prefabs/Skill/ServerManager");
-        //    _serverManager = Instantiate(_serverManager, transform);
-        //    _serverManager.name = "ServerManager";
-        //}
+        if(_serverManager == null)
+        {
+            _serverManager = Resources.Load<ServerManager>("Prefabs/Skill/ServerManager");
+            _serverManager = Instantiate(_serverManager, transform);
+            _serverManager.name = "ServerManager";
+        }
         _instance._resourceManager.Initialize();
         _instance._dataManager.Initialize(_instance._resourceManager);
         _skillManger.InitializeSkillManager();
         StartCoroutine(_uiManager.InitializeManager());
         _currencyManager.Initialize();
-        //_serverManager.Initialize();
+        _serverManager.Initialize();
         _poolManager.Initialize(_instance._resourceManager);
     }
 
@@ -133,5 +133,9 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private ServerManager _serverManager;
     public ServerManager serverManager { get { return _serverManager; } }
+
+    [SerializeField]
+    private LanguageManager _languageManager;
+    public LanguageManager languageManager => _languageManager;
 
 }

@@ -206,8 +206,15 @@ public static class Constants
     public const string RESOURCES_PATH_SKILLTOOLTIP = "SkillData/SkillTooltip/KeywordData";
     public const string RESOURCES_PATH_SKILLTOOLTIPUI = "Prefabs/Skill/Skill_ToolTip";
     public const string RESOURCES_PATH_PLAYERSTATDATA = "SkillData/PlayerStatData";
-    public static readonly string FILE_PATH_PLAYERSTAT = Path.Combine(Application.dataPath, "SkillData/PlayerStatData.json");
 
+
+
+
+
+    public static  string FILE_PATH_PLAYERSTAT
+    {
+        get { return Path.Combine(Application.persistentDataPath, "SkillData/PlayerStatData.json"); }
+    }
 
     #region Map
     public static string RESOURCES_PATH_ROOMDATASO = "ScriptableObjects/Map/Rooms";
@@ -221,13 +228,13 @@ public static class Constants
     #region knockBack
     public const float KNOCKBACK_COOLTIME = 5f;
     public const float KNOCKBACK_POWER = 10f;
-		#endregion
+    #endregion
 
-		#region localization
-		public const string STRING_Korean = "ko";
+    #region localization
+    public const string STRING_Korean = "ko";
     public const string LOCAL_PREF_KEY = "LanguageIndex";
     public const string RESOLUTION_PREF_KEY = "ResolutionIndex";
-
+    public const string LOCAL_TABLE = "Local";
     #endregion
 
 
@@ -240,17 +247,17 @@ public static class Constants
     /// <param name="origin"></param>
     /// <param name="targetList"></param>
     /// <returns></returns>
-    public static T GetNearestObject<T>(Transform origin, List<T> targetList)  where T : Component
+    public static T GetNearestObject<T>(Transform origin, List<T> targetList) where T : Component
     {
-        if(targetList == null)
+        if (targetList == null)
         {
             Debug.LogWarning("리스트가 null입니다.");
             return null;
         }
 
 
-        
-        if(targetList.Count == 0)
+
+        if (targetList.Count == 0)
         {
             Debug.LogWarning("리스트가 비어있습니다.");
             return null;
@@ -260,9 +267,9 @@ public static class Constants
         float minDistance = float.MaxValue;
         T nearestObject = null;
 
-        foreach(T target in targetList)
+        foreach (T target in targetList)
         {
-            if(target ==null)
+            if (target == null)
             {
                 continue;
             }
@@ -285,7 +292,7 @@ public static class Constants
     /// <param name="origin"></param>
     /// <param name="targetList"></param>
     /// <returns></returns>
-    public static GameObject GetNearestObject(Transform origin, List<GameObject> targetList) 
+    public static GameObject GetNearestObject(Transform origin, List<GameObject> targetList)
     {
         if (targetList == null)
         {
@@ -305,7 +312,7 @@ public static class Constants
         float minDistance = float.MaxValue;
         GameObject nearestObject = null;
 
-        foreach (GameObject  target in targetList)
+        foreach (GameObject target in targetList)
         {
             if (target == null)
             {

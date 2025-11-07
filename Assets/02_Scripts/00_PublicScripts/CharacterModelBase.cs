@@ -17,6 +17,13 @@ public abstract class CharacterModelBase : PoolableObject, IDamageable
         OnHpChanged?.Invoke(_currentHealth, _maxHealth);
     }
 
+    public void SettingMaxHp(int MaxHp)
+    {
+        _maxHealth = MaxHp;
+        _currentHealth = MaxHp;
+        OnHpChanged?.Invoke(_currentHealth, _maxHealth);
+    }
+
 
     [SerializeField]
     protected int _currentHealth;

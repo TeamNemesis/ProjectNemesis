@@ -1,4 +1,5 @@
-﻿using Firebase.Auth;
+﻿using Firebase;
+using Firebase.Auth;
 using Firebase.Database;
 using System.Collections.Generic;
 using System.IO;
@@ -35,7 +36,7 @@ public class ServerManager : MonoBehaviour
     public DownloadManager downloadManager { get { return _downloadManager; } } 
 
 
-    public void Initialize()
+    public async void Initialize()
     {
         auth = FirebaseAuth.DefaultInstance;
         _dbRef = FirebaseDatabase.DefaultInstance.RootReference;
@@ -44,8 +45,7 @@ public class ServerManager : MonoBehaviour
 
         bool isMobile = Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer;
 
-        googleLoginBtn.gameObject.SetActive(isMobile);
-        linkEmailBtn.gameObject.SetActive(isMobile);
+
 
         if (isMobile)
         {
@@ -55,8 +55,16 @@ public class ServerManager : MonoBehaviour
                 _ = LinkEmailToGoogleAccount();
             });
         }
-
-
+        var dependencyStatus = await FirebaseApp.CheckAndFixDependenciesAsync();
+        if (dependencyStatus == DependencyStatus.Available)
+        {
+            FirebaseApp app = FirebaseApp.DefaultInstance;
+            auth = FirebaseAuth.DefaultInstance;
+        }
+        else
+        {
+            Debug.LogError($"Firebase 초기화 실패: {dependencyStatus}");
+        }
 
 
         if (auth.CurrentUser != null)
@@ -76,6 +84,9 @@ public class ServerManager : MonoBehaviour
 
         _downloadManager = GetComponent<DownloadManager>();
         _downloadManager.Initialize(this);
+
+        googleLoginBtn.gameObject.SetActive(isMobile);
+        linkEmailBtn.gameObject.SetActive(isMobile);
     }
 
     public async void OnClickSignUp()
@@ -380,6 +391,7 @@ public class ServerManager : MonoBehaviour
     public void OnClickSceneBtn()
     {
         SceneManager.LoadScene(1);
+        EventBus.SetCanGetInput(true);
     }
 
 

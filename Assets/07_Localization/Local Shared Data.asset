@@ -87,10 +87,6 @@ MonoBehaviour:
     m_Key: Game Start
     m_Metadata:
       m_Items: []
-  - m_Id: 2056654727790592
-    m_Key: New Entry
-    m_Metadata:
-      m_Items: []
   - m_Id: 2059143833305088
     m_Key: Setting
     m_Metadata:
@@ -100,19 +96,19 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 2065516961873920
-    m_Key: TotalDamage
+    m_Key: totalMultiDamage
     m_Metadata:
       m_Items: []
   - m_Id: 2066555266023424
-    m_Key: MaxHp
+    m_Key: playerHP
     m_Metadata:
       m_Items: []
   - m_Id: 2066807251419136
-    m_Key: Revive
+    m_Key: playerRevive
     m_Metadata:
       m_Items: []
   - m_Id: 2067063548559360
-    m_Key: Heal
+    m_Key: playerRestore
     m_Metadata:
       m_Items: []
   - m_Id: 2105167574581248
@@ -125,6 +121,14 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 2111396187324416
     m_Key: ClearTime
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2383108192747520
+    m_Key: UpgradeFail
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2056654727790592
+    m_Key: UpgradeSuccess
     m_Metadata:
       m_Items: []
   m_Metadata:

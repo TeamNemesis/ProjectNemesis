@@ -1,15 +1,24 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
-using UnityEngine;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using UnityEditor;
+using UnityEngine;
 
 public class PlayerStatManager : MonoBehaviour
 {
     private Dictionary<string,PlayerStatData> _playerStatDataDic = new Dictionary<string,PlayerStatData>();
     public Dictionary<string, PlayerStatData> playerStatDataDic { get { return _playerStatDataDic; } }
+
+    public List<PlayerStatData> GetUpgradableStats()
+    {
+        return playerStatDataDic
+            .Values
+            .Where(stat => stat.MaxLevel > 0)
+            .ToList();
+    }
 
     private List<PlayerStatJsonData> _playerjsonData = new List<PlayerStatJsonData>();
 
@@ -522,11 +531,11 @@ public class PlayerStatManager : MonoBehaviour
             string jsonText = File.ReadAllText(Constants.FILE_PATH_PLAYERSTAT);
             _playerjsonData = JsonConvert.DeserializeObject<List<PlayerStatJsonData>>(jsonText);
             InitSkillDictionary();
-            Debug.Log("✅ JSON 파일 불러오기 성공");
+            Debug.Log("JSON 파일 불러오기 성공");
         }
         catch (System.Exception ex)
         {
-            Debug.LogError("❌ JSON 파싱 오류: " + ex.Message);
+            Debug.LogError("JSON 파싱 오류: " + ex.Message);
         }
     }
 
@@ -575,6 +584,7 @@ public class PlayerStatManager : MonoBehaviour
         string json = JsonConvert.SerializeObject(updatedList, Formatting.Indented);
         File.WriteAllText(Constants.FILE_PATH_PLAYERSTAT, json);
     }
+
 
     public void UploadToFirebase()
     {

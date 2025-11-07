@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class SkillManager : MonoBehaviour
@@ -232,30 +233,41 @@ public class SkillManager : MonoBehaviour
         int totalNum = skillOneNum + skillTwoNum + skillThreeNum + skillFourNum + skillFiveNum;
 
         TechSelectPackType[] packTypes = new TechSelectPackType[count];
-
+        TechSelectPackType packType;
         for (int i = 0; i < count; i++)
         {
-            int totalChance = Random.Range(0, totalNum);
+            int totalChance = UnityEngine.Random.Range(0, totalNum);
             if (totalChance < skillOneNum)
             {
-                packTypes[i] = TechSelectPackType.Company1;
+                packType = TechSelectPackType.Company1;
             }
             else if (totalChance < skillOneNum + skillTwoNum)
             {
-                packTypes[i] = TechSelectPackType.Company2;
+                packType = TechSelectPackType.Company2;
             }
             else if (totalChance < skillOneNum + skillTwoNum + skillThreeNum)
             {
-                packTypes[i] = TechSelectPackType.Company3;
+                packType = TechSelectPackType.Company3;
             }
             else if (totalChance < skillOneNum + skillTwoNum + skillThreeNum + skillFourNum)
             {
-                packTypes[i] = TechSelectPackType.Company4;
+                packType = TechSelectPackType.Company4;
             }
             else
             {
-                packTypes[i] = TechSelectPackType.Company5;
+                packType = TechSelectPackType.Company5;
             }
+            if (Array.Exists(packTypes, x => x == packType))
+            {
+                i--;
+                continue;
+            }
+            else
+            {
+                packTypes[i] = packType;
+            }
+
+
         }
         return packTypes;
     }
