@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -39,9 +37,9 @@ public class Skill_One_Attack : ActiveTech
 
     }
 
-    public override void HitEnemy(WeaponType weaponType, ATTACKTYPE attackType, Transform transform,Transform attacker)
+    public override void HitEnemy(WeaponType weaponType, ATTACKTYPE attackType, Transform transform, Transform attacker)
     {
-        if(attackType != ATTACKTYPE.NORMAL)
+        if (attackType != ATTACKTYPE.NORMAL)
         {
             return;
         }
@@ -121,7 +119,7 @@ public class Skill_Three_Attack : ActiveTech
     {
         // 공격 적중 시 이벤트에 추가
         base.Activate(skillManager, player);
-        EventBus.OnMonsterHit += KnockBackEnemy; 
+        EventBus.OnMonsterHit += KnockBackEnemy;
         Drone[] drones = player.transform.GetComponentsInChildren<Drone>();
         if (drones.Length > 0)
         {
@@ -146,7 +144,7 @@ public class Skill_Three_Attack : ActiveTech
 
     public void KnockBackEnemy(WeaponType weapon, ATTACKTYPE attack, Transform enemyTransform, Transform attackerTransform)
     {
-        if(attack != ATTACKTYPE.NORMAL)
+        if (attack != ATTACKTYPE.NORMAL)
         {
             return;
         }
@@ -173,18 +171,26 @@ public class Skill_Three_Attack : ActiveTech
 public class Skill_Four_Attack : ActiveTech
 {
     public int stack;
+    private bool bIsEffect;
+    private PoolableObject _skillEffectPrefab;
+    private GameObject _skillEffect;
 
     /// <summary>
     /// 공격 시도시 실행할 액션
     /// </summary>
     private Action _AttackTry;
-    private Action<WeaponType, ATTACKTYPE, Transform,Transform> _DroneAttack;
+    private Action<WeaponType, ATTACKTYPE, Transform, Transform> _DroneAttack;
 
     public override void Activate(SkillManager skillManager, Player player)
     {
 
         // 공격 시도 시 이벤트에 추가
         base.Activate(skillManager, player);
+        if (_skillEffectPrefab == null)
+        {
+            _skillEffectPrefab = Resources.Load<PoolableObject>("Prefabs/Effect/Skill/Zzap_Player");
+        }
+        bIsEffect = false;
         _AttackTry = () => ActiveTry(player);
         _DroneAttack = (WeaponType weapon, ATTACKTYPE attack, Transform transform, Transform attackerTransform) => ActiveTry(player);
         player.OnNormalAttackStarted += _AttackTry;
@@ -212,7 +218,6 @@ public class Skill_Four_Attack : ActiveTech
         {
             foreach (Drone drone in drones)
             {
-
                 drone.Attack -= _DroneAttack;
             }
         }
@@ -231,8 +236,14 @@ public class Skill_Four_Attack : ActiveTech
     {
         stack++;
         // 최대 스택 체한
-        if (stack > 10)
+        if (stack >= 10)
         {
+            if (!bIsEffect)
+            {
+                _skillEffect = GameManager.Instance.PoolManager.GetFromPool(_skillEffectPrefab, player.transform.position, Quaternion.identity, player.transform);
+
+                bIsEffect = true;
+            }
             stack = 10;
         }
     }
@@ -243,7 +254,10 @@ public class Skill_Four_Attack : ActiveTech
         {
             // 스턴 적용
             transform.GetComponent<DebuffHandler>().ApplyDebuff(DebuffHandler.DebuffData.CreateStun(1f));
+            GameManager.Instance.PoolManager.ReleaseToPool(_skillEffect.gameObject);
+            _skillEffect = null;
             stack = 0;
+            bIsEffect = false;
         }
     }
 
@@ -251,6 +265,12 @@ public class Skill_Four_Attack : ActiveTech
     public Skill_Four_Attack(SkillData skillData) : base(skillData)
     {
         stack = 0;
+        if(_skillEffect!=null)
+        {
+            GameManager.Instance.PoolManager.ReleaseToPool(_skillEffect.gameObject);
+            _skillEffect = null;
+        }
+        bIsEffect = false;
     }
 }
 
@@ -292,9 +312,9 @@ public class Skill_Five_Attack : ActiveTech
 
     public override void HitEnemy(WeaponType weapon, ATTACKTYPE attack, Transform transform, Transform attackerTransform)
     {
-        MonsterBase monster =  transform.GetComponent<MonsterBase>();
+        MonsterBase monster = transform.GetComponent<MonsterBase>();
 
-        if(monster.GetMonsterSize() == MonsterSize.BIG)
+        if (monster.GetMonsterSize() == MonsterSize.BIG)
         {
             monster.GetDebuffHandler().ApplyDebuff(DebuffHandler.DebuffData.CreateWeaken(5f, 10f));
         }

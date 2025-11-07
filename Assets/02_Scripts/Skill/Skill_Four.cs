@@ -8,6 +8,9 @@ using UnityEngine;
 
 public class Skill_Four : SkillBase
 {
+    private SkillEffect _enhancedBoostPrefab;
+    private Player _player;
+
     #region 드론
     [SerializeField]
     private Drone dronePrefab;
@@ -36,6 +39,7 @@ public class Skill_Four : SkillBase
     #endregion
     public override void ActivateSkill(SkillData choosedSkill)
     {
+        _player = _skillManager.playScene.player;
 
         switch (choosedSkill.skillIdx)
         {
@@ -180,8 +184,7 @@ public class Skill_Four : SkillBase
         // 대쉬 후 value3초간 value2 만큼 이동속도 증가 이벤트 연결
         plusMoveSpeed = choosedSkill.skillBaseValue_2 + choosedSkill.skillLevelValue_2 * choosedSkill.skillLevel;
         plusMoveSpeedTime = choosedSkill.skillBaseValue_3 + choosedSkill.skillLevelValue_3 * choosedSkill.skillLevel;
-
-
+        
         //TODO 대쉬 끝 이벤트에 연결
         _skillManager.playScene.player.OnDashStarted += plusMoveSpeedAfterDash;
     }
@@ -189,6 +192,15 @@ public class Skill_Four : SkillBase
     private void plusMoveSpeedAfterDash()
     {
         skillManager.playerStatManager.AddPlayerMoveSpeedMulti(plusMoveSpeed);
+        Quaternion spawnRot =_player.transform.rotation * Quaternion.Euler(0, 180f, 0);
+        //로드
+        if (_enhancedBoostPrefab == null)
+        {
+            _enhancedBoostPrefab = Resources.Load<SkillEffect>("Prefabs/Effect/Skill/Enhancedboost");
+        }
+        //생성
+        GameManager.Instance.PoolManager.GetFromPool(_enhancedBoostPrefab, _player.transform.position, spawnRot, _player.transform);
+
         StartCoroutine(MinusMoveSpeedAfterDash());
     }
     IEnumerator  MinusMoveSpeedAfterDash()

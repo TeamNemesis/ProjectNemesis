@@ -56,19 +56,19 @@ public class horizon : PoolableObject,IInitializePoolable
             float distance = Vector3.Distance(player.transform.position, col.transform.position);
 
             // 플레이어와의 거리가 3 이상일 때만
-            if (distance >= 6f)
+            if (distance >= inRadius)
             {
                 CharacterModelBase target = col.GetComponent<CharacterModelBase>();
                 if (target != null)
                 {
                     target.TakeDamage(damage, null);
-                    Debug.Log("데미지 적용!");
+                    //Debug.Log("데미지 적용!");
                 }
             }
         }
     }
 
-    void OnDrawGizmosSelected()
+    void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
         Gizmos.matrix = transform.localToWorldMatrix;
@@ -95,8 +95,8 @@ public class horizon : PoolableObject,IInitializePoolable
         {
             damage = skillData.damage;
             player = skillData.player.gameObject;
-            radius = 8f * GameManager.Instance.PlayerStatManager.playerAreaExtent;
-            inRadius = 6f * GameManager.Instance.PlayerStatManager.playerAreaExtent;
+            radius = 4f * GameManager.Instance.PlayerStatManager.playerAreaExtent;
+            inRadius = 3f * GameManager.Instance.PlayerStatManager.playerAreaExtent;
             transform.localScale = Vector3.one * radius * 2f;
 
             GameManager.Instance.PlayerStatManager.OnAreaExtentChange -= SetRadius;
@@ -106,8 +106,8 @@ public class horizon : PoolableObject,IInitializePoolable
 
     public void SetRadius(float radiusMulti)
     {
-        radius = 8f * radiusMulti;
-        inRadius = 6f * radiusMulti;
+        radius = 4f * radiusMulti;
+        inRadius = 3f * radiusMulti;
 
         transform.localScale = Vector3.one * radius * 2f;
 

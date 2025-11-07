@@ -218,6 +218,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5771687044570928740}
     m_Modifications:
+    - target: {fileID: 78581998947228870, guid: 6f7a5f66ba3329e4dbb8f85aef6e9159, type: 3}
+      propertyPath: lengthInSec
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 615624887597393167, guid: 6f7a5f66ba3329e4dbb8f85aef6e9159, type: 3}
+      propertyPath: lengthInSec
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 2625394521723731903, guid: 6f7a5f66ba3329e4dbb8f85aef6e9159, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.13333334
@@ -273,6 +281,26 @@ PrefabInstance:
     - target: {fileID: 4660407947266946699, guid: 6f7a5f66ba3329e4dbb8f85aef6e9159, type: 3}
       propertyPath: m_Name
       value: Spore Burst
+      objectReference: {fileID: 0}
+    - target: {fileID: 5826623354048127498, guid: 6f7a5f66ba3329e4dbb8f85aef6e9159, type: 3}
+      propertyPath: lengthInSec
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6417180770939771468, guid: 6f7a5f66ba3329e4dbb8f85aef6e9159, type: 3}
+      propertyPath: lengthInSec
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8377853009688664645, guid: 6f7a5f66ba3329e4dbb8f85aef6e9159, type: 3}
+      propertyPath: lengthInSec
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 9105911840828880764, guid: 6f7a5f66ba3329e4dbb8f85aef6e9159, type: 3}
+      propertyPath: lengthInSec
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 9105911840828880764, guid: 6f7a5f66ba3329e4dbb8f85aef6e9159, type: 3}
+      propertyPath: InitialModule.startLifetime.scalar
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
