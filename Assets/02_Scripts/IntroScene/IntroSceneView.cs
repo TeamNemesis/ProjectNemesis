@@ -8,9 +8,8 @@ public class IntroSceneView : MonoBehaviour
 {
     [SerializeField] Button _gameStartButton;
 
-    public void Initialize()
+    public void LoadPlayScene()
     {
-        SceneLoadManager sceneLoadManager = GameManager.Instance.SceneLoadManager;
-        _gameStartButton.onClick.AddListener(sceneLoadManager.LoadPlayScene);
+        GameManager.Instance.SceneLoadManager.LoadPlayScene();
     }
 }

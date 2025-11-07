@@ -9,7 +9,6 @@ public class IntroScene : MonoBehaviour
 
     private void Start()
     {
-        if(_introSceneView != null)
-            _introSceneView.Initialize();
+
     }
 }
