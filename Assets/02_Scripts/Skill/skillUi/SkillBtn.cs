@@ -79,8 +79,9 @@ public class SkillBtn : PoolableObject, IPointerEnterHandler, IPointerExitHandle
 				_bIsPointerEnter = false;
 
 				_skillData = null;
+				GameManager.Instance.UIManager.skillTooltip.ReleaseCurrentTooltip();
 				GetComponent<Button>().onClick.RemoveAllListeners();
-		}
+    }
 
 		public void OnPointerEnter(PointerEventData eventData)
 		{
