@@ -2,6 +2,7 @@
 using Firebase.Database;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -109,7 +110,7 @@ public class DownloadManager : MonoBehaviour
                 Debug.Log("JSON 데이터를 성공적으로 저장했습니다.");
             }
 
-          
+
         }
         catch (System.Exception ex)
         {
@@ -134,5 +135,36 @@ public class DownloadManager : MonoBehaviour
             .Child("clearTimes")
             .Push()
             .SetValueAsync(clearTime);
+    }
+
+    public async Task<List<(string email, float bestTime)>> GetClearTimeRanking()
+    {
+        var snapshot = await FirebaseDatabase.DefaultInstance
+            .RootReference
+            .Child("users")
+            .GetValueAsync();
+
+        var rankingList = new List<(string email, float bestTime)>();
+
+        foreach (var userNode in snapshot.Children)
+        {
+            string email = userNode.Child("email").Value?.ToString() ?? "Unknown";
+            var clearTimesNode = userNode.Child("clearTimes");
+
+            List<float> times = new List<float>();
+            foreach (var timeEntry in clearTimesNode.Children)
+            {
+                if (float.TryParse(timeEntry.Value.ToString(), out float t))
+                    times.Add(t);
+            }
+
+            if (times.Count > 0)
+            {
+                float bestTime = times.Min();
+                rankingList.Add((email, bestTime));
+            }
+        }
+
+        return rankingList.OrderBy(r => r.bestTime).ToList();
     }
 }

@@ -27,6 +27,7 @@ public class ServerManager : MonoBehaviour
 
     private FirebaseAuth auth;
     private FirebaseUser _currentUser;
+    private string deviceId;
     public FirebaseUser currentUser { get { return _currentUser; } }
     private DatabaseReference _dbRef;
     public DatabaseReference dbRef { get { return _dbRef; } }
@@ -40,6 +41,7 @@ public class ServerManager : MonoBehaviour
     {
         auth = FirebaseAuth.DefaultInstance;
         _dbRef = FirebaseDatabase.DefaultInstance.RootReference;
+        deviceId = SystemInfo.deviceUniqueIdentifier;
 
         resendEmailBtn.gameObject.SetActive(false);
 
@@ -149,8 +151,20 @@ public class ServerManager : MonoBehaviour
         {
             var loginTask = await auth.SignInWithEmailAndPasswordAsync(emailInput.text, pwInput.text);
             _currentUser = loginTask.User;
-
             await _currentUser.ReloadAsync();
+
+            // 중복 로그인 체크
+            var userSnapshot = await dbRef.Child("users").Child(_currentUser.UserId).GetValueAsync();
+            bool isLoggedIn = userSnapshot.Child("isLoggedIn").Value?.ToString() == "true";
+            string lastDeviceId = userSnapshot.Child("lastLoginDeviceId").Value?.ToString();
+
+            if (isLoggedIn && lastDeviceId != deviceId)
+            {
+                ShowPopup("다른 기기에서 이미 로그인되어 있습니다. 로그아웃 후 다시 시도해주세요.");
+                auth.SignOut();
+                SetLoading(false);
+                return;
+            }
 
             if (!_currentUser.IsEmailVerified)
             {
@@ -161,7 +175,14 @@ public class ServerManager : MonoBehaviour
                 return;
             }
 
-            ShowPopup("로그인 성공", true); // 로그인 후 씬 전환
+            // 로그인 성공 → 상태 저장
+            await dbRef.Child("users").Child(_currentUser.UserId).UpdateChildrenAsync(new Dictionary<string, object>
+        {
+            { "isLoggedIn", true },
+            { "lastLoginDeviceId", deviceId }
+        });
+
+            ShowPopup("로그인 성공", true);
             resendEmailBtn.gameObject.SetActive(false);
 
             await _downloadManager.DownloadJsonToLocal(fromGameBase: false);
@@ -374,9 +395,16 @@ public class ServerManager : MonoBehaviour
         {
             logoutBtn.gameObject.SetActive(true);
             logoutBtn.onClick.RemoveAllListeners();
-            logoutBtn.onClick.AddListener(() =>
+            logoutBtn.onClick.AddListener(async () =>
             {
+                if (_currentUser != null)
+                {
+                    await dbRef.Child("users").Child(_currentUser.UserId).Child("isLoggedIn").SetValueAsync(false);
+                }
+
                 auth.SignOut();
+                _currentUser = null;
+
                 logoutBtn.gameObject.SetActive(false);
                 popUpPanel.SetActive(false);
                 ShowPopup("로그아웃되었습니다. 다시 로그인해주세요.");
