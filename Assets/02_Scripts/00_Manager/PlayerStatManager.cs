@@ -231,7 +231,7 @@ public class PlayerStatManager : MonoBehaviour
     }
     public event Action<float> OnPlayerMoveSpeedChange;
 
-
+    
     private float _playerMoveSpeedMulti;
     public float playerMoveSpeedMulti { get { return _playerMoveSpeedMulti; } }
     public void AddPlayerMoveSpeedMulti(float plusMoveSpeed)
@@ -557,6 +557,7 @@ public class PlayerStatManager : MonoBehaviour
             var value = statData.GetEffectiveValue();
             if (value is float floatValue)
             {
+                Debug.Log(field.Name + " 초기화: " + floatValue);
                 field.SetValue(this, floatValue);
             }
         }

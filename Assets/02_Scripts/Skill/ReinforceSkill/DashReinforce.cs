@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 /// <summary>
 /// 비브르 강화 대쉬 강화 (약육강식)
@@ -183,8 +184,12 @@ public class Skill_Four_Dash : ActiveTech
     private float _frontTime;
     private Action _frontAction;
 
+    private SkillEffect _plasmaShieldPrefab;
+    private Player _player;
+
     public override void Activate(SkillManager skillManager, Player player)
     {
+        _player = player;
 
         base.Activate(skillManager, player);
         if (_frontAction != null)
@@ -207,11 +212,22 @@ public class Skill_Four_Dash : ActiveTech
     }
     public override void ActiveTry(Player player)
     {
+        Vector3 spawnPos = _player.transform.position + _player.transform.forward * 1f+Vector3.up * 1f;
         player.playerModel.PlayerFrontInvincibility(_frontTime);
+
+        //로드
+        if (_plasmaShieldPrefab == null)
+        {
+            _plasmaShieldPrefab = Resources.Load<SkillEffect>("Prefabs/Effect/Skill/PlasmaShield");
+        }
+
+        //생성
+        GameManager.Instance.PoolManager.GetFromPool(_plasmaShieldPrefab, spawnPos, _player.transform.rotation, _player.transform);   //위치수정
     }
 
     public Skill_Four_Dash(SkillData skillData) : base(skillData)
     {
+
     }
 
 }
@@ -226,8 +242,19 @@ public class Skill_Five_Dash : ActiveTech
     private float _attackReinForce;
     private Action _dashAction;
 
+    private bool bIsEffect;
+    private PoolableObject _skillEffectPrefab;
+    private GameObject _skillEffect;
+
     public override void Activate(SkillManager skillManager, Player player)
     {
+        //로드!
+        if (_skillEffectPrefab == null)
+        {
+            _skillEffectPrefab = Resources.Load<PoolableObject>("Prefabs/Effect/Skill/AdrenalineRace");
+        }
+        bIsEffect = false;
+
         base.Activate(skillManager, player);
         _dashAction = () => ActiveTry(player);
         _attackReinForce = _skillData.skillLevel * _skillData.skillLevelValue_1 + _skillData.skillBaseValue_1;
@@ -250,8 +277,20 @@ public class Skill_Five_Dash : ActiveTech
 
     public override void ActiveTry(Player player)
     {
+        Vector3 spawnPos = player.transform.position + Vector3.up * 1f;
+
+        Debug.LogError("대쉬 시작");
         if (!bIsAttackReinForce)
         {
+            //생성!
+            if (!bIsEffect)
+            {
+                _skillEffect = GameManager.Instance.PoolManager.GetFromPool(_skillEffectPrefab, spawnPos, Quaternion.identity, player.transform);
+
+                bIsEffect = true;
+            }
+
+            Debug.LogError("공격력 증가");
             GameManager.Instance.PlayerStatManager.AddPlayerAttackDamage(_attackReinForce);
 
             bIsAttackReinForce = true;
@@ -264,6 +303,10 @@ public class Skill_Five_Dash : ActiveTech
         {
             if (attackType == ATTACKTYPE.NORMAL)
             {
+                //릴리즈!
+                GameManager.Instance.PoolManager.ReleaseToPool(_skillEffect.gameObject);
+                _skillEffect = null;
+                bIsEffect = false;
 
                 GameManager.Instance.PlayerStatManager.AddPlayerAttackDamage(-_attackReinForce);
                 bIsAttackReinForce = false;

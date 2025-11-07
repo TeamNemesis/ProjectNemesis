@@ -211,7 +211,6 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
     {
         if (_target == null)
         {
-            Debug.Log("타겟이 없습니다.");
             return false;
         }
 
@@ -222,12 +221,10 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
         DebuffHandler debuffHandler = GetComponent<DebuffHandler>();
         if (debuffHandler != null && debuffHandler.HasDebuff(Constants.DEBUFF_CONFUSION))
         {
-            Debug.Log("혼란상태 입니다.");
             return true;  // 혼란 상태면 항상 true
         }
 
         int mask = LayerMask.GetMask(targetTag, Constants.LAYER_MASK_WALL);
-        Debug.Log("마스크 체크");
         if (Physics.Raycast(transform.position + Vector3.up * 2f, dir, out RaycastHit hit, dist, mask))
         {
             Debug.Log($"{hit.transform.name}");

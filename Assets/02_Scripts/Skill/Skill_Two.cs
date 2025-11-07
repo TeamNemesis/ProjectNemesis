@@ -163,7 +163,7 @@ public class Skill_Two : SkillBase
     {
         if (choosedSkill.skillLevel == 1)
         {
-            _skillManager.playerStatManager.AddPlayerAreaExtent(choosedSkill.skillBaseValue_1 + choosedSkill.skillLevelValue_1);
+            _skillManager.playerStatManager.AddPlayerAreaExtent(3f);
 
         }
         else
