@@ -134,6 +134,7 @@ public class PlayerModel : CharacterModelBase
             bCanRevive = false;
             return;
         }
+        base.Die();
 
     }
     public override void Initialize()
