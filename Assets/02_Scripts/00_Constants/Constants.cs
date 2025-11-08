@@ -393,6 +393,7 @@ public enum InteractableType
     ShopItem,
     Weapon,
     Reinforce,
+    Record, 
 }
 
 /// <summary>
