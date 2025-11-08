@@ -17,7 +17,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Text _skillLevelText;
     [SerializeField] private Transform _parentContent;
     [SerializeField] private UpgradePanel _upgradePanel;
-
+    [SerializeField] private RecordPanel _recordPanel;
+    [SerializeField] private SettingPanel _settingPanel;
 
     [SerializeField] private GameObject _skillBtnPanel;
     [SerializeField] private GameObject _parentPanel;
@@ -265,5 +266,13 @@ public class UIManager : MonoBehaviour
         _upgradePanel.gameObject.SetActive(true);
     }
 
-    
+		public void OpenRecord()
+		{
+				_recordPanel.gameObject.SetActive(true);
+		}
+
+    public void OpenSettingPanel()
+    {
+        _settingPanel.OnOpenSetting();
+    }
 }

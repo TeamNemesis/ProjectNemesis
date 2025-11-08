@@ -559,7 +559,6 @@ public class PlayerStatManager : MonoBehaviour
             var value = statData.GetEffectiveValue();
             if (value is float floatValue)
             {
-                Debug.Log(field.Name + " 초기화: " + floatValue);
                 field.SetValue(this, floatValue);
             }
         }

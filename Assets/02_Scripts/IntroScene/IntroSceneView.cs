@@ -12,4 +12,15 @@ public class IntroSceneView : MonoBehaviour
     {
         GameManager.Instance.SceneLoadManager.LoadPlayScene();
     }
+
+    public void OnSettingPanel()
+    {
+        GameManager.Instance.UIManager.OpenSettingPanel();
+
+    }
+
+    public void GameQuit()
+    {
+        Application.Quit();
+    }
 }
