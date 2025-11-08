@@ -21,6 +21,30 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
         Die
     }
 
+    public class MonsterNameData
+    {
+        public string englishName;
+        public string koreanName;
+
+        public MonsterNameData(string eng, string kor)
+        {
+            englishName = eng;
+            koreanName = kor;
+        }
+    }
+
+    [SerializeField] protected MonsterNameData monsterNameData = new MonsterNameData("Monster", "몬스터");
+
+    // 기존 string _monsterName 제거 (대체됨)
+    public string GetEnglishName() => monsterNameData.englishName;
+    public string GetKoreanName() => monsterNameData.koreanName;
+
+    public virtual void SetMonsterName(string english, string korean)
+    {
+        monsterNameData.englishName = english;
+        monsterNameData.koreanName = korean;
+    }
+
 
     [Header("Base Stats")]
     [SerializeField] private float maxEliteHealth;
