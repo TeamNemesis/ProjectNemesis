@@ -366,37 +366,61 @@ public class ServerManager : MonoBehaviour
     }
     public void ShowPopup(string message, bool changeSceneOnConfirm = false)
     {
-        shouldChangeScene = changeSceneOnConfirm;
+				shouldChangeScene = changeSceneOnConfirm;
 
-        if (popUpMsg != null)
-            popUpMsg.text = message;
+				if (popUpMsg != null)
+						popUpMsg.text = message;
 
-        if (popUpPanel != null)
-            popUpPanel.SetActive(true);
+				if (popUpPanel != null)
+						popUpPanel.SetActive(true);
 
-        Debug.Log(message);
+				Debug.Log(message);
 
-        if (popUpConfirmBtn != null)
-        {
-            popUpConfirmBtn.gameObject.SetActive(true);
-            popUpConfirmBtn.onClick.RemoveAllListeners();
-            popUpConfirmBtn.onClick.AddListener(() =>
-            {
-                if (popUpPanel != null)
-                    popUpPanel.SetActive(false);
+				if (popUpConfirmBtn != null)
+				{
+						popUpConfirmBtn.gameObject.SetActive(true);
+						popUpConfirmBtn.onClick.RemoveAllListeners();
+						// 팝업 확인 버튼 클릭 시 동작을 비동기(async)로 변경하고 다운로드 로직 추가
+						popUpConfirmBtn.onClick.AddListener(async () =>
+						{
+								if (popUpPanel != null)
+										popUpPanel.SetActive(false);
 
-                popUpConfirmBtn.gameObject.SetActive(false);
+								popUpConfirmBtn.gameObject.SetActive(false);
 
-                if (shouldChangeScene)
-                {
-                    SceneManager.LoadScene(1);
-                    if (mainCanvas != null)
-                        mainCanvas.SetActive(false);
-                }
-            });
-        }
+								if (shouldChangeScene)
+								{
+										// 로딩 패널을 띄워서 사용자에게 데이터 로드 중임을 알림
+										SetLoading(true);
 
-        if (logoutBtn != null)
+										try
+										{
+												// DownloadJsonToLocal(false) 호출 시, 사용자 데이터가 없으면 gameBaseJson을 시도합니다.
+												// 이 호출이 완료될 때까지 기다립니다.
+												await _downloadManager.DownloadJsonToLocal(fromGameBase: false);
+
+												// 다운로드가 성공적으로 완료되면 씬 전환
+												SceneManager.LoadScene(1);
+												if (mainCanvas != null)
+														mainCanvas.SetActive(false);
+										}
+										catch (System.Exception ex)
+										{
+												// 다운로드 중 오류가 발생하면 팝업 메시지를 띄우고 처리
+												ShowError("데이터 다운로드 중 오류가 발생했습니다. 다시 시도해주세요.", "자동 로그인 후 데이터 다운로드 오류: " + ex.Message);
+												auth.SignOut(); // 오류 발생 시 안전하게 로그아웃 처리
+																				// 이 경우 씬 전환은 하지 않고 현재 화면에 머무르거나 로그인 화면으로 돌아가게 됩니다.
+										}
+										finally
+										{
+												// 로딩 패널 숨기기
+												SetLoading(false);
+										}
+								}
+						});
+				}
+
+				if (logoutBtn != null)
         {
             if (message.Contains("자동 로그인"))
             {
