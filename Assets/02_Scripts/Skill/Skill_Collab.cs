@@ -9,6 +9,7 @@ public class Skill_Collab : SkillBase
     /// </summary>
     private float _tyrantDamage = 0;
 
+    private SkillEffect _tyrantEffectPrefab;
     /// <summary>
     /// 최상위 포식자 계수
     /// </summary>
@@ -117,20 +118,19 @@ public class Skill_Collab : SkillBase
     #region 폭군
     public void ActiveTyrant(SkillData skill)
     {
+        if (_tyrantEffectPrefab == null)
+        {
+            _tyrantEffectPrefab = Resources.Load<SkillEffect>("Prefabs/Effect/Skill/Tyrant");  
+        }
+
         if (skill.skillLevel == 1)
-        {
-            // 모든 피해 증가
             skillManager.playerStatManager.AddTotalMultiDamage(skill.skillBaseValue_1 + skill.skillLevelValue_1);
-        }
         else
-        {
-            // 모든 피해 증가
             skillManager.playerStatManager.AddTotalMultiDamage(skill.skillLevelValue_1);
-        }
+
         skillManager.playScene.player.playerModel.OnHeal -= DamageNearestMonster;
         _tyrantDamage = skill.skillLevelValue_2 * skill.skillLevel + skill.skillBaseValue_2;
         skillManager.playScene.player.playerModel.OnHeal += DamageNearestMonster;
-
     }
 
     public void DamageNearestMonster(int currentHp, int MaxHp)
@@ -142,6 +142,15 @@ public class Skill_Collab : SkillBase
             if (nearestMonster != null)
             {
                 nearestMonster.TakeDamage(_tyrantDamage);
+                //Debug.Log("폭군 데미지 들어감");
+
+                if (_tyrantEffectPrefab != null)
+                {
+                    Vector3 spawnPos = nearestMonster.transform.position + nearestMonster.transform.forward * 0.5f;
+                    //Quaternion spawnRot = Quaternion.identity;
+
+                    GameManager.Instance.PoolManager.GetFromPool(_tyrantEffectPrefab,spawnPos,_tyrantEffectPrefab.transform.rotation);
+                }
             }
             else
             {
