@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using UnityEngine;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class Skill_Collab : SkillBase
 {
@@ -17,6 +18,10 @@ public class Skill_Collab : SkillBase
     private float _predatorTime = 0f;
     private WeakenArea _predatorPrefab;
     private WeakenAreaData _predatorData;
+
+    private SkillEffect _apexPredatorPrefab;
+
+    private Player _player;
 
     /// <summary>
     /// GravityFlare 관련 필드
@@ -79,6 +84,7 @@ public class Skill_Collab : SkillBase
 
     public override void ActivateSkill(SkillData choosedSkill)
     {
+        _player = _skillManager.playScene.player;
         switch (choosedSkill.skillIdx)
         {
             // 폭군
@@ -175,8 +181,11 @@ public class Skill_Collab : SkillBase
         {
             _predatorPrefab = Resources.Load<WeakenArea>("Prefabs/Skill/SkillObject/Skill_Collab/PredatorPrefab");
         }
-
-
+        //로드
+        if (_apexPredatorPrefab == null)
+        {
+            _predatorPrefab = Resources.Load<WeakenArea>("Prefabs/Effect/Skill/ApexPredator_Player");
+        }
 
 
     }
@@ -199,6 +208,8 @@ public class Skill_Collab : SkillBase
         skillManager.playScene.player.playerModel.Heal((int)_predatorHeal);
         MakeWeakenArea(monster);
         skillManager.playScene.player.playerModel.PlayerInvincibility(_predatorTime);
+
+        GameManager.Instance.PoolManager.GetFromPool(_apexPredatorPrefab, _player.transform.position, Quaternion.identity);  //생성
     }
 
     public void MakeWeakenArea(MonsterBase monster)
