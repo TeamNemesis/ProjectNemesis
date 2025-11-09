@@ -27,6 +27,7 @@ public class PlaySceneView : MonoBehaviour
     [SerializeField] GameObject _interactionPanel;
     [SerializeField] TextMeshProUGUI _interactionTitleText;
     [SerializeField] TextMeshProUGUI _interactionInstructionText;
+    [SerializeField] InteractionGuideBtn _interactionGuideBtn; // 모바일 시 상호작용 버튼
 
     [Header("----- 게임 승리 및 오버 패널 -----")]
     [SerializeField] GameObject _gameOverPanel;
@@ -52,7 +53,7 @@ public class PlaySceneView : MonoBehaviour
 
     public event Action<DoorInteractor> OnRoomLoadingComplete;
 
-    public void Initialize()
+    public void Initialize(Player player)
     {
         EventBus.OnBossDead += ShowGameClearPanel;
 
@@ -63,9 +64,13 @@ public class PlaySceneView : MonoBehaviour
 
         // 처음 시작하면 유탄 슬라이더를 꽉 채우기
         UpdateGrenadeCoolTime(1.0f, 1.0f);
+
+#if UNITY_ANDROID
+        _interactionGuideBtn.Initialize(player);
+#endif
     }
 
-    public void UpdateHPBar(int currentHp, int maxHp)
+		public void UpdateHPBar(int currentHp, int maxHp)
     {
         _hpBarSlider.maxValue = maxHp;
         _hpBarSlider.value = currentHp;
@@ -86,14 +91,22 @@ public class PlaySceneView : MonoBehaviour
     {
         UpdateInteractionText(interactable);
         _interactionPanel.SetActive(true);
+
+#if UNITY_ANDROID
+        _interactionGuideBtn.SetActive(true);
+#endif
     }
 
     public void HideInteractionUI()
     {
         _interactionPanel.SetActive(false);
-    }
 
-    void UpdateInteractionText(IInteractable interactable)
+#if UNITY_ANDROID
+				_interactionGuideBtn.SetActive(false);
+#endif
+		}
+
+		void UpdateInteractionText(IInteractable interactable)
     {
         interactable.GetInteractionMessage(out interactionTitle, out interactionScript);
 

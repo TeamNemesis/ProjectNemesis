@@ -78,7 +78,7 @@ public class PlayScene : MonoBehaviour
             Debug.LogError("PlaySceneView가 할당되지 않았습니다!");
             return;
         }
-        _playSceneView.Initialize();
+        _playSceneView.Initialize(_player);
         if (_cameraMover == null)
         {
             Debug.LogError("카메라 무버가 할당되지 않았습니다!");

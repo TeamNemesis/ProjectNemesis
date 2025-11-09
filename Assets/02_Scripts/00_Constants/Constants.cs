@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public static class Constants
@@ -228,11 +229,17 @@ public static class Constants
     #region Scene Names
     public const string SCENE_NAME_LOGIN = "LoginScene";
     public const string SCENE_NAME_INTRO = "IntroScene";
-    public const string SCENE_NAME_PLAY = "Player";
-    #endregion
 
-    #region knockBack
-    public const float KNOCKBACK_COOLTIME = 5f;
+#if UNITY_ANDROID
+    public const string SCENE_NAME_PLAY = "Player_Mobile";
+#elif UNITY_STANDALONE_WIN || UNITY_EDITOR
+    public const string SCENE_NAME_PLAY = "Player";
+
+#endif
+		#endregion
+
+		#region knockBack
+		public const float KNOCKBACK_COOLTIME = 5f;
     public const float KNOCKBACK_POWER = 10f;
     #endregion
 
