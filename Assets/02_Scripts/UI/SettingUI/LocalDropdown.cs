@@ -6,71 +6,61 @@ using UnityEngine.Localization.Tables;
 
 public class LocalDropdown : MonoBehaviour
 {
-    [SerializeField] private TMP_Dropdown languageDropdown;
-    [SerializeField] private string tableName;
-    [SerializeField] private string[] stringKeys;
+		[SerializeField] private TMP_Dropdown languageDropdown;
+		[SerializeField] private string tableName;
+		[SerializeField] private string[] stringKeys;
 
-    private void OnEnable()
-    {
-        languageDropdown.onValueChanged.AddListener(OnDropdownChanged);
-        LocalizationSettings.SelectedLocaleChanged += UpdateDropdown;
+		private LanguageManager languageManager;
 
-        // 드롭다운 옵션 먼저 설정
-        UpdateDropdown(LocalizationSettings.SelectedLocale);
 
-        // 저장된 언어 인덱스 기준으로 드롭다운 UI 동기화
-        if (PlayerPrefs.HasKey(Constants.LOCAL_PREF_KEY))
-        {
-            int savedIndex = PlayerPrefs.GetInt(Constants.LOCAL_PREF_KEY);
-            languageDropdown.value = savedIndex;
-            languageDropdown.RefreshShownValue();
-        }
-        else
-        {
-            languageDropdown.value = 0;
-            languageDropdown.RefreshShownValue();
-        }
-    }
+		private void OnEnable()
+		{
+				languageManager = GameManager.Instance.languageManager;
+				languageDropdown.onValueChanged.AddListener(OnDropdownChanged);
+				LocalizationSettings.SelectedLocaleChanged += UpdateDropdown;
 
-    private void OnDisable()
-    {
-        languageDropdown.onValueChanged.RemoveListener(OnDropdownChanged);
-        LocalizationSettings.SelectedLocaleChanged -= UpdateDropdown;
-    }
+				UpdateDropdown(LocalizationSettings.SelectedLocale);
 
-    private void UpdateDropdown(Locale locale)
-    {
-        LocalizationSettings.StringDatabase.GetTableAsync(tableName).Completed += handle =>
-        {
-            var table = handle.Result;
-            languageDropdown.options.Clear();
+				int savedIndex = PlayerPrefs.GetInt(Constants.LOCAL_PREF_KEY, 0);
+				languageDropdown.value = savedIndex;
+				languageDropdown.RefreshShownValue();
+		}
 
-            foreach (var key in stringKeys)
-            {
-                var entry = table.GetEntry(key);
-                string localizedText = entry?.GetLocalizedString() ?? key;
-                languageDropdown.options.Add(new TMP_Dropdown.OptionData(localizedText));
-            }
+		private void OnDisable()
+		{
+				languageDropdown.onValueChanged.RemoveListener(OnDropdownChanged);
+				LocalizationSettings.SelectedLocaleChanged -= UpdateDropdown;
+		}
 
-            languageDropdown.RefreshShownValue();
-        };
+		private void UpdateDropdown(Locale locale)
+		{
+				LocalizationSettings.StringDatabase.GetTableAsync(tableName).Completed += handle =>
+				{
+						var table = handle.Result;
+						languageDropdown.options.Clear();
 
-        // UIManager에 UI 갱신 요청 (있다면)
-        if (GameManager.Instance.UIManager != null)
-        {
-            GameManager.Instance.UIManager.RefreshCurrentSkillUI();
-            GameManager.Instance.UIManager.RefreshAllChooseButtons();
-        }
-    }
+						foreach (var key in stringKeys)
+						{
+								var entry = table.GetEntry(key);
+								string localizedText = entry?.GetLocalizedString() ?? key;
+								languageDropdown.options.Add(new TMP_Dropdown.OptionData(localizedText));
+						}
 
-    private void OnDropdownChanged(int index)
-    {
-        if (index >= 0 && index < LocalizationSettings.AvailableLocales.Locales.Count)
-        {
-            LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[index];
+						languageDropdown.RefreshShownValue();
+				};
+		}
 
-            PlayerPrefs.SetInt(Constants.LOCAL_PREF_KEY, index);
-            PlayerPrefs.Save();
-        }
-    }
+		private void OnDropdownChanged(int index)
+		{
+				if (index >= 0 && index < LocalizationSettings.AvailableLocales.Locales.Count)
+				{
+						var selectedLocale = LocalizationSettings.AvailableLocales.Locales[index];
+						string localeCode = selectedLocale.Identifier.Code;
+
+						languageManager.ChangeLanguage(localeCode);
+
+						PlayerPrefs.SetInt(Constants.LOCAL_PREF_KEY, index);
+						PlayerPrefs.Save();
+				}
+		}
 }

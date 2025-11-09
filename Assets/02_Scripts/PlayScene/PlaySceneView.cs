@@ -36,7 +36,9 @@ public class PlaySceneView : MonoBehaviour
     [SerializeField] TextMeshProUGUI _gameTimerText;
 
     [Header("----- 로컬라이즈 컴포넌트 -----")]
-    [SerializeField] LocalizeStringEvent localizeStringEvent;
+    [SerializeField] LanguageManager _languageManaer;
+    private string interactionTitle = null;
+    private string interactionScript = null;
 
     Dictionary<int, string> _roomLoadingTextMap = new Dictionary<int, string>()
 {
@@ -55,6 +57,8 @@ public class PlaySceneView : MonoBehaviour
         EventBus.OnBossDead += ShowGameClearPanel;
 
         GameManager.Instance.CurrencyManager.GetCurrentCurrency();
+        _languageManaer =  GameManager.Instance.languageManager;
+        _languageManaer.OnLanguageChanged += ChangeText;
         HideInteractionUI();
 
         // 처음 시작하면 유탄 슬라이더를 꽉 채우기
@@ -91,10 +95,17 @@ public class PlaySceneView : MonoBehaviour
 
     void UpdateInteractionText(IInteractable interactable)
     {
-        interactable.GetInteractionMessage(out string title, out string instruction);
-        _interactionTitleText.text = title;
-        localizeStringEvent.StringReference.SetReference("New Table", instruction);
-    }
+        interactable.GetInteractionMessage(out interactionTitle, out interactionScript);
+
+        ChangeText();
+
+		}
+
+    public void ChangeText()
+    {
+				_interactionTitleText.text = _languageManaer.GetLocalizedText(interactionTitle);
+				_interactionInstructionText.text = _languageManaer.GetLocalizedText(interactionScript);
+		}
 
     public void UpdateGrenadeCoolTime(float currentCooltime, float maxCooltime)
     {
@@ -167,4 +178,11 @@ public class PlaySceneView : MonoBehaviour
         TimeSpan timeSpan = TimeSpan.FromSeconds(timeInSeconds);
         _gameTimerText.text = string.Format("{0:D2}:{1:D2}", timeSpan.Minutes, timeSpan.Seconds);
     }
+
+		public void OnDisable()
+		{
+				_languageManaer.OnLanguageChanged-=ChangeText;
+        interactionTitle = null;
+        interactionScript = null;
+		}
 }

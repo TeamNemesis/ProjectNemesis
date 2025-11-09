@@ -13,20 +13,20 @@ public class RoomInfo
 
     Dictionary<RoomType, string> _roomTitle = new Dictionary<RoomType, string>()
     {
-        { RoomType.Normal, "일반 방" },
-        { RoomType.Shop, "상점" },
-        { RoomType.Colosseum, "콜로세움" },
-        { RoomType.Lab, "연구소" },
-        { RoomType.Boss, "보스 방" },
+        { RoomType.Normal, "NormalRoomTitle" },
+        { RoomType.Shop, "ShopTitle" },
+        { RoomType.Colosseum, "ColosseumTitle" },
+        { RoomType.Lab, "LabTitle" },
+        { RoomType.Boss, "BossTitle" },
     };
 
     Dictionary<RoomType, string> _roomDescription = new Dictionary<RoomType, string>()
     {
-        {  RoomType.Normal, "greeting" },
+        {  RoomType.Normal, "normal" },
         { RoomType.Shop, "shop" },
         { RoomType.Colosseum, "colosseum" },
         { RoomType.Lab, "lab" },
-        { RoomType.Boss, "보스를 물리치고 게임에서 승리하세요!" },
+        { RoomType.Boss, "boss" },
     };
 
     public RoomInfo(RoomType roomType, NormalRoomType? normalRoomType = null, TechSelectPackType? techSelectPackType = null)

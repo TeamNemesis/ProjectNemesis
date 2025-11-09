@@ -12,8 +12,8 @@ public class ReinforceInteractor : InteractableObject
 
     public override void GetInteractionMessage(out string title, out string instruction)
     {
-        title = "플레이어의 장비 보관함";
-        instruction = "E를 눌러 강화하기";
+        title = "ReinforceTitle";
+        instruction = "ReinforceScript";
 
     }
 
