@@ -123,13 +123,17 @@ public class PlayerInputHandler : MonoBehaviour
             return;
         }
         OnMoveInput?.Invoke(_moveDir);
-    }
 
-    /// <summary>
-    /// 이동 입력을 받아오는 함수
-    /// </summary>
-    /// <param name="value"></param>
-    public void OnMove(InputAction.CallbackContext value)
+#if !UNITY_ANDROID
+    OnMoveInput?.Invoke(_moveDir);
+#endif
+		}
+
+		/// <summary>
+		/// 이동 입력을 받아오는 함수
+		/// </summary>
+		/// <param name="value"></param>
+		public void OnMove(InputAction.CallbackContext value)
     { 
         if(EventBus.IsRewardSelecting)
             return;
@@ -291,4 +295,68 @@ public class PlayerInputHandler : MonoBehaviour
             OnSpecialAttackInputCanceled?.Invoke();
         }
     }
+
+#if UNITY_ANDROID
+    #region mobile
+
+    /// <summary>
+    /// 모바일 입력용: 이동 입력 이벤트 호출
+    /// </summary>
+    public void TriggerMoveInput(Vector3 moveDir)
+		{
+				_moveDir = moveDir;
+				OnMoveInput?.Invoke(moveDir);
+		}
+
+		/// <summary>
+		/// 모바일 입력용: 대시 입력 이벤트 호출
+		/// </summary>
+		public void TriggerDashInput()
+		{
+				OnDashInput?.Invoke();
+		}
+
+		/// <summary>
+		/// 모바일 입력용: 일반 공격 입력 이벤트 호출
+		/// </summary>
+		public void TriggerNormalAttackInput()
+		{
+				OnNomralAttackInput?.Invoke();
+		}
+
+		/// <summary>
+		/// 모바일 입력용: 특수 공격 시작 이벤트 호출
+		/// </summary>
+		public void TriggerSpecialAttackInput()
+		{
+				OnSpecialAttackInput?.Invoke();
+		}
+
+		/// <summary>
+		/// 모바일 입력용: 특수 공격 취소 이벤트 호출
+		/// </summary>
+		public void TriggerSpecialAttackCanceled()
+		{
+				OnSpecialAttackInputCanceled?.Invoke();
+		}
+
+		/// <summary>
+		/// 모바일 입력용: 유탄 공격 시작 이벤트 호출
+		/// </summary>
+		public void TriggerGrenadeAttackInput(Vector3 target)
+		{
+				OnGrenadeAttackInput?.Invoke(target);
+		}
+
+		/// <summary>
+		/// 모바일 입력용: 유탄 공격 종료 이벤트 호출
+		/// </summary>
+		public void TriggerGrenadeAttackEnded()
+		{
+				OnGrenadeAttackInputEnded?.Invoke();
+		}
+
+
+    #endregion
+#endif
 }

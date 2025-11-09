@@ -250,17 +250,20 @@ public static class Constants
     public const string LOCAL_TABLE = "Local";
     #endregion
 
+    #region mobile
+    public const float GRENDADE_TIME = 0.5f;
+		#endregion
 
-    #region Util
+		#region Util
 
-    /// <summary>
-    /// origin과 가장 가까운 List의 요소 반환
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="origin"></param>
-    /// <param name="targetList"></param>
-    /// <returns></returns>
-    public static T GetNearestObject<T>(Transform origin, List<T> targetList) where T : Component
+		/// <summary>
+		/// origin과 가장 가까운 List의 요소 반환
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="origin"></param>
+		/// <param name="targetList"></param>
+		/// <returns></returns>
+		public static T GetNearestObject<T>(Transform origin, List<T> targetList) where T : Component
     {
         if (targetList == null)
         {
