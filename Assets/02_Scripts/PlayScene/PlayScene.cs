@@ -29,7 +29,7 @@ public class PlayScene : MonoBehaviour
         // PlayerInputHandler의 이벤트와 Player 메서드 연결
         _inputHandler.OnMoveInput += OnMoveInput;
         _inputHandler.OnDashInput += () => _player.SetDashPressed(true);
-        _inputHandler.OnNomralAttackInput += () => _player.SetNormalAttackPressed(true);
+        _inputHandler.OnNormalAttackInput += () => _player.SetNormalAttackPressed(true);
         _inputHandler.OnGrenadeAttackInput += _player.GrenadeAttack;
         _inputHandler.OnSpecialAttackInput += _player.HandleSpecialStarted;
         _inputHandler.OnSpecialAttackInputCanceled += _player.HandleSpecialCanceled;

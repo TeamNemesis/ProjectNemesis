@@ -15,12 +15,16 @@ public class PlayerInputHandler : MonoBehaviour
     [SerializeField] Camera mainCam;               // 메인 카메라 참조
     [SerializeField] LayerMask _groundLayer;        // Ground 레이어 마스크
 
+    [Header("----- 모바일 입력 -----")]
+    [SerializeField] Joystick _joystick;            // 조이스틱 참조
+    bool _isMoblile = false;
+
     public event Action<Vector3> OnMoveInput;        // 이동 입력 이벤트
     
     public event Action OnDashInput;                 // 대시 입력 이벤트
     public event Action OnInteractInput;             // 상호작용 입력 이벤트
 
-    public event Action OnNomralAttackInput;         // 일반공격 입력 이벤트
+    public event Action OnNormalAttackInput;         // 일반공격 입력 이벤트
     public event Action<Vector3> OnGrenadeAttackInput;        // 유탄공격 입력 이벤트
     public event Action OnGrenadeAttackInputEnded;   // 유탄공격 입력 종료 이벤트
     public event Action OnSpecialAttackInput;        // 특수공격 입력 이벤트
@@ -56,6 +60,9 @@ public class PlayerInputHandler : MonoBehaviour
 
     private void Awake()
     {
+        // 임시
+        _isMoblile = true;
+        // 임시
         mainCam = Camera.main;
 
         if (_playerInput == null)
@@ -116,6 +123,12 @@ public class PlayerInputHandler : MonoBehaviour
 
     private void Update()
     {
+        //if(Application.isMobilePlatform)
+        if(_isMoblile)
+        {
+            // 모바일 플랫폼인 경우 조이스틱 입력 처리
+            _moveDir = new Vector3(_joystick.Horizontal, 0, _joystick.Vertical);
+        }
         // 일반공격 입력중에는 이동 입력 벡터를 0으로
         if (_holdAttackRoutine != null)
         {
@@ -188,12 +201,12 @@ public class PlayerInputHandler : MonoBehaviour
     IEnumerator HoldAttackRoutine()
     {
         // 즉시 한 번 공격 실행하고, interval마다 반복
-        OnNomralAttackInput?.Invoke();
+        OnNormalAttackInput?.Invoke();
 
         while (true)
         {
             yield return new WaitForSeconds(_normalAttackInterval);
-            OnNomralAttackInput?.Invoke();
+            OnNormalAttackInput?.Invoke();
         }
     }
 
@@ -290,5 +303,36 @@ public class PlayerInputHandler : MonoBehaviour
         {
             OnSpecialAttackInputCanceled?.Invoke();
         }
+    }
+
+    void OnMobile()
+    {
+        // 모바일 입력 처리 로직 작성
+
+    }
+
+    public void OnNormalAttackClicked()
+    {
+        OnNormalAttackInput?.Invoke();
+    }
+
+    public void OnDashClicked()
+    {
+        OnDashInput?.Invoke();
+    }
+
+    public void OnGrenadeAttackClicked()
+    {
+        // ToDo
+    }
+
+    public void OnSpecialAttackClicked()
+    {
+        OnSpecialAttackInput?.Invoke();
+    }
+
+    public void OnInteractionClicked()
+    {
+        OnInteractInput?.Invoke();
     }
 }
