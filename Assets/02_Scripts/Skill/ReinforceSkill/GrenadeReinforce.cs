@@ -131,12 +131,17 @@ public class Skill_Three_Grenade : ActiveTech
     {
         position.y = 0;
         GameManager.Instance.PoolManager.GetFromPool(_grenadeVortexPrefab, position, Quaternion.identity, null, _grenadeVortexData).GetComponent<GrenadeVortex>().Initialize();
-
+        //효과음
+        GameManager.Instance.SoundManager.PlaySfxAt("sfx_aura", position);
+        
+        
+        
     }
 
     public Skill_Three_Grenade(SkillData skillData) : base(skillData)
     {
     }
+
 }
 
 /// <summary>
@@ -230,4 +235,6 @@ public class Skill_Five_Grenade : ActiveTech
     {
 
     }
+
+    
 }
