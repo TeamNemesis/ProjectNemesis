@@ -9,12 +9,11 @@ public class ReinforceInteractor : InteractableObject
     public override InteractableType InteractableType => InteractableType.Reinforce;
 
     public override event Action<IInteractable> OnInteracted;
-
-    public override void GetInteractionMessage(out string title, out string instruction)
+    
+    public override void ReturnInteractionViewKey(out string title, out string description)
     {
-        title = "ReinforceTitle";
-        instruction = "ReinforceScript";
-
+        title = "_reinforceTitle";
+        description = "_reinforceDescription";
     }
 
     public override bool TryInteract(Transform subject)

@@ -152,9 +152,15 @@ MonoBehaviour:
   player: {fileID: 0}
   agent: {fileID: 0}
   _target: {fileID: 0}
-  missileAttackCounter: 0
-  maxMissileAttackCount: 5
-  misileAttackDamage: 20
+  monsterAnimator: {fileID: 0}
+  originalSkinTransform: {x: 0, y: 0, z: 0}
+  hasDieAnimation: 0
+  checkOnce: 0
+  healthUI: {fileID: 0}
+  healthUIPrefabPath: Prefabs/UI/MonsterHealthUI
+  EnglishName: mega_X7
+  KoreanName: "\uC624\uBA54\uAC00 X7"
+  misileAttackDamage: 15
   shotgunDamage: 30
   shotgunRange: 1000
   shotgunAngle: 120

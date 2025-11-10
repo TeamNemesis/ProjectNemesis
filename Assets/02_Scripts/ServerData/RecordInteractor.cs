@@ -6,19 +6,19 @@ using UnityEngine;
 /// </summary>
 public class RecordInteractor : InteractableObject
 {
-		public override InteractableType InteractableType => InteractableType.Record;
+    public override InteractableType InteractableType => InteractableType.Record;
 
-		public override event Action<IInteractable> OnInteracted;
+    public override event Action<IInteractable> OnInteracted;
 
-		public override void GetInteractionMessage(out string title, out string instruction)
-		{
-				title = "record";
-				instruction = "OpenRecord";
-		}
+    public override void ReturnInteractionViewKey(out string title, out string description)
+    {
+        title = "_recordTitle";
+        description = "_recordDescription";
+    }
 
-		public override bool TryInteract(Transform subject)
-		{
-				GameManager.Instance.UIManager.OpenRecord();
-				return true;
-		}
+    public override bool TryInteract(Transform subject)
+    {
+        GameManager.Instance.UIManager.OpenRecord();
+        return true;
+    }
 }
