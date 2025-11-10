@@ -6,8 +6,8 @@ using UnityEngine;
 public class Elite2 : MonsterBase
 {
     [Header("NameSet")]
-    [SerializeField] private string EnglishName = "Elite Type-II";
-    [SerializeField] private string KoreanName = "엘리트 2형";
+    [SerializeField] private string EnglishName = "Lead Researcher";
+    [SerializeField] private string KoreanName = "무기개발부서 선임연구원";
 
     [Header("Local Stats")]
     [SerializeField] private int laserAttackCount = 0; // 연속 공격 횟수
@@ -42,8 +42,8 @@ public class Elite2 : MonsterBase
 
     public override void Initialize(object data = null)
     {
-        base.Initialize(data);
         SetMonsterName(EnglishName, KoreanName);
+        base.Initialize(data);
     }
     private void Update()
     {
@@ -268,7 +268,7 @@ public class Elite2 : MonsterBase
                     float angle = i * 45f;
                     Quaternion rotation = Quaternion.Euler(0, angle, 0);
                     Vector3 spawnpos = transform.position;
-                    spawnpos.y = 0.5f;
+                    spawnpos.y = 1f;
 
                     GameObject bullet = GameManager.Instance.PoolManager.GetFromPool(eliteBulletPrefab, spawnpos, rotation);
                     EliteBullet elitetBullet = bullet.GetComponent<EliteBullet>();

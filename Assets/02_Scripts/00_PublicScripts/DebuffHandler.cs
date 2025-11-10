@@ -87,7 +87,7 @@ public class DebuffHandler : MonoBehaviour
         /// <param name="duration"> 독 지속시간</param>
         /// <param name="damagePerSecond"> 독 초당 대미지</param>
         /// <returns></returns>
-        public static DebuffData CreatePoison(float duration = 5f, float damagePerSecond = 10f)
+        public static DebuffData CreatePoison(float duration = 5f, float damagePerSecond = 5f)
         {
             return new DebuffData(Constants.DEBUFF_POISON, duration, damagePerSecond, 5);
         }
