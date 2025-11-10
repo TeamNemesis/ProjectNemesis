@@ -35,6 +35,7 @@ public class Elite3 : MonsterBase
     {
         SetMonsterName(EnglishName, KoreanName);
         base.Initialize(data);
+        Invoke(nameof(DisableAgent), 0.1f);
     }
 
 
@@ -196,6 +197,19 @@ public class Elite3 : MonsterBase
         }
 
         lastHealthCheckThreshold = healthRatio;
+    }
+    private void DisableAgent()
+    {
+        if (agent != null && agent.isOnNavMesh) // ← NavMesh 확인
+        {
+            agent.isStopped = true;
+            agent.enabled = false;
+        }
+        else if (agent != null)
+        {
+            // 아직 NavMesh 안 올라갔으면 재시도
+            Invoke(nameof(DisableAgent), 0.1f);
+        }
     }
 
     protected override void Die()
