@@ -52,10 +52,12 @@ public class SoundManager : MonoBehaviour
             _fallbackSfxSource.playOnAwake = false;
         }
 
-        // SFX 풀이 없으면 자식에서 찾아봄(선택적)
+        // SFX 풀이 없으면 생성
         if (_sfxSourcePool == null)
         {
-            _sfxSourcePool = GetComponentInChildren<AudioSourcePool>();
+            var go = new GameObject("SfxSourcePool");
+            go.transform.SetParent(transform);
+            _sfxSourcePool = go.AddComponent<AudioSourcePool>();
         }
 
         // 딕셔너리 초기화

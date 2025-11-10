@@ -1,0 +1,128 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: Tutorial Shared Data
+  m_EditorClassIdentifier: 
+  m_TableCollectionName: Tutorial
+  m_TableCollectionNameGuidString: 8a18dd2b89ed9a041b76e7b0a1fce022
+  m_Entries:
+  - m_Id: 61
+    m_Key: _tutorial_PC_Attack
+    m_Metadata:
+      m_Items:
+      - rid: 5530781214052974877
+  - m_Id: 62
+    m_Key: _tutorial_Mobile_Attack
+    m_Metadata:
+      m_Items:
+      - rid: 5530781214052974878
+  - m_Id: 63
+    m_Key: _tutorial_PC_Grenade
+    m_Metadata:
+      m_Items:
+      - rid: 5530781214052974879
+  - m_Id: 64
+    m_Key: _tutorial_Mobile_Grenade
+    m_Metadata:
+      m_Items:
+      - rid: 5530781214052974880
+  - m_Id: 65
+    m_Key: _tutorial_PC_Special
+    m_Metadata:
+      m_Items:
+      - rid: 5530781214052974881
+  - m_Id: 66
+    m_Key: _tutorial_Mobile_Special
+    m_Metadata:
+      m_Items:
+      - rid: 5530781214052974882
+  - m_Id: 67
+    m_Key: _tutorial_PC_Dash
+    m_Metadata:
+      m_Items:
+      - rid: 5530781214052974883
+  - m_Id: 68
+    m_Key: _tutorial_Mobile_Dash
+    m_Metadata:
+      m_Items:
+      - rid: 5530781214052974884
+  - m_Id: 69
+    m_Key: _tutorial_PC_Interact
+    m_Metadata:
+      m_Items:
+      - rid: 5530781214052974885
+  - m_Id: 70
+    m_Key: _tutorial_Mobile_Interact
+    m_Metadata:
+      m_Items:
+      - rid: 5530781214052974886
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 5530781214052974858
+  references:
+    version: 2
+    RefIds:
+    - rid: 5530781214052974858
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1762758437819
+    - rid: 5530781214052974877
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: 'PC tutorial overlay: instructs how to perform a Normal attack.
+          Short and platform-specific.'
+    - rid: 5530781214052974878
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: 'Mobile tutorial overlay: instructs how to perform a Normal
+          attack using mobile UI. Short and platform-specific.'
+    - rid: 5530781214052974879
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: 'PC tutorial overlay: instructs how to launch a grenade on
+          PC. Short and platform-specific.'
+    - rid: 5530781214052974880
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: 'Mobile tutorial overlay: instructs how to launch a grenade
+          using mobile UI. Short and platform-specific.'
+    - rid: 5530781214052974881
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: 'PC tutorial overlay: instructs how to perform a Special attack
+          on PC. Short and platform-specific.'
+    - rid: 5530781214052974882
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: 'Mobile tutorial overlay: instructs how to perform a Special
+          attack using mobile UI. Short and platform-specific.'
+    - rid: 5530781214052974883
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: 'PC tutorial overlay: instructs how to Dash on PC. Short and
+          platform-specific.'
+    - rid: 5530781214052974884
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: 'Mobile tutorial overlay: instructs how to Dash using mobile
+          UI. Short and platform-specific.'
+    - rid: 5530781214052974885
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: 'PC tutorial overlay: instructs player to approach an object
+          to interact. Short and platform-specific.'
+    - rid: 5530781214052974886
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: 'Mobile tutorial overlay: instructs player to approach and
+          press interact button on mobile. Short and platform-specific.'
