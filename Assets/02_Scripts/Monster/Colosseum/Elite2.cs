@@ -5,6 +5,10 @@ using UnityEngine;
 
 public class Elite2 : MonsterBase
 {
+    [Header("NameSet")]
+    [SerializeField] private string EnglishName = "Elite Type-II";
+    [SerializeField] private string KoreanName = "¿¤¸®Æ® 2Çü";
+
     [Header("Local Stats")]
     [SerializeField] private int laserAttackCount = 0; // ¿¬¼Ó °ø°Ý È½¼ö
 
@@ -36,6 +40,11 @@ public class Elite2 : MonsterBase
     private float closeDistance = 5f;
     private float farDistance = 10f;
 
+    public override void Initialize(object data = null)
+    {
+        base.Initialize(data);
+        SetMonsterName(EnglishName, KoreanName);
+    }
     private void Update()
     {
         CoolTimeController();

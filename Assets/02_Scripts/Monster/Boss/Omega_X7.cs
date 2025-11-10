@@ -6,8 +6,9 @@ using UnityEngine;
 
 public class Omega_X7 : MonsterBase
 {
-    [Header("Local Stats")]
-
+    [Header("NameSet")]
+    [SerializeField] private string EnglishName = "mega_X7";
+    [SerializeField] private string KoreanName = "¿À¸Þ°¡ X7";
 
     [Header("Missile")]
     [SerializeField] private float misileAttackDamage = 20f;
@@ -53,6 +54,8 @@ public class Omega_X7 : MonsterBase
         monsterGrenade = GetComponentInChildren<MonsterGrenade>();
 
         Invoke(nameof(DisableAgent), 0.1f);
+
+        SetMonsterName(EnglishName, KoreanName);
     }
 
     private void Update()
