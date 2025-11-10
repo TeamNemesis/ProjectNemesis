@@ -300,7 +300,6 @@ public class PlayerInputHandler : MonoBehaviour
         }
     }
 
-#if UNITY_ANDROID
     #region mobile
 
     /// <summary>
@@ -362,5 +361,4 @@ public class PlayerInputHandler : MonoBehaviour
 
 
     #endregion
-#endif
 }

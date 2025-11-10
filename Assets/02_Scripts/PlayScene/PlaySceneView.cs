@@ -20,6 +20,7 @@ public class PlaySceneView : MonoBehaviour
     [SerializeField] Slider _grenadeCooltimeSlider;
     [SerializeField] TextMeshProUGUI _grenadeCountText;
 
+
     [Header("----- 방 로딩 패널 -----")]
     [SerializeField] GameObject _roomLoadingPanel;
     [SerializeField] TextMeshProUGUI _roomLoadingText;
@@ -65,6 +66,8 @@ public class PlaySceneView : MonoBehaviour
 
         // 처음 시작하면 유탄 슬라이더를 꽉 채우기
         UpdateGrenadeCoolTime(1.0f, 1.0f);
+
+
     }
 
     public void UpdateHPBar(int currentHp, int maxHp)

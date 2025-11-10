@@ -233,12 +233,9 @@ public static class Constants
     public const string SCENE_NAME_LOGIN = "LoginScene";
     public const string SCENE_NAME_INTRO = "IntroScene";
 
-#if UNITY_ANDROID
-    public const string SCENE_NAME_PLAY = "Player_Mobile";
-#elif UNITY_STANDALONE_WIN || UNITY_EDITOR
+
     public const string SCENE_NAME_PLAY = "Player";
 
-#endif
 		#endregion
 
 		#region knockBack

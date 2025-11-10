@@ -1,7 +1,5 @@
-﻿using System.Collections;
-using Unity.Cinemachine;
+﻿using Unity.Cinemachine;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class PlayScene : MonoBehaviour
 {
@@ -42,7 +40,7 @@ public class PlayScene : MonoBehaviour
 
 
         // PlaySceneView
-        if(_playSceneView == null)
+        if (_playSceneView == null)
         {
             Debug.LogError("PlaySceneView가 할당되지 않았습니다!");
             return;
@@ -59,9 +57,12 @@ public class PlayScene : MonoBehaviour
         _timeChecker.OnTimeUpdated += _playSceneView.UpdateTimer;
         _mapController.OnStartRoomExited += _timeChecker.StartTimeCheck;
 
-#if UNITY_ANDROID
-//        _mobileInputController.Initialize(_player,_inputHandler);
-#endif
+        bool isMobile = Application.isMobilePlatform;
+        if (isMobile)
+        {
+            _mobileInputController.Initialize(_player, _inputHandler);
+        }
+
     }
     private void Start()
     {
@@ -82,7 +83,7 @@ public class PlayScene : MonoBehaviour
         }
         _mapController.Initialize(_player);
 
-        if( _playSceneView == null)
+        if (_playSceneView == null)
         {
             Debug.LogError("PlaySceneView가 할당되지 않았습니다!");
             return;
@@ -102,7 +103,7 @@ public class PlayScene : MonoBehaviour
         }
         _timeChecker.Initialize();
 
-        if(_mobileInputController == null)
+        if (_mobileInputController == null)
         {
             Debug.LogError("MobileInputController가 할당되지 않았습니다!");
             return;
@@ -110,7 +111,7 @@ public class PlayScene : MonoBehaviour
 
         GameManager.Instance.skillManager.SetPlayScene(this);
 
-        
+
     }
 
     private void Update()
@@ -143,12 +144,12 @@ public class PlayScene : MonoBehaviour
         }
 
         // 카메라 기준으로 방향 변환
-        
+
         Camera cam = Camera.main;
         if (cam == null)
         {
             Debug.LogWarning("Main Camera not found. Using raw input direction.");
-            
+
             return;
         }
 

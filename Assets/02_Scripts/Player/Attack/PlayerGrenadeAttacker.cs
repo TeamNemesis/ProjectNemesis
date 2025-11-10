@@ -124,7 +124,7 @@ public class PlayerGrenadeAttacker : MonoBehaviour
 
 		}
 
-#if UNITY_ANDROID
+
 
 		private GameObject _targetIndicator;
 		private bool _isAiming = false;
@@ -167,5 +167,5 @@ public class PlayerGrenadeAttacker : MonoBehaviour
 				CancelAiming();
 				RequestAttack();
 		}
-#endif
+
 }
