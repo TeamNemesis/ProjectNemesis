@@ -181,6 +181,27 @@ MonoBehaviour:
     m_Metadata:
       m_Items:
       - rid: 5530781212759556374
+  - m_Id: 41
+    m_Localized: Reinforce
+    m_Metadata:
+      m_Items:
+      - rid: 5530781212759556393
+  - m_Id: 42
+    m_Localized: Record
+    m_Metadata:
+      m_Items:
+      - rid: 5530781212759556394
+  - m_Id: 43
+    m_Localized: 'Reinforce: improves equipment or tech performance using materials
+      and credits.'
+    m_Metadata:
+      m_Items:
+      - rid: 5530781214052974768
+  - m_Id: 44
+    m_Localized: 'Record: view play history, achievements earned, and key statistics.'
+    m_Metadata:
+      m_Items:
+      - rid: 5530781214052974769
   references:
     version: 2
     RefIds:
@@ -320,3 +341,23 @@ MonoBehaviour:
       type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
       data:
         m_CommentText: Clarify contents and randomness; keep concise.
+    - rid: 5530781212759556393
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: Short label for reinforce/upgrade UI or reward. Keep concise
+          (<=15 chars).
+    - rid: 5530781212759556394
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: Short label for record/log screens (play history, achievements).
+          Keep under ~20 chars.
+    - rid: 5530781214052974768
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: Briefly explain effect and required resources; avoid embedding
+          exact numbers. Keep within ~120 chars.
+    - rid: 5530781214052974769
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: Describe what users can see in the record screen; keep concise
+          and within ~120 chars.

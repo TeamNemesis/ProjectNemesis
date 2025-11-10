@@ -175,6 +175,26 @@ MonoBehaviour:
     m_Metadata:
       m_Items:
       - rid: 5530781212759556354
+  - m_Id: 41
+    m_Key: _reinforceTitle
+    m_Metadata:
+      m_Items:
+      - rid: 5530781212759556395
+  - m_Id: 42
+    m_Key: _recordTitle
+    m_Metadata:
+      m_Items:
+      - rid: 5530781212759556396
+  - m_Id: 43
+    m_Key: _reinforceDescription
+    m_Metadata:
+      m_Items:
+      - rid: 5530781214052974766
+  - m_Id: 44
+    m_Key: _recordDescription
+    m_Metadata:
+      m_Items:
+      - rid: 5530781214052974767
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
@@ -345,3 +365,24 @@ MonoBehaviour:
       data:
         m_CommentText: 'Description: explains mutant pack contents (e.g., random
           mutant ability or resource). Keep concise (~120 chars).'
+    - rid: 5530781212759556395
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: Title for Reinforce/Upgrade UI or reward menu. Short label
+          shown on buttons/panels. Keep concise (<=15 chars).
+    - rid: 5530781212759556396
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: Title for Record/Log/History screens (e.g., play record, achievements).
+          Short label for UI. Keep concise (<=20 chars).
+    - rid: 5530781214052974766
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: Description for reinforce/upgrade UI or item. Explain what
+          reinforcing does and required resources (materials/credits). Keep concise
+          (~120 chars).
+    - rid: 5530781214052974767
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: Description for record/log/history screens. Explain what users
+          can view (play history, achievements, stats). Keep concise (~120 chars).
