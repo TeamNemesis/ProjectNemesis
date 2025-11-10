@@ -179,8 +179,11 @@ public class DebuffHandler : MonoBehaviour
             // 스택형 디버프들 독 / 과부하
             if (newDebuff.debuffName == Constants.DEBUFF_POISON || newDebuff.debuffName == Constants.DEBUFF_OVERLOAD)
             {
-                
-                
+                if (character.tag == Constants.TAG_PLAYER && newDebuff.debuffName == Constants.DEBUFF_POISON)
+                {
+                    newDebuff.maxStack = 2;
+                }
+
                 if (existing.stackCount < newDebuff.maxStack)
                 {
                     existing.stackCount++;
