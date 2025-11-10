@@ -102,15 +102,13 @@ public class PlayScene : MonoBehaviour
         }
         _timeChecker.Initialize();
 
-        if(_mobileInputController == null)
+        GameManager.Instance.skillManager.SetPlayScene(this);
+
+        if (_mobileInputController == null)
         {
             Debug.LogError("MobileInputController가 할당되지 않았습니다!");
             return;
         }
-
-        GameManager.Instance.skillManager.SetPlayScene(this);
-
-        
     }
 
     private void Update()
