@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Localization.Settings;
 
 public class MonsterHealthUI : PoolableObject, IInitializePoolable, IReleasePoolable
 {
@@ -182,7 +183,8 @@ public class MonsterHealthUI : PoolableObject, IInitializePoolable, IReleasePool
         // 보스 이름 설정
         if (bossNameText != null)
         {
-            bossNameText.text = monsterBase.name.Replace("(Clone)", "").Trim();
+            string locale = LocalizationSettings.SelectedLocale.Identifier.Code;
+            bossNameText.text = locale == "ko" ? monsterBase.GetKoreanName() : monsterBase.GetEnglishName();
         }
 
         // 보스 UI 위치 강제 설정

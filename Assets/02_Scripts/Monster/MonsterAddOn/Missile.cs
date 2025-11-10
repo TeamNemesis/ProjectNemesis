@@ -18,6 +18,8 @@ public class Missile : MonsterBase
 
     [Header("Bullet"), SerializeField]
     private PoolableObject bulletPrefab;      // 총알 프리팹
+    private float bulletDamage = 10f;         // 총알 데미지
+    private float bulletLifeTime = 5f;        // 총알 생명 시간
 
     [SerializeField] private PoolableObject explosionEffect;
 
@@ -163,7 +165,7 @@ public class Missile : MonsterBase
         TurretBullet turretBullet = bullet.GetComponent<TurretBullet>();
         if (turretBullet != null)
         {
-            turretBullet.Initialize(targetTag, attackDamage, 5f, gameObject); // 생명 시간 5초로 설정
+            turretBullet.Initialize(targetTag, bulletDamage, bulletLifeTime, gameObject); // 생명 시간 5초로 설정
         }
     }
 

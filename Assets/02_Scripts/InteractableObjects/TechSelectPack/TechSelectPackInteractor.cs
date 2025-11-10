@@ -37,9 +37,9 @@ public class TechSelectPackInteractor : RewardInteractableObject
         GameManager.Instance.UIManager.onRewardSelect -= RaiseRewardGivenEvent;
     }
 
-    public override void GetInteractionMessage(out string title, out string instruction)
+    public override void ReturnInteractionViewKey(out string title, out string instruction)
     {
-        title = _packType.ToString();
-        instruction = _rewardInstruction;
+        title = $"_rewardTitle_TechSelectPack_{_packType.ToString()}";
+        instruction = $"_rewardDescription_TechSelectPack_{_packType.ToString()}";
     }
 }

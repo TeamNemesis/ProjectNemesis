@@ -13,7 +13,6 @@ public class LaserTurret : MonsterBase
     {
         if (isDead || _target == null) return;
         if (isStunned) return;
-        LookAtPlayer();
 
         switch (baseState)
         {

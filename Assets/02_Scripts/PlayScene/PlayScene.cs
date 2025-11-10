@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using Unity.Cinemachine;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayScene : MonoBehaviour
 {
@@ -13,6 +14,9 @@ public class PlayScene : MonoBehaviour
     [SerializeField] CinemachineBrain _cinemachineBrain;         // 시네머신 브레인
     [SerializeField] TimeChecker _timeChecker;                     // 클리어 타임 체크 컴포넌트
 
+    [Header("---- 모바일 용 참조 ----")]
+    [SerializeField] MobileInputController _mobileInputController; // 모바일용 inputHandler
+
     [Header("----- 읽기 전용 속성 -----")]
     [SerializeField] bool _isColosseumRoom = false;               // 콜로세움 방 여부
 
@@ -21,19 +25,21 @@ public class PlayScene : MonoBehaviour
 
     private void Awake()
     {
-        EventBus.OnColosseumRoomSet += IsColosseum;
+        EventBus.IsColosseumChanged += IsColosseum;
         IsColosseum(false);
 
-        _inputHandler.OnInteractInput += _player.ExecuteInteraction;
 
         // PlayerInputHandler의 이벤트와 Player 메서드 연결
         _inputHandler.OnMoveInput += OnMoveInput;
         _inputHandler.OnDashInput += () => _player.SetDashPressed(true);
-        _inputHandler.OnNomralAttackInput += () => _player.SetNormalAttackPressed(true);
+        _inputHandler.OnNormalAttackInput += () => _player.SetNormalAttackPressed(true);
         _inputHandler.OnGrenadeAttackInput += _player.GrenadeAttack;
         _inputHandler.OnSpecialAttackInput += _player.HandleSpecialStarted;
         _inputHandler.OnSpecialAttackInputCanceled += _player.HandleSpecialCanceled;
         _inputHandler.OnInteractInput += _player.ExecuteInteraction;
+
+
+
 
         // PlaySceneView
         if(_playSceneView == null)
@@ -52,8 +58,11 @@ public class PlayScene : MonoBehaviour
         _playSceneView.OnRoomLoadingComplete += _mapController.SpawnRoom;
         _timeChecker.OnTimeUpdated += _playSceneView.UpdateTimer;
         _mapController.OnStartRoomExited += _timeChecker.StartTimeCheck;
-    }
 
+#if UNITY_ANDROID
+//        _mobileInputController.Initialize(_player,_inputHandler);
+#endif
+    }
     private void Start()
     {
         GameManager.Instance.PlayerStatManager.Initialize();
@@ -92,6 +101,12 @@ public class PlayScene : MonoBehaviour
             return;
         }
         _timeChecker.Initialize();
+
+        if(_mobileInputController == null)
+        {
+            Debug.LogError("MobileInputController가 할당되지 않았습니다!");
+            return;
+        }
 
         GameManager.Instance.skillManager.SetPlayScene(this);
 
@@ -178,6 +193,6 @@ public class PlayScene : MonoBehaviour
 
     private void OnDestroy()
     {
-        EventBus.OnColosseumRoomSet -= IsColosseum;
+        EventBus.IsColosseumChanged -= IsColosseum;
     }
 }

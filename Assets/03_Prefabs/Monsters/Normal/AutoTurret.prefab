@@ -169,7 +169,7 @@ MonoBehaviour:
   attackDamage: 3
   attackRange: 100
   detectionRange: 100
-  attackDelay: 1
+  attackDelay: 1.5
   originalSpeed: 0
   targetTag: Player
   monsterSize: 0
@@ -183,6 +183,12 @@ MonoBehaviour:
   agent: {fileID: 0}
   _target: {fileID: 0}
   monsterAnimator: {fileID: 0}
+  originalSkinTransform: {x: 0, y: 0, z: 0}
+  hasDieAnimation: 0
+  checkOnce: 0
+  healthUI: {fileID: 0}
+  healthUIPrefabPath: Prefabs/UI/MonsterHealthUI
+  damageTextPrefab: {fileID: 0}
   bulletLifeTime: 8
   turretbullet: {fileID: 433645739003782474, guid: 32e7cbcd5d4ee5c498508d5492575fdb, type: 3}
   shootPos: {fileID: 3251149521337539958}

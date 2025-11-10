@@ -116,7 +116,7 @@ public class NebulaPhantom : MonsterBase
             // 벽에 막히는 Raycast
             if (Physics.Raycast(startPos, transform.forward, out RaycastHit hit, laserLength, ~0, QueryTriggerInteraction.Collide))
             {
-                if (hit.collider.CompareTag(targetTag))
+                if (hit.collider.CompareTag(targetTag) && !isDead)
                 {
                     var damageable = hit.collider.GetComponent<IDamageable>();
                     if (damageable != null)

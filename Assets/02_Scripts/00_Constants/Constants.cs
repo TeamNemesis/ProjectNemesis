@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public static class Constants
@@ -206,6 +207,9 @@ public static class Constants
     public const string RESOURCES_PATH_SKILLTOOLTIP = "SkillData/SkillTooltip/KeywordData";
     public const string RESOURCES_PATH_SKILLTOOLTIPUI = "Prefabs/Skill/Skill_ToolTip";
     public const string RESOURCES_PATH_PLAYERSTATDATA = "SkillData/PlayerStatData";
+    
+    public const string RESOURCES_PATH_BGM = "Audio/BGM";
+    public const string RESOURCES_PATH_SFX = "Audio/SFX";
 
 
 
@@ -228,11 +232,17 @@ public static class Constants
     #region Scene Names
     public const string SCENE_NAME_LOGIN = "LoginScene";
     public const string SCENE_NAME_INTRO = "IntroScene";
-    public const string SCENE_NAME_PLAY = "Player";
-    #endregion
 
-    #region knockBack
-    public const float KNOCKBACK_COOLTIME = 5f;
+#if UNITY_ANDROID
+    public const string SCENE_NAME_PLAY = "Player_Mobile";
+#elif UNITY_STANDALONE_WIN || UNITY_EDITOR
+    public const string SCENE_NAME_PLAY = "Player";
+
+#endif
+		#endregion
+
+		#region knockBack
+		public const float KNOCKBACK_COOLTIME = 5f;
     public const float KNOCKBACK_POWER = 10f;
     #endregion
 
@@ -243,17 +253,20 @@ public static class Constants
     public const string LOCAL_TABLE = "Local";
     #endregion
 
+    #region mobile
+    public const float GRENDADE_TIME = 0.2f;
+		#endregion
 
-    #region Util
+		#region Util
 
-    /// <summary>
-    /// origin과 가장 가까운 List의 요소 반환
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="origin"></param>
-    /// <param name="targetList"></param>
-    /// <returns></returns>
-    public static T GetNearestObject<T>(Transform origin, List<T> targetList) where T : Component
+		/// <summary>
+		/// origin과 가장 가까운 List의 요소 반환
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="origin"></param>
+		/// <param name="targetList"></param>
+		/// <returns></returns>
+		public static T GetNearestObject<T>(Transform origin, List<T> targetList) where T : Component
     {
         if (targetList == null)
         {

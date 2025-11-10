@@ -10,7 +10,9 @@ public abstract class InteractableObject : MonoBehaviour, IInteractable
 
     public abstract event Action<IInteractable> OnInteracted;
 
+    public abstract void ReturnInteractionViewKey(out string title, out string description);
+
     public abstract bool TryInteract(Transform subject);
 
-    public abstract void GetInteractionMessage(out string title, out string instruction);
+   
 }

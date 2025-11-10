@@ -1,6 +1,7 @@
 ﻿using Firebase;
 using Firebase.Auth;
 using Firebase.Database;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -33,6 +34,9 @@ public class ServerManager : MonoBehaviour
     public DatabaseReference dbRef { get { return _dbRef; } }
 
     private bool shouldChangeScene = false;
+    private bool isLoginListenerActive = false;
+    private EventHandler<ValueChangedEventArgs> loginStatusHandler;
+
     private DownloadManager _downloadManager;
     public DownloadManager downloadManager { get { return _downloadManager; } }
 
@@ -147,16 +151,22 @@ public class ServerManager : MonoBehaviour
         }
 
         SetLoading(true);
+
         try
         {
+            // Firebase 로그인
             var loginTask = await auth.SignInWithEmailAndPasswordAsync(emailInput.text, pwInput.text);
             _currentUser = loginTask.User;
             await _currentUser.ReloadAsync();
 
-            var userSnapshot = await dbRef.Child("users").Child(_currentUser.UserId).GetValueAsync();
+            // 사용자 정보 조회
+            var userRef = dbRef.Child("users").Child(_currentUser.UserId);
+            var userSnapshot = await userRef.GetValueAsync();
+
             bool isLoggedIn = userSnapshot.Child("isLoggedIn").Value?.ToString() == "true";
             string lastDeviceId = userSnapshot.Child("lastLoginDeviceId").Value?.ToString();
 
+            // 다른 기기에서 로그인된 상태라면 차단
             if (isLoggedIn && lastDeviceId != deviceId)
             {
                 ShowPopup("다른 기기에서 이미 로그인되어 있습니다. 로그아웃 후 다시 시도해주세요.");
@@ -165,6 +175,7 @@ public class ServerManager : MonoBehaviour
                 return;
             }
 
+            // 이메일 인증 여부 확인
             if (!_currentUser.IsEmailVerified)
             {
                 ShowPopup("이메일 인증이 완료되지 않았습니다. 인증 후 다시 로그인해주세요.");
@@ -174,15 +185,19 @@ public class ServerManager : MonoBehaviour
                 return;
             }
 
-            await dbRef.Child("users").Child(_currentUser.UserId).UpdateChildrenAsync(new Dictionary<string, object>
+            // 로그인 상태 업데이트
+            await userRef.UpdateChildrenAsync(new Dictionary<string, object>
         {
             { "isLoggedIn", true },
             { "lastLoginDeviceId", deviceId }
         });
 
+            // 자동 로그아웃 감시 시작
+            StartLoginStatusListener(_currentUser.UserId, deviceId);
+
             resendEmailBtn.gameObject.SetActive(false);
 
-            // ✅ 다운로드 완료 후 로그인 성공 메시지 표시
+            // 사용자 데이터 다운로드
             await _downloadManager.DownloadJsonToLocal(fromGameBase: false);
 
             ShowPopup("로그인 성공", true);
@@ -190,10 +205,12 @@ public class ServerManager : MonoBehaviour
         catch (System.Exception ex)
         {
             ShowError("로그인 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.", "로그인 오류: " + ex.Message);
+            auth.SignOut(); // 실패 시 안전하게 로그아웃
         }
 
         SetLoading(false);
     }
+
 
     public async void OnClickResendEmail()
     {
@@ -320,7 +337,7 @@ public class ServerManager : MonoBehaviour
     public void OnClickGoogleLogin()
     {
 #if UNITY_ANDROID
-    SetLoading(true);
+        SetLoading(true);
 
         try
         {
@@ -344,7 +361,6 @@ public class ServerManager : MonoBehaviour
 
     public async void OnGoogleLoginSuccess(string idToken)
     {
-        //SetLoading(true);
 
         try
         {
@@ -380,7 +396,8 @@ public class ServerManager : MonoBehaviour
         {
             popUpConfirmBtn.gameObject.SetActive(true);
             popUpConfirmBtn.onClick.RemoveAllListeners();
-            popUpConfirmBtn.onClick.AddListener(() =>
+            // 팝업 확인 버튼 클릭 시 동작을 비동기(async)로 변경하고 다운로드 로직 추가
+            popUpConfirmBtn.onClick.AddListener(async () =>
             {
                 if (popUpPanel != null)
                     popUpPanel.SetActive(false);
@@ -389,9 +406,32 @@ public class ServerManager : MonoBehaviour
 
                 if (shouldChangeScene)
                 {
-                    SceneManager.LoadScene(1);
-                    if (mainCanvas != null)
-                        mainCanvas.SetActive(false);
+                    // 로딩 패널을 띄워서 사용자에게 데이터 로드 중임을 알림
+                    SetLoading(true);
+
+                    try
+                    {
+                        // DownloadJsonToLocal(false) 호출 시, 사용자 데이터가 없으면 gameBaseJson을 시도합니다.
+                        // 이 호출이 완료될 때까지 기다립니다.
+                        await _downloadManager.DownloadJsonToLocal(fromGameBase: false);
+
+                        // 다운로드가 성공적으로 완료되면 씬 전환
+                        SceneManager.LoadScene(1);
+                        if (mainCanvas != null)
+                            mainCanvas.SetActive(false);
+                    }
+                    catch (System.Exception ex)
+                    {
+                        // 다운로드 중 오류가 발생하면 팝업 메시지를 띄우고 처리
+                        ShowError("데이터 다운로드 중 오류가 발생했습니다. 다시 시도해주세요.", "자동 로그인 후 데이터 다운로드 오류: " + ex.Message);
+                        auth.SignOut(); // 오류 발생 시 안전하게 로그아웃 처리
+                                        // 이 경우 씬 전환은 하지 않고 현재 화면에 머무르거나 로그인 화면으로 돌아가게 됩니다.
+                    }
+                    finally
+                    {
+                        // 로딩 패널 숨기기
+                        SetLoading(false);
+                    }
                 }
             });
         }
@@ -404,19 +444,31 @@ public class ServerManager : MonoBehaviour
                 logoutBtn.onClick.RemoveAllListeners();
                 logoutBtn.onClick.AddListener(async () =>
                 {
-                    if (_currentUser != null)
+                    try
                     {
-                        await dbRef.Child("users").Child(_currentUser.UserId).Child("isLoggedIn").SetValueAsync(false);
+                        if (_currentUser != null)
+                        {
+                            await dbRef.Child("users").Child(_currentUser.UserId).UpdateChildrenAsync(new Dictionary<string, object>
+                    {
+                        { "isLoggedIn", false }
+                    });
+                            StopLoginStatusListener(_currentUser.UserId);
+                            auth.SignOut();
+                        }
+
+                        _currentUser = null;
+                        isLoginListenerActive = false;
+
+                        logoutBtn.gameObject.SetActive(false);
+                        if (popUpPanel != null)
+                            popUpPanel.SetActive(false);
+
+                        ShowPopup("로그아웃되었습니다. 다시 로그인해주세요.");
                     }
-
-                    auth.SignOut();
-                    _currentUser = null;
-
-                    logoutBtn.gameObject.SetActive(false);
-                    if (popUpPanel != null)
-                        popUpPanel.SetActive(false);
-
-                    ShowPopup("로그아웃되었습니다. 다시 로그인해주세요.");
+                    catch (System.Exception ex)
+                    {
+                        ShowError("로그아웃 중 오류가 발생했습니다.", "로그아웃 오류: " + ex.Message);
+                    }
                 });
             }
             else
@@ -426,7 +478,72 @@ public class ServerManager : MonoBehaviour
         }
     }
 
+    private async void OnApplicationQuit()
+    {
+        try
+        {
+            if (_currentUser != null)
+            {
+                await dbRef.Child("users").Child(_currentUser.UserId).UpdateChildrenAsync(new Dictionary<string, object>
+            {
+                { "isLoggedIn", false }
+            });
 
+                auth.SignOut();
+                _currentUser = null;
+                isLoginListenerActive = false;
+            }
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogWarning("앱 종료 중 로그아웃 실패: " + ex.Message);
+        }
+    }
+
+    private void StopLoginStatusListener(string userId)
+    {
+        if (!isLoginListenerActive || loginStatusHandler == null)
+            return;
+        dbRef.Child("users").Child(userId).Child("lastLoginDeviceId").ValueChanged -= loginStatusHandler;
+        isLoginListenerActive = false;
+        loginStatusHandler = null;
+    }
+
+
+    private void StartLoginStatusListener(string userId, string deviceId)
+    {
+        if (isLoginListenerActive) return;
+        isLoginListenerActive = true;
+
+        loginStatusHandler = (sender, args) =>
+        {
+            if (args.DatabaseError != null) return;
+
+            string latestDeviceId = args.Snapshot?.Value?.ToString();
+            if (!string.IsNullOrEmpty(latestDeviceId) && latestDeviceId != deviceId)
+            {
+                try
+                {
+                    // 자동 로그아웃 처리
+                    auth.SignOut();
+                    _currentUser = null;
+                    isLoginListenerActive = false;
+
+                    logoutBtn?.gameObject.SetActive(false);
+                    mainCanvas?.SetActive(false);
+
+                    GameManager.Instance.SceneLoadManager.LoadLoginScene();
+                    ShowPopup("다른 기기에서 로그인되어 자동 로그아웃되었습니다.");
+                }
+                catch (System.Exception ex)
+                {
+                    ShowError("자동 로그아웃 중 오류가 발생했습니다.", "로그아웃 감시 오류: " + ex.Message);
+                }
+            }
+        };
+
+        dbRef.Child("users").Child(userId).Child("lastLoginDeviceId").ValueChanged += loginStatusHandler;
+    }
     public void ShowError(string userMessage, string logMessage)
     {
         ShowPopup(userMessage);

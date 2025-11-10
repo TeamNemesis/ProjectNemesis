@@ -1,50 +1,49 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
-using UnityEngine.Localization.Settings;
 using UnityEngine.Localization;
+using UnityEngine.Localization.Settings;
 
 public class LanguageManager : MonoBehaviour
-
 {
-    public string GetLocalizedText(string key)
-    {
-        var table = LocalizationSettings.StringDatabase.GetTable(Constants.LOCAL_TABLE);
-        if (table == null)
-        {
-            Debug.LogWarning($"테이블 '{Constants.LOCAL_TABLE}'을 찾을 수 없습니다.");
-            return $"[MissingTable:{Constants.LOCAL_TABLE}]";
-        }
 
-        var entry = table.GetEntry(key);
-        if (entry == null || string.IsNullOrEmpty(entry.LocalizedValue))
-        {
-            Debug.LogWarning($" 키 '{key}'를 테이블 '{Constants.LOCAL_TABLE}'에서 찾을 수 없습니다.");
-            return $"[MissingKey:{key}]";
-        }
-
-        return entry.LocalizedValue;
-    }
+		public event Action OnLanguageChanged;
 
 
+		public void ChangeLanguage(string localeCode)
+		{
+				StartCoroutine(SetLocale(localeCode));
+		}
 
-    public void ChangeLanguage(string localeCode)
-    {
-        StartCoroutine(SetLocale(localeCode));
-    }
+		private IEnumerator SetLocale(string localeCode)
+		{
+				yield return LocalizationSettings.InitializationOperation;
 
-    IEnumerator SetLocale(string localeCode)
-    {
-        yield return LocalizationSettings.InitializationOperation;
-        var selectedLocale = LocalizationSettings.AvailableLocales.GetLocale(localeCode);
-        if (selectedLocale != null)
-        {
-            LocalizationSettings.SelectedLocale = selectedLocale;
+				var selectedLocale = LocalizationSettings.AvailableLocales.GetLocale(localeCode);
+				if (selectedLocale != null)
+				{
+						LocalizationSettings.SelectedLocale = selectedLocale;
 
-            // 스킬 리스트 버튼 갱신
-            GameManager.Instance.UIManager.RefreshCurrentSkillUI();
+						// UI 갱신
+						GameManager.Instance.UIManager?.RefreshCurrentSkillUI();
+						GameManager.Instance.UIManager?.RefreshAllChooseButtons();
 
-            // 버튼 텍스트 갱신
-            GameManager.Instance.UIManager.RefreshAllChooseButtons();
-        }
-    }
+						// 이벤트 브로드캐스트
+						OnLanguageChanged?.Invoke();
+				}
+		}
+
+		public string GetLocalizedText(string key)
+		{
+				var table = LocalizationSettings.StringDatabase.GetTable(Constants.LOCAL_TABLE);
+				if (table == null)
+						return $"[MissingTable:{Constants.LOCAL_TABLE}]";
+
+				var entry = table.GetEntry(key);
+				if (entry == null || string.IsNullOrEmpty(entry.LocalizedValue))
+						return $"[MissingKey:{key}]";
+
+				return entry.LocalizedValue;
+		}
+
 }

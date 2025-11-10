@@ -138,7 +138,7 @@ MonoBehaviour:
   debuffHandler: {fileID: 0}
   maxEliteHealth: 0
   attackDamage: 7
-  attackRange: 5
+  attackRange: 4
   detectionRange: 100
   attackDelay: 2
   originalSpeed: 7
@@ -154,9 +154,12 @@ MonoBehaviour:
   agent: {fileID: 0}
   _target: {fileID: 0}
   monsterAnimator: {fileID: 0}
+  originalSkinTransform: {x: 0, y: 0, z: 0}
   hasDieAnimation: 1
+  checkOnce: 0
   healthUI: {fileID: 0}
   healthUIPrefabPath: Prefabs/UI/MonsterHealthUI
+  damageTextPrefab: {fileID: 0}
   _box_Length: 3
   _box_Height: 3
   _box_Width: 3

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Localization;
 using UnityEngine.Localization.Components;
 using UnityEngine.UI;
 
@@ -26,7 +27,7 @@ public class PlaySceneView : MonoBehaviour
     [Header("----- 상호작용 패널 -----")]
     [SerializeField] GameObject _interactionPanel;
     [SerializeField] TextMeshProUGUI _interactionTitleText;
-    [SerializeField] TextMeshProUGUI _interactionInstructionText;
+    [SerializeField] TextMeshProUGUI _interactionDescriptionText;
 
     [Header("----- 게임 승리 및 오버 패널 -----")]
     [SerializeField] GameObject _gameOverPanel;
@@ -36,7 +37,12 @@ public class PlaySceneView : MonoBehaviour
     [SerializeField] TextMeshProUGUI _gameTimerText;
 
     [Header("----- 로컬라이즈 컴포넌트 -----")]
-    [SerializeField] LocalizeStringEvent localizeStringEvent;
+
+    // 테이블 이름은 Localization Table에서 사용한 이름(또는 Collection 이름)
+    const string TABLE_COLLECTION_NAME = "InteractionView";
+
+    LocalizedString _localizedTitle;
+    LocalizedString _localizedDesc;
 
     Dictionary<int, string> _roomLoadingTextMap = new Dictionary<int, string>()
 {
@@ -78,23 +84,63 @@ public class PlaySceneView : MonoBehaviour
         _chromeText.text = $"{currentChrome}";
     }
 
+    #region 상호작용 UI 바인딩 (로컬라이즈된 문자열)
+    // IInteractable에서 키를 받아 바인딩합니다.
     public void ShowInteractionUI(IInteractable interactable)
     {
-        UpdateInteractionText(interactable);
-        _interactionPanel.SetActive(true);
+        if (interactable == null) return;
+
+        // 인터랙터로부터 로컬라이제이션 키를 받는다
+        interactable.ReturnInteractionViewKey(out string titleKey, out string instructionKey);
+
+        BindInteractionLocalizedStrings(titleKey, instructionKey);
+        _interactionPanel?.SetActive(true);
     }
 
     public void HideInteractionUI()
     {
-        _interactionPanel.SetActive(false);
+        _interactionPanel?.SetActive(false);
+        UnbindInteractionLocalizedStrings();
     }
 
-    void UpdateInteractionText(IInteractable interactable)
+    // 바인딩: 기존 구독 해제 후 새 LocalizedString 생성 및 구독
+    void BindInteractionLocalizedStrings(string titleKey, string descriptionKey)
     {
-        interactable.GetInteractionMessage(out string title, out string instruction);
-        _interactionTitleText.text = title;
-        localizeStringEvent.StringReference.SetReference("New Table", instruction);
+        UnbindInteractionLocalizedStrings();
+
+        if (!string.IsNullOrEmpty(titleKey))
+        {
+            _localizedTitle = new LocalizedString { TableReference = TABLE_COLLECTION_NAME, TableEntryReference = titleKey };
+            _localizedTitle.StringChanged += OnTitleChanged;
+            _localizedTitle.RefreshString();
+        }
+
+        if (!string.IsNullOrEmpty(descriptionKey))
+        {
+            _localizedDesc = new LocalizedString { TableReference = TABLE_COLLECTION_NAME, TableEntryReference = descriptionKey };
+            _localizedDesc.StringChanged += OnDescChanged;
+            _localizedDesc.RefreshString();
+        }
     }
+
+    void UnbindInteractionLocalizedStrings()
+    {
+        if (_localizedTitle != null) _localizedTitle.StringChanged -= OnTitleChanged;
+        if (_localizedDesc != null) _localizedDesc.StringChanged -= OnDescChanged;
+        _localizedTitle = null;
+        _localizedDesc = null;
+    }
+
+    void OnTitleChanged(string localized)
+    {
+        if (_interactionTitleText != null) _interactionTitleText.text = localized;
+    }
+
+    void OnDescChanged(string localized)
+    {
+        if (_interactionDescriptionText != null) _interactionDescriptionText.text = localized;
+    }
+    #endregion
 
     public void UpdateGrenadeCoolTime(float currentCooltime, float maxCooltime)
     {
