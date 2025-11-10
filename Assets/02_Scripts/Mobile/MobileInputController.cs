@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 public class MobileInputController : MonoBehaviour
 {
+#if UNITY_ANDROID
     [Header("조이스틱 및 버튼")]
     [SerializeField] private Joystick joystick;
     [SerializeField] private Button dashButton;
@@ -200,4 +201,5 @@ public class MobileInputController : MonoBehaviour
     {
         isInit = false;
     }
+#endif
 }

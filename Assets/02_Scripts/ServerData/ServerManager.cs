@@ -478,27 +478,7 @@ public class ServerManager : MonoBehaviour
         }
     }
 
-    private async void OnApplicationQuit()
-    {
-        try
-        {
-            if (_currentUser != null)
-            {
-                await dbRef.Child("users").Child(_currentUser.UserId).UpdateChildrenAsync(new Dictionary<string, object>
-            {
-                { "isLoggedIn", false }
-            });
-
-                auth.SignOut();
-                _currentUser = null;
-                isLoginListenerActive = false;
-            }
-        }
-        catch (System.Exception ex)
-        {
-            Debug.LogWarning("앱 종료 중 로그아웃 실패: " + ex.Message);
-        }
-    }
+  
 
     private void StopLoginStatusListener(string userId)
     {
