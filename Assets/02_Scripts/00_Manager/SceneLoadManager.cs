@@ -17,4 +17,9 @@ public class SceneLoadManager : MonoBehaviour
     {
         SceneManager.LoadScene(Constants.SCENE_NAME_PLAY);
     }
+
+    public void LoadLoginScene()
+    {
+        SceneManager.LoadScene(Constants.SCENE_NAME_LOGIN);
+    }
 }
