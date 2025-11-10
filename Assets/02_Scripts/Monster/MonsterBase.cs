@@ -1,4 +1,6 @@
 ﻿using System.Collections;
+using TMPro;
+using UnityEditor.Build.Content;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -334,10 +336,24 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
         }
     }
 
-    #endregion
+    /// <summary>
+    /// 데미지 이펙트
+    /// </summary>
+		[SerializeField] private PoolableObject damageTextPrefab;
 
-    #region 사망 처리 및 애니메이션 처리
-    protected override void Die()
+		public void ShowDamage(float damageAmount, Vector3 position,int damage)
+		{
+        if(damageTextPrefab == null)
+        {
+            damageTextPrefab = Resources.Load<PoolableObject>("Prefabs/Skill/DamageCanvas");
+        }
+        GameManager.Instance.PoolManager.GetFromPool(damageTextPrefab, position, Quaternion.identity).GetComponentInChildren<DamageText>().SetDmg(damage);
+		}
+
+		#endregion
+
+		#region 사망 처리 및 애니메이션 처리
+		protected override void Die()
     {
         if (isDead) return;
         isDead = true;
@@ -416,6 +432,13 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
     public override void TakeDamage(float damage, Transform attacker = null)
     {
         base.TakeDamage(damage, attacker);
+
+        // 남은 체력이 0보다 크면 데미지를 보여줌
+				if (currentHealth > 0)
+				{
+				ShowDamage(damage,transform.position + Vector3.up,(int)damage);
+				}
+
 
         if (healthUI != null)
         {

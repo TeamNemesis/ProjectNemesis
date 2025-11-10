@@ -109,7 +109,7 @@ public abstract class CharacterModelBase : PoolableObject, IDamageable
         #region 추가데미지
         float addDamage = 1f;
 
-        if(debuffHandler.GetActiveDebuffCount()>0)
+        if(debuffHandler.GetActiveDebuffCount()>0&&!CompareTag(Constants.TAG_PLAYER))
         {
             addDamage += GameManager.Instance.PlayerStatManager.debuffPlusDamage;
         }

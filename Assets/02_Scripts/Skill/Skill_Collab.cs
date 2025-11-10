@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using UnityEngine;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class Skill_Collab : SkillBase
 {
@@ -9,6 +10,7 @@ public class Skill_Collab : SkillBase
     /// </summary>
     private float _tyrantDamage = 0;
 
+    private SkillEffect _tyrantEffectPrefab;
     /// <summary>
     /// 최상위 포식자 계수
     /// </summary>
@@ -16,6 +18,10 @@ public class Skill_Collab : SkillBase
     private float _predatorTime = 0f;
     private WeakenArea _predatorPrefab;
     private WeakenAreaData _predatorData;
+
+    private SkillEffect _apexPredatorPrefab;
+
+    private Player _player;
 
     /// <summary>
     /// GravityFlare 관련 필드
@@ -78,6 +84,7 @@ public class Skill_Collab : SkillBase
 
     public override void ActivateSkill(SkillData choosedSkill)
     {
+        _player = _skillManager.playScene.player;
         switch (choosedSkill.skillIdx)
         {
             // 폭군
@@ -117,20 +124,19 @@ public class Skill_Collab : SkillBase
     #region 폭군
     public void ActiveTyrant(SkillData skill)
     {
+        if (_tyrantEffectPrefab == null)
+        {
+            _tyrantEffectPrefab = Resources.Load<SkillEffect>("Prefabs/Effect/Skill/Tyrant");  
+        }
+
         if (skill.skillLevel == 1)
-        {
-            // 모든 피해 증가
             skillManager.playerStatManager.AddTotalMultiDamage(skill.skillBaseValue_1 + skill.skillLevelValue_1);
-        }
         else
-        {
-            // 모든 피해 증가
             skillManager.playerStatManager.AddTotalMultiDamage(skill.skillLevelValue_1);
-        }
+
         skillManager.playScene.player.playerModel.OnHeal -= DamageNearestMonster;
         _tyrantDamage = skill.skillLevelValue_2 * skill.skillLevel + skill.skillBaseValue_2;
         skillManager.playScene.player.playerModel.OnHeal += DamageNearestMonster;
-
     }
 
     public void DamageNearestMonster(int currentHp, int MaxHp)
@@ -142,6 +148,15 @@ public class Skill_Collab : SkillBase
             if (nearestMonster != null)
             {
                 nearestMonster.TakeDamage(_tyrantDamage);
+                //Debug.Log("폭군 데미지 들어감");
+
+                if (_tyrantEffectPrefab != null)
+                {
+                    Vector3 spawnPos = nearestMonster.transform.position + nearestMonster.transform.forward * 0.5f;
+                    //Quaternion spawnRot = Quaternion.identity;
+
+                    GameManager.Instance.PoolManager.GetFromPool(_tyrantEffectPrefab,spawnPos,_tyrantEffectPrefab.transform.rotation);
+                }
             }
             else
             {
@@ -166,8 +181,11 @@ public class Skill_Collab : SkillBase
         {
             _predatorPrefab = Resources.Load<WeakenArea>("Prefabs/Skill/SkillObject/Skill_Collab/PredatorPrefab");
         }
-
-
+        //로드
+        if (_apexPredatorPrefab == null)
+        {
+            _predatorPrefab = Resources.Load<WeakenArea>("Prefabs/Effect/Skill/ApexPredator_Player");
+        }
 
 
     }
@@ -190,6 +208,8 @@ public class Skill_Collab : SkillBase
         skillManager.playScene.player.playerModel.Heal((int)_predatorHeal);
         MakeWeakenArea(monster);
         skillManager.playScene.player.playerModel.PlayerInvincibility(_predatorTime);
+
+        GameManager.Instance.PoolManager.GetFromPool(_apexPredatorPrefab, _player.transform.position, Quaternion.identity);  //생성
     }
 
     public void MakeWeakenArea(MonsterBase monster)

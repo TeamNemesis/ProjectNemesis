@@ -32,6 +32,7 @@ public class Player : MonoBehaviour
     [Header("----- 무기가 바뀌면 같이 바뀌는 컴포넌트(읽기 전용) -----")]
     [SerializeField] PlayerNormalAttacker _normalAttacker;     // 플레이어 일반 공격 컴포넌트 (추상/베이스)
     [SerializeField] PlayerSpecialAttacker _specialAttacker;   // 플레이어 특수 공격 컴포넌트
+    
 
     [Header("----- 읽기 전용 -----")]
     [SerializeField] PlayerWeaponSet _currentWeaponSet;        // 현재 플레이어 무기 세트
@@ -61,6 +62,7 @@ public class Player : MonoBehaviour
     public PlayerModel playerModel => _playerModel;
     public PlayerDasher Dasher => _dasher;
     public PlayerWeaponSet CurrentWeaponSet => _currentWeaponSet;
+    public PlayerGrenadeAttacker GrenadeAttacker => _grenadeAttacker;
 
     // MoveInput은 world-space Vector3로 노출
     public bool CanGetInput => EventBus.CanGetInput;
@@ -302,6 +304,7 @@ public class Player : MonoBehaviour
         {
             if (_stateMachine.CurrentType != PlayerStateType.Move)
             {
+                Debug.Log("모드 전환");
                 _stateMachine.ChangeState(PlayerStateType.Move);
             }
             return;
@@ -487,6 +490,8 @@ public class Player : MonoBehaviour
         _grenadeAttacker.RequestAttack();
         _grenadeAttackPressed = false;
     }
+
+
 
     public void GrenadeCountChanged(int currentCount, int maxCount)
     {

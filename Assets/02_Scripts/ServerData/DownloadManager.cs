@@ -109,14 +109,13 @@ public class DownloadManager : MonoBehaviour
                     return;
                 }
             }
-            else
+            else // fromGameBase가 false (사용자 데이터 다운로드 시도)
             {
                 if (_serverManager.currentUser == null)
                 {
                     _serverManager.ShowPopup("로그인된 사용자가 없습니다.");
                     _serverManager.SetLoading(false);
                     return;
-
                 }
 
                 var snapshot = await _serverManager.dbRef.Child("playerStats").Child(_serverManager.currentUser.UserId).GetValueAsync();
@@ -125,14 +124,52 @@ public class DownloadManager : MonoBehaviour
                     jsonText = snapshot.Child("playerStatJson").Value.ToString();
                     Debug.Log("사용자 데이터를 서버에서 받아왔습니다.");
                 }
-                else
+                else // 사용자 데이터가 Firebase에 없는 경우 (playerStatJson이 존재하지 않거나, snapshot 자체가 없는 경우)
                 {
-                    _serverManager.ShowPopup("사용자 데이터가 Firebase에 없습니다.");
-                    await DownloadJsonToLocal(fromGameBase: true);
-                    return;
+                    _serverManager.ShowPopup("사용자 데이터가 Firebase에 없습니다. 초기 게임 데이터로 초기화합니다.");
+                    await DownloadJsonToLocal(fromGameBase: true); // gameBaseJson을 로컬에 다운로드
+                                                                   // 이 호출이 성공하면 Constants.FILE_PATH_PLAYERSTAT에 gameBaseJson 내용이 저장됩니다.
+
+
+                    if (_serverManager.currentUser != null) // 혹시 모를 경우를 대비한 null 체크
+                    {
+                        try
+                        {
+                            // 로컬에 방금 저장된 gameBaseJson 내용을 읽어 사용자의 playerStats로 Firebase에 업로드
+                            bool uploadSuccess = await TryUploadPlayerStat(); // TryUploadPlayerStat이 로컬 파일을 읽어 업로드합니다.
+                            if (uploadSuccess)
+                            {
+                                Debug.Log("사용자 데이터가 초기 게임 데이터로 Firebase에 성공적으로 초기화되었습니다.");
+                                // 업로드 성공 후 jsonText 변수도 이 초기화된 값으로 업데이트하여 이후 로컬 파일 쓰기가 올바르게 되도록 함
+                                jsonText = File.ReadAllText(Constants.FILE_PATH_PLAYERSTAT);
+                            }
+                            else
+                            {
+                                Debug.LogError("초기 게임 데이터를 사용자 데이터로 Firebase에 업로드하는 데 실패했습니다.");
+                                _serverManager.ShowError("사용자 데이터 초기화 실패", "초기 게임 데이터 업로드 실패");
+                                _serverManager.SetLoading(false);
+                                return; // 업로드 실패 시 함수 종료
+                            }
+                        }
+                        catch (System.Exception ex)
+                        {
+                            _serverManager.ShowError("사용자 데이터 초기화 중 오류가 발생했습니다.", "Initial playerStat upload error: " + ex.Message);
+                            _serverManager.SetLoading(false);
+                            return; // 오류 발생 시 함수 종료
+                        }
+                    }
+                    else
+                    { // currentUser가 null인데 여기까지 왔다면 뭔가 이상한 경우
+                        _serverManager.ShowPopup("로그인된 사용자 정보가 없어 데이터를 초기화할 수 없습니다.");
+                        _serverManager.SetLoading(false);
+                        return;
+                    }
+
+
                 }
             }
 
+            // 다운로드된 jsonText를 로컬 파일에 저장
             if (!string.IsNullOrEmpty(jsonText) && jsonText != "null")
             {
                 string folderPath = Path.GetDirectoryName(Constants.FILE_PATH_PLAYERSTAT);
@@ -140,7 +177,6 @@ public class DownloadManager : MonoBehaviour
                 File.WriteAllText(Constants.FILE_PATH_PLAYERSTAT, jsonText);
                 Debug.Log("JSON 데이터를 성공적으로 저장했습니다.");
             }
-
             else
             {
                 _serverManager.ShowPopup("서버에서 받은 데이터가 비어 있습니다.");
@@ -150,12 +186,14 @@ public class DownloadManager : MonoBehaviour
         {
             _serverManager.ShowError("데이터 다운로드 중 오류가 발생했습니다.", "DownloadJson 오류: " + ex.Message);
         }
-
-        _serverManager.SetLoading(false);
+        finally
+        {
+            _serverManager.SetLoading(false);
+        }
     }
 
 
-    public async Task UploadClearTime(float clearTime)
+		public async Task UploadClearTime(float clearTime)
     {
         var user = FirebaseAuth.DefaultInstance.CurrentUser;
         if (user == null) return;
