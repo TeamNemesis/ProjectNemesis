@@ -90,7 +90,7 @@ public class PlayerGrenadeBullet : MonoBehaviour
             {
                 Explode(transform.position, transform);
                 isExplode = true;
-                Destroy(gameObject);
+                GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
                 return;
             }
         }
@@ -99,7 +99,7 @@ public class PlayerGrenadeBullet : MonoBehaviour
             Explode(transform.position, transform);
             isExplode = true;
 
-            Destroy(gameObject);
+            GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
         }
     }
 
@@ -109,6 +109,7 @@ public class PlayerGrenadeBullet : MonoBehaviour
         Collider[] hits = new Collider[10];
         int hitCount = Physics.OverlapSphereNonAlloc(position, explosionRadius, hits, enemyLayer);
 
+        GameManager.Instance.SoundManager.PlaySfxAt("Grenade", position);
         EventBus.GrenadeBomb(position);
         if (hitCount <= 0)
         {
