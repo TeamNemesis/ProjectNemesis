@@ -17,8 +17,10 @@ public class ResourceManager : MonoBehaviour
 
     public PlayerWeaponSet[] PlayerWeaponSets { get; private set; }
     public RoomDataSO[] RoomDataSOs { get; private set; }
-    public RewardDataSO[] rewardDataSOs { get; private set; }
-    public RewardDataSO_TechPack[] rewardDataSO_TechPacks { get; private set; }
+    public RewardDataSO[] RewardDataSOs { get; private set; }
+    public RewardDataSO_TechPack[] RewardDataSO_TechPacks { get; private set; }
+    public AudioClip[] Bgm { get; private set; }
+    public AudioClip[] Sfx { get; private set; }
 
     // 호출: 게임 시작 시 한 번만
     public void Initialize()
@@ -29,7 +31,9 @@ public class ResourceManager : MonoBehaviour
 
         PlayerWeaponSets = Resources.LoadAll<PlayerWeaponSet>(Constants.RESOURCES_PATH_PLAYER_WEAPONSET);
         RoomDataSOs = Resources.LoadAll<RoomDataSO>(Constants.RESOURCES_PATH_ROOMDATASO);
-        rewardDataSOs = Resources.LoadAll<RewardDataSO>(Constants.RESOURCES_PATH_REWARD_DATA_SO);
+        RewardDataSOs = Resources.LoadAll<RewardDataSO>(Constants.RESOURCES_PATH_REWARD_DATA_SO);
+        Bgm = Resources.LoadAll<AudioClip>(Constants.RESOURCES_PATH_BGM);
+        Sfx = Resources.LoadAll<AudioClip>(Constants.RESOURCES_PATH_SFX);
 
         // (선택) 간단한 검증 로그
         if (DoorPrefab == null)
