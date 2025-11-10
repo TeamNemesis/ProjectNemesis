@@ -156,7 +156,6 @@ public class PlayerModel : CharacterModelBase
         _invincibilityTimeRemaining = 0f;
         debuffHandler.InitializePlayer();
 
-        Debug.Log("연결");
         GameManager.Instance.PlayerStatManager.OnplayerAvoidanceChange += OnPlayerAvoidanceChange;
         GameManager.Instance.PlayerStatManager.OnplayerHitPercentChange += OnPlayerHitReducePercentChange;
     }

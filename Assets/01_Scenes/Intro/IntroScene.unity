@@ -594,7 +594,6 @@ GameObject:
   - component: {fileID: 628372860}
   - component: {fileID: 628372859}
   - component: {fileID: 628372858}
-  - component: {fileID: 628372857}
   m_Layer: 5
   m_Name: SettingBtn
   m_TagString: Untagged
@@ -622,34 +621,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 30}
   m_SizeDelta: {x: 700, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &628372857
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 628372855}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_StringReference:
-    m_TableReference:
-      m_TableCollectionName: GUID:89d7a238c26be59409a5d636443bffbf
-    m_TableEntryReference:
-      m_KeyId: 2056654727790592
-      m_Key: 
-    m_FallbackState: 0
-    m_WaitForCompletion: 0
-    m_LocalVariables: []
-  m_FormatArguments: []
-  m_UpdateString:
-    m_PersistentCalls:
-      m_Calls: []
-  references:
-    version: 2
-    RefIds: []
 --- !u!114 &628372858
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -693,7 +664,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 628372859}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1005567227}
+        m_TargetAssemblyTypeName: IntroSceneView, Assembly-CSharp
+        m_MethodName: OnSettingPanel
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &628372859
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1976,7 +1959,6 @@ GameObject:
   - component: {fileID: 2083436877}
   - component: {fileID: 2083436876}
   - component: {fileID: 2083436875}
-  - component: {fileID: 2083436874}
   m_Layer: 5
   m_Name: GameCloseBtn
   m_TagString: Untagged
@@ -2004,34 +1986,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -90}
   m_SizeDelta: {x: 700, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &2083436874
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2083436872}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_StringReference:
-    m_TableReference:
-      m_TableCollectionName: GUID:89d7a238c26be59409a5d636443bffbf
-    m_TableEntryReference:
-      m_KeyId: 2056654727790592
-      m_Key: 
-    m_FallbackState: 0
-    m_WaitForCompletion: 0
-    m_LocalVariables: []
-  m_FormatArguments: []
-  m_UpdateString:
-    m_PersistentCalls:
-      m_Calls: []
-  references:
-    version: 2
-    RefIds: []
 --- !u!114 &2083436875
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2075,7 +2029,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2083436876}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1005567227}
+        m_TargetAssemblyTypeName: IntroSceneView, Assembly-CSharp
+        m_MethodName: GameQuit
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2083436876
 MonoBehaviour:
   m_ObjectHideFlags: 0

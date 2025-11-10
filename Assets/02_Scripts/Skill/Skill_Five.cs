@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using UnityEngine;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 /// <summary>
 /// LUX 강화 목록
@@ -12,11 +13,13 @@ public class Skill_Five : SkillBase
     private float _draftMoveSpeed;
     private float _draftTime;
 
-
+    private SkillEffect _ketamineDriftPrefab;
+    private Player _player;
     // 정제
     private float _addTotalDamage;
     public override void ActivateSkill(SkillData choosedSkill)
     {
+        _player = _skillManager.playScene.player;
         switch (choosedSkill.skillIdx)
         {
             // 약화 약물
@@ -133,17 +136,34 @@ public class Skill_Five : SkillBase
     #region 캐타민 드래프트
     public void Draft(Transform monster)
     {
-        if(_draftCoroutine != null)
+        // 이동속도 증가/재갱신 처리
+        if (_draftCoroutine != null)
         {
-            StopCoroutine( _draftCoroutine );
-            _draftCoroutine = StartCoroutine(StartDraftCoroutine(_draftMoveSpeed, _draftTime));
+            StopCoroutine(_draftCoroutine);
         }
         else
         {
             skillManager.playerStatManager.AddPlayerMoveSpeed(_draftMoveSpeed);
-            _draftCoroutine = StartCoroutine(StartDraftCoroutine(_draftMoveSpeed, _draftTime));
         }
+
+        _draftCoroutine = StartCoroutine(StartDraftCoroutine(_draftMoveSpeed, _draftTime));
+
+        //  맞을 때마다 항상 이펙트를 생성하도록 이동
+        Quaternion spawnRot = _player.transform.rotation * Quaternion.Euler(0, 180f, 0);
+
+        if (_ketamineDriftPrefab == null)
+        {
+            _ketamineDriftPrefab = Resources.Load<SkillEffect>("Prefabs/Effect/Skill/KetamineDrift");
+        }
+
+        GameManager.Instance.PoolManager.GetFromPool(
+            _ketamineDriftPrefab,
+            _player.transform.position,
+            spawnRot,
+            _player.transform
+        );
     }
+
 
     public IEnumerator StartDraftCoroutine(float moveSpeed,float time)
     {

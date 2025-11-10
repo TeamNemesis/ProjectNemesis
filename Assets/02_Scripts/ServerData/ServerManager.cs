@@ -27,6 +27,7 @@ public class ServerManager : MonoBehaviour
 
     private FirebaseAuth auth;
     private FirebaseUser _currentUser;
+    private string deviceId;
     public FirebaseUser currentUser { get { return _currentUser; } }
     private DatabaseReference _dbRef;
     public DatabaseReference dbRef { get { return _dbRef; } }
@@ -40,6 +41,7 @@ public class ServerManager : MonoBehaviour
     {
         auth = FirebaseAuth.DefaultInstance;
         _dbRef = FirebaseDatabase.DefaultInstance.RootReference;
+        deviceId = SystemInfo.deviceUniqueIdentifier;
 
         resendEmailBtn.gameObject.SetActive(false);
 
@@ -149,8 +151,19 @@ public class ServerManager : MonoBehaviour
         {
             var loginTask = await auth.SignInWithEmailAndPasswordAsync(emailInput.text, pwInput.text);
             _currentUser = loginTask.User;
-
             await _currentUser.ReloadAsync();
+
+            var userSnapshot = await dbRef.Child("users").Child(_currentUser.UserId).GetValueAsync();
+            bool isLoggedIn = userSnapshot.Child("isLoggedIn").Value?.ToString() == "true";
+            string lastDeviceId = userSnapshot.Child("lastLoginDeviceId").Value?.ToString();
+
+            if (isLoggedIn && lastDeviceId != deviceId)
+            {
+                ShowPopup("다른 기기에서 이미 로그인되어 있습니다. 로그아웃 후 다시 시도해주세요.");
+                auth.SignOut();
+                SetLoading(false);
+                return;
+            }
 
             if (!_currentUser.IsEmailVerified)
             {
@@ -161,10 +174,18 @@ public class ServerManager : MonoBehaviour
                 return;
             }
 
-            ShowPopup("로그인 성공", true); // 로그인 후 씬 전환
+            await dbRef.Child("users").Child(_currentUser.UserId).UpdateChildrenAsync(new Dictionary<string, object>
+        {
+            { "isLoggedIn", true },
+            { "lastLoginDeviceId", deviceId }
+        });
+
             resendEmailBtn.gameObject.SetActive(false);
 
+            // ✅ 다운로드 완료 후 로그인 성공 메시지 표시
             await _downloadManager.DownloadJsonToLocal(fromGameBase: false);
+
+            ShowPopup("로그인 성공", true);
         }
         catch (System.Exception ex)
         {
@@ -343,13 +364,16 @@ public class ServerManager : MonoBehaviour
 
         SetLoading(false);
     }
-
     public void ShowPopup(string message, bool changeSceneOnConfirm = false)
     {
         shouldChangeScene = changeSceneOnConfirm;
 
-        popUpMsg.text = message;
-        popUpPanel.SetActive(true);
+        if (popUpMsg != null)
+            popUpMsg.text = message;
+
+        if (popUpPanel != null)
+            popUpPanel.SetActive(true);
+
         Debug.Log(message);
 
         if (popUpConfirmBtn != null)
@@ -358,33 +382,47 @@ public class ServerManager : MonoBehaviour
             popUpConfirmBtn.onClick.RemoveAllListeners();
             popUpConfirmBtn.onClick.AddListener(() =>
             {
-                popUpPanel.SetActive(false);
+                if (popUpPanel != null)
+                    popUpPanel.SetActive(false);
+
                 popUpConfirmBtn.gameObject.SetActive(false);
 
                 if (shouldChangeScene)
                 {
                     SceneManager.LoadScene(1);
-                    mainCanvas.SetActive(false);
+                    if (mainCanvas != null)
+                        mainCanvas.SetActive(false);
                 }
             });
         }
 
-        // ✅ 자동 로그인 안내일 경우 로그아웃 버튼 활성화
-        if (message.Contains("자동 로그인"))
+        if (logoutBtn != null)
         {
-            logoutBtn.gameObject.SetActive(true);
-            logoutBtn.onClick.RemoveAllListeners();
-            logoutBtn.onClick.AddListener(() =>
+            if (message.Contains("자동 로그인"))
             {
-                auth.SignOut();
+                logoutBtn.gameObject.SetActive(true);
+                logoutBtn.onClick.RemoveAllListeners();
+                logoutBtn.onClick.AddListener(async () =>
+                {
+                    if (_currentUser != null)
+                    {
+                        await dbRef.Child("users").Child(_currentUser.UserId).Child("isLoggedIn").SetValueAsync(false);
+                    }
+
+                    auth.SignOut();
+                    _currentUser = null;
+
+                    logoutBtn.gameObject.SetActive(false);
+                    if (popUpPanel != null)
+                        popUpPanel.SetActive(false);
+
+                    ShowPopup("로그아웃되었습니다. 다시 로그인해주세요.");
+                });
+            }
+            else
+            {
                 logoutBtn.gameObject.SetActive(false);
-                popUpPanel.SetActive(false);
-                ShowPopup("로그아웃되었습니다. 다시 로그인해주세요.");
-            });
-        }
-        else
-        {
-            logoutBtn.gameObject.SetActive(false);
+            }
         }
     }
 
