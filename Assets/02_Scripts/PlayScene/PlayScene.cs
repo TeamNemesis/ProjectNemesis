@@ -25,7 +25,7 @@ public class PlayScene : MonoBehaviour
 
     private void Awake()
     {
-        EventBus.OnColosseumRoomSet += IsColosseum;
+        EventBus.IsColosseumChanged += IsColosseum;
         IsColosseum(false);
 
 
@@ -60,7 +60,7 @@ public class PlayScene : MonoBehaviour
         _mapController.OnStartRoomExited += _timeChecker.StartTimeCheck;
 
 #if UNITY_ANDROID
-        _mobileInputController.Initialize(_player,_inputHandler);
+//        _mobileInputController.Initialize(_player,_inputHandler);
 #endif
     }
     private void Start()
@@ -87,7 +87,7 @@ public class PlayScene : MonoBehaviour
             Debug.LogError("PlaySceneView가 할당되지 않았습니다!");
             return;
         }
-        _playSceneView.Initialize(_player);
+        _playSceneView.Initialize();
         if (_cameraMover == null)
         {
             Debug.LogError("카메라 무버가 할당되지 않았습니다!");
@@ -101,6 +101,12 @@ public class PlayScene : MonoBehaviour
             return;
         }
         _timeChecker.Initialize();
+
+        if(_mobileInputController == null)
+        {
+            Debug.LogError("MobileInputController가 할당되지 않았습니다!");
+            return;
+        }
 
         GameManager.Instance.skillManager.SetPlayScene(this);
 
@@ -187,6 +193,6 @@ public class PlayScene : MonoBehaviour
 
     private void OnDestroy()
     {
-        EventBus.OnColosseumRoomSet -= IsColosseum;
+        EventBus.IsColosseumChanged -= IsColosseum;
     }
 }

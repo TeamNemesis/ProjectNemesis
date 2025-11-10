@@ -11,22 +11,25 @@ public class RoomInfo
     public NormalRoomType? NormalType;             // 일반 방 타입(일반 방이 아닐 경우 null)
     public TechSelectPackType? TechType;     // 일반 방의 보상이 기술팩 타입일 경우 해당 기술팩 타입(기술팩이 아닐 경우 null)
 
-    Dictionary<RoomType, string> _roomTitle = new Dictionary<RoomType, string>()
+    // 로컬라이즈된 문자열 대신 "키"를 보관/생성
+    Dictionary<RoomType, string> _roomTitleKey = new Dictionary<RoomType, string>()
     {
-        { RoomType.Normal, "NormalRoomTitle" },
-        { RoomType.Shop, "ShopTitle" },
-        { RoomType.Colosseum, "ColosseumTitle" },
-        { RoomType.Lab, "LabTitle" },
-        { RoomType.Boss, "BossTitle" },
+        { RoomType.Start, "_roomTitle_Start" },
+        { RoomType.Normal, "_roomTitle_Normal" },
+        { RoomType.Shop, "_roomTitle_Shop" },
+        { RoomType.Colosseum, "_roomTitle_Colosseum" },
+        { RoomType.Lab, "_roomTitle_Lab" },
+        { RoomType.Boss, "_roomTitle_Boss" },
     };
 
-    Dictionary<RoomType, string> _roomDescription = new Dictionary<RoomType, string>()
+    Dictionary<RoomType, string> _roomDescriptionKey = new Dictionary<RoomType, string>()
     {
-        {  RoomType.Normal, "normal" },
-        { RoomType.Shop, "shop" },
-        { RoomType.Colosseum, "colosseum" },
-        { RoomType.Lab, "lab" },
-        { RoomType.Boss, "boss" },
+        { RoomType.Start, "_roomDescription_Start" },
+        { RoomType.Normal, "_roomDescription_Normal" },
+        { RoomType.Shop, "_roomDescription_Shop" },
+        { RoomType.Colosseum, "_roomDescription_Colosseum" },
+        { RoomType.Lab, "_roomDescription_Lab" },
+        { RoomType.Boss, "_roomDescription_Boss" },
     };
 
     public RoomInfo(RoomType roomType, NormalRoomType? normalRoomType = null, TechSelectPackType? techSelectPackType = null)
@@ -61,21 +64,15 @@ public class RoomInfo
         return false;
     }
 
-    public string GetRoomTitle()
+    public string GetTitleKey()
     {
-        if (_roomTitle.TryGetValue(RoomType, out var title))
-        {
-            return title;
-        }
-        return "알 수 없는 방";
+        if (_roomTitleKey.TryGetValue(RoomType, out var key)) return key;
+        return "_roomTitle_Unknown";
     }
 
-    public string GetRoomDescription()
+    public string GetDescriptionKey()
     {
-        if (_roomDescription.TryGetValue(RoomType, out var description))
-        {
-            return description;
-        }
-        return "설명 없음";
+        if (_roomDescriptionKey.TryGetValue(RoomType, out var key)) return key;
+        return "_roomDescription_Unknown";
     }
 }

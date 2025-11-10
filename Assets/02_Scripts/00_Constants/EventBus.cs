@@ -55,11 +55,11 @@ public static class EventBus
     }
 
     public static bool IsColosseumRoom = false;
-    public static event Action<bool> OnColosseumRoomSet;
+    public static event Action<bool> IsColosseumChanged;
     public static void SetColosseumRoom(bool isColosseum)
     {
         IsColosseumRoom = isColosseum;
-        OnColosseumRoomSet?.Invoke(isColosseum);
+        IsColosseumChanged?.Invoke(isColosseum);
     }
 
     public static event Action OnBossDead;

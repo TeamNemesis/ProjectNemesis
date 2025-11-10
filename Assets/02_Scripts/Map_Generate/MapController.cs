@@ -139,8 +139,8 @@ public class MapController : MonoBehaviour
         }
 
         // 방 생성 후 효과 처리
+        GameManager.Instance.SoundManager.PlayBGM(room.RoomInfo.RoomType.ToString());
 
-        
 
         // 상태 갱신
         UpdateCurrentRoomState(room);

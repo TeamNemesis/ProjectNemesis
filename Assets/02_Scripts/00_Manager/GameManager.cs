@@ -35,6 +35,7 @@ public class GameManager : MonoBehaviour
                     _instance._poolManager = obj.AddComponent<PoolManager>();
                     _instance._currencyManager = obj.AddComponent<CurrencyManager>();
                     _instance._sceneLoadManager = obj.AddComponent<SceneLoadManager>();
+                    _instance._soundManager = obj.AddComponent<SoundManager>();
 
                     _instance.Initialize();
 
@@ -95,6 +96,7 @@ public class GameManager : MonoBehaviour
         _currencyManager.Initialize();
         _serverManager.Initialize();
         _poolManager.Initialize(_instance._resourceManager);
+        _soundManager.Initialize(_resourceManager);
     }
 
     [SerializeField] ResourceManager _resourceManager;      // 리소스 매니저
@@ -141,4 +143,6 @@ public class GameManager : MonoBehaviour
     private LanguageManager _languageManager;
     public LanguageManager languageManager => _languageManager;
 
+    [SerializeField] SoundManager _soundManager;
+    public SoundManager SoundManager => _soundManager;
 }

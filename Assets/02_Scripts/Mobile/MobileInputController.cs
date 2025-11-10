@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class MobileInputController : MonoBehaviour
 {
-#if UNITY_ANROID
+#if UNITY_ANDROID
     [Header("조이스틱 및 버튼")]
     [SerializeField] private Joystick joystick;
     [SerializeField] private Button dashButton;
@@ -157,15 +157,18 @@ public class MobileInputController : MonoBehaviour
         isGrenadeAiming = true;
         isTouchOverButton = true;
 
-        // 조준 시작한 터치의 fingerId 저장
-        if (Input.touchCount > 0)
+        // 유탄 버튼 영역에 해당하는 터치를 찾아 fingerId 저장
+        foreach (Touch touch in Input.touches)
         {
-            grenadeFingerId = Input.GetTouch(0).fingerId;
+            if (RectTransformUtility.RectangleContainsScreenPoint(grenadeRect, touch.position, null))
+            {
+                grenadeFingerId = touch.fingerId;
+                break;
+            }
         }
 
         player.GrenadeAttacker.StartAiming();
     }
-
 
     private void OnGrenadeUp(BaseEventData data)
     {

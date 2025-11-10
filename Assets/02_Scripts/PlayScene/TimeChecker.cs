@@ -18,6 +18,7 @@ public class TimeChecker : MonoBehaviour
     {
         _currentTime = 0f;
         OnTimeUpdated?.Invoke(_currentTime);
+        EventBus.OnBossDead += StopTimeCheck;
     }
 
     public void StartTimeCheck()
@@ -56,5 +57,6 @@ public class TimeChecker : MonoBehaviour
     {
         if( _timeCheckRoutine != null)
             StopCoroutine(_timeCheckRoutine);
+        EventBus.OnBossDead -= StopTimeCheck;
     }
 }
