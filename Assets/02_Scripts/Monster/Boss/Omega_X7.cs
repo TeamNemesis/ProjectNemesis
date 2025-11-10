@@ -49,13 +49,14 @@ public class Omega_X7 : MonsterBase
 
     public override void Initialize(object data = null)
     {
+        SetMonsterName(EnglishName, KoreanName);
+
         base.Initialize(data);
 
         monsterGrenade = GetComponentInChildren<MonsterGrenade>();
 
         Invoke(nameof(DisableAgent), 0.1f);
 
-        SetMonsterName(EnglishName, KoreanName);
     }
 
     private void Update()
@@ -222,16 +223,20 @@ public class Omega_X7 : MonsterBase
     {
         if (_target == null) return;
 
-        Vector3 directionToTarget = (_target.position - attackOrigin).normalized;
+        // Y축을 같은 높이로 맞춰서 거리 계산 (수평 거리만 체크)
+        Vector3 targetPosFlat = new Vector3(_target.position.x, attackOrigin.y, _target.position.z);
+        Vector3 attackOriginFlat = new Vector3(attackOrigin.x, attackOrigin.y, attackOrigin.z);
+
+        Vector3 directionToTarget = (targetPosFlat - attackOriginFlat).normalized;
         float angleToTarget = Vector3.Angle(attackDirection, directionToTarget);
-        float distanceToTarget = Vector3.Distance(attackOrigin, _target.position);
+        float distanceToTarget = Vector3.Distance(attackOriginFlat, targetPosFlat);
 
         if (angleToTarget <= shotgunAngle / 2f && distanceToTarget <= shotgunRange)
         {
-            PlayerHealth playerHealth = _target.GetComponent<PlayerHealth>();
-            if (playerHealth != null)
+            IDamageable damageable = _target.GetComponent<IDamageable>();
+            if (damageable != null)
             {
-                playerHealth.TakeDamage(shotgunDamage);
+                damageable.TakeDamage(shotgunDamage);
             }
         }
     }

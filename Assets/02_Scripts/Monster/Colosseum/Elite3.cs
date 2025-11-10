@@ -33,8 +33,8 @@ public class Elite3 : MonsterBase
 
     public override void Initialize(object data = null)
     {
-        base.Initialize(data);
         SetMonsterName(EnglishName, KoreanName);
+        base.Initialize(data);
     }
 
 
@@ -89,7 +89,7 @@ public class Elite3 : MonsterBase
                     float angle = i * 36f + angleOffset;
                     Quaternion bulletRotation = Quaternion.Euler(0, angle, 0);
                     Vector3 spawnPos = transform.position;
-                    spawnPos.y = 0.5f;
+                    spawnPos.y = 1f;
                     GameObject bullet = GameManager.Instance.PoolManager.GetFromPool(eliteBulletPrefab, spawnPos, bulletRotation);
                     EliteBullet elitetBullet = bullet.GetComponent<EliteBullet>();
                     if (elitetBullet != null)
