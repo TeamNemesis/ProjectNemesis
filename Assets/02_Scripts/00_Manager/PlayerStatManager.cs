@@ -1,15 +1,24 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
-using UnityEngine;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using UnityEditor;
+using UnityEngine;
 
 public class PlayerStatManager : MonoBehaviour
 {
     private Dictionary<string,PlayerStatData> _playerStatDataDic = new Dictionary<string,PlayerStatData>();
     public Dictionary<string, PlayerStatData> playerStatDataDic { get { return _playerStatDataDic; } }
+
+    public List<PlayerStatData> GetUpgradableStats()
+    {
+        return playerStatDataDic
+            .Values
+            .Where(stat => stat.MaxLevel > 0)
+            .ToList();
+    }
 
     private List<PlayerStatJsonData> _playerjsonData = new List<PlayerStatJsonData>();
 
@@ -222,14 +231,13 @@ public class PlayerStatManager : MonoBehaviour
     }
     public event Action<float> OnPlayerMoveSpeedChange;
 
-
+    
     private float _playerMoveSpeedMulti;
     public float playerMoveSpeedMulti { get { return _playerMoveSpeedMulti; } }
     public void AddPlayerMoveSpeedMulti(float plusMoveSpeed)
     {
         _playerMoveSpeedMulti += plusMoveSpeed;
         OnPlayerMoveSpeedChange?.Invoke(_playerMoveSpeed * _playerMoveSpeedMulti);
-        Debug.LogError(_playerMoveSpeed * _playerMoveSpeedMulti); 
     }
 
 
@@ -489,7 +497,6 @@ public class PlayerStatManager : MonoBehaviour
             default:
                 break;
         }
-        Debug.LogError("현재 데미지 : " + damage + attackType + weaponType);
         
         monster.GetComponent<MonsterBase>().TakeDamage(damage, attackerTransform);
     }
@@ -504,6 +511,8 @@ public class PlayerStatManager : MonoBehaviour
             InitializeStatByReflection(stat);
         }
         EventBus.OnMonsterHit += TakeDamage;
+
+        
     }
 
     public void InitPlayerStat()
@@ -524,11 +533,11 @@ public class PlayerStatManager : MonoBehaviour
             string jsonText = File.ReadAllText(Constants.FILE_PATH_PLAYERSTAT);
             _playerjsonData = JsonConvert.DeserializeObject<List<PlayerStatJsonData>>(jsonText);
             InitSkillDictionary();
-            Debug.Log("✅ JSON 파일 불러오기 성공");
+            Debug.Log("JSON 파일 불러오기 성공");
         }
         catch (System.Exception ex)
         {
-            Debug.LogError("❌ JSON 파싱 오류: " + ex.Message);
+            Debug.LogError("JSON 파싱 오류: " + ex.Message);
         }
     }
 
@@ -578,10 +587,11 @@ public class PlayerStatManager : MonoBehaviour
         File.WriteAllText(Constants.FILE_PATH_PLAYERSTAT, json);
     }
 
+
     public void UploadToFirebase()
     {
         SaveCurrentLevelsToJson();
-        GameManager.Instance.serverManager.UploadPlayerStatFromLocal();
+        GameManager.Instance.serverManager.downloadManager.UploadPlayerStatFromLocal();
     }
 
    

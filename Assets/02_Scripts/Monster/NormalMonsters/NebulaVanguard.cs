@@ -4,23 +4,14 @@ using UnityEngine;
 public class NebulaVanguard : MonsterBase
 {
     [Header("Local Stats")]
-    [SerializeField] private float _box_Length = 3;
+    [SerializeField] private float _box_Length = 4;
     [SerializeField] private float _box_Height = 3;
     [SerializeField] private float _box_Width = 3;
 
-    // 애니메이션 파라미터 이름 상수
-    private readonly int IsMove_Hash = Animator.StringToHash("IsMove");
-    private readonly int Attack_Hash = Animator.StringToHash("Attack");
-
     private void Update()
     {
-        if (isDead || _target == null) return;
+        if (isDead || _target == null || baseState == MonsterState.Die) return;
         if (isStunned) return;
-
-        if (CanSeePlayer())
-        {
-            LookAtPlayer();
-        }
 
         switch (baseState)
         {
@@ -126,7 +117,7 @@ public class NebulaVanguard : MonsterBase
             {
                 if (target.TryGetComponent(out IDamageable playerHealth) && target.tag == targetTag)
                 {
-                    yield return new WaitForSeconds(0.5f);
+                    yield return new WaitForSeconds(0.7f);
                     float finalPlayerDistance = Vector3.Distance(transform.position, base._target.position);
                     if (finalPlayerDistance <= attackRange)
                     {

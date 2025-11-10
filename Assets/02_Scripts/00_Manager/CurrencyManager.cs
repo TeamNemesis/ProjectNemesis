@@ -63,6 +63,11 @@ public class CurrencyManager : MonoBehaviour
         OnCreditChanged?.Invoke(_currentCredit);
     }
 
+    public void ResetRoomCredit()
+    {
+        _roomCredit = 0;
+    }
+
     public void AddCredit(int amount)
     {
         _currentCredit += amount;

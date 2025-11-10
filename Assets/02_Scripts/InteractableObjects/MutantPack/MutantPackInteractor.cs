@@ -13,7 +13,7 @@ public class MutantPackInteractor : RewardInteractableObject
 
     public override void Initialize()
     {
-        
+        base.Initialize();
     }
 
     // 보상 플로우(예: UI열고 플레이어가 선택하면 확정되는 경우)
@@ -37,5 +37,11 @@ public class MutantPackInteractor : RewardInteractableObject
     {
         base.OnDisable();
         GameManager.Instance.UIManager.onRewardSelect -= RaiseRewardGivenEvent;
+    }
+
+    public override void ReturnInteractionViewKey(out string title, out string instruction)
+    {
+        title = "_rewardTitle_MutantPack";
+        instruction = "_rewardDescription_MutantPack";
     }
 }

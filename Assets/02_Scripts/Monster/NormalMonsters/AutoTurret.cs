@@ -42,7 +42,7 @@ public class AutoTurret : MonsterBase
 
     private IEnumerator PerformAttack()
     {
-        monsterAnimator.SetTrigger("Attack");
+        monsterAnimator.SetTrigger(Attack_Hash);
         GetEffectFromPool(muzzleFlashPrefab, shootPos.position, shootPos.rotation);
         _isAttacking = true;
         if (_target != null && Vector3.Distance(transform.position, _target.position) <= attackRange)
@@ -61,4 +61,11 @@ public class AutoTurret : MonsterBase
         _isAttacking = false;
         baseState = MonsterState.Idle; // 공격 후 다시 대기 상태로 전환
     }
+
+    protected override void Die()
+    {
+        GetEffectFromPool(muzzleFlashPrefab, transform.position, transform.rotation);
+        base.Die();
+    }
+
 }

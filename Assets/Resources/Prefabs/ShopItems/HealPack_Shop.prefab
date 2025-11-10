@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 765003180954101794}
   - component: {fileID: -3142919533075438500}
   - component: {fileID: 4574665672793328610}
-  - component: {fileID: 1712360709500955285}
   - component: {fileID: 8490042252372606769}
   m_Layer: 6
   m_Name: HealPack_Shop
@@ -61,23 +60,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _guidePoint: {fileID: 3770183927772058669}
-  _rewardTitle: "\uCCB4\uB825 \uD68C\uBCF5 \uD0A4\uD2B8"
-  _rewardInstruction: "50\uD06C\uB808\uB527"
+  _rewardTitle: HealPackTitle
+  _rewardInstruction: HealPackShop
   _price: 50
---- !u!114 &1712360709500955285
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4648147180414455291}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1828bdf68ca3405438fb65e7ab9a7894, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _rotationPeriod: 6
-  _axis: {x: 0, y: 1, z: 0}
 --- !u!65 &8490042252372606769
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -33,7 +33,6 @@ public class GrenadePoison : AreaDotBase,IInitializePoolable
 				int id = target.GetInstanceID();
 				if (!poisonStackCoroutine.ContainsKey(id))
 				{
-						Debug.Log("스택 쌓기 시작");
 						Coroutine startPoison = StartCoroutine(StartPoisonStack(target));
 						poisonStackCoroutine.Add(id, startPoison);
 				}
@@ -46,7 +45,6 @@ public class GrenadePoison : AreaDotBase,IInitializePoolable
 				{
 						StopCoroutine(poisonStack);
 						poisonStackCoroutine.Remove(id);
-						Debug.Log("스택 쌓기 종료");
 				}
 		}
 
@@ -85,7 +83,6 @@ public class GrenadePoison : AreaDotBase,IInitializePoolable
 				while (target.gameObject.activeSelf)
 				{
 						targetHandler.ApplyDebuff(DebuffHandler.DebuffData.CreatePoison());
-						Debug.Log("유탄 포이즌 스택");
 						yield return new WaitForSeconds(Constants.SKILL_ONE_SPATTACK_STACKTIME);
 				}
 		}

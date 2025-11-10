@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Localization.Settings;
 
 public class MonsterHealthUI : PoolableObject, IInitializePoolable, IReleasePoolable
 {
@@ -44,43 +45,6 @@ public class MonsterHealthUI : PoolableObject, IInitializePoolable, IReleasePool
     private bool isBoss = false;
     private Slider currentSlider;
     private Image currentFillImage;
-
-    // Awake: 전역 설정만 (Canvas 생성, 부모 설정)
-    private void Awake()
-    {
-        rectTransform = GetComponent<RectTransform>();
-
-        // MonsterHealthUIRoot 생성 (전역, 한 번만)
-        if (monsterHealthUIRoot == null)
-        {
-            GameObject rootObj = new GameObject("MonsterHealthUIRoot");
-            monsterHealthUIRoot = rootObj.AddComponent<Canvas>();
-            monsterHealthUIRoot.renderMode = RenderMode.ScreenSpaceOverlay;
-            monsterHealthUIRoot.sortingOrder = 100;
-
-            CanvasScaler scaler = rootObj.AddComponent<CanvasScaler>();
-            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            scaler.referenceResolution = new Vector2(1920, 1080);
-            scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
-            scaler.matchWidthOrHeight = 1f;
-
-            rootObj.AddComponent<GraphicRaycaster>();
-
-            // RectTransform 설정 (원점으로 고정)
-            RectTransform rootRect = rootObj.GetComponent<RectTransform>();
-            if (rootRect != null)
-            {
-                rootRect.anchorMin = Vector2.zero;
-                rootRect.anchorMax = Vector2.one;
-                rootRect.anchoredPosition = Vector2.zero;
-                rootRect.sizeDelta = Vector2.zero;
-                rootRect.pivot = new Vector2(0.5f, 0.5f);
-            }
-        }
-
-        // 부모 설정
-        transform.SetParent(monsterHealthUIRoot.transform, true);
-    }
 
     private void LateUpdate()
     {
@@ -219,7 +183,8 @@ public class MonsterHealthUI : PoolableObject, IInitializePoolable, IReleasePool
         // 보스 이름 설정
         if (bossNameText != null)
         {
-            bossNameText.text = monsterBase.name.Replace("(Clone)", "").Trim();
+            string locale = LocalizationSettings.SelectedLocale.Identifier.Code;
+            bossNameText.text = locale == "ko" ? monsterBase.GetKoreanName() : monsterBase.GetEnglishName();
         }
 
         // 보스 UI 위치 강제 설정
@@ -247,39 +212,57 @@ public class MonsterHealthUI : PoolableObject, IInitializePoolable, IReleasePool
     #region IInitializePoolable
     public void Initialize(object data = null)
     {
-        // === Camera 초기화 (Start에서 이동) ===
-        if (mainCamera == null)
+        if (rectTransform == null)
+            rectTransform = GetComponent<RectTransform>();
+
+        if (monsterHealthUIRoot == null)
         {
-            mainCamera = Camera.main;
+            GameObject rootObj = new GameObject("MonsterHealthUIRoot");
+            monsterHealthUIRoot = rootObj.AddComponent<Canvas>();
+            monsterHealthUIRoot.renderMode = RenderMode.ScreenSpaceOverlay;
+            monsterHealthUIRoot.sortingOrder = 100;
+
+            CanvasScaler scaler = rootObj.AddComponent<CanvasScaler>();
+            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+            scaler.referenceResolution = new Vector2(1920, 1080);
+            scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
+            scaler.matchWidthOrHeight = 1f;
+
+            rootObj.AddComponent<GraphicRaycaster>();
+
+            RectTransform rootRect = rootObj.GetComponent<RectTransform>();
+            if (rootRect != null)
+            {
+                rootRect.anchorMin = Vector2.zero;
+                rootRect.anchorMax = Vector2.one;
+                rootRect.anchoredPosition = Vector2.zero;
+                rootRect.sizeDelta = Vector2.zero;
+                rootRect.pivot = new Vector2(0.5f, 0.5f);
+            }
         }
 
-        // === Fill Image 초기화 (Awake에서 이동) ===
+        transform.SetParent(monsterHealthUIRoot.transform, true);
+
+        if (mainCamera == null)
+            mainCamera = Camera.main;
+
         if (normalHealthSlider != null && normalFillImage == null)
-        {
             normalFillImage = normalHealthSlider.fillRect?.GetComponent<Image>();
-        }
 
         if (bossHealthSlider != null && bossFillImage == null)
-        {
             bossFillImage = bossHealthSlider.fillRect?.GetComponent<Image>();
-        }
 
-        // === UI 초기 비활성화 (Awake에서 이동) ===
         if (normalHealthUI != null)
             normalHealthUI.SetActive(false);
         if (bossHealthUI != null)
             bossHealthUI.SetActive(false);
 
-        // === Monster 설정 ===
         if (data is MonsterBase monster)
-        {
             SetMonster(monster);
-        }
 
         gameObject.SetActive(true);
 
-        // === 일반 몬스터 초기 위치 설정 ===
-        if (!isBoss && monsterTransform != null)
+        if (!isBoss && monsterTransform != null && mainCamera != null)
         {
             Vector3 worldPosition = monsterTransform.position + offset;
             Vector3 screenPosition = mainCamera.WorldToScreenPoint(worldPosition);

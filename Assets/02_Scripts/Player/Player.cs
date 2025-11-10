@@ -32,6 +32,7 @@ public class Player : MonoBehaviour
     [Header("----- 무기가 바뀌면 같이 바뀌는 컴포넌트(읽기 전용) -----")]
     [SerializeField] PlayerNormalAttacker _normalAttacker;     // 플레이어 일반 공격 컴포넌트 (추상/베이스)
     [SerializeField] PlayerSpecialAttacker _specialAttacker;   // 플레이어 특수 공격 컴포넌트
+    
 
     [Header("----- 읽기 전용 -----")]
     [SerializeField] PlayerWeaponSet _currentWeaponSet;        // 현재 플레이어 무기 세트
@@ -53,6 +54,7 @@ public class Player : MonoBehaviour
     [SerializeField] bool _isSpecialAttacking;             // 플레이어 특수공격 중 여부
 
     // 읽기 전용 프로퍼티로 외부 접근 제공
+    public PlayerMover Mover => _mover;
     public PlayerWeaponController WeaponController => _weaponController;
     public PlayerNormalAttacker NormalAttacker => _normalAttacker;
     public PlayerSpecialAttacker SpecialAttacker => _specialAttacker;
@@ -60,6 +62,7 @@ public class Player : MonoBehaviour
     public PlayerModel playerModel => _playerModel;
     public PlayerDasher Dasher => _dasher;
     public PlayerWeaponSet CurrentWeaponSet => _currentWeaponSet;
+    public PlayerGrenadeAttacker GrenadeAttacker => _grenadeAttacker;
 
     // MoveInput은 world-space Vector3로 노출
     public bool CanGetInput => EventBus.CanGetInput;
@@ -84,6 +87,7 @@ public class Player : MonoBehaviour
     public event Action OnInteractableMissed;
     public event Action<int, int> OnGrenadeCountChanged; // 현재 유탄 개수, 최대 유탄 개수
     public event Action<float, float> OnGrenadeCooltimeChanged; // 현재 쿨타임, 최대 쿨타임
+    public event Action OnPlayerDead;
     #endregion
 
     [Header("----- 상태 캐시 -----")]
@@ -121,7 +125,7 @@ public class Player : MonoBehaviour
         if (_weaponController != null)
             _weaponController.OnWeaponChanged += OnWeaponChanged;
 
-        SubscribeNormalAttacker(_normalAttacker);
+        //SubscribeNormalAttacker(_normalAttacker);
 
         // 상호작용 관련 이벤트 구독
         if (_interactionController != null)
@@ -153,6 +157,7 @@ public class Player : MonoBehaviour
         _mover.Initialize(this);
 
         _playerModel?.Initialize();
+        _playerModel.OnDieEvent += () => OnPlayerDead?.Invoke();
         _dasher?.Initialize(_characterController);
         _forwarder?.Initialize(this);
         _weaponController?.Initialize();
@@ -181,10 +186,10 @@ public class Player : MonoBehaviour
             _dasher.DashEnded -= OnDasherEnded;
         }
 
-        if (_normalAttacker != null)
-        {
-            UnsubscribeNormalAttacker(_normalAttacker);
-        }
+        //if (_normalAttacker != null)
+        //{
+        //    UnsubscribeNormalAttacker(_normalAttacker);
+        //}
 
         if (_weaponController != null)
         {
@@ -264,8 +269,6 @@ public class Player : MonoBehaviour
         // 1) 일반 공격 입력 처리
         if (_normalAttackPressed && TryConsumeNormalAttack())
         {
-            Debug.Log(" Player: normal attack input detected");
-
             if (_normalAttacker != null && !IsDashing && !_isSpecialAttacking)
             {
                 bool accepted = false;
@@ -281,7 +284,6 @@ public class Player : MonoBehaviour
 
                 if (!accepted)
                 {
-                    Debug.Log("Player: attack request was rejected (cooldown, busy, etc.)");
                 }
                 return;
             }
@@ -302,6 +304,7 @@ public class Player : MonoBehaviour
         {
             if (_stateMachine.CurrentType != PlayerStateType.Move)
             {
+                Debug.Log("모드 전환");
                 _stateMachine.ChangeState(PlayerStateType.Move);
             }
             return;
@@ -350,14 +353,6 @@ public class Player : MonoBehaviour
 
     public void StopMove()
     {
-        if (EventBus.IsColosseumRoom)
-        {
-            Vector3 cameraForward = Camera.main.transform.forward;
-            cameraForward.y = 0f;
-            cameraForward.Normalize();
-            _mover.Rotate(cameraForward);
-        }
-
         _mover.Move(Vector3.zero);
         _animator.OnMove(0f);
     }
@@ -372,13 +367,13 @@ public class Player : MonoBehaviour
         _currentWeaponSet = GameManager.Instance.DataManager.WeaponSetMap[weapon.WeaponType];
 
         // 먼저 할당하기 전에 이전 구독 해제
-        if (prevAttacker != null)
-            UnsubscribeNormalAttacker(prevAttacker);
+        //if (prevAttacker != null)
+        //    UnsubscribeNormalAttacker(prevAttacker);
 
         _normalAttacker = _normalAttackerMap.ContainsKey(weapon.WeaponType) ? _normalAttackerMap[weapon.WeaponType] : null;
         _specialAttacker = _specialAttackerMap.ContainsKey(weapon.WeaponType) ? _specialAttackerMap[weapon.WeaponType] : null;
 
-        SubscribeNormalAttacker(_normalAttacker);
+        //SubscribeNormalAttacker(_normalAttacker);
 
         if (weapon.WeaponType == WeaponType.Rifle)
         {
@@ -399,42 +394,37 @@ public class Player : MonoBehaviour
         _animator.SetAnimator(_currentWeaponSet.AnimController);
     }
 
-    void SubscribeNormalAttacker(PlayerNormalAttacker attacker)
-    {
-        if (attacker == null) return;
+    //void SubscribeNormalAttacker(PlayerNormalAttacker attacker)
+    //{
+    //    if (attacker == null) return;
 
-        attacker.OnAttackStarted += OnAttackerStarted;
-        attacker.OnAttackEnded += OnAttackerEnded;
-        Debug.Log("이벤트 구독 완료");
-    }
+    //    attacker.OnAttackStarted += OnAttackerStarted;
+    //    attacker.OnAttackEnded += OnAttackerEnded;
+    //}
 
-    void UnsubscribeNormalAttacker(PlayerNormalAttacker attacker)
-    {
-        if (attacker == null) return;
-        attacker.OnAttackStarted -= OnAttackerStarted;
-        attacker.OnAttackEnded -= OnAttackerEnded;
-    }
+    //void UnsubscribeNormalAttacker(PlayerNormalAttacker attacker)
+    //{
+    //    if (attacker == null) return;
+    //    attacker.OnAttackStarted -= OnAttackerStarted;
+    //    attacker.OnAttackEnded -= OnAttackerEnded;
+    //}
 
-    void OnAttackerStarted()
-    {
-        Debug.Log("Player: attacker started -> change to NormalAttack state");
-        _stateMachine.ChangeState(PlayerStateType.NormalAttack);
-        _isNormalAttacking = true;
-        OnNormalAttackStarted?.Invoke();
-    }
+    //void OnAttackerStarted()
+    //{
+    //    _stateMachine.ChangeState(PlayerStateType.NormalAttack);
+    //    _isNormalAttacking = true;
+    //    OnNormalAttackStarted?.Invoke();
+    //}
 
-    void OnAttackerEnded()
-    {
-        Debug.Log("Player: attacker ended -> return to Idle");
-        _isNormalAttacking = false;
-        _stateMachine.ChangeState(PlayerStateType.Idle);
-    }
+    //void OnAttackerEnded()
+    //{
+    //    _isNormalAttacking = false;
+    //    _stateMachine.ChangeState(PlayerStateType.Idle);
+    //}
 
     public void OnAttackFireEvent()
     {
         if (_normalAttacker == null) return;
-
-        Debug.Log(" OnAttackFireEvent 호출됨");
 
         if (_normalAttacker is PlayerRifleNormalAttacker rifle)
         {
@@ -457,17 +447,13 @@ public class Player : MonoBehaviour
     {
         if (_normalAttacker == null) return;
 
-        Debug.Log(" OnAttackEndEvent 호출됨");
-
         if (_normalAttacker is PlayerRifleNormalAttacker rifle)
         {
-            Debug.Log(" Rifle OnAnimationAttackEnd 호출됨");
             rifle.OnAnimationAttackEnd();
             return;
         }
         if (_normalAttacker is PlayerBladeNormalAttacker blade)
         {
-            Debug.Log(" Blade OnAnimationAttackEnd 호출됨");
             blade.Animation_OnComboWindowClose();
             return;
         }
@@ -505,6 +491,8 @@ public class Player : MonoBehaviour
         _grenadeAttackPressed = false;
     }
 
+
+
     public void GrenadeCountChanged(int currentCount, int maxCount)
     {
         OnGrenadeCountChanged?.Invoke(currentCount, maxCount);
@@ -530,7 +518,6 @@ public class Player : MonoBehaviour
             Debug.LogError("Player.OnDoorInteracted 호출 시 roomInfo가 null입니다! 호출자 스택을 확인하세요.");
             return;
         }
-        Debug.Log(roomInfo.RoomType + " 방으로 가는 문과 상호작용 함");
     }
 
     public void ExecuteInteraction()
@@ -565,7 +552,6 @@ public class Player : MonoBehaviour
         DoorInteractor doorInteractor = _interactableDetector.DetectedInteractable as DoorInteractor;
         if (doorInteractor == null)
         {
-            Debug.Log("현재 감지된 상호작용 대상이 문이 아닙니다.");
             yield break;
         }
         EventBus.SetCanGetInput(false); // 입력 잠금

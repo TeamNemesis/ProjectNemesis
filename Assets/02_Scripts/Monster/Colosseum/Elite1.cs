@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class Elite1 : MonsterBase
 {
+
+
+    [Header("NameSet")]
+    [SerializeField] private string EnglishName = "Nebula's Guard Captain";
+    [SerializeField] private string KoreanName = "네뷸라사 경비대장";
+
     [Header("Local Stats")]
     [SerializeField] private float _box_Length = 3;
     [SerializeField] private float _box_Height = 3;
@@ -31,6 +37,12 @@ public class Elite1 : MonsterBase
     [SerializeField] private bool isPhase2 = false;
     private float lastHealthCheckThreshold = 1f;
 
+
+    public override void Initialize(object data = null)
+    {
+        SetMonsterName(EnglishName, KoreanName);
+        base.Initialize(data);
+    }
 
     private void Update()
     {

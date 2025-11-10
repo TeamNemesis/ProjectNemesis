@@ -36,7 +36,7 @@ public class DataManager : MonoBehaviour
         var roomDatas = resources.RoomDataSOs ?? _roomDatasFromInspector;
         BuildRoomDataMap(roomDatas);
         BuildWeaponSetMap(resources.PlayerWeaponSets);
-        BuildRewardMap(resources.rewardDataSOs);
+        BuildRewardMap(resources.RewardDataSOs);
     }
 
     void BuildRoomDataMap(RoomDataSO[] roomDatas)

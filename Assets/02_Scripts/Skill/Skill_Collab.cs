@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using UnityEngine;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class Skill_Collab : SkillBase
 {
@@ -9,6 +10,7 @@ public class Skill_Collab : SkillBase
     /// </summary>
     private float _tyrantDamage = 0;
 
+    private SkillEffect _tyrantEffectPrefab;
     /// <summary>
     /// 최상위 포식자 계수
     /// </summary>
@@ -16,6 +18,10 @@ public class Skill_Collab : SkillBase
     private float _predatorTime = 0f;
     private WeakenArea _predatorPrefab;
     private WeakenAreaData _predatorData;
+
+    private SkillEffect _apexPredatorPrefab;
+
+    private Player _player;
 
     /// <summary>
     /// GravityFlare 관련 필드
@@ -54,7 +60,6 @@ public class Skill_Collab : SkillBase
             case Constants.INDEX_FIVE_ONE:
                 _skillManager.skill_One.SkillNumUp(skilldata, num);
                 _skillManager.skill_Five.SkillNumUp(skilldata, num);
-                Debug.Log("collab" + _skillManager.skill_One.skillNum);
                 break;
             case Constants.INDEX_ONE_TWO:
                 _skillManager.skill_One.SkillNumUp(skilldata, num);
@@ -79,17 +84,16 @@ public class Skill_Collab : SkillBase
 
     public override void ActivateSkill(SkillData choosedSkill)
     {
+        _player = _skillManager.playScene.player;
         switch (choosedSkill.skillIdx)
         {
             // 폭군
             case 60:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 ActiveTyrant(choosedSkill);
                 break;
 
             // 최상위 포식자
             case 61:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 skillManager.playScene.MapController.MonsterController.MonsterSpawner.OnMonsterSpawned -= ConnectWeakneHeal;
                 ActivePredator(choosedSkill);
                 skillManager.playScene.MapController.MonsterController.MonsterSpawner.OnMonsterSpawned += ConnectWeakneHeal;
@@ -97,24 +101,21 @@ public class Skill_Collab : SkillBase
 
             // GravityFlare
             case 62:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 ActiveGravityFlare(choosedSkill);
                 break;
 
             // 전자기 폭풍
             case 63:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 ActivateElecVortex(choosedSkill);
                 break;
 
             // 전기 인간
             case 64:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 ActivateElectricMan(choosedSkill);
                 break;
 
             default:
-                Debug.Log("에러, 배정되지 않은 idx");
+                Debug.Log("배정되지 않은 idx");
                 break;
 
         }
@@ -123,20 +124,19 @@ public class Skill_Collab : SkillBase
     #region 폭군
     public void ActiveTyrant(SkillData skill)
     {
+        if (_tyrantEffectPrefab == null)
+        {
+            _tyrantEffectPrefab = Resources.Load<SkillEffect>("Prefabs/Effect/Skill/Tyrant");  
+        }
+
         if (skill.skillLevel == 1)
-        {
-            // 모든 피해 증가
             skillManager.playerStatManager.AddTotalMultiDamage(skill.skillBaseValue_1 + skill.skillLevelValue_1);
-        }
         else
-        {
-            // 모든 피해 증가
             skillManager.playerStatManager.AddTotalMultiDamage(skill.skillLevelValue_1);
-        }
+
         skillManager.playScene.player.playerModel.OnHeal -= DamageNearestMonster;
         _tyrantDamage = skill.skillLevelValue_2 * skill.skillLevel + skill.skillBaseValue_2;
         skillManager.playScene.player.playerModel.OnHeal += DamageNearestMonster;
-
     }
 
     public void DamageNearestMonster(int currentHp, int MaxHp)
@@ -148,11 +148,19 @@ public class Skill_Collab : SkillBase
             if (nearestMonster != null)
             {
                 nearestMonster.TakeDamage(_tyrantDamage);
-                Debug.LogError("폭군 데미지");
+                //Debug.Log("폭군 데미지 들어감");
+
+                if (_tyrantEffectPrefab != null)
+                {
+                    Vector3 spawnPos = nearestMonster.transform.position + nearestMonster.transform.forward * 0.5f;
+                    //Quaternion spawnRot = Quaternion.identity;
+
+                    GameManager.Instance.PoolManager.GetFromPool(_tyrantEffectPrefab,spawnPos,_tyrantEffectPrefab.transform.rotation);
+                }
             }
             else
             {
-                Debug.LogError("몬스터 베이스가 없음");
+                Debug.Log("몬스터 베이스 없음");
             }
         }
         else
@@ -173,8 +181,11 @@ public class Skill_Collab : SkillBase
         {
             _predatorPrefab = Resources.Load<WeakenArea>("Prefabs/Skill/SkillObject/Skill_Collab/PredatorPrefab");
         }
-
-
+        //로드
+        if (_apexPredatorPrefab == null)
+        {
+            _predatorPrefab = Resources.Load<WeakenArea>("Prefabs/Effect/Skill/ApexPredator_Player");
+        }
 
 
     }
@@ -197,6 +208,8 @@ public class Skill_Collab : SkillBase
         skillManager.playScene.player.playerModel.Heal((int)_predatorHeal);
         MakeWeakenArea(monster);
         skillManager.playScene.player.playerModel.PlayerInvincibility(_predatorTime);
+
+        GameManager.Instance.PoolManager.GetFromPool(_apexPredatorPrefab, _player.transform.position, Quaternion.identity);  //생성
     }
 
     public void MakeWeakenArea(MonsterBase monster)
@@ -211,7 +224,6 @@ public class Skill_Collab : SkillBase
     #region GravityFlare
     public void ActiveGravityFlare(SkillData skill)
     {
-        Debug.LogError("연결");
         if(_explosionPrefab == null)
         {
             _explosionPrefab = Resources.Load<GravityFlareRocketExplosion>("Prefabs/Skill/SkillObject/Skill_Collab/GravityFlareRocketExplosion");
@@ -231,7 +243,6 @@ public class Skill_Collab : SkillBase
     {
 
         Vector3 playerPosition = skillManager.playScene.player.transform.position;
-        Debug.LogError("playerPosition : " + playerPosition + " position : " + position);
         position.y = 0;
         playerPosition.y = 0;
         Vector3 direction = position - playerPosition;
@@ -239,7 +250,6 @@ public class Skill_Collab : SkillBase
         playerPosition.y += Constants.MISSILIE_HEIGHT;
 
         _rocketData = new GravityFlareRocketData( _explosionData, _explosionPrefab);
-        Debug.LogError(direction);
         GameManager.Instance.PoolManager.GetFromPool(_rocketPrefab, playerPosition, Quaternion.LookRotation(direction), null, _rocketData);
     }
     #endregion

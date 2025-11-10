@@ -17,6 +17,13 @@ public abstract class CharacterModelBase : PoolableObject, IDamageable
         OnHpChanged?.Invoke(_currentHealth, _maxHealth);
     }
 
+    public void SettingMaxHp(int MaxHp)
+    {
+        _maxHealth = MaxHp;
+        _currentHealth = MaxHp;
+        OnHpChanged?.Invoke(_currentHealth, _maxHealth);
+    }
+
 
     [SerializeField]
     protected int _currentHealth;
@@ -33,7 +40,7 @@ public abstract class CharacterModelBase : PoolableObject, IDamageable
     }
 
     [SerializeField]
-    protected float _moveSpeed = 5; // 이동 속도
+    protected float _moveSpeed; // 이동 속도
     public float moveSpeed { get { return _moveSpeed; } }
     public void SetMoveSpeed(float speed)
     {
@@ -74,7 +81,6 @@ public abstract class CharacterModelBase : PoolableObject, IDamageable
     public virtual void Initialize()
     {
         debuffHandler = GetComponent<DebuffHandler>();
-        OnDieEvent += ()=>Debug.LogWarning("죽음");
     }
 
     /// <summary>
@@ -103,7 +109,7 @@ public abstract class CharacterModelBase : PoolableObject, IDamageable
         #region 추가데미지
         float addDamage = 1f;
 
-        if(debuffHandler.GetActiveDebuffCount()>0)
+        if(debuffHandler.GetActiveDebuffCount()>0&&!CompareTag(Constants.TAG_PLAYER))
         {
             addDamage += GameManager.Instance.PlayerStatManager.debuffPlusDamage;
         }
@@ -168,7 +174,6 @@ public abstract class CharacterModelBase : PoolableObject, IDamageable
     protected virtual void Die()
     {
         OnDieEvent?.Invoke();
-        Debug.LogWarning("몬스터 죽음");
         isDead = true;
         GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
         OnDieEvent = null;

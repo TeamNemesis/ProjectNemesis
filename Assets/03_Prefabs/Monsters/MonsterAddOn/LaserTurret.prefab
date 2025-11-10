@@ -16,9 +16,9 @@ GameObject:
   - component: {fileID: 1972541229979145840}
   - component: {fileID: 5191487766336061827}
   - component: {fileID: 3381086347271698201}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: LaserTurret
-  m_TagString: Untagged
+  m_TagString: Monster
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -37,6 +37,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3689079934511227495}
+  - {fileID: 5692229990572630866}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &2048128023019195331
@@ -54,7 +55,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6109530275278130877}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -191,9 +192,13 @@ MonoBehaviour:
   agent: {fileID: 0}
   _target: {fileID: 0}
   monsterAnimator: {fileID: 0}
+  originalSkinTransform: {x: 0, y: 0, z: 0}
   hasDieAnimation: 0
+  checkOnce: 0
   healthUI: {fileID: 0}
   healthUIPrefabPath: Prefabs/UI/MonsterHealthUI
+  damageTextPrefab: {fileID: 0}
+  lifeTime: 12
 --- !u!195 &3381086347271698201
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -227,7 +232,7 @@ GameObject:
   - component: {fileID: 3689079934511227495}
   - component: {fileID: 8848705366633854761}
   - component: {fileID: 2785606116247006121}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: RotatingLaser
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -268,7 +273,7 @@ MonoBehaviour:
     m_Bits: 256
   laserWidth: 0.7
   laserColor: {r: 0.96221846, g: 1, b: 0.051886797, a: 1}
-  laserMaterial: {fileID: 0}
+  laserMaterial: {fileID: 2100000, guid: f44dc9f7868d58b449070ccb04df4b9d, type: 2}
   colorGradient:
     serializedVersion: 2
     key0: {r: 1, g: 0.99667776, b: 0.07075471, a: 1}
@@ -412,3 +417,65 @@ LineRenderer:
   m_UseWorldSpace: 1
   m_Loop: 0
   m_ApplyActiveColorSpace: 1
+--- !u!1001 &5529646646928948301
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 5635381446885622440}
+    m_Modifications:
+    - target: {fileID: 163147010588352287, guid: 6897863d958973042a99a78b521a0c0c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 163147010588352287, guid: 6897863d958973042a99a78b521a0c0c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 163147010588352287, guid: 6897863d958973042a99a78b521a0c0c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.045
+      objectReference: {fileID: 0}
+    - target: {fileID: 163147010588352287, guid: 6897863d958973042a99a78b521a0c0c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 163147010588352287, guid: 6897863d958973042a99a78b521a0c0c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.00000008146034
+      objectReference: {fileID: 0}
+    - target: {fileID: 163147010588352287, guid: 6897863d958973042a99a78b521a0c0c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 163147010588352287, guid: 6897863d958973042a99a78b521a0c0c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 163147010588352287, guid: 6897863d958973042a99a78b521a0c0c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 163147010588352287, guid: 6897863d958973042a99a78b521a0c0c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 163147010588352287, guid: 6897863d958973042a99a78b521a0c0c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 163147010588705599, guid: 6897863d958973042a99a78b521a0c0c, type: 3}
+      propertyPath: m_Name
+      value: LaserTurret
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6897863d958973042a99a78b521a0c0c, type: 3}
+--- !u!4 &5692229990572630866 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 163147010588352287, guid: 6897863d958973042a99a78b521a0c0c, type: 3}
+  m_PrefabInstance: {fileID: 5529646646928948301}
+  m_PrefabAsset: {fileID: 0}

@@ -12,7 +12,7 @@ public class PlayerGrenadeBullet : MonoBehaviour
     [SerializeField] private LayerMask enemyLayer;        // 적 탐지용
 
     [SerializeField] float _mutatntSpeedMultiplier = 1.5f;
-    [SerializeField] float _mutantTravelTime = 3f;
+    //[SerializeField] float _mutantTravelTime = 3f;
 
     // --- 새로 추가된 파라미터 (튜닝용) ---
     [Header("Parabola Height Tuning")]
@@ -25,9 +25,12 @@ public class PlayerGrenadeBullet : MonoBehaviour
     [SerializeField, Tooltip("이 거리 이상이면 '멀다'로 간주")]
     private float farDistance = 10f;
 
+    private bool isExplode;
+
     public void Initialize(Transform firePoint, Vector3 target)
     {
-        if(EventBus.HasMutant2)
+        isExplode = false;
+        if (EventBus.HasMutant2)
         {
             StartCoroutine(DirectMoveRoutine(firePoint, target));
             return;
@@ -62,12 +65,12 @@ public class PlayerGrenadeBullet : MonoBehaviour
             yield return null;
         }
 
-        
+
     }
 
     IEnumerator DirectMoveRoutine(Transform firePoint, Vector3 target)
     {
-        while(true)
+        while (true)
         {
             Vector3 direction = (target - firePoint.position).normalized;
             transform.position += direction * travelSpeed * _mutatntSpeedMultiplier * Time.deltaTime;
@@ -77,11 +80,16 @@ public class PlayerGrenadeBullet : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(EventBus.HasMutant2)
+        if (isExplode)
         {
-            if(other.CompareTag(Constants.TAG_GROUND) || other.CompareTag(Constants.TAG_WALL) || other.CompareTag(Constants.TAG_MONSTER))
+            return;
+        }
+        if (EventBus.HasMutant2)
+        {
+            if (other.CompareTag(Constants.TAG_GROUND) || other.CompareTag(Constants.TAG_WALL) || other.CompareTag(Constants.TAG_MONSTER))
             {
                 Explode(transform.position, transform);
+                isExplode = true;
                 Destroy(gameObject);
                 return;
             }
@@ -89,6 +97,8 @@ public class PlayerGrenadeBullet : MonoBehaviour
         if (other.CompareTag(Constants.TAG_GROUND) || other.CompareTag(Constants.TAG_WALL))
         {
             Explode(transform.position, transform);
+            isExplode = true;
+
             Destroy(gameObject);
         }
     }
@@ -102,7 +112,6 @@ public class PlayerGrenadeBullet : MonoBehaviour
         EventBus.GrenadeBomb(position);
         if (hitCount <= 0)
         {
-            Debug.Log("폭발했지만 적을 맞추지 못함");
             return;
         }
 
@@ -113,16 +122,12 @@ public class PlayerGrenadeBullet : MonoBehaviour
                 continue;
 
             IDamageable enemy = hit.GetComponent<IDamageable>();
-            Debug.Log("IDamageable 컴포넌트 탐색 시도: " + (enemy != null ? "성공" : "실패"));
             if (enemy != null)
             {
                 Transform monster = hit.transform;
                 EventBus.MonsterHit(WeaponType.None, ATTACKTYPE.GRENADE, monster, grenadeTransform);
-                Debug.Log(monster.name + "에게 폭발 데미지 적용");
             }
         }
-
-        Debug.Log("폭발 위치: " + position);
     }
 
     private void OnDestroy()

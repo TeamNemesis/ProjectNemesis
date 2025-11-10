@@ -18,7 +18,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &3163168263563143824
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1976,6 +1976,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1464559590063303585}
   - component: {fileID: 3192764863273681933}
+  - component: {fileID: 8657349785355652552}
   m_Layer: 0
   m_Name: ServerManager
   m_TagString: Untagged
@@ -2017,12 +2018,24 @@ MonoBehaviour:
   popUpPanel: {fileID: 2709097769681830044}
   popUpMsg: {fileID: 3278250066419536877}
   loginPanel: {fileID: 9192057103055762211}
-  loadingPanel: {fileID: 0}
+  loadingPanel: {fileID: 7507923147016025250}
   resendEmailBtn: {fileID: 3883728786529796248}
   linkEmailBtn: {fileID: 7329543684881659982}
   googleLoginBtn: {fileID: 8544200148650706821}
   popUpConfirmBtn: {fileID: 6201709025828422083}
   logoutBtn: {fileID: 4849195603892886387}
+--- !u!114 &8657349785355652552
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5601607882887565591}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a495e4985bff83e4eb8ce4f8cd8d5802, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6552745530603287184
 GameObject:
   m_ObjectHideFlags: 0

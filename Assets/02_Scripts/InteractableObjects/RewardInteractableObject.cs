@@ -9,14 +9,9 @@ using UnityEngine;
 /// </summary>
 public abstract class RewardInteractableObject : InteractableObject
 {
-    [SerializeField] protected string _rewardTitle;
-    [SerializeField] protected string _rewardInstruction;
-
     protected Coroutine _rewardCoroutine;
     protected Transform _player;
     bool _isInteracting = false;
-
-    public string RewardTitle => _rewardTitle;
 
     public override InteractableType InteractableType => InteractableType.Reward;
 
@@ -68,12 +63,6 @@ public abstract class RewardInteractableObject : InteractableObject
         
         _player = null;
         _isInteracting = false;
-    }
-
-    public override void GetInteractionMessage(out string title, out string instruction)
-    {
-        title = _rewardTitle;
-        instruction = _rewardInstruction;
     }
 
     protected virtual void OnDisable()

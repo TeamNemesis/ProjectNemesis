@@ -32,7 +32,6 @@ public class Skill_One : SkillBase
         {
             // 독사의 앞니
             case 10:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 ActiveTech skillAttack = new Skill_One_Attack(choosedSkill);
                 if (_skillManager.attackTech != null)
                 {
@@ -43,7 +42,6 @@ public class Skill_One : SkillBase
 
             // 포자 퍼뜨리기
             case 11:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 ActiveTech skillGrenade = new Skill_One_Grenade(choosedSkill);
                 if (_skillManager.bombTech != null)
                 {
@@ -57,7 +55,6 @@ public class Skill_One : SkillBase
 
             // 피의 갈증
             case 12:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 ActiveTech skillSPAttack = new Skill_One_SPAttack(choosedSkill);
                 if (_skillManager.skillTech != null)
                 {
@@ -71,7 +68,6 @@ public class Skill_One : SkillBase
 
             // 약육강식
             case 13:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 ActiveTech skillDash = new Skill_One_Dash(choosedSkill);
                 if (_skillManager.dashTech != null)
                 {
@@ -85,22 +81,17 @@ public class Skill_One : SkillBase
 
             // 넘치는 활력
             case 14:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 _skillManager.playScene.player.playerModel.SetMaxHp((int)choosedSkill.skillLevelValue_1);
                 break;
 
             // 초재생
             case 15:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
-                //TODO 방 입장시 이벤트에 초재생 연결 StartAutoHeal()
                 skillManager.playScene.MapController.OnRoomStart += StartAutoHeal;
-                //TODO 전투 종료시 이벤트에 초재생 해제 연결 StopAutoHeal()
                 skillManager.playScene.MapController.MonsterController.MonsterSpawner.OnAllWavesCompleted += StopAutoHeal;
                 break;
 
             // 독성혈액
             case 16:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 if (choosedSkill.skillLevel == 1)
                 {
                     // 플레이어 모델에 받는데미지 감소 계수를 추가하여 10퍼센트 
@@ -123,7 +114,6 @@ public class Skill_One : SkillBase
 
             // 진화
             case 17:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 // 연결시 SkillLevelUp이 완료되면 다음 과정으로 넘어갈 수 있게
                 if(choosedSkill.skillLevel == 1)
                 {
@@ -160,7 +150,6 @@ public class Skill_One : SkillBase
     /// </summary>
     public void StartAutoHeal()
     {
-        Debug.LogError("초재생 시작");
         _autoHeal = StartCoroutine(StartAutoHealRoutine());
     }
 
@@ -169,7 +158,6 @@ public class Skill_One : SkillBase
     /// </summary>
     public void StopAutoHeal()
     {
-        Debug.LogError("초재생 끝");
         if(_autoHeal == null)
         {
             return;
@@ -215,7 +203,6 @@ public class Skill_One : SkillBase
             // 스택 초기화
             levelupStack = 0;
         }
-        Debug.LogError("스킬 진화 발동" + levelupStack);
     }
     #endregion
 

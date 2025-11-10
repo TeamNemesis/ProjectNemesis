@@ -6,6 +6,12 @@ public class HealPackInteractor : RewardInteractableObject
 {
     public override event Action OnRewardGiven;
 
+    public override void ReturnInteractionViewKey(out string title, out string instruction)
+    {
+        title = "_rewardTitle_HealPack";
+        instruction = "_rewardDescription_HealPack";
+    }
+
     protected override IEnumerator RewardCoroutine()
     {
         yield return new WaitForSeconds(0.01f);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using UnityEngine;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 /// <summary>
 /// LUX 강화 목록
@@ -12,16 +13,17 @@ public class Skill_Five : SkillBase
     private float _draftMoveSpeed;
     private float _draftTime;
 
-
+    private SkillEffect _ketamineDriftPrefab;
+    private Player _player;
     // 정제
     private float _addTotalDamage;
     public override void ActivateSkill(SkillData choosedSkill)
     {
+        _player = _skillManager.playScene.player;
         switch (choosedSkill.skillIdx)
         {
             // 약화 약물
             case 50:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 ActiveTech skillAttack = new Skill_Five_Attack(choosedSkill);
                 if (_skillManager.attackTech != null)
                 {
@@ -32,7 +34,6 @@ public class Skill_Five : SkillBase
 
             // 환각 구름
             case 51:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 ActiveTech skillGrenade = new Skill_Five_Grenade(choosedSkill);
                 if (_skillManager.bombTech != null)
                 {
@@ -43,7 +44,6 @@ public class Skill_Five : SkillBase
 
             // 섬망
             case 52:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 ActiveTech skillSPAttack = new Skill_Five_SPAttack(choosedSkill);
                 if (_skillManager.skillTech != null)
                 {
@@ -54,7 +54,6 @@ public class Skill_Five : SkillBase
 
             // 아드레날린 레이스
             case 53:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 ActiveTech skillDash = new Skill_Five_Dash(choosedSkill);
                 if (_skillManager.dashTech != null)
                 {
@@ -66,19 +65,16 @@ public class Skill_Five : SkillBase
 
             // 선택편향
             case 54:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 ActivateSelective(choosedSkill);
                 break;
 
             // 불릿 타임
             case 55:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 ActiveBulletTime(choosedSkill);
                 break;
 
             // 케타민 드리프트
             case 56:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 if(_draftCoroutine!=null)
                 {
                     StopCoroutine(_draftCoroutine );
@@ -93,7 +89,6 @@ public class Skill_Five : SkillBase
 
             // 정제
             case 57:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
 
                 _addTotalDamage = choosedSkill.skillBaseValue_1+ choosedSkill.skillLevelValue_1*choosedSkill.skillLevel;
                 skillManager.playScene.MapController.MonsterController.MonsterSpawner.OnMonsterSpawned -= ConnectRefinement;
@@ -141,17 +136,34 @@ public class Skill_Five : SkillBase
     #region 캐타민 드래프트
     public void Draft(Transform monster)
     {
-        if(_draftCoroutine != null)
+        // 이동속도 증가/재갱신 처리
+        if (_draftCoroutine != null)
         {
-            StopCoroutine( _draftCoroutine );
-            _draftCoroutine = StartCoroutine(StartDraftCoroutine(_draftMoveSpeed, _draftTime));
+            StopCoroutine(_draftCoroutine);
         }
         else
         {
             skillManager.playerStatManager.AddPlayerMoveSpeed(_draftMoveSpeed);
-            _draftCoroutine = StartCoroutine(StartDraftCoroutine(_draftMoveSpeed, _draftTime));
         }
+
+        _draftCoroutine = StartCoroutine(StartDraftCoroutine(_draftMoveSpeed, _draftTime));
+
+        //  맞을 때마다 항상 이펙트를 생성하도록 이동
+        Quaternion spawnRot = _player.transform.rotation * Quaternion.Euler(0, 180f, 0);
+
+        if (_ketamineDriftPrefab == null)
+        {
+            _ketamineDriftPrefab = Resources.Load<SkillEffect>("Prefabs/Effect/Skill/KetamineDrift");
+        }
+
+        GameManager.Instance.PoolManager.GetFromPool(
+            _ketamineDriftPrefab,
+            _player.transform.position,
+            spawnRot,
+            _player.transform
+        );
     }
+
 
     public IEnumerator StartDraftCoroutine(float moveSpeed,float time)
     {
@@ -177,7 +189,6 @@ public class Skill_Five : SkillBase
     public void AddTotalDamageWhenMonsterDie()
     {
         skillManager.playerStatManager.AddTotalMultiDamage(_addTotalDamage);
-        Debug.Log(skillManager.playerStatManager.totalMultiDamage);
     }
     #endregion
 }

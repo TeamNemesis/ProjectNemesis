@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public static class Constants
@@ -206,8 +207,18 @@ public static class Constants
     public const string RESOURCES_PATH_SKILLTOOLTIP = "SkillData/SkillTooltip/KeywordData";
     public const string RESOURCES_PATH_SKILLTOOLTIPUI = "Prefabs/Skill/Skill_ToolTip";
     public const string RESOURCES_PATH_PLAYERSTATDATA = "SkillData/PlayerStatData";
-    public static readonly string FILE_PATH_PLAYERSTAT = Path.Combine(Application.dataPath, "SkillData/PlayerStatData.json");
+    
+    public const string RESOURCES_PATH_BGM = "Audio/BGM";
+    public const string RESOURCES_PATH_SFX = "Audio/SFX";
 
+
+
+
+
+    public static  string FILE_PATH_PLAYERSTAT
+    {
+        get { return Path.Combine(Application.persistentDataPath, "SkillData/PlayerStatData.json"); }
+    }
 
     #region Map
     public static string RESOURCES_PATH_ROOMDATASO = "ScriptableObjects/Map/Rooms";
@@ -218,39 +229,54 @@ public static class Constants
 
     #endregion
 
-    #region knockBack
-    public const float KNOCKBACK_COOLTIME = 5f;
-    public const float KNOCKBACK_POWER = 10f;
+    #region Scene Names
+    public const string SCENE_NAME_LOGIN = "LoginScene";
+    public const string SCENE_NAME_INTRO = "IntroScene";
+
+#if UNITY_ANDROID
+    public const string SCENE_NAME_PLAY = "Player_Mobile";
+#elif UNITY_STANDALONE_WIN || UNITY_EDITOR
+    public const string SCENE_NAME_PLAY = "Player";
+
+#endif
 		#endregion
 
-		#region localization
-		public const string STRING_Korean = "ko";
-    public const string LOCAL_PREF_KEY = "LanguageIndex";
-    public const string RESOLUTION_PREF_KEY = "ResolutionIndex";
-
+		#region knockBack
+		public const float KNOCKBACK_COOLTIME = 5f;
+    public const float KNOCKBACK_POWER = 10f;
     #endregion
 
+    #region localization
+    public const string STRING_Korean = "ko";
+    public const string LOCAL_PREF_KEY = "LanguageIndex";
+    public const string RESOLUTION_PREF_KEY = "ResolutionIndex";
+    public const string LOCAL_TABLE = "Local";
+    #endregion
 
-    #region Util
+    #region mobile
+    public const float GRENDADE_TIME = 0.2f;
+		#endregion
 
-    /// <summary>
-    /// origin과 가장 가까운 List의 요소 반환
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="origin"></param>
-    /// <param name="targetList"></param>
-    /// <returns></returns>
-    public static T GetNearestObject<T>(Transform origin, List<T> targetList)  where T : Component
+		#region Util
+
+		/// <summary>
+		/// origin과 가장 가까운 List의 요소 반환
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="origin"></param>
+		/// <param name="targetList"></param>
+		/// <returns></returns>
+		public static T GetNearestObject<T>(Transform origin, List<T> targetList) where T : Component
     {
-        if(targetList == null)
+        if (targetList == null)
         {
             Debug.LogWarning("리스트가 null입니다.");
             return null;
         }
 
 
-        
-        if(targetList.Count == 0)
+
+        if (targetList.Count == 0)
         {
             Debug.LogWarning("리스트가 비어있습니다.");
             return null;
@@ -260,9 +286,9 @@ public static class Constants
         float minDistance = float.MaxValue;
         T nearestObject = null;
 
-        foreach(T target in targetList)
+        foreach (T target in targetList)
         {
-            if(target ==null)
+            if (target == null)
             {
                 continue;
             }
@@ -285,7 +311,7 @@ public static class Constants
     /// <param name="origin"></param>
     /// <param name="targetList"></param>
     /// <returns></returns>
-    public static GameObject GetNearestObject(Transform origin, List<GameObject> targetList) 
+    public static GameObject GetNearestObject(Transform origin, List<GameObject> targetList)
     {
         if (targetList == null)
         {
@@ -305,7 +331,7 @@ public static class Constants
         float minDistance = float.MaxValue;
         GameObject nearestObject = null;
 
-        foreach (GameObject  target in targetList)
+        foreach (GameObject target in targetList)
         {
             if (target == null)
             {
@@ -379,6 +405,8 @@ public enum InteractableType
     Reward,
     ShopItem,
     Weapon,
+    Reinforce,
+    Record, 
 }
 
 /// <summary>

@@ -27,7 +27,6 @@ public static class EventBus
 
     public static void Evolution()
     {
-        Debug.LogError("이벤트 버스 호출");
         OnEvolution?.Invoke();
     }
 
@@ -43,7 +42,6 @@ public static class EventBus
 
     public static void MonsterKnockBack(Vector3 monsterPosition)
     {
-        Debug.LogError("이벤트 호출");
         OnMonsterKnockBack?.Invoke(monsterPosition);
     }
 
@@ -57,12 +55,17 @@ public static class EventBus
     }
 
     public static bool IsColosseumRoom = false;
-    public static event Action<bool> OnColosseumRoomSet;
+    public static event Action<bool> IsColosseumChanged;
     public static void SetColosseumRoom(bool isColosseum)
     {
         IsColosseumRoom = isColosseum;
-        Debug.Log("IsColosseumRoom set to: " + isColosseum);
-        OnColosseumRoomSet?.Invoke(isColosseum);
+        IsColosseumChanged?.Invoke(isColosseum);
+    }
+
+    public static event Action OnBossDead;
+    public static void BossDead()
+    {
+        OnBossDead?.Invoke();
     }
 
     public static MonsterBase EliteBoss { get; set; }
@@ -102,10 +105,8 @@ public static class EventBus
     }
     public static Transform GetNearestMonsterFromMe(Transform player)
     {
-        Debug.Log(" 현재 몬스터 수: " + (CurrentMonsterList != null ? CurrentMonsterList.Count.ToString() : "null"));
         if (CurrentMonsterList == null || CurrentMonsterList.Count == 0)
         {
-            Debug.Log("현재 몬스터가 없습니다.");
             return null;
         }
         MonsterBase nearestMonster = null;
@@ -127,6 +128,13 @@ public static class EventBus
     public static void SetCanGetInput(bool canGetInput)
     {
         _canGetInput = canGetInput;
+    }
+
+    static bool _canTimerun = true;
+    public static bool CanTimeRun => _canTimerun;
+    public static void SetCanTimeRun(bool canTimeRun)
+    {
+        _canTimerun = canTimeRun;
     }
 }
 

@@ -6,8 +6,8 @@ using UnityEngine;
 
 public class Elite3 : MonsterBase
 {
-    [Header("Local Stats")]
-
+    private string EnglishName = "Giant Mech ProtoType";
+    private string KoreanName = "거대로봇 실험체";
 
     [Header("Missile")]
     [SerializeField]private int missileAttackCounter = 0;
@@ -29,6 +29,13 @@ public class Elite3 : MonsterBase
 
     private float lastHealthCheckThreshold = 1f;
     private bool _isPhase2 = false;
+
+    public override void Initialize(object data = null)
+    {
+        SetMonsterName(EnglishName, KoreanName);
+        base.Initialize(data);
+        Invoke(nameof(DisableAgent), 0.1f);
+    }
 
 
     private void Update()
@@ -82,7 +89,7 @@ public class Elite3 : MonsterBase
                     float angle = i * 36f + angleOffset;
                     Quaternion bulletRotation = Quaternion.Euler(0, angle, 0);
                     Vector3 spawnPos = transform.position;
-                    spawnPos.y = 0.5f;
+                    spawnPos.y = 1f;
                     GameObject bullet = GameManager.Instance.PoolManager.GetFromPool(eliteBulletPrefab, spawnPos, bulletRotation);
                     EliteBullet elitetBullet = bullet.GetComponent<EliteBullet>();
                     if (elitetBullet != null)
@@ -189,6 +196,19 @@ public class Elite3 : MonsterBase
         }
 
         lastHealthCheckThreshold = healthRatio;
+    }
+    private void DisableAgent()
+    {
+        if (agent != null && agent.isOnNavMesh) // ← NavMesh 확인
+        {
+            agent.isStopped = true;
+            agent.enabled = false;
+        }
+        else if (agent != null)
+        {
+            // 아직 NavMesh 안 올라갔으면 재시도
+            Invoke(nameof(DisableAgent), 0.1f);
+        }
     }
 
     protected override void Die()

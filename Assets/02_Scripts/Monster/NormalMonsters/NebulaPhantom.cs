@@ -47,22 +47,45 @@ public class NebulaPhantom : MonsterBase
             baseState = MonsterState.Move;
         }
     }
+
     private void HandleMove()
     {
         if (_target == null) return;
+
         float distance = Vector3.Distance(transform.position, _target.position);
+
         if (distance > detectionRange || !CanSeePlayer())
         {
             agent.ResetPath();
+
+            // 애니메이션: 이동 중지
+            if (monsterAnimator != null)
+            {
+                monsterAnimator.SetBool(IsMove_Hash, false);
+            }
+
             baseState = MonsterState.Idle;
             return;
         }
 
         agent.SetDestination(_target.position);
 
+        // 애니메이션: 이동 중
+        if (monsterAnimator != null)
+        {
+            monsterAnimator.SetBool(IsMove_Hash, true);
+        }
+
         if (distance <= attackRange && CanSeePlayer())
         {
             agent.ResetPath();
+
+            // 애니메이션: 공격 준비를 위해 이동 중지
+            if (monsterAnimator != null)
+            {
+                monsterAnimator.SetBool(IsMove_Hash, false);
+            }
+
             baseState = MonsterState.Attack;
         }
     }
@@ -79,7 +102,7 @@ public class NebulaPhantom : MonsterBase
 
             decalobj.GetComponent<SquareDecalEffect>().Play(attackDelay, transform, new Vector3(90, 0, 0));
             yield return new WaitForSeconds(attackDelay);
-            monsterAnimator.SetTrigger("Attack");
+            monsterAnimator.SetTrigger(Attack_Hash);
 
             float laserLength = 40f; // 사거리
 
@@ -93,7 +116,7 @@ public class NebulaPhantom : MonsterBase
             // 벽에 막히는 Raycast
             if (Physics.Raycast(startPos, transform.forward, out RaycastHit hit, laserLength, ~0, QueryTriggerInteraction.Collide))
             {
-                if (hit.collider.CompareTag(targetTag))
+                if (hit.collider.CompareTag(targetTag) && !isDead)
                 {
                     var damageable = hit.collider.GetComponent<IDamageable>();
                     if (damageable != null)

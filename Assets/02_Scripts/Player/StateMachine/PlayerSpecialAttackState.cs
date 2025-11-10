@@ -72,14 +72,11 @@ public class PlayerSpecialAttackState : PlayerStateBase
             return;
         }
 
-        Debug.Log("PlayerSpecialAttackState: OnReleaseFire called.");
-
         // StopChargeAndFire는 현재 charge ratio로 발사 처리
         _player.SpecialAttacker.StopChargeAndFire();
 
         // 발사 후 상태 전환: 보통 Idle 또는 FireState로 전환
         _player.SetToIdle();
-        Debug.Log("PlayerSpecialAttackState: OnReleaseFire called, switching to Idle.");
     }
 
     // 애니메이션 이벤트로 발사 타이밍을 동기화해야 한다면 애니메이션에서 호출해서 사용

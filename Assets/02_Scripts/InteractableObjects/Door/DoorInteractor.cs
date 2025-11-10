@@ -6,7 +6,6 @@ using UnityEngine;
 /// </summary>
 public class DoorInteractor : InteractableObject
 {
-    [SerializeField] string _instruction;
     [SerializeField] Collider _interactionCollider;
 
     [SerializeField] InteractableType _interactableType = InteractableType.Door;
@@ -31,7 +30,6 @@ public class DoorInteractor : InteractableObject
         // 이미 상호작용 중이면 거부
         if (_isInteracting)
         {
-            Debug.Log($"{name}은(는) 이미 상호작용 중입니다.");
             return false;
         }
 
@@ -43,7 +41,6 @@ public class DoorInteractor : InteractableObject
 
         if (!_canInteract)
         {
-            Debug.Log($"{name} 문은 현재 상호작용할 수 없습니다.");
             return false;
         }
 
@@ -59,7 +56,6 @@ public class DoorInteractor : InteractableObject
         // 플레이어 입력 끄기
         EventBus.SetCanGetInput(false);
 
-        Debug.Log("문과 상호작용 함: " + name);
         OnInteracted?.Invoke(this);
 
         // 즉시 처리형이면 바로 끝내고 _isInteracting 리셋 (혹은 연출/비동기라면 End 시 리셋)
@@ -76,18 +72,34 @@ public class DoorInteractor : InteractableObject
             return;
         }
         _roomInfo = roomInfo;
-        Debug.Log($"{name}: {_roomInfo.RoomType} 방 정보로 문 설정됨");
     }
 
     public void ToggleInteraction(bool canInteract)
     {
-        _canInteract = canInteract;
-        _interactionCollider.enabled = canInteract;
+        // 안전 검사
+        if (_interactionCollider == null) return;
+
+        // 필요하면 try-catch로 한번 더 방어 (보통 null 검사로 충분)
+        try
+        {
+            _interactionCollider.enabled = canInteract;
+        }
+        catch (MissingReferenceException)
+        {
+            // 이미 파괴된 경우 레퍼런스 초기화
+            _interactionCollider = null;
+        }
     }
 
-    public override void GetInteractionMessage(out string title, out string instruction)
+    private void OnDestroy()
     {
-        title = _roomInfo != null ? _roomInfo.GetRoomTitle() : "알 수 없는 방";
-        instruction = _roomInfo != null ? _roomInfo.GetRoomDescription() : "설정되지 않은 방입니다.";
+        // OnDestroy에서 명시적으로 null 처리하면 후속 호출에서 안전
+        _interactionCollider = null;
+    }
+
+    public override void ReturnInteractionViewKey(out string title, out string description)
+    {
+        title = _roomInfo != null ? _roomInfo.GetTitleKey() : "알 수 없는 방";
+        description = _roomInfo != null ? _roomInfo.GetDescriptionKey() : "설정되지 않은 방입니다.";
     }
 }

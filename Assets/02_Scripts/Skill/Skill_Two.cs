@@ -21,7 +21,6 @@ public class Skill_Two : SkillBase
         {
             // 베고, 찌르고, 부수고
             case 20:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 ActiveTech skillAttack = new Skill_Two_Attack(choosedSkill);
                 if (_skillManager.attackTech != null)
                 {
@@ -33,7 +32,6 @@ public class Skill_Two : SkillBase
 
             // 폭발!
             case 21:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 ActiveTech skillGrenade = new Skill_Two_Grenade(choosedSkill);
                 if (_skillManager.bombTech != null)
                 {
@@ -46,7 +44,6 @@ public class Skill_Two : SkillBase
 
             // 비밀무기
             case 22:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 ActiveTech skillSPAttack = new Skill_Two_SPAttack(choosedSkill);
                 if (_skillManager.skillTech != null)
                 {
@@ -59,7 +56,6 @@ public class Skill_Two : SkillBase
 
             // 깜짝선물
             case 23:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 ActiveTech skillDashAttack = new Skill_Two_Dash(choosedSkill);
                 if (_skillManager.dashTech != null)
                 {
@@ -72,20 +68,16 @@ public class Skill_Two : SkillBase
 
             // 전투장비 강화
             case 24:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 OnCombatEquipment(choosedSkill);
                 break;
 
             // 개선된 폭격
             case 25:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 ActiveImprovedBomb(choosedSkill);
                 break;
 
             // 폭사
             case 26:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
-
                 _explosionDeathData = new ExplosionDeathData(
                     choosedSkill.skillBaseValue_1 + choosedSkill.skillLevelValue_1 * choosedSkill.skillLevel,
                     choosedSkill.skillBaseValue_2 + choosedSkill.skillLevelValue_2 * choosedSkill.skillLevel
@@ -98,7 +90,6 @@ public class Skill_Two : SkillBase
 
             // 기폭제
             case 27:
-                Debug.Log($"{choosedSkill.skillIdx} 발동, 스킬 레벨 : {choosedSkill.skillLevel}");
                 // 범위 증가
                 ActivePriming(choosedSkill);
                 break;
@@ -172,7 +163,7 @@ public class Skill_Two : SkillBase
     {
         if (choosedSkill.skillLevel == 1)
         {
-            _skillManager.playerStatManager.AddPlayerAreaExtent(choosedSkill.skillBaseValue_1 + choosedSkill.skillLevelValue_1);
+            _skillManager.playerStatManager.AddPlayerAreaExtent(3f);
 
         }
         else

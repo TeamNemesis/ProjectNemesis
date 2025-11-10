@@ -6,7 +6,7 @@ public class PlayerMover : MonoBehaviour
     [SerializeField] CharacterController _controller;
 
     [Header("Movement")]
-    [SerializeField] float _moveSpeed = 5f;
+    [SerializeField] float _moveSpeed;
     [SerializeField] float _rotSpeed = 720f;
 
     [Header("Gravity")]
@@ -16,7 +16,7 @@ public class PlayerMover : MonoBehaviour
 
     [Header("Ground Check")]
     [SerializeField] LayerMask _groundLayer = ~0;
-    [SerializeField] float _groundCheckDistance = 0.2f; // 캐릭터 바닥에서 얼마나 밑을 체크할지
+    //[SerializeField] float _groundCheckDistance = 0.2f; // 캐릭터 바닥에서 얼마나 밑을 체크할지
     [SerializeField] float _groundCheckRadius = 0.3f; // CheckSphere 반지름 (캐릭터 크기에 맞게 조정)
 
     [Header("Coyote / Snap")]
@@ -33,7 +33,7 @@ public class PlayerMover : MonoBehaviour
         if (_controller == null)
             _controller = GetComponent<CharacterController>();
         _targetRotation = transform.rotation;
-        GameManager.Instance.PlayerStatManager.OnPlayerMoveSpeedChange += SetMoveSpeed;
+        
     }
 
     void Update()
@@ -91,6 +91,9 @@ public class PlayerMover : MonoBehaviour
     public void Initialize(Player player)
     {
         _player = player;
+
+        GameManager.Instance.PlayerStatManager.OnPlayerMoveSpeedChange += SetMoveSpeed;
+        _moveSpeed = GameManager.Instance.PlayerStatManager.playerMoveSpeed;
     }
 
     public void Rotate(Vector3 direction)

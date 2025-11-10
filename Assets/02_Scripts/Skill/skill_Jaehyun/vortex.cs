@@ -57,7 +57,7 @@ public class vortex : PoolableObject,IInitializePoolable
     protected void SetRadius(float radius)
     {
         this.radius = radius * GameManager.Instance.PlayerStatManager.playerAreaExtent;
-        transform.localScale = Vector3.one * radius * 2f;
+        transform.localScale = Vector3.one * this.radius * 2f;
     }
 
 

@@ -37,7 +37,6 @@ public class PoolManager : MonoBehaviour
 
         if (availablePools[prefabObject.name].Count == 0)
         {
-            Debug.LogWarning($"'{prefabObject.name}' 풀이 비어있습니다! 새로운 오브젝트를 생성합니다.");
             GameObject newObj = CreateNewObject(prefabObject, position, rotation, parentTransform);
 
             if (poolable is IInitializePoolable)
@@ -118,7 +117,6 @@ public class PoolManager : MonoBehaviour
 
         if (availablePools[key].Count == 0)
         {
-            Debug.LogWarning($"'{key}' 풀이 비어있습니다! 새로운 오브젝트를 생성합니다.");
             GameObject newObj = CreateNewObject(prefab, position, rotation, parentTransform);
 
             if (newObj != null && newObj.TryGetComponent<PoolableObject>(out var poolableComp))
@@ -186,7 +184,6 @@ public class PoolManager : MonoBehaviour
 
         newObj.SetActive(true);
         inUsePools[prefabObject.name].Add(newObj);
-        Debug.Log($"'{prefabObject.name}' 풀의 새로운 오브젝트가 생성되었습니다.");
         return newObj;
     }
 
@@ -206,7 +203,6 @@ public class PoolManager : MonoBehaviour
 
         if (!inUsePools.ContainsKey(obj.name))
         {
-            Debug.LogWarning($"'{obj.name}' 풀에 반환할 수 없습니다. 풀이 존재하지 않습니다.");
             Destroy(obj);
             return;
         }
@@ -223,7 +219,6 @@ public class PoolManager : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning($"오브젝트 '{obj.name}'은 이 풀에서 사용 중이 아닙니다.");
         }
     }
 
@@ -235,7 +230,6 @@ public class PoolManager : MonoBehaviour
     {
         if (!inUsePools.ContainsKey(obj.name))
         {
-            Debug.LogWarning($"'{obj.name}' 풀에 반환할 수 없습니다. 풀이 존재하지 않습니다.");
             Destroy(obj);
             return;
         }
@@ -250,7 +244,6 @@ public class PoolManager : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning($"오브젝트 '{obj.name}'은 이 풀에서 사용 중이 아닙니다.");
         }
     }
 

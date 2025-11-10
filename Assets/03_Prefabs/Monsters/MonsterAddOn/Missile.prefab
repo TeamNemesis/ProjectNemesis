@@ -16,9 +16,9 @@ GameObject:
   - component: {fileID: 4000084810688762653}
   - component: {fileID: 1298998406081501313}
   - component: {fileID: 3902314209462118983}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Missile
-  m_TagString: Untagged
+  m_TagString: Monster
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -283,6 +283,10 @@ PrefabInstance:
     - target: {fileID: 8861006837978715490, guid: 40bc204e529132449a4a4259da34f572, type: 3}
       propertyPath: m_Name
       value: Missile
+      objectReference: {fileID: 0}
+    - target: {fileID: 8861006837978715490, guid: 40bc204e529132449a4a4259da34f572, type: 3}
+      propertyPath: m_Layer
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

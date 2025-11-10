@@ -11,6 +11,13 @@ public class PlayerNormalAttackState : PlayerStateBase
 
     public override void Enter()
     {
+        if (EventBus.IsColosseumRoom)
+        {
+            Vector3 cameraForward = Camera.main.transform.forward;
+            cameraForward.y = 0f;
+            cameraForward.Normalize();
+            _player.Mover.Rotate(cameraForward);
+        }
         // 현재 장착한 attacker 가져오기
         _attacker = _player.NormalAttacker;
         if (_attacker == null)
@@ -49,7 +56,6 @@ public class PlayerNormalAttackState : PlayerStateBase
     {
         // 상태 내부에서 직접 ChangeState 하지 말고, Player에게 요청하게 하자
         
-        Debug.Log("SetIsNormalttacking false in HandleAttackEnded");
         _player.SetToIdle();
     }
 }
