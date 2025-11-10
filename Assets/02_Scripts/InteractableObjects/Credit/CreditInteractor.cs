@@ -6,6 +6,12 @@ public class CreditInteractor : RewardInteractableObject
 {
     public override event Action OnRewardGiven;
 
+    public override void ReturnInteractionViewKey(out string title, out string instruction)
+    {
+        title = "_rewardTitle_Credit";
+        instruction = "_rewardDescription_Credit";
+    }
+
     protected override IEnumerator RewardCoroutine()
     {
         yield return new WaitForSeconds(0.01f);

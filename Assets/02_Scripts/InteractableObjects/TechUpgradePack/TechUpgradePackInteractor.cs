@@ -36,4 +36,10 @@ public class TechUpgradePackInteractor : RewardInteractableObject
         base.OnDisable();
         GameManager.Instance.UIManager.onRewardSelect -= RaiseRewardGivenEvent;
     }
+
+    public override void ReturnInteractionViewKey(out string title, out string description)
+    {
+        title = "_rewardTitle_TechUpgradePack";
+        description = "_rewardDescription_TechUpgradePack";
+    }
 }

@@ -6,23 +6,32 @@ using UnityEngine.UI;
 /// </summary>
 public class VolumeChanger : MonoBehaviour
 {
-    [SerializeField] Slider _masterVolumeSlider;
-    [SerializeField] Slider _bgmVolumeSlider;
-    [SerializeField] Slider _sfxVolumeSlider;
+    [SerializeField] Scrollbar _masterVolumeScrollbar;
+    [SerializeField] Scrollbar _bgmVolumeScrollbar;
+    [SerializeField] Scrollbar _sfxVolumeScrollbar;
 
-    public void OnMasterVolumeChanged(float value)
+    private void Start()
     {
-        Debug.Log(value);
-        GameManager.Instance.SoundManager.SetMasterVolume(value);
+        if (_masterVolumeScrollbar != null)
+        {
+            OnMasterVolumeChanged();
+            OnBGMVolumeChanged();
+            OnSFXVolumeChanged();
+        }
+    }
+
+    public void OnMasterVolumeChanged()
+    {
+        GameManager.Instance.SoundManager.SetMasterVolume(_masterVolumeScrollbar.value);
     }
     
-    public void OnBGMVolumeChanged(float value)
+    public void OnBGMVolumeChanged()
     {
-        GameManager.Instance.SoundManager.SetBGMVolume(value);
+        GameManager.Instance.SoundManager.SetBGMVolume(_bgmVolumeScrollbar.value);
     }
 
-    public void OnSFXVolumeChanged(float value)
+    public void OnSFXVolumeChanged()
     {
-        GameManager.Instance.SoundManager.SetSFXVolume(value);
+        GameManager.Instance.SoundManager.SetSFXVolume(_sfxVolumeScrollbar.value);
     }
 }

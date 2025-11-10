@@ -12,5 +12,5 @@ public abstract class InteractableObject : MonoBehaviour, IInteractable
 
     public abstract bool TryInteract(Transform subject);
 
-    public abstract void GetInteractionMessage(out string title, out string instruction);
+    public abstract void ReturnInteractionViewKey(out string title, out string instruction);
 }

@@ -10,10 +10,8 @@ public class ReinforceInteractor : InteractableObject
 
     public override event Action<IInteractable> OnInteracted;
 
-    public override void GetInteractionMessage(out string title, out string instruction)
+    public override void ReturnInteractionViewKey(out string title, out string instruction)
     {
-        title = "플레이어의 장비 보관함";
-        instruction = "E를 눌러 강화하기";
 
     }
 

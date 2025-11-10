@@ -18,7 +18,7 @@ public class WeaponInteractor : InteractableObject
 
     public override event Action<IInteractable> OnInteracted;
 
-    public override void GetInteractionMessage(out string title, out string instruction)
+    public override void ReturnInteractionViewKey(out string title, out string instruction)
     {
         title = _title;
         instruction = _instruction;

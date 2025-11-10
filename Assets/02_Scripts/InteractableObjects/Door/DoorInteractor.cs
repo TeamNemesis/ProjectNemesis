@@ -6,7 +6,6 @@ using UnityEngine;
 /// </summary>
 public class DoorInteractor : InteractableObject
 {
-    [SerializeField] string _instruction;
     [SerializeField] Collider _interactionCollider;
 
     [SerializeField] InteractableType _interactableType = InteractableType.Door;
@@ -98,9 +97,9 @@ public class DoorInteractor : InteractableObject
         _interactionCollider = null;
     }
 
-    public override void GetInteractionMessage(out string title, out string instruction)
+    public override void ReturnInteractionViewKey(out string title, out string description)
     {
-        title = _roomInfo != null ? _roomInfo.GetRoomTitle() : "알 수 없는 방";
-        instruction = _roomInfo != null ? _roomInfo.GetRoomDescription() : "설정되지 않은 방입니다.";
+        title = _roomInfo != null ? _roomInfo.GetTitleKey() : "알 수 없는 방";
+        description = _roomInfo != null ? _roomInfo.GetDescriptionKey() : "설정되지 않은 방입니다.";
     }
 }
