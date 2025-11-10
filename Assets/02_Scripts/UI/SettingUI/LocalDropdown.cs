@@ -1,20 +1,25 @@
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 using UnityEngine.Localization.Tables;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class LocalDropdown : MonoBehaviour
 {
 		[SerializeField] private TMP_Dropdown languageDropdown;
-		[SerializeField] private string tableName;
 		[SerializeField] private string[] stringKeys;
 
 		private LanguageManager languageManager;
 
-
 		private void OnEnable()
 		{
+				if (GameManager.Instance == null || GameManager.Instance.languageManager == null)
+				{
+						Debug.LogError("❌ GameManager 또는 LanguageManager가 null입니다.");
+						return;
+				}
+
 				languageManager = GameManager.Instance.languageManager;
 				languageDropdown.onValueChanged.AddListener(OnDropdownChanged);
 				LocalizationSettings.SelectedLocaleChanged += UpdateDropdown;
@@ -34,15 +39,21 @@ public class LocalDropdown : MonoBehaviour
 
 		private void UpdateDropdown(Locale locale)
 		{
-				LocalizationSettings.StringDatabase.GetTableAsync(tableName).Completed += handle =>
+				LocalizationSettings.StringDatabase.GetTableAsync(Constants.LOCAL_TABLE).Completed += handle =>
 				{
+						if (handle.Status != AsyncOperationStatus.Succeeded || handle.Result == null)
+						{
+								Debug.LogError($"❌ 테이블 '{Constants.LOCAL_TABLE}' 로드 실패: {handle.OperationException}");
+								return;
+						}
+
 						var table = handle.Result;
 						languageDropdown.options.Clear();
 
 						foreach (var key in stringKeys)
 						{
 								var entry = table.GetEntry(key);
-								string localizedText = entry?.GetLocalizedString() ?? key;
+								string localizedText = entry?.GetLocalizedString() ?? $"⚠️ {key}";
 								languageDropdown.options.Add(new TMP_Dropdown.OptionData(localizedText));
 						}
 
