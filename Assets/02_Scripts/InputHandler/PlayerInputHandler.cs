@@ -61,7 +61,7 @@ public class PlayerInputHandler : MonoBehaviour
     private void Awake()
     {
         // 임시
-        _isMoblile = true;
+        _isMoblile = false;
         // 임시
         mainCam = Camera.main;
 

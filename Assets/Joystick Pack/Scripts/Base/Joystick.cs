@@ -15,7 +15,6 @@ public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
     void Update()
     {
         OnJoystickMove?.Invoke(Direction);
-        Debug.Log("Direction: " + Direction);
     }
 
     public float HandleRange

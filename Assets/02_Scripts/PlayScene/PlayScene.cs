@@ -21,7 +21,7 @@ public class PlayScene : MonoBehaviour
 
     private void Awake()
     {
-        EventBus.OnColosseumRoomSet += IsColosseum;
+        EventBus.IsColosseumChanged += IsColosseum;
         IsColosseum(false);
 
         _inputHandler.OnInteractInput += _player.ExecuteInteraction;
@@ -178,6 +178,6 @@ public class PlayScene : MonoBehaviour
 
     private void OnDestroy()
     {
-        EventBus.OnColosseumRoomSet -= IsColosseum;
+        EventBus.IsColosseumChanged -= IsColosseum;
     }
 }

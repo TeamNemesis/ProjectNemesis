@@ -206,6 +206,9 @@ public static class Constants
     public const string RESOURCES_PATH_SKILLTOOLTIP = "SkillData/SkillTooltip/KeywordData";
     public const string RESOURCES_PATH_SKILLTOOLTIPUI = "Prefabs/Skill/Skill_ToolTip";
     public const string RESOURCES_PATH_PLAYERSTATDATA = "SkillData/PlayerStatData";
+    
+    public const string RESOURCES_PATH_BGM = "Audio/BGM";
+    public const string RESOURCES_PATH_SFX = "Audio/SFX";
 
 
 
