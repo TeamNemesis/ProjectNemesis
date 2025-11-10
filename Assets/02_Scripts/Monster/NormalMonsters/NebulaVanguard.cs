@@ -4,7 +4,7 @@ using UnityEngine;
 public class NebulaVanguard : MonsterBase
 {
     [Header("Local Stats")]
-    [SerializeField] private float _box_Length = 3;
+    [SerializeField] private float _box_Length = 4;
     [SerializeField] private float _box_Height = 3;
     [SerializeField] private float _box_Width = 3;
 
@@ -117,7 +117,7 @@ public class NebulaVanguard : MonsterBase
             {
                 if (target.TryGetComponent(out IDamageable playerHealth) && target.tag == targetTag)
                 {
-                    yield return new WaitForSeconds(0.5f);
+                    yield return new WaitForSeconds(0.7f);
                     float finalPlayerDistance = Vector3.Distance(transform.position, base._target.position);
                     if (finalPlayerDistance <= attackRange)
                     {

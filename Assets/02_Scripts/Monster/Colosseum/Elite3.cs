@@ -6,9 +6,8 @@ using UnityEngine;
 
 public class Elite3 : MonsterBase
 {
-    [Header("NameSet")]
-    [SerializeField] private string EnglishName = "Elite Type-III";
-    [SerializeField] private string KoreanName = "엘리트 3형";
+    private string EnglishName = "Giant Mech ProtoType";
+    private string KoreanName = "거대로봇 실험체";
 
     [Header("Missile")]
     [SerializeField]private int missileAttackCounter = 0;

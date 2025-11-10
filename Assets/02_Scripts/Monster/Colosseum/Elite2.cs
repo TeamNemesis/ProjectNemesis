@@ -6,8 +6,8 @@ using UnityEngine;
 public class Elite2 : MonsterBase
 {
     [Header("NameSet")]
-    [SerializeField] private string EnglishName = "Elite Type-II";
-    [SerializeField] private string KoreanName = "엘리트 2형";
+    [SerializeField] private string EnglishName = "Lead Researcher";
+    [SerializeField] private string KoreanName = "무기개발부서 선임연구원";
 
     [Header("Local Stats")]
     [SerializeField] private int laserAttackCount = 0; // 연속 공격 횟수

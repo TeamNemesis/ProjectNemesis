@@ -7,8 +7,8 @@ public class Elite1 : MonsterBase
 
 
     [Header("NameSet")]
-    [SerializeField] private string EnglishName = "Elite Type-I";
-    [SerializeField] private string KoreanName = "엘리트 1형";
+    [SerializeField] private string EnglishName = "Nebula's Guard Captain";
+    [SerializeField] private string KoreanName = "네뷸라사 경비대장";
 
     [Header("Local Stats")]
     [SerializeField] private float _box_Length = 3;
@@ -40,8 +40,8 @@ public class Elite1 : MonsterBase
 
     public override void Initialize(object data = null)
     {
-        base.Initialize(data);
         SetMonsterName(EnglishName, KoreanName);
+        base.Initialize(data);
     }
 
     private void Update()

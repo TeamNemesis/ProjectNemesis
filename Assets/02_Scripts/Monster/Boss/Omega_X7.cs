@@ -7,8 +7,8 @@ using UnityEngine;
 public class Omega_X7 : MonsterBase
 {
     [Header("NameSet")]
-    [SerializeField] private string EnglishName = "mega_X7";
-    [SerializeField] private string KoreanName = "오메가 X7";
+    [SerializeField] private string EnglishName = "Omega_X7";
+    [SerializeField] private string KoreanName = "오메가_X7";
 
     [Header("Missile")]
     [SerializeField] private float misileAttackDamage = 20f;
