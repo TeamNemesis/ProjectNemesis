@@ -251,7 +251,7 @@ public static class Constants
     #endregion
 
     #region mobile
-    public const float GRENDADE_TIME = 0.5f;
+    public const float GRENDADE_TIME = 0.2f;
 		#endregion
 
 		#region Util

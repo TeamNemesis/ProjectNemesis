@@ -15,9 +15,6 @@ public class PlayerInputHandler : MonoBehaviour
     [SerializeField] Camera mainCam;               // 메인 카메라 참조
     [SerializeField] LayerMask _groundLayer;        // Ground 레이어 마스크
 
-    [Header("----- 모바일 입력 -----")]
-    [SerializeField] Joystick _joystick;            // 조이스틱 참조
-    bool _isMoblile = false;
 
     public event Action<Vector3> OnMoveInput;        // 이동 입력 이벤트
     
@@ -60,8 +57,7 @@ public class PlayerInputHandler : MonoBehaviour
 
     private void Awake()
     {
-        // 임시
-        _isMoblile = true;
+
         // 임시
         mainCam = Camera.main;
 
@@ -123,12 +119,7 @@ public class PlayerInputHandler : MonoBehaviour
 
     private void Update()
     {
-        //if(Application.isMobilePlatform)
-        if(_isMoblile)
-        {
-            // 모바일 플랫폼인 경우 조이스틱 입력 처리
-            _moveDir = new Vector3(_joystick.Horizontal, 0, _joystick.Vertical);
-        }
+
         // 일반공격 입력중에는 이동 입력 벡터를 0으로
         if (_holdAttackRoutine != null)
         {
@@ -334,7 +325,7 @@ public class PlayerInputHandler : MonoBehaviour
 		/// </summary>
 		public void TriggerNormalAttackInput()
 		{
-				OnNomralAttackInput?.Invoke();
+				OnNormalAttackInput?.Invoke();
 		}
 
 		/// <summary>
