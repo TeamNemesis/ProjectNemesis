@@ -66,10 +66,7 @@ public class MapController : MonoBehaviour
         _doorDecider.Initialize();
         _monsterController.Initialize();
 
-        if (GameManager.Instance.PlayerStatManager.playerStatDataDic["playerRestore"].CurrentLevel!=0)
-        {
-            OnRoomStart += () => _player.playerModel.Heal((int)GameManager.Instance.PlayerStatManager.playerStatDataDic["playerRestore"].GetEffectiveValue());
-        }
+      
     }
 
     /// <summary>
