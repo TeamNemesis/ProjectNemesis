@@ -36,26 +36,25 @@ public class PlayScene : MonoBehaviour
 				_inputHandler.OnSpecialAttackInputCanceled += _player.HandleSpecialCanceled;
 				_inputHandler.OnInteractInput += _player.ExecuteInteraction;
 
+        GameManager.Instance.CurrencyManager.OnCreditChanged += _playSceneView.UpdateGoldText;
+        GameManager.Instance.CurrencyManager.OnChromeChanged += _playSceneView.UpdateChromeText;
+        _player.playerModel.OnHpChanged += _playSceneView.UpdateHPBar;
+        _player.OnInteractableDetected += _playSceneView.ShowInteractionUI;
+        _player.OnInteractableMissed += _playSceneView.HideInteractionUI;
+        _player.OnGrenadeCooltimeChanged += _playSceneView.UpdateGrenadeCoolTime;
+        _player.OnGrenadeCountChanged += _playSceneView.UpdateGrenadeCount;
+        _mapController.OnDoorInteractionFinished += _playSceneView.ShowRoomLoadingPanel;
+        _playSceneView.OnRoomLoadingComplete += _mapController.SpawnRoom;
+        _timeChecker.OnTimeUpdated += _playSceneView.UpdateTimer;
+        _mapController.OnStartRoomExited += _timeChecker.StartTimeCheck;
+        _mapController.OnStartRoomExited += _playSceneView.HideTutorialPanel;
 
-
-
-				// PlaySceneView
-				if (_playSceneView == null)
-				{
-						Debug.LogError("PlaySceneView가 할당되지 않았습니다!");
-						return;
-				}
-				GameManager.Instance.CurrencyManager.OnCreditChanged += _playSceneView.UpdateGoldText;
-				GameManager.Instance.CurrencyManager.OnChromeChanged += _playSceneView.UpdateChromeText;
-				_player.playerModel.OnHpChanged += _playSceneView.UpdateHPBar;
-				_player.OnInteractableDetected += _playSceneView.ShowInteractionUI;
-				_player.OnInteractableMissed += _playSceneView.HideInteractionUI;
-				_player.OnGrenadeCooltimeChanged += _playSceneView.UpdateGrenadeCoolTime;
-				_player.OnGrenadeCountChanged += _playSceneView.UpdateGrenadeCount;
-				_mapController.OnDoorInteractionFinished += _playSceneView.RoomLoading;
-				_playSceneView.OnRoomLoadingComplete += _mapController.SpawnRoom;
-				_timeChecker.OnTimeUpdated += _playSceneView.UpdateTimer;
-				_mapController.OnStartRoomExited += _timeChecker.StartTimeCheck;
+        // 튜토리얼 관련 이벤트 연결
+        _player.OnNormalAttackStarted += _playSceneView.CheckNormalAttackTutorialComplete;
+        _player.OnSpecialAttackStarted += _playSceneView.CheckSpecialAttackTutorialComplete;
+        _player.OnDashStarted += _playSceneView.CheckDashTutorialComplete;
+        _player.OnGrenadeAttackStarted += _playSceneView.CheckGrenadeAttackTutorialComplete;
+        _player.OnInteractionStarted += _playSceneView.CheckInteractTutorialComplete;
 
 
 		}
