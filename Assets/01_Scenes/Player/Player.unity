@@ -1140,14 +1140,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Floating Joystick
       objectReference: {fileID: 0}
-    - target: {fileID: 8170153791961219459, guid: 0d230cc8be529a542a08cb878ab14b18, type: 3}
-      propertyPath: m_Color.a
-      value: 0.4745098
-      objectReference: {fileID: 0}
-    - target: {fileID: 8170153792821263252, guid: 0d230cc8be529a542a08cb878ab14b18, type: 3}
-      propertyPath: m_Color.a
-      value: 0.49803922
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1277,7 +1269,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1125363709
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1602,7 +1594,7 @@ Transform:
   m_GameObject: {fileID: 1128637368}
   serializedVersion: 2
   m_LocalRotation: {x: -0.000000023794996, y: 7.259644e-16, z: 1.1702991e-16, w: 1}
-  m_LocalPosition: {x: 0, y: 4, z: -3}
+  m_LocalPosition: {x: 0, y: 2, z: -4.954}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1621,6 +1613,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2639110958980148813, guid: 640f7220942f4c54a9058c35735d0eb9, type: 3}
+      propertyPath: _offset.y
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 2639110958980148813, guid: 640f7220942f4c54a9058c35735d0eb9, type: 3}
+      propertyPath: _cameraSpeed
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 2639110958980148813, guid: 640f7220942f4c54a9058c35735d0eb9, type: 3}
+      propertyPath: _transparentAlpha
+      value: 0.081
+      objectReference: {fileID: 0}
+    - target: {fileID: 2639110958980148813, guid: 640f7220942f4c54a9058c35735d0eb9, type: 3}
+      propertyPath: _obstacleMask.m_Bits
+      value: 1847
+      objectReference: {fileID: 0}
     - target: {fileID: 3730596070807635039, guid: 640f7220942f4c54a9058c35735d0eb9, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1659,6 +1667,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3730596070807635039, guid: 640f7220942f4c54a9058c35735d0eb9, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4302262935115403773, guid: 640f7220942f4c54a9058c35735d0eb9, type: 3}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6686156600494389063, guid: 640f7220942f4c54a9058c35735d0eb9, type: 3}
