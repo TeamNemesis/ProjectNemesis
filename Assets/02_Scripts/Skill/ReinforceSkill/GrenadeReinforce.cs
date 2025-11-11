@@ -25,7 +25,6 @@ public class Skill_One_Grenade : ActiveTech
         _grenadePoisonData = new GrenadePoisonData(skillData.skillBaseValue_1 + skillData.skillLevelValue_1 * skillData.skillLevel,
                 skillData.skillBaseValue_2 + skillData.skillLevelValue_2 * skillData.skillLevel);
 
-        //TODO 유탄 폭발시 이벤트에 연결
         EventBus.OnGrenadeBomb -= GrenadeBomb;
         EventBus.OnGrenadeBomb += GrenadeBomb;
 
@@ -35,8 +34,6 @@ public class Skill_One_Grenade : ActiveTech
         // 리스트 제거
         base.Deactivate(player, isSameSkill);
         // 이벤트 해제
-        //TODO 유탄 폭발시 이벤트에서 해제
-
         EventBus.OnGrenadeBomb -= GrenadeBomb;
     }
 
@@ -112,7 +109,6 @@ public class Skill_Three_Grenade : ActiveTech
         _grenadeVortexData = new GrenadeVortexData(skillData.skillBaseValue_2 + skillData.skillLevelValue_2 * skillData.skillLevel,
                 skillData.skillBaseValue_1 + skillData.skillLevelValue_1 * skillData.skillLevel);
 
-        //TODO 유탄 폭발시 이벤트에 연결
         EventBus.OnGrenadeBomb -= GrenadeBomb;
         EventBus.OnGrenadeBomb += GrenadeBomb;
 
@@ -122,8 +118,6 @@ public class Skill_Three_Grenade : ActiveTech
         // 리스트 제거
         base.Deactivate(player, isSameSkill);
         // 이벤트 해제
-        //TODO 유탄 폭발시 이벤트에서 해제
-
         EventBus.OnGrenadeBomb -= GrenadeBomb;
     }
 
@@ -166,7 +160,6 @@ public class Skill_Four_Grenade : ActiveTech
         _grenadeEMPData = new GrenadeEMPData(skillData.skillBaseValue_1 + skillData.skillLevelValue_1 * skillData.skillLevel,
             skillData.skillBaseValue_2 + skillData.skillLevelValue_2 * skillData.skillLevel);
 
-        //TODO 유탄 폭발시 이벤트에 연결
         EventBus.OnGrenadeBomb -= GrenadeBomb;
         EventBus.OnGrenadeBomb += GrenadeBomb;
     }
@@ -212,7 +205,6 @@ public class Skill_Five_Grenade : ActiveTech
         }
         _grenadeWeakenData = new WeakenAreaData(skillData.skillBaseValue_1 + skillData.skillLevelValue_1 * skillData.skillLevel);
 
-        //TODO 유탄 폭발시 이벤트에 연결
         EventBus.OnGrenadeBomb -= GrenadeBomb;
         EventBus.OnGrenadeBomb += GrenadeBomb;
     }

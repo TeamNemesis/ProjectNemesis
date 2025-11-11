@@ -67,7 +67,6 @@ public class Drone : PoolableObject
 
     private void Update()
     {
-        //TODO 플레이어 사망시 리턴
         switch (_currentState)
         {
             case State.Idle:
@@ -97,6 +96,8 @@ public class Drone : PoolableObject
 
     public void InitializeDrone(Player player)
     {
+        player.playerModel.OnDieEvent += ReleaseToPool;
+
         if (GameManager.Instance.skillManager.attackTech != null)
         {
             if(GameManager.Instance.skillManager.attackTech is Skill_Three_Attack skillThree)
@@ -191,11 +192,6 @@ public class Drone : PoolableObject
         _currentState = State.Idle;
     }
 
-    //public void Initialize()
-    //{
-    //		InitializeDrone(GameManager.Instance.player);
-    //}
-
     public GameObject GetGameObject()
     {
         return gameObject;
@@ -205,5 +201,11 @@ public class Drone : PoolableObject
     {
         Attack = null;
         attackTry = null;
+    }
+
+    public void ReleaseToPool()
+    {
+        ReleaseObject();
+        GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
     }
 }

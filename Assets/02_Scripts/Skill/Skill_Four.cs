@@ -185,7 +185,6 @@ public class Skill_Four : SkillBase
         plusMoveSpeed = choosedSkill.skillBaseValue_2 + choosedSkill.skillLevelValue_2 * choosedSkill.skillLevel;
         plusMoveSpeedTime = choosedSkill.skillBaseValue_3 + choosedSkill.skillLevelValue_3 * choosedSkill.skillLevel;
         
-        //TODO 대쉬 끝 이벤트에 연결
         _skillManager.playScene.player.OnDashStarted += plusMoveSpeedAfterDash;
     }
 

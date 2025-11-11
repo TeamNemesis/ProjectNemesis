@@ -233,7 +233,6 @@ public class Skill_Five_SPAttack : ActiveTech
     public override void Activate(SkillManager skillManager, Player player)
     {
         base.Activate(skillManager, player);
-        //TODO 특수공격 적중시 이벤트에 연결
         EventBus.OnMonsterHit += HitEnemy;
 
     }
@@ -241,7 +240,6 @@ public class Skill_Five_SPAttack : ActiveTech
     public override void Deactivate(Player player, bool isAnotherSkill)
     {
         base.Deactivate(player, isAnotherSkill);
-        //TODO 특수공격 적중시 이벤트에 해제
         EventBus.OnMonsterHit -= HitEnemy;
 
     }
