@@ -1,12 +1,12 @@
 ﻿using Firebase.Auth;
 using Firebase.Database;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
-using Newtonsoft.Json;
 
 public class DownloadManager : MonoBehaviour
 {
@@ -274,13 +274,15 @@ public class DownloadManager : MonoBehaviour
         return updatedStats;
     }
 
-    public void UploadClearTime(float time)
+
+    public async void UploadClearTime(float time)
     {
+        await UploadClearTimeServer(time);
 
     }
 
 
-        public async Task UploadClearTimeServer(float clearTime)
+    public async Task UploadClearTimeServer(float clearTime)
     {
         var user = FirebaseAuth.DefaultInstance.CurrentUser;
         if (user == null) return;

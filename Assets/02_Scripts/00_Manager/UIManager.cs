@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -159,6 +160,12 @@ public class UIManager : MonoBehaviour
 
     public void OnClick_ListExitBtn()
     {
+        _currentSelectedSkillBtn = null;
+        _skillImage.sprite = null;
+        _skillScriptText.text = null;
+        _skillValueScriptText.text = null;
+        _skillLevelText.text = null;
+
         foreach (Transform child in _parentContent)
         {
             PoolableObject childPool = child.GetComponent<PoolableObject>();
@@ -225,6 +232,13 @@ public class UIManager : MonoBehaviour
 
     public void OnClickListExitBtn(Transform content)
     {
+        _currentSelectedSkillBtn = null;
+        _skillImage.sprite = null;
+        _skillScriptText.text = null;
+        _skillValueScriptText.text = null;
+        _skillLevelText.text = null;
+
+
         Transform[] children = new Transform[content.childCount];
         for (int i = 0; i < content.childCount; i++)
             children[i] = content.GetChild(i);
@@ -252,6 +266,7 @@ public class UIManager : MonoBehaviour
             Cursor.lockState = !isLock ? CursorLockMode.None : CursorLockMode.Locked;
             Cursor.visible = !isLock; // 커서 보이게/숨기기
         }
+        Time.timeScale = 1.0f;
     }
     public void SetInputAtIntroSettingPanel()
     {

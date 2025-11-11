@@ -136,6 +136,7 @@ public class Skill_Four : SkillBase
     {
         Transform playerTransform = _skillManager.playScene.player.transform;
         Drone drone = GameManager.Instance.PoolManager.GetFromPool(dronePrefab,Vector3.zero , playerTransform.rotation,playerTransform).GetComponent<Drone>();
+        drone.InitializeDrone(_skillManager.playScene.player);
         droneList.Add(drone);
         float x = 0 - (float)(skillLevel - 1) / 2;
 

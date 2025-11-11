@@ -85,6 +85,8 @@ public abstract class SkillBase : MonoBehaviour
     /// </summary>
     public void InitSkillDictionary()
     {
+        _skillList.Clear();
+        _currentSkillData.Clear();
         for (int i = 0; i < skillJsonDataList.Count; i++)
         {
             _skillList.Add(new SkillData(skillJsonDataList[i],this));

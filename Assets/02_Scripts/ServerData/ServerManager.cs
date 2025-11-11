@@ -367,8 +367,7 @@ public class ServerManager : MonoBehaviour
 
                         // 사용자 데이터 다운로드
                         await _downloadManager.DownloadJsonToLocal(fromGameBase: false);
-                        GameManager.Instance.PlayerStatManager.Initialize();
-                        GameManager.Instance.PlayerStatManager.UploadToFirebase();
+                        
                         // 다운로드가 성공적으로 완료되면 씬 전환
                         GameManager.Instance.SceneLoadManager.LoadIntroScene();
                         if (mainCanvas != null)

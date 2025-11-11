@@ -208,4 +208,10 @@ public class Drone : PoolableObject
         ReleaseObject();
         GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
     }
+
+    public void OnDisable()
+    {
+        ReleaseObject();
+        GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
+    }
 }

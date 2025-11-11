@@ -9,12 +9,20 @@ public class SceneLoadManager : MonoBehaviour
  
     public void LoadIntroScene()
     {
+        GameManager.Instance.PlayerStatManager.Initialize();
+        GameManager.Instance.PlayerStatManager.UploadToFirebase();
+        GameManager.Instance.skillManager.Reset();
+        EventBus.ResetEvent();
         SceneManager.LoadScene(Constants.SCENE_NAME_INTRO);
 
     }
 
     public void LoadPlayScene()
     {
+        GameManager.Instance.PlayerStatManager.Initialize();
+        GameManager.Instance.PlayerStatManager.UploadToFirebase();
+        GameManager.Instance.skillManager.Reset();
+        EventBus.ResetEvent();
         SceneManager.LoadScene(Constants.SCENE_NAME_PLAY);
     }
 

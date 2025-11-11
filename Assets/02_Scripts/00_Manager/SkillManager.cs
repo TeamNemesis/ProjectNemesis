@@ -117,6 +117,38 @@ public class SkillManager : MonoBehaviour
         _playerStatManager = GameManager.Instance.PlayerStatManager;
 
     }
+        
+    public void Reset()
+    {
+        if (_attackTech != null && _playerScenes.player != null)
+        {
+            _attackTech.Deactivate(_playerScenes.player, true);
+        }
+        if (_dashTech != null && _playerScenes.player != null)
+        {
+            _dashTech.Deactivate(_playerScenes.player, true);
+        }
+        if(_bombTech!= null && _playerScenes.player != null)
+        {
+            _bombTech.Deactivate(_playerScenes.player, true);
+        }
+        if (_skillTech!= null && _playerScenes.player!=null)
+        {
+            _skillTech.Deactivate(_playerScenes.player, true);
+        }
+        _attackTech = null;
+        _dashTech = null;
+        _bombTech = null;
+        _skillTech = null;
+        _skill_One.InitializeSkill(this);
+        _skill_Two.InitializeSkill(this);
+        _skill_Three.InitializeSkill(this);
+        _skill_Four.InitializeSkill(this);
+        _skill_Five.InitializeSkill(this);
+        _skill_Collab.InitializeSkill(this);
+        _skill_Mutant.InitializeSkill(this);
+        _upgradeSkillList.Clear();
+    }
 
     /// <summary>
     /// 뽑은 스킬 리스트 순회하여 리스트 제작

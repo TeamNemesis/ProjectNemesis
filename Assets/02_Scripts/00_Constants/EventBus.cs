@@ -136,6 +136,23 @@ public static class EventBus
     {
         _canTimerun = canTimeRun;
     }
+
+
+    public static void ResetEvent()
+    {
+        OnMonsterHit = null;
+        HasMutant1 = false;
+        HasMutant2 = false;
+        HasMutant3 = false;
+        HasMutant4 = false;
+        OnEvolution = null;
+        OnMonsterKnockBack = null;
+        OnGrenadeBomb = null;
+        _canGetInput = true;
+        IsRewardSelecting = false;
+        _canTimerun = true;
+        IsColosseumRoom = false;
+    }
 }
 
 
