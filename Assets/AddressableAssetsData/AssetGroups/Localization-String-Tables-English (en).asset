@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Localization-String-Tables-English (en)
   m_EditorClassIdentifier: 
   m_GroupName: Localization-String-Tables-English (en)
-  m_GUID: 3bba6552a007f594cad18d60b27be850
+  m_GUID: 042c2230406ebe645868a39ddf47a5ed
   m_SerializeEntries:
   - m_GUID: 66eb59d49cf27dd46a0ab4c3f7912176
     m_Address: RoomLoadingTable_en
@@ -33,9 +33,15 @@ MonoBehaviour:
     m_SerializedLabels:
     - Locale-en
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fdb6c8d60b0c829489eb2031ff9a1e4d
+    m_Address: Local_en
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-en
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 1
-  m_Settings: {fileID: 11400000, guid: ceaed0ac7e88fdd468fe23c2c19a5c25, type: 2}
+  m_Settings: {fileID: 11400000, guid: 9027e0d7641e72c45a8ac9bb14ed9f1e, type: 2}
   m_SchemaSet:
     m_Schemas:
-    - {fileID: 11400000, guid: 5a959d78d0ffbd043a98581376c192b4, type: 2}
-    - {fileID: 11400000, guid: 1061d84d9972c5f44956be44af699e86, type: 2}
+    - {fileID: 11400000, guid: e51fd40304e07c34ba88870ccf9634c9, type: 2}
+    - {fileID: 11400000, guid: 91460e5fe82f8f748adbb2f5b9251fe3, type: 2}
