@@ -120,7 +120,7 @@ public class SoundManager : MonoBehaviour
     /// UI용 2D SFX 재생 (위치 없음)
     /// 반환값: 풀을 사용하면 재생에 사용된 AudioSource(제어 가능)를 반환합니다. 폴백 사용 시 null 반환(개별 제어 불가 또는 공유).
     /// </summary>
-    public AudioSource PlaySfx(string sfxName, float volume = 1f, float pitch = 1f)
+    public AudioSource PlaySfx(string sfxName, bool isLoop=false, float volume = 1f, float pitch = 1f)
     {
         if (!_sfxClips.TryGetValue(sfxName, out var clip))
         {
@@ -134,7 +134,7 @@ public class SoundManager : MonoBehaviour
         if (_sfxSourcePool != null)
         {
             // spatialBlend 0 -> 2D
-            return _sfxSourcePool.PlayOneShotAt(clip, Vector3.zero, finalVolume, finalPitch, 0f);
+            return _sfxSourcePool.PlayOneShotAt(clip, Vector3.zero, isLoop, finalVolume, finalPitch, 0f);
         }
         else if (_fallbackSfxSource != null)
         {
@@ -152,7 +152,7 @@ public class SoundManager : MonoBehaviour
     /// 월드 위치 기반 SFX 재생
     /// 반환값: 풀을 사용하면 재생에 사용된 AudioSource(제어 가능)를 반환합니다. 폴백 사용 시 null 반환.
     /// </summary>
-    public AudioSource PlaySfxAt(string sfxName, Vector3 pos, float volume = 1f, float pitch = 1f)
+    public AudioSource PlaySfxAt(string sfxName, Vector3 pos, bool isLoop=false, float volume = 1f, float pitch = 1f)
     {
         if (!_sfxClips.TryGetValue(sfxName, out var clip))
         {
@@ -165,7 +165,7 @@ public class SoundManager : MonoBehaviour
 
         if (_sfxSourcePool != null)
         {
-            return _sfxSourcePool.PlayOneShotAt(clip, pos, finalVolume, finalPitch, 1f);
+            return _sfxSourcePool.PlayOneShotAt(clip, pos, isLoop, finalVolume, finalPitch, 1f);
         }
         else if (_fallbackSfxSource != null)
         {
@@ -182,7 +182,7 @@ public class SoundManager : MonoBehaviour
     /// 클립을 재생하되 지정한 seconds 만큼만 재생하고 자동으로 정지/반환합니다.
     /// 반환값: 풀 사용 시 제어 가능한 AudioSource 반환. 폴백 사용 시 null 반환.
     /// </summary>
-    public AudioSource PlaySfxForSeconds(string sfxName, float seconds, float volume = 1f, float pitch = 1f)
+    public AudioSource PlaySfxForSeconds(string sfxName, float seconds, bool isLoop=false, float volume = 1f, float pitch = 1f)
     {
         if (!_sfxClips.TryGetValue(sfxName, out var clip))
         {
@@ -196,7 +196,7 @@ public class SoundManager : MonoBehaviour
         if (_sfxSourcePool != null)
         {
             // 2D
-            return _sfxSourcePool.PlayForSecondsAt(clip, Vector3.zero, seconds, finalVolume, finalPitch, 0f);
+            return _sfxSourcePool.PlayForSecondsAt(clip, Vector3.zero, seconds, isLoop, finalVolume, finalPitch, 0f);
         }
         else
         {
@@ -209,7 +209,7 @@ public class SoundManager : MonoBehaviour
     /// 위치 기반으로 seconds 만큼만 재생.
     /// 반환값: 풀 사용 시 제어 가능한 AudioSource 반환. 폴백 사용 시 null 반환.
     /// </summary>
-    public AudioSource PlaySfxForSecondsAt(string sfxName, Vector3 pos, float seconds, float volume = 1f, float pitch = 1f)
+    public AudioSource PlaySfxForSecondsAt(string sfxName, Vector3 pos, float seconds, bool isLoop = false, float volume = 1f, float pitch = 1f)
     {
         if (!_sfxClips.TryGetValue(sfxName, out var clip))
         {
@@ -222,7 +222,7 @@ public class SoundManager : MonoBehaviour
 
         if (_sfxSourcePool != null)
         {
-            return _sfxSourcePool.PlayForSecondsAt(clip, pos, seconds, finalVolume, finalPitch, 1f);
+            return _sfxSourcePool.PlayForSecondsAt(clip, pos, seconds, isLoop, finalVolume, finalPitch, 1f);
         }
         else
         {

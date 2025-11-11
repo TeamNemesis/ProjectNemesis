@@ -150,13 +150,15 @@ public class Skill_Collab : SkillBase
                 nearestMonster.TakeDamage(_tyrantDamage);
                 //Debug.Log("폭군 데미지 들어감");
 
+                Vector3 spawnPos = nearestMonster.transform.position + nearestMonster.transform.forward * 0.5f;
+
                 if (_tyrantEffectPrefab != null)
                 {
-                    Vector3 spawnPos = nearestMonster.transform.position + nearestMonster.transform.forward * 0.5f;
                     //Quaternion spawnRot = Quaternion.identity;
-
                     GameManager.Instance.PoolManager.GetFromPool(_tyrantEffectPrefab,spawnPos,_tyrantEffectPrefab.transform.rotation);
                 }
+                GameManager.Instance.SoundManager.PlaySfxAt("Tyrant", spawnPos);
+
             }
             else
             {
@@ -251,6 +253,7 @@ public class Skill_Collab : SkillBase
 
         _rocketData = new GravityFlareRocketData( _explosionData, _explosionPrefab);
         GameManager.Instance.PoolManager.GetFromPool(_rocketPrefab, playerPosition, Quaternion.LookRotation(direction), null, _rocketData);
+        
     }
     #endregion
 

@@ -103,6 +103,7 @@ public static class EventBus
     {
         _currentMonsterList.Clear();
     }
+
     public static Transform GetNearestMonsterFromMe(Transform player)
     {
         if (CurrentMonsterList == null || CurrentMonsterList.Count == 0)
