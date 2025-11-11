@@ -13,10 +13,10 @@ public class DebuffToSelf : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.T))
         {
-            DebuffHandler.DebuffData confuse = DebuffHandler.DebuffData.CreateConfusion();
-            if (confuse != null)
+            DebuffHandler.DebuffData stun = DebuffHandler.DebuffData.CreateBinding();
+            if (stun != null)
             {
-                handler.ApplyDebuff(confuse);
+                handler.ApplyDebuff(stun);
             }
         }
     }

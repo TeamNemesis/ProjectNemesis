@@ -188,13 +188,19 @@ MonoBehaviour:
   agent: {fileID: 0}
   _target: {fileID: 0}
   monsterAnimator: {fileID: 0}
+  originalSkinTransform: {x: 0, y: 0, z: 0}
   hasDieAnimation: 1
+  checkOnce: 0
   healthUI: {fileID: 0}
   healthUIPrefabPath: Prefabs/UI/MonsterHealthUI
+  damageTextPrefab: {fileID: 0}
+  EnglishName: Elite Type-II
+  KoreanName: "\uC5D8\uB9AC\uD2B8 2\uD615"
   laserAttackCount: 0
   _poisonFieldDuration: 999
-  _poisonFieldRadius: 6
+  _poisonFieldRadius: 12
   _poisonFieldDelay: 2
+  _poisonFieldPrefabs: []
   bulletLifeTime: 8
   maxBulletAttackCounter: 0
   squareDecalPrefab: {fileID: 7619084252263834349, guid: 5b43a6955e6566f4daab29cc6bdcd3d5, type: 3}

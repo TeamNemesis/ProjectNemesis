@@ -10,6 +10,7 @@ public class SceneLoadManager : MonoBehaviour
     public void LoadIntroScene()
     {
         SceneManager.LoadScene(Constants.SCENE_NAME_INTRO);
+        GameManager.Instance.PoolManager.ClearAllPools();
 
     }
 

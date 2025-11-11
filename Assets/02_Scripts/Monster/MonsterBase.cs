@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using TMPro;
+using UnityEditor.Build.Content;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -201,6 +202,12 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
 
         monsterCollider = GetComponentInChildren<Collider>();
 
+        // === 콜라이더 활성화 ===
+        if (monsterCollider != null)
+        {
+            monsterCollider.enabled = true;
+        }
+
         // === 코루틴 정리 ===
         if (_knockBackCoroutine != null)
         {
@@ -358,6 +365,11 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
         isDead = true;
         baseState = MonsterState.Die;
 
+        if (monsterCollider != null)
+        {
+            monsterCollider.enabled = false;
+        }
+
         if (monsterAnimator != null)
         {
             monsterAnimator.SetBool(IsMove_Hash, false);
@@ -449,8 +461,6 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
     /// <summary>
     /// 넉백 실행
     /// </summary>
-    /// <param name="pushDirection"></param>
-    /// <param name="damage"></param>
     public void KnockBackEnemy(Vector3 pushDirection, float damage, float knockBackDistance)
     {
         TakeDamage(damage, null);
