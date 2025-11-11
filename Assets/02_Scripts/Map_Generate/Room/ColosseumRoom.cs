@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
 public class ColosseumRoom : Room
@@ -169,19 +168,5 @@ public class ColosseumRoom : Room
     {
         UnsubscribeAllRewardables();
         EventBus.SetColosseumRoom(false);
-    }
-}
-
-[CustomEditor(typeof(ColosseumRoom))]
-public class ColosseumRoomDebugger : Editor
-{
-    public override void OnInspectorGUI()
-    {
-        DrawDefaultInspector();
-        ColosseumRoom colosseumRoom = (ColosseumRoom)target;
-        if (GUILayout.Button("Spawn Rewards"))
-        {
-            colosseumRoom.SpawnReward();
-        }
     }
 }

@@ -70,7 +70,7 @@ public class AudioSourcePool : MonoBehaviour
     /// <summary>
     /// 기본 단발 재생. 반환되는 AudioSource를 통해 나중에 중단하거나 시간 이동 가능.
     /// </summary>
-    public AudioSource PlayOneShotAt(AudioClip clip, Vector3 position, float volume = 1f, float pitch = 1f, float spatialBlend = 1f)
+    public AudioSource PlayOneShotAt(AudioClip clip, Vector3 position, bool isLoop = false, float volume = 1f, float pitch = 1f, float spatialBlend = 1f)
     {
         if (clip == null) return null;
         var src = Get();
@@ -79,7 +79,7 @@ public class AudioSourcePool : MonoBehaviour
         src.volume = Mathf.Clamp01(volume);
         src.pitch = Mathf.Clamp(pitch, -3f, 3f);
         src.clip = clip;
-        src.loop = false;
+        src.loop = isLoop;
         src.Play();
         StartCoroutine(ReturnWhenFinished(src, clip.length / Mathf.Abs(src.pitch)));
         return src;
@@ -89,7 +89,7 @@ public class AudioSourcePool : MonoBehaviour
     /// 클립을 재생하되 특정 시간(seconds) 후에 자동으로 중단하고 반환합니다.
     /// pitch에 관계없이 seconds로 제어됩니다.
     /// </summary>
-    public AudioSource PlayForSecondsAt(AudioClip clip, Vector3 position, float seconds, float volume = 1f, float pitch = 1f, float spatialBlend = 1f)
+    public AudioSource PlayForSecondsAt(AudioClip clip, Vector3 position, float seconds, bool isLoop = false, float volume = 1f, float pitch = 1f, float spatialBlend = 1f)
     {
         if (clip == null) return null;
         var src = Get();
@@ -98,7 +98,7 @@ public class AudioSourcePool : MonoBehaviour
         src.volume = Mathf.Clamp01(volume);
         src.pitch = Mathf.Clamp(pitch, -3f, 3f);
         src.clip = clip;
-        src.loop = false;
+        src.loop = isLoop;
         src.Play();
         StartCoroutine(StopAfterSeconds(src, seconds));
         return src;

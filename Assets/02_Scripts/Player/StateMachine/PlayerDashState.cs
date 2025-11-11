@@ -51,6 +51,7 @@ public class PlayerDashState : PlayerStateBase
         {
             // 런타임에서 클립 길이 읽기
             float clipLength = playerAnimator.GetClipLengthByName(DashClipName);
+            clipLength = clipLength * 0.8f; // 약간 조정 (필요시)
 
             if (clipLength > 0f)
             {
