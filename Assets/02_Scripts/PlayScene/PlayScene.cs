@@ -60,7 +60,7 @@ public class PlayScene : MonoBehaviour
 		}
 		private void Start()
 		{
-		 
+		 GameManager.Instance.PlayerStatManager.Initialize();
 
 				if (_player == null)
 				{
