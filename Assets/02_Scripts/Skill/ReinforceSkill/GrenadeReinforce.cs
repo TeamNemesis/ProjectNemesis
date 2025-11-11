@@ -44,7 +44,8 @@ public class Skill_One_Grenade : ActiveTech
     {
         position.y = 0;
         GameManager.Instance.PoolManager.GetFromPool(_grenadePoisonPrefab, position, Quaternion.identity, null, _grenadePoisonData).GetComponent<GrenadePoison>().Initialize();
-
+        //효과음
+        GameManager.Instance.SoundManager.PlaySfxAt("SporeBurst", position);
     }
 
 
@@ -132,10 +133,12 @@ public class Skill_Three_Grenade : ActiveTech
         position.y = 0;
         GameManager.Instance.PoolManager.GetFromPool(_grenadeVortexPrefab, position, Quaternion.identity, null, _grenadeVortexData).GetComponent<GrenadeVortex>().Initialize();
         //효과음
-        GameManager.Instance.SoundManager.PlaySfxAt("Vortex", position);
-        
-        
-        
+        //GameManager.Instance.SoundManager.PlaySfxAt("Vortex", position);
+        GameManager.Instance.SoundManager.PlaySfxForSecondsAt("Vortex", position, 1f);
+
+
+
+
     }
 
     public Skill_Three_Grenade(SkillData skillData) : base(skillData)
