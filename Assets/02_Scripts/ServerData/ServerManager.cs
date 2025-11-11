@@ -3,11 +3,9 @@ using Firebase.Auth;
 using Firebase.Database;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class ServerManager : MonoBehaviour
@@ -185,20 +183,7 @@ public class ServerManager : MonoBehaviour
                 return;
             }
 
-            // 로그인 상태 업데이트
-            await userRef.UpdateChildrenAsync(new Dictionary<string, object>
-        {
-            { "isLoggedIn", true },
-            { "lastLoginDeviceId", deviceId }
-        });
 
-            // 자동 로그아웃 감시 시작
-            StartLoginStatusListener(_currentUser.UserId, deviceId);
-
-            resendEmailBtn.gameObject.SetActive(false);
-
-            // 사용자 데이터 다운로드
-            await _downloadManager.DownloadJsonToLocal(fromGameBase: false);
 
             ShowPopup("로그인 성공", true);
         }
@@ -231,43 +216,6 @@ public class ServerManager : MonoBehaviour
 
         SetLoading(false);
     }
-
-
-
-
-    public async void DeleteAccount()
-    {
-        SetLoading(true);
-
-        if (currentUser == null)
-        {
-            ShowPopup("로그인된 사용자가 없어 계정을 삭제할 수 없습니다.");
-            SetLoading(false);
-            return;
-        }
-
-        await dbRef.Child("playerStats").Child(currentUser.UserId).RemoveValueAsync();
-
-        try
-        {
-            await currentUser.DeleteAsync();
-
-            if (File.Exists(Constants.FILE_PATH_PLAYERSTAT))
-            {
-                File.Delete(Constants.FILE_PATH_PLAYERSTAT);
-            }
-
-            ShowPopup("계정이 성공적으로 삭제되었습니다.");
-            SceneManager.LoadScene(0);
-        }
-        catch (System.Exception ex)
-        {
-            ShowError("계정 삭제 중 오류가 발생했습니다.", "계정 삭제 오류: " + ex.Message);
-        }
-
-        SetLoading(false);
-    }
-
 
     public async Task LinkEmailToGoogleAccount()
     {
@@ -411,14 +359,30 @@ public class ServerManager : MonoBehaviour
 
                     try
                     {
-                        // DownloadJsonToLocal(false) 호출 시, 사용자 데이터가 없으면 gameBaseJson을 시도합니다.
-                        // 이 호출이 완료될 때까지 기다립니다.
-                        await _downloadManager.DownloadJsonToLocal(fromGameBase: false);
+                        var userRef = dbRef.Child("users").Child(_currentUser.UserId);
+                        // 로그인 상태 업데이트
+                        await userRef.UpdateChildrenAsync(new Dictionary<string, object>
+        {
+            { "isLoggedIn", true },
+            { "lastLoginDeviceId", deviceId }
+        });
 
+                        // 자동 로그아웃 감시 시작
+                        StartLoginStatusListener(_currentUser.UserId, deviceId);
+
+                        resendEmailBtn.gameObject.SetActive(false);
+
+                        // 사용자 데이터 다운로드
+                        await _downloadManager.DownloadJsonToLocal(fromGameBase: false);
+                        GameManager.Instance.PlayerStatManager.Initialize();
+                        GameManager.Instance.PlayerStatManager.UploadToFirebase();
                         // 다운로드가 성공적으로 완료되면 씬 전환
-                        SceneManager.LoadScene(1);
+                        GameManager.Instance.SceneLoadManager.LoadIntroScene();
                         if (mainCanvas != null)
                             mainCanvas.SetActive(false);
+
+
+
                     }
                     catch (System.Exception ex)
                     {
@@ -478,7 +442,7 @@ public class ServerManager : MonoBehaviour
         }
     }
 
-  
+
 
     private void StopLoginStatusListener(string userId)
     {
@@ -538,6 +502,7 @@ public class ServerManager : MonoBehaviour
 
     public void OnClickSceneBtn()
     {
+
         GameManager.Instance.SceneLoadManager.LoadIntroScene();
         EventBus.SetCanGetInput(true);
     }
