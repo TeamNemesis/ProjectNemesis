@@ -10,7 +10,7 @@ public class RecordInteractor : InteractableObject
 
     public override event Action<IInteractable> OnInteracted;
 
-    public override void ReturnInteractionViewKey(out string title, out string description)
+    public override void TryGetInteracrtionKey(out string title, out string description)
     {
         title = "_recordTitle";
         description = "_recordDescription";

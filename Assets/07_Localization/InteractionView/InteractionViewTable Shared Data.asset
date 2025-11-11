@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
-  m_Name: InteractionView Shared Data
+  m_Name: InteractionViewTable Shared Data
   m_EditorClassIdentifier: 
-  m_TableCollectionName: InteractionView
+  m_TableCollectionName: InteractionViewTable
   m_TableCollectionNameGuidString: 02a7e78aa265c8140a0d0cc5b0c6f8a9
   m_Entries:
   - m_Id: 1
@@ -188,13 +188,11 @@ MonoBehaviour:
   - m_Id: 43
     m_Key: _reinforceDescription
     m_Metadata:
-      m_Items:
-      - rid: 5530781214052974766
+      m_Items: []
   - m_Id: 44
     m_Key: _recordDescription
     m_Metadata:
-      m_Items:
-      - rid: 5530781214052974767
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
@@ -375,14 +373,3 @@ MonoBehaviour:
       data:
         m_CommentText: Title for Record/Log/History screens (e.g., play record, achievements).
           Short label for UI. Keep concise (<=20 chars).
-    - rid: 5530781214052974766
-      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
-      data:
-        m_CommentText: Description for reinforce/upgrade UI or item. Explain what
-          reinforcing does and required resources (materials/credits). Keep concise
-          (~120 chars).
-    - rid: 5530781214052974767
-      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
-      data:
-        m_CommentText: Description for record/log/history screens. Explain what users
-          can view (play history, achievements, stats). Keep concise (~120 chars).

@@ -6,7 +6,7 @@ public class HealPackInteractor : RewardInteractableObject
 {
     public override event Action OnRewardGiven;
 
-    public override void ReturnInteractionViewKey(out string title, out string instruction)
+    public override void TryGetInteracrtionKey(out string title, out string instruction)
     {
         title = "_rewardTitle_HealPack";
         instruction = "_rewardDescription_HealPack";
