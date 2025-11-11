@@ -249,9 +249,9 @@ public class Skill_Four_Attack : ActiveTech
             if (!bIsEffect)
             {
                 _skillEffect = GameManager.Instance.PoolManager.GetFromPool(_skillEffectPrefab, player.transform.position, Quaternion.identity, player.transform);
-                //지속되는 효과음 필요
-                GameManager.Instance.SoundManager.PlaySfxAt("Zzap", player.transform.position);
-                
+                //지속되는 효과음(루프)
+                GameManager.Instance.SoundManager.PlaySfxAt("Zzap", player.transform.position, true);
+
                 bIsEffect = true;
 
             }
@@ -267,7 +267,7 @@ public class Skill_Four_Attack : ActiveTech
             transform.GetComponent<DebuffHandler>().ApplyDebuff(DebuffHandler.DebuffData.CreateStun(1f));
             GameManager.Instance.PoolManager.ReleaseToPool(_skillEffect.gameObject);
 
-            
+            //효과음 끄기
 
 
             _skillEffect = null;
@@ -284,7 +284,7 @@ public class Skill_Four_Attack : ActiveTech
         {
             GameManager.Instance.PoolManager.ReleaseToPool(_skillEffect.gameObject);
 
-            
+            //효과음 끄기
 
             _skillEffect = null;
         }
