@@ -14,6 +14,7 @@ public class SceneLoadManager : MonoBehaviour
         GameManager.Instance.skillManager.Reset();
         EventBus.ResetEvent();
         SceneManager.LoadScene(Constants.SCENE_NAME_INTRO);
+        GameManager.Instance.PoolManager.ClearAllPools();
 
     }
 
