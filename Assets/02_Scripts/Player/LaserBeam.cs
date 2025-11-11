@@ -101,6 +101,6 @@ public class LaserBeam : MonoBehaviour
     {
         yield return new WaitForSeconds(t);
         // 풀 사용 시에는 반환 로직으로 대체
-        Destroy(gameObject);
+        GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
     }
 }
