@@ -70,8 +70,11 @@ public class Skill_One_SPAttack : ActiveTech
         if (isHit) return;
 
         isHit = true;
+
+        Vector3 spawnPos = _player.transform.position+ Vector3.up * 1f;
+
         //이펙트
-        GameManager.Instance.PoolManager.GetFromPool(_skillEffectPrefab, _player.transform.position, Quaternion.identity);
+        GameManager.Instance.PoolManager.GetFromPool(_skillEffectPrefab, spawnPos, Quaternion.identity);
         //효과음 
         GameManager.Instance.SoundManager.PlaySfxAt("Bloodlust", _player.transform.position);
         _player.playerModel.Heal(Constants.SKILL_ONE_SPATTACKHEAL);
