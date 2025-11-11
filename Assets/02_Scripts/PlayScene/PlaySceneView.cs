@@ -357,6 +357,11 @@ public class PlaySceneView : MonoBehaviour
         }
     }
 
+    public void OnGoToMainClicked()
+    {
+        GameManager.Instance.SceneLoadManager.LoadIntroScene();
+    }
+
     private void OnDisable()
     {
         EventBus.OnBossDead -= ShowGameClearPanel;

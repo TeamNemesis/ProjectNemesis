@@ -50,6 +50,7 @@ public class Skill_One_Dash : ActiveTech
         position.y = 0;
 
         GameManager.Instance.PoolManager.GetFromPool(_poisonDashPrefab, position, _poisonDashPrefab.transform.rotation, null, _poisonDashData).GetComponent<PoisonDash>().Initialize();
+        GameManager.Instance.SoundManager.PlaySfxAt("MightMakesRight", position);
     }
 
 
@@ -108,6 +109,8 @@ public class Skill_Two_Dash : ActiveTech
         Vector3 position = player.transform.position;
         position.y = 0;
         GameManager.Instance.PoolManager.GetFromPool(_dashReinforcePrefab, position, _dashReinforcePrefab.transform.rotation, null, _dashReinforceData).GetComponent<DashReinforcePrefab>().Initialize();
+        //효과음
+        GameManager.Instance.SoundManager.PlaySfxAt("SurprisePresent", position);
     }
 
     public Skill_Two_Dash(SkillData skillData) : base(skillData)

@@ -119,6 +119,8 @@ public class Skill_Two : SkillBase
         Vector3 position = monsterTransform.position;
         position.y = 0;
         GameManager.Instance.PoolManager.GetFromPool(_explosionDeathPrefab, position, _explosionDeathPrefab.transform.rotation,null, _explosionDeathData).GetComponent<ExplosionDeath>().Initialize();
+        //효과음
+        GameManager.Instance.SoundManager.PlaySfxAt("ExplosiveDeath", position);
     }
     #endregion
 
