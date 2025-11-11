@@ -22,6 +22,8 @@ public class PlayerRifleSpecialAttacker : PlayerSpecialAttacker
     public float visualLifetime = 0.25f;
     [SerializeField] Transform _firePoint;
 
+    GameObject _chargeEffect;
+
     Coroutine _chargeRoutine;
     float _chargeTimer;
 
@@ -50,6 +52,7 @@ public class PlayerRifleSpecialAttacker : PlayerSpecialAttacker
 
         // owner에서 코루틴을 시작하여 차지 업데이트
         _chargeRoutine = _player.StartCoroutine(ChargeRoutine());
+        _chargeEffect = GameManager.Instance.PoolManager.GetFromPool("Effect/RifleChargeEffect", _firePoint.position, _firePoint.rotation,_firePoint);
     }
 
     public override void StopChargeAndFire()
@@ -73,6 +76,7 @@ public class PlayerRifleSpecialAttacker : PlayerSpecialAttacker
         FireWithCharge(ratio);
 
         base.StopChargeAndFire(); // triggers events & EndSpecial
+        GameManager.Instance.PoolManager.ReleaseToPool(_chargeEffect);
     }
 
     public override void CancelCharge()
@@ -86,6 +90,7 @@ public class PlayerRifleSpecialAttacker : PlayerSpecialAttacker
     IEnumerator ChargeRoutine()
     {
         _chargeTimer = 0f;
+        
         while (_chargeTimer < maxChargeTime)
         {
             _chargeTimer += Time.deltaTime;
@@ -145,7 +150,7 @@ public class PlayerRifleSpecialAttacker : PlayerSpecialAttacker
 
         if (laserPrefab != null)
         {
-            GameObject go = Instantiate(laserPrefab);
+            GameObject go = GameManager.Instance.PoolManager.GetFromPool("Prefabs/Bullet/LaserBeam", origin, Quaternion.identity);
             // 선택사항: 부모를 정리된 오브젝트로 붙여서 계층 관리
             go.transform.SetParent(_player.transform, true);
 
@@ -161,8 +166,6 @@ public class PlayerRifleSpecialAttacker : PlayerSpecialAttacker
             laser.lifeTime = visualLifetime;
             laser.Fire();
 
-            // 시각 오브젝트가 스스로 제거하지 않을 경우 안전하게 Destroy 예약
-            Destroy(go, visualLifetime + 0.1f);
         }
         else
         {
@@ -182,5 +185,6 @@ public class PlayerRifleSpecialAttacker : PlayerSpecialAttacker
                 }
             }
         }
+        GameManager.Instance.PoolManager.ReleaseToPool(_chargeEffect);
     }
 }
