@@ -249,7 +249,7 @@ public class Skill_Four_Attack : ActiveTech
             if (!bIsEffect)
             {
                 _skillEffect = GameManager.Instance.PoolManager.GetFromPool(_skillEffectPrefab, player.transform.position, Quaternion.identity, player.transform);
-                //효과음
+                //지속되는 효과음 필요
                 GameManager.Instance.SoundManager.PlaySfxAt("Zzap", player.transform.position);
                 
                 bIsEffect = true;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UIElements;
 using static UnityEditor.Experimental.GraphView.GraphView;
 
 /// <summary>
@@ -156,12 +157,9 @@ public class Skill_Five : SkillBase
             _ketamineDriftPrefab = Resources.Load<SkillEffect>("Prefabs/Effect/Skill/KetamineDrift");
         }
 
-        GameManager.Instance.PoolManager.GetFromPool(
-            _ketamineDriftPrefab,
-            _player.transform.position,
-            spawnRot,
-            _player.transform
-        );
+        GameManager.Instance.PoolManager.GetFromPool(_ketamineDriftPrefab, _player.transform.position, spawnRot, _player.transform);
+        //효과음
+        GameManager.Instance.SoundManager.PlaySfxAt("KetamineDrift", _player.transform.position);
     }
 
 

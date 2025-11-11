@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 /// <summary>
 /// GridForge 기술 목록
@@ -200,6 +201,8 @@ public class Skill_Four : SkillBase
         }
         //생성
         GameManager.Instance.PoolManager.GetFromPool(_enhancedBoostPrefab, _player.transform.position, spawnRot, _player.transform);
+        //효과음
+        GameManager.Instance.SoundManager.PlaySfxAt("Enhancedboost", _player.transform.position);
 
         StartCoroutine(MinusMoveSpeedAfterDash());
     }
