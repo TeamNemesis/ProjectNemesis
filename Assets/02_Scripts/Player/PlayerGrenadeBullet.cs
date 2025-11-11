@@ -110,6 +110,7 @@ public class PlayerGrenadeBullet : MonoBehaviour
         int hitCount = Physics.OverlapSphereNonAlloc(position, explosionRadius, hits, enemyLayer);
 
         GameManager.Instance.SoundManager.PlaySfxAt("GrenadeSFX", position);
+        GameManager.Instance.PoolManager.GetFromPool("Effect/GrenadeExplosionEffect", position, Quaternion.identity);
         EventBus.GrenadeBomb(position);
         if (hitCount <= 0)
         {
