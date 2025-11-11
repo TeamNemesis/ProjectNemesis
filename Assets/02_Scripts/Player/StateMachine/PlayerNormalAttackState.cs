@@ -50,6 +50,7 @@ public class PlayerNormalAttackState : PlayerStateBase
             _attacker.OnAttackEnded -= HandleAttackEnded;
             _attacker = null;
         }
+        _player.Animator.Animator.ResetTrigger("OnNormalAttack");
     }
 
     void HandleAttackEnded()
