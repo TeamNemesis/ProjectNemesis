@@ -81,8 +81,10 @@ public class Player : MonoBehaviour
 
     #region 이벤트
     public event Action OnNormalAttackStarted;
+    public event Action OnGrenadeAttackStarted;
     public event Action OnSpecialAttackStarted;
     public event Action OnDashStarted;
+    public event Action OnInteractionStarted;
     public event Action<IInteractable> OnInteractableDetected;
     public event Action OnInteractableMissed;
     public event Action<int, int> OnGrenadeCountChanged; // 현재 유탄 개수, 최대 유탄 개수
@@ -162,7 +164,7 @@ public class Player : MonoBehaviour
         _forwarder?.Initialize(this);
         _weaponController?.Initialize();
 
-
+        _interactableDetector.OnInteractionStarted += () => OnInteractionStarted?.Invoke();
         _interactionController?.Initialize();
         //_interactableGuideView.Initialize();
 
@@ -487,7 +489,11 @@ public class Player : MonoBehaviour
     public void GrenadeAttack(Vector3 mousePos)
     {
         _grenadeAttacker.SetMousePos(mousePos);
-        _grenadeAttacker.RequestAttack();
+        if (_grenadeAttacker.RequestAttack())
+        {
+            OnGrenadeAttackStarted?.Invoke();
+        }
+        
         _grenadeAttackPressed = false;
     }
 

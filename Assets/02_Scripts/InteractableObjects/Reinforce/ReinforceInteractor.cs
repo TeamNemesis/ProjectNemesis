@@ -10,7 +10,7 @@ public class ReinforceInteractor : InteractableObject
 
     public override event Action<IInteractable> OnInteracted;
     
-    public override void ReturnInteractionViewKey(out string title, out string description)
+    public override void TryGetInteracrtionKey(out string title, out string description)
     {
         title = "_reinforceTitle";
         description = "_reinforceDescription";

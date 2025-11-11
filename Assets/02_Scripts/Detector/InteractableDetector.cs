@@ -32,6 +32,8 @@ public class InteractableDetector : MonoBehaviour
     /// </summary>
     public event Action OnMissed;
 
+    public event Action OnInteractionStarted;
+
     private void FixedUpdate()
     {
         Detect();
@@ -92,6 +94,7 @@ public class InteractableDetector : MonoBehaviour
         if (_detectedInteractable == null) return;
 
         _detectedInteractable.TryInteract(transform);
+        OnInteractionStarted?.Invoke();
     }
 
     /// <summary>

@@ -5,6 +5,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Components;
+using UnityEngine.Localization.Settings;
+using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.UI;
 
 /// <summary>
@@ -29,6 +31,11 @@ public class PlaySceneView : MonoBehaviour
     [SerializeField] TextMeshProUGUI _interactionTitleText;
     [SerializeField] TextMeshProUGUI _interactionDescriptionText;
 
+    [Header("----- 튜토리얼 패널 -----")]
+    [SerializeField] GameObject _tutorialPanel;
+    [SerializeField] List<TextMeshProUGUI> _tutorialTexts = new();    // 튜토리얼 텍스트 리스트
+    [SerializeField] List<Image> _tutorialCompleteCheckImage = new();        // 튜토리얼 완료 체크 이미지 리스트
+
     [Header("----- 게임 승리 및 오버 패널 -----")]
     [SerializeField] GameObject _gameOverPanel;
     [SerializeField] GameObject _gameClearPanel;
@@ -37,25 +44,35 @@ public class PlaySceneView : MonoBehaviour
     [SerializeField] TextMeshProUGUI _gameTimerText;
 
     [Header("----- 로컬라이즈 컴포넌트 -----")]
-
     // 테이블 이름은 Localization Table에서 사용한 이름(또는 Collection 이름)
-    const string TABLE_COLLECTION_NAME_INTERACTIONVIEWTEXT = "InteractionViewText";
-    const string TABLE_COLLECTION_NAME_ROOMLOADINGTEXT = "RoomLoadingText";
-    const string TABLE_COLLECTION_NAME_TUTORIALTEXT = "TutorialText";
+    const string TABLE_COLLECTION_NAME_INTERACTIONVIEW = "InteractionViewTable";
+    const string TABLE_COLLECTION_NAME_ROOMLOADING = "RoomLoadingTable";
+    const string TABLE_COLLECTION_NAME_TUTORIAL = "TutorialTable";
 
     LocalizedString _localInteractionTitle;
     LocalizedString _localInteractionDescription;
-    LocalizedString _localRoomLoadingText;
-    LocalizedString _localTutorialText;
+    //LocalizedString _localRoomLoadingText;        // 비동기 로딩으로 변경
+    List<LocalizedString> _boundTutorialLocalized = new List<LocalizedString>();
+    List<LocalizedString.ChangeHandler> _tutorialChangedHandlers = new List<LocalizedString.ChangeHandler>();
 
-    Dictionary<int, string> _roomLoadingTextMap = new Dictionary<int, string>()
-{
-    { 0, "방의 종류에는 실험실, 일반 전투방, 암시장, 콜로세움, 보스 전투방이 있습니다." },
-    { 1, "돌연변이 정수는 네뷸라사의 비밀 기술로, 2차 기업전쟁을 일으키게 된 원인입니다." },
-    { 2, "기업은 5개가 존재하고, 기업마다 고유한 컨셉의 기술을 제공합니다." },
-    { 3, "기본공격, 대쉬, 특수공격, 유탄을 직접적으로 강화하는 기술은 다른 기술 습득시 대체됩니다." },
-    { 4, "주인공은 네뷸라사에 맹렬한 증오를 가지고 있습니다." }
-};
+    string[] _roomLoadingKeys = new string[]
+    {
+        "_loadingDescription_1",
+        "_loadingDescription_2",
+        "_loadingDescription_3",
+        "_loadingDescription_4",
+        "_loadingDescription_5"
+    };
+
+    List<string> _baseTutorialKeys = new List<string>()
+    {
+        "_tutorial_NormalAttack",
+        "_tutorial_GrenadeAttack",
+        "_tutorial_SpecialAttack",
+        "_tutorial_Dash",
+        "_tutorial_Interact"
+    };
+
     Coroutine _roomLoadingRoutine;
 
     public event Action<DoorInteractor> OnRoomLoadingComplete;
@@ -69,6 +86,9 @@ public class PlaySceneView : MonoBehaviour
 
         // 처음 시작하면 유탄 슬라이더를 꽉 채우기
         UpdateGrenadeCoolTime(1.0f, 1.0f);
+
+        // 튜토리얼 패널 띄우기
+        ShowTutorialPanel();
     }
 
     public void UpdateHPBar(int currentHp, int maxHp)
@@ -95,7 +115,7 @@ public class PlaySceneView : MonoBehaviour
         if (interactable == null) return;
 
         // 인터랙터로부터 로컬라이제이션 키를 받는다
-        interactable.ReturnInteractionViewKey(out string titleKey, out string instructionKey);
+        interactable.TryGetInteracrtionKey(out string titleKey, out string instructionKey);
 
         BindInteractionLocalizedStrings(titleKey, instructionKey);
         _interactionPanel?.SetActive(true);
@@ -114,14 +134,14 @@ public class PlaySceneView : MonoBehaviour
 
         if (!string.IsNullOrEmpty(titleKey))
         {
-            _localInteractionTitle = new LocalizedString { TableReference = TABLE_COLLECTION_NAME_INTERACTIONVIEWTEXT, TableEntryReference = titleKey };
+            _localInteractionTitle = new LocalizedString { TableReference = TABLE_COLLECTION_NAME_INTERACTIONVIEW, TableEntryReference = titleKey };
             _localInteractionTitle.StringChanged += OnTitleChanged;
             _localInteractionTitle.RefreshString();
         }
 
         if (!string.IsNullOrEmpty(descriptionKey))
         {
-            _localInteractionDescription = new LocalizedString { TableReference = TABLE_COLLECTION_NAME_INTERACTIONVIEWTEXT, TableEntryReference = descriptionKey };
+            _localInteractionDescription = new LocalizedString { TableReference = TABLE_COLLECTION_NAME_INTERACTIONVIEW, TableEntryReference = descriptionKey };
             _localInteractionDescription.StringChanged += OnDescChanged;
             _localInteractionDescription.RefreshString();
         }
@@ -157,7 +177,8 @@ public class PlaySceneView : MonoBehaviour
         _grenadeCountText.text = $"{currentCount} / {maxCount}";
     }
 
-    public void RoomLoading(DoorInteractor doorInteractor)
+    #region 룸 로딩 시 로딩 텍스트(LocalizedString) 바인딩
+    public void ShowRoomLoadingPanel(DoorInteractor doorInteractor)
     {
         _roomLoadingRoutine = StartCoroutine(RoomLoadingRoutine(doorInteractor));
     }
@@ -170,37 +191,118 @@ public class PlaySceneView : MonoBehaviour
     IEnumerator RoomLoadingRoutine(DoorInteractor doorInteractor)
     {
         EventBus.SetCanTimeRun(false);
-        int rand = UnityEngine.Random.Range(0, _roomLoadingTextMap.Count);
-        switch (rand)
+
+        int rand = UnityEngine.Random.Range(0, _roomLoadingKeys.Length);
+        string key = _roomLoadingKeys[rand];
+
+        var handle = LocalizationSettings.StringDatabase.GetLocalizedStringAsync(TABLE_COLLECTION_NAME_ROOMLOADING, key);
+        handle.Completed += (AsyncOperationHandle<string> op) =>
         {
-            case 0:
-                _roomLoadingText.text = _roomLoadingTextMap[0];
-                break;
-            case 1:
-                _roomLoadingText.text = _roomLoadingTextMap[1];
-                break;
-            case 2:
-                _roomLoadingText.text = _roomLoadingTextMap[2];
-                break;
-            case 3:
-                _roomLoadingText.text = _roomLoadingTextMap[3];
-                break;
-            case 4:
-                _roomLoadingText.text = _roomLoadingTextMap[4];
-                break;
-            default:
-                break;
-        }
+            _roomLoadingText.text = (op.Status == AsyncOperationStatus.Succeeded) ? op.Result : "Loading...";
+        };
+
         _roomLoadingPanel.SetActive(true);
         yield return new WaitForSeconds(2.0f);
-        OnRoomLoadingComplete?.Invoke(doorInteractor);
 
-        // 잠시 대기 후 패널 비활성화(플레이어 카메라 변화때문에)
+        OnRoomLoadingComplete?.Invoke(doorInteractor);
         yield return new WaitForSeconds(0.5f);
         _roomLoadingPanel.SetActive(false);
+
         EventBus.SetCanTimeRun(true);
         _roomLoadingRoutine = null;
     }
+    #endregion
+
+    #region 튜토리얼 패널 텍스트(LocalizedString) 바인딩
+    public void ShowTutorialPanel()
+    {
+        // 먼저 기존 바인딩 해제
+        UnbindAllTutorialBindings();
+
+        // 키 목록 구성 (플랫폼별)
+        List<string> tutorialKeys = new List<string>();
+        if (Application.isMobilePlatform)
+        {
+            foreach (var baseKey in _baseTutorialKeys) tutorialKeys.Add(baseKey + "_Mobile");
+        }
+        else
+        {
+            foreach (var baseKey in _baseTutorialKeys) tutorialKeys.Add(baseKey + "_PC");
+        }
+
+        // 필요한 크기로 리스트 초기화
+        int count = _tutorialTexts.Count;
+        _boundTutorialLocalized = new List<LocalizedString>(new LocalizedString[count]);
+
+        // 바인딩
+        for (int i = 0; i < count; i++)
+        {
+            string key = (i < tutorialKeys.Count) ? tutorialKeys[i] : null;
+            BindTutorialLocalizedString(i, key);
+        }
+
+        _tutorialPanel.SetActive(true);
+    }
+
+    void BindTutorialLocalizedString(int index, string tutorialKey)
+    {
+        if (index < 0 || index >= _tutorialTexts.Count) return;
+
+        // 이전 바인딩 있으면 해제
+        if (index < _boundTutorialLocalized.Count && _boundTutorialLocalized[index] != null)
+        {
+            var prev = _boundTutorialLocalized[index];
+            var prevHandler = _tutorialChangedHandlers[index];
+            if (prevHandler != null) prev.StringChanged -= prevHandler;
+            _boundTutorialLocalized[index] = null;
+            _tutorialChangedHandlers[index] = null;
+        }
+
+        if (string.IsNullOrEmpty(tutorialKey))
+        {
+            _tutorialTexts[index].text = "";
+            return;
+        }
+
+        var ls = new LocalizedString { TableReference = TABLE_COLLECTION_NAME_TUTORIAL, TableEntryReference = tutorialKey };
+
+        // LocalizedString.ChangeHandler 타입으로 생성 (Action<string>이 아님)
+        LocalizedString.ChangeHandler handler = (string localized) =>
+        {
+            if (_tutorialTexts != null && index >= 0 && index < _tutorialTexts.Count && _tutorialTexts[index] != null)
+                _tutorialTexts[index].text = localized;
+        };
+
+        ls.StringChanged += handler;
+        ls.RefreshString();
+
+        // 리스트에 보관 (인덱스가 부족하면 확장)
+        while (_boundTutorialLocalized.Count <= index) _boundTutorialLocalized.Add(null);
+        while (_tutorialChangedHandlers.Count <= index) _tutorialChangedHandlers.Add(null);
+
+        _boundTutorialLocalized[index] = ls;
+        _tutorialChangedHandlers[index] = handler;
+    }
+
+    void UnbindAllTutorialBindings()
+    {
+        for (int i = 0; i < _boundTutorialLocalized.Count; i++)
+        {
+            var ls = _boundTutorialLocalized[i];
+            var handler = (i < _tutorialChangedHandlers.Count) ? _tutorialChangedHandlers[i] : null;
+            if (ls != null && handler != null)
+                ls.StringChanged -= handler;
+        }
+        _boundTutorialLocalized.Clear();
+        _tutorialChangedHandlers.Clear();
+    }
+
+    public void HideTutorialPanel()
+    {
+        _tutorialPanel.SetActive(false);
+        UnbindAllTutorialBindings();
+    }
+    #endregion
 
     public void ShowGameOverPanel()
     {
@@ -218,9 +320,46 @@ public class PlaySceneView : MonoBehaviour
         _gameTimerText.text = string.Format("{0:D2}:{1:D2}", timeSpan.Minutes, timeSpan.Seconds);
     }
 
+    public void CheckNormalAttackTutorialComplete()
+    {
+        if (_tutorialCompleteCheckImage.Count > 0)
+        {
+            _tutorialCompleteCheckImage[0].gameObject.SetActive(true);
+        }
+    }
+    public void CheckGrenadeAttackTutorialComplete()
+    {
+        if (_tutorialCompleteCheckImage.Count > 1)
+        {
+            _tutorialCompleteCheckImage[1].gameObject.SetActive(true);
+        }
+    }
+    public void CheckSpecialAttackTutorialComplete()
+    {
+        if (_tutorialCompleteCheckImage.Count > 2)
+        {
+            _tutorialCompleteCheckImage[2].gameObject.SetActive(true);
+        }
+    }
+    public void CheckDashTutorialComplete()
+    {
+        if (_tutorialCompleteCheckImage.Count > 3)
+        {
+            _tutorialCompleteCheckImage[3].gameObject.SetActive(true);
+        }
+    }
+    public void CheckInteractTutorialComplete()
+    {
+        if (_tutorialCompleteCheckImage.Count > 4)
+        {
+            _tutorialCompleteCheckImage[4].gameObject.SetActive(true);
+        }
+    }
+
     private void OnDisable()
     {
         EventBus.OnBossDead -= ShowGameClearPanel;
         UnbindInteractionLocalizedStrings();
+        UnbindAllTutorialBindings(); // 튜토리얼 바인딩도 안전하게 해제
     }
 }

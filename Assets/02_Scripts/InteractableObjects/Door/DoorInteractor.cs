@@ -97,7 +97,7 @@ public class DoorInteractor : InteractableObject
         _interactionCollider = null;
     }
 
-    public override void ReturnInteractionViewKey(out string title, out string description)
+    public override void TryGetInteracrtionKey(out string title, out string description)
     {
         title = _roomInfo != null ? _roomInfo.GetTitleKey() : "알 수 없는 방";
         description = _roomInfo != null ? _roomInfo.GetDescriptionKey() : "설정되지 않은 방입니다.";
