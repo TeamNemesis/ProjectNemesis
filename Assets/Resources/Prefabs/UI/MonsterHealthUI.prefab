@@ -106,6 +106,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6979432817346268254}
+  - {fileID: 4831901756065882954}
   m_Father: {fileID: 425883794974235296}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
@@ -280,10 +281,12 @@ MonoBehaviour:
   monsterTransform: {fileID: 0}
   normalHealthUI: {fileID: 7877162728275658516}
   normalHealthSlider: {fileID: 1402548689622648327}
+  normalDebuffIconUI: {fileID: 8086572503745311246}
   bossHealthUI: {fileID: 414554691229978992}
   bossHealthSlider: {fileID: 6444756953550385671}
   bossNameText: {fileID: 582281958588836237}
   bossHealthText: {fileID: 6193966285253217427}
+  bossDebuffIconUI: {fileID: 6542823067271876618}
   offset: {x: 0, y: 2, z: 0}
   hideWhenFull: 0
   hideWhenDead: 1
@@ -292,6 +295,93 @@ MonoBehaviour:
   highHealthColor: {r: 0, g: 1, b: 0, a: 1}
   midHealthColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   lowHealthColor: {r: 1, g: 0.6777429, b: 0, a: 1}
+--- !u!1 &1780993066428739361
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4831901756065882954}
+  - component: {fileID: 5561809358923970695}
+  - component: {fileID: 6542823067271876618}
+  m_Layer: 0
+  m_Name: DebuffIconContainer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &4831901756065882954
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1780993066428739361}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3957868261301319985}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -250, y: -44}
+  m_SizeDelta: {x: 500, y: 50}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &5561809358923970695
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1780993066428739361}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30649d3a9faa99c48a7b1166b86bf2a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 3
+  m_Spacing: 8
+  m_ChildForceExpandWidth: 0
+  m_ChildForceExpandHeight: 0
+  m_ChildControlWidth: 0
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
+--- !u!114 &6542823067271876618
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1780993066428739361}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14d9e10378c7f20448b5900e00485994, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  debuffIconPrefab: {fileID: 7961544363875440737, guid: 976d7358880d99641aba0993e0b0e735, type: 3}
+  iconContainer: {fileID: 4831901756065882954}
+  iconSize: 50
+  iconSpacing: 5
+  maxVisibleIcons: 7
+  slowIcon: {fileID: 21300000, guid: bd4eda64e93c1d845ab30831e02b1e33, type: 3}
+  poisonIcon: {fileID: 21300000, guid: ad82ae7cfa5fb4249a9d83e4f446fc74, type: 3}
+  overloadIcon: {fileID: 21300000, guid: 741b6bc20524d2d4491e0f7755357563, type: 3}
+  stunIcon: {fileID: 21300000, guid: c88a4e0206dda674fbb5b74ed499b571, type: 3}
+  confusionIcon: {fileID: 21300000, guid: 9c1d113eb43c0894eab3183f0bfa9629, type: 3}
+  bindingIcon: {fileID: 21300000, guid: 340b33c29110358479a65ede732fd35c, type: 3}
+  weakenIcon: {fileID: 21300000, guid: 09a8b6de5d4d28940811628aad1bc8cf, type: 3}
 --- !u!1 &2571506686405224914
 GameObject:
   m_ObjectHideFlags: 0
@@ -873,6 +963,93 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
   m_EffectDistance: {x: 1, y: -1}
   m_UseGraphicAlpha: 1
+--- !u!1 &6651899439432213490
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5771447476811379674}
+  - component: {fileID: 965376348848796747}
+  - component: {fileID: 8086572503745311246}
+  m_Layer: 0
+  m_Name: DebuffIconContainer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &5771447476811379674
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6651899439432213490}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4094355057803167398}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 50, y: 28}
+  m_SizeDelta: {x: 200, y: 40}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &965376348848796747
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6651899439432213490}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30649d3a9faa99c48a7b1166b86bf2a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 3
+  m_Spacing: 5
+  m_ChildForceExpandWidth: 0
+  m_ChildForceExpandHeight: 0
+  m_ChildControlWidth: 0
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
+--- !u!114 &8086572503745311246
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6651899439432213490}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14d9e10378c7f20448b5900e00485994, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  debuffIconPrefab: {fileID: 7961544363875440737, guid: 976d7358880d99641aba0993e0b0e735, type: 3}
+  iconContainer: {fileID: 5771447476811379674}
+  iconSize: 40
+  iconSpacing: 5
+  maxVisibleIcons: 5
+  slowIcon: {fileID: 21300000, guid: bd4eda64e93c1d845ab30831e02b1e33, type: 3}
+  poisonIcon: {fileID: 21300000, guid: ad82ae7cfa5fb4249a9d83e4f446fc74, type: 3}
+  overloadIcon: {fileID: 21300000, guid: 741b6bc20524d2d4491e0f7755357563, type: 3}
+  stunIcon: {fileID: 21300000, guid: c88a4e0206dda674fbb5b74ed499b571, type: 3}
+  confusionIcon: {fileID: 21300000, guid: 9c1d113eb43c0894eab3183f0bfa9629, type: 3}
+  bindingIcon: {fileID: 21300000, guid: 340b33c29110358479a65ede732fd35c, type: 3}
+  weakenIcon: {fileID: 21300000, guid: 09a8b6de5d4d28940811628aad1bc8cf, type: 3}
 --- !u!1 &7315063653336668592
 GameObject:
   m_ObjectHideFlags: 0
@@ -940,6 +1117,7 @@ RectTransform:
   m_Children:
   - {fileID: 2617382212126908466}
   - {fileID: 71481046135897851}
+  - {fileID: 5771447476811379674}
   m_Father: {fileID: 425883794974235296}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}

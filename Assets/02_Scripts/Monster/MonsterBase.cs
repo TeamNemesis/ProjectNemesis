@@ -201,6 +201,12 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
 
         monsterCollider = GetComponentInChildren<Collider>();
 
+        // === 콜라이더 활성화 ===
+        if (monsterCollider != null)
+        {
+            monsterCollider.enabled = true;
+        }
+
         // === 코루틴 정리 ===
         if (_knockBackCoroutine != null)
         {
@@ -357,6 +363,11 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
         if (isDead) return;
         isDead = true;
         baseState = MonsterState.Die;
+
+        if (monsterCollider != null)
+        {
+            monsterCollider.enabled = false;
+        }
 
         if (monsterAnimator != null)
         {

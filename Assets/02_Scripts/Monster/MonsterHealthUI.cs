@@ -12,12 +12,14 @@ public class MonsterHealthUI : PoolableObject, IInitializePoolable, IReleasePool
     [Header("Normal UI Components")]
     [SerializeField] private GameObject normalHealthUI;
     [SerializeField] private Slider normalHealthSlider;
+    [SerializeField] private DebuffIconUI normalDebuffIconUI;
 
     [Header("Boss UI Components")]
     [SerializeField] private GameObject bossHealthUI;
     [SerializeField] private Slider bossHealthSlider;
     [SerializeField] private TextMeshProUGUI bossNameText;
     [SerializeField] private TextMeshProUGUI bossHealthText;
+    [SerializeField] private DebuffIconUI bossDebuffIconUI;
 
     [Header("Settings")]
     [SerializeField] private Vector3 offset = new Vector3(0, 2f, 0);
@@ -76,6 +78,20 @@ public class MonsterHealthUI : PoolableObject, IInitializePoolable, IReleasePool
                 normalHealthUI.SetActive(true);
 
             rectTransform.position = screenPosition;
+        }
+
+        DebuffHandler debuffHandler = monsterBase.GetComponent<DebuffHandler>();
+
+        if (debuffHandler != null)
+        {
+            if (isBoss && bossDebuffIconUI != null)
+            {
+                bossDebuffIconUI.SetDebuffHandler(debuffHandler);
+            }
+            else if (!isBoss && normalDebuffIconUI != null)
+            {
+                normalDebuffIconUI.SetDebuffHandler(debuffHandler);
+            }
         }
 
         UpdateHealthBar();
@@ -296,6 +312,12 @@ public class MonsterHealthUI : PoolableObject, IInitializePoolable, IReleasePool
             normalFillImage.color = highHealthColor;
         if (bossFillImage != null)
             bossFillImage.color = highHealthColor;
+
+        // 디버프 초기화
+        if (normalDebuffIconUI != null)
+            normalDebuffIconUI.Cleanup();
+        if (bossDebuffIconUI != null)
+            bossDebuffIconUI.Cleanup();
 
         currentSlider = null;
         currentFillImage = null;
