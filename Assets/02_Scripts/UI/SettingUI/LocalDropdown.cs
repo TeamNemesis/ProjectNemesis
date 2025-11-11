@@ -9,9 +9,9 @@ public class LocalDropdown : MonoBehaviour
 {
 		[SerializeField] private TMP_Dropdown languageDropdown;
 		[SerializeField] private string[] stringKeys;
+		[SerializeField] private Sprite[] optionSprites;
 
 		private LanguageManager languageManager;
-
 		private void OnEnable()
 		{
 				if (GameManager.Instance == null || GameManager.Instance.languageManager == null)
@@ -50,11 +50,15 @@ public class LocalDropdown : MonoBehaviour
 						var table = handle.Result;
 						languageDropdown.options.Clear();
 
-						foreach (var key in stringKeys)
+						for (int i = 0; i < stringKeys.Length; i++)
 						{
+								var key = stringKeys[i];
 								var entry = table.GetEntry(key);
-								string localizedText = entry?.GetLocalizedString() ?? $"⚠️ {key}";
-								languageDropdown.options.Add(new TMP_Dropdown.OptionData(localizedText));
+								string localizedText = entry?.GetLocalizedString() ?? key;
+
+								Sprite icon = (optionSprites != null && i < optionSprites.Length) ? optionSprites[i] : null;
+
+								languageDropdown.options.Add(new TMP_Dropdown.OptionData(localizedText, icon, Color.white));
 						}
 
 						languageDropdown.RefreshShownValue();

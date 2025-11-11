@@ -9,9 +9,10 @@ public class ResolutionDropdown : MonoBehaviour
     [SerializeField] private TMP_Dropdown resolutionDropdown;
     [SerializeField] private string tableName;
     [SerializeField] private string[] stringKeys;
+		[SerializeField] private Sprite[] optionSprites;
 
 
-    private void OnEnable()
+		private void OnEnable()
     {
         resolutionDropdown.onValueChanged.AddListener(ChangeResolution);
         LocalizationSettings.SelectedLocaleChanged += UpdateDropdown;
@@ -50,14 +51,18 @@ public class ResolutionDropdown : MonoBehaviour
             var table = handle.Result;
             resolutionDropdown.options.Clear();
 
-            foreach (var key in stringKeys)
-            {
-                var entry = table.GetEntry(key);
-                string localizedText = entry?.GetLocalizedString() ?? key;
-                resolutionDropdown.options.Add(new TMP_Dropdown.OptionData(localizedText));
-            }
+						for (int i = 0; i < stringKeys.Length; i++)
+						{
+								var key = stringKeys[i];
+								var entry = table.GetEntry(key);
+								string localizedText = entry?.GetLocalizedString() ?? key;
 
-            resolutionDropdown.RefreshShownValue();
+								Sprite icon = (optionSprites != null && i < optionSprites.Length) ? optionSprites[i] : null;
+
+								resolutionDropdown.options.Add(new TMP_Dropdown.OptionData(localizedText, icon,Color.white));
+						}
+
+						resolutionDropdown.RefreshShownValue();
         };
     }
 
