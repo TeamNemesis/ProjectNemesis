@@ -2,6 +2,7 @@
 using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UIElements;
 using static UnityEditor.Experimental.GraphView.GraphView;
 
 
@@ -70,7 +71,10 @@ public class Skill_One_SPAttack : ActiveTech
         if (isHit) return;
 
         isHit = true;
-        GameManager.Instance.PoolManager.GetFromPool(_skillEffectPrefab, _player.transform.position, Quaternion.identity);  //생성
+        //이펙트
+        GameManager.Instance.PoolManager.GetFromPool(_skillEffectPrefab, _player.transform.position, Quaternion.identity);
+        //효과음 
+        GameManager.Instance.SoundManager.PlaySfxAt("sfx_aura", _player.transform.position);
         _player.playerModel.Heal(Constants.SKILL_ONE_SPATTACKHEAL);
     }
 
