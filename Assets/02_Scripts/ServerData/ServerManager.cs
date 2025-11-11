@@ -492,12 +492,7 @@ public class ServerManager : MonoBehaviour
             loadingPanel.SetActive(isActive);
     }
 
-    public void OnClickSceneBtn()
-    {
-
-        GameManager.Instance.SceneLoadManager.LoadIntroScene();
-        EventBus.SetCanGetInput(true);
-    }
+   
 
     public void ServerStart()
     {
