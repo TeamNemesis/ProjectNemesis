@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
-  m_Name: InteractionView_en
+  m_Name: InteractionViewTable_en
   m_EditorClassIdentifier: 
   m_LocaleId:
     m_Code: en
@@ -19,33 +19,32 @@ MonoBehaviour:
     m_Items: []
   m_TableData:
   - m_Id: 1
-    m_Localized: Start Room
+    m_Localized: Start Run.
     m_Metadata:
       m_Items:
       - rid: 5530781212759556123
   - m_Id: 11
-    m_Localized: Prepare adequately for battle!
+    m_Localized: Ready to begin combat?
     m_Metadata:
       m_Items:
       - rid: 5530781212759556124
   - m_Id: 2
-    m_Localized: Normal Room
+    m_Localized: Normal Battle Room
     m_Metadata:
       m_Items:
       - rid: 5530781212759556125
   - m_Id: 12
-    m_Localized: Defeat the enemies and claim your reward!
+    m_Localized: Fight battles and earn common rewards.
     m_Metadata:
       m_Items:
       - rid: 5530781212759556126
   - m_Id: 3
-    m_Localized: Lab
+    m_Localized: Laboratory
     m_Metadata:
       m_Items:
       - rid: 5530781212759556127
   - m_Id: 13
-    m_Localized: 'Lab: contains experimental equipment and hazards. Proceed with
-      caution!'
+    m_Localized: Mysterious techniques await you.
     m_Metadata:
       m_Items:
       - rid: 5530781212759556128
@@ -55,7 +54,7 @@ MonoBehaviour:
       m_Items:
       - rid: 5530781212759556129
   - m_Id: 14
-    m_Localized: 'Colosseum: challenge consecutive fights to earn greater rewards!'
+    m_Localized: Fight strong enemies to earn greater rewards.
     m_Metadata:
       m_Items:
       - rid: 5530781212759556130
@@ -65,7 +64,7 @@ MonoBehaviour:
       m_Items:
       - rid: 5530781212759556131
   - m_Id: 15
-    m_Localized: Use credits to purchase rewards!
+    m_Localized: Spend credits to purchase gear!
     m_Metadata:
       m_Items:
       - rid: 5530781212759556132
@@ -75,7 +74,7 @@ MonoBehaviour:
       m_Items:
       - rid: 5530781212759556133
   - m_Id: 16
-    m_Localized: 'Boss Room: a powerful enemy awaits. Plan your strategy before engaging!'
+    m_Localized: "You encounter the floor boss\u2026"
     m_Metadata:
       m_Items:
       - rid: 5530781212759556134
@@ -85,7 +84,7 @@ MonoBehaviour:
       m_Items:
       - rid: 5530781212759556355
   - m_Id: 22
-    m_Localized: In-game currency used to purchase items and rewards in shops.
+    m_Localized: Can be exchanged for items at the shop.
     m_Metadata:
       m_Items:
       - rid: 5530781212759556356
@@ -95,89 +94,87 @@ MonoBehaviour:
       m_Items:
       - rid: 5530781212759556357
   - m_Id: 24
-    m_Localized: 'Chrome: a rare resource used for equipment upgrades and crafting.'
+    m_Localized: Metal shards for permanently enhancing gear.
     m_Metadata:
       m_Items:
       - rid: 5530781212759556358
   - m_Id: 25
-    m_Localized: Heal Pack
+    m_Localized: First Aid Kit
     m_Metadata:
       m_Items:
       - rid: 5530781212759556359
   - m_Id: 26
-    m_Localized: Restores a portion of health instantly when used. Exact amount may
-      vary.
+    m_Localized: Restores 50 HP when picked up.
     m_Metadata:
       m_Items:
       - rid: 5530781212759556360
   - m_Id: 27
-    m_Localized: Tech Select Pack - Company1
+    m_Localized: Vivremotion Tech Pack
     m_Metadata:
       m_Items:
       - rid: 5530781212759556361
   - m_Id: 28
-    m_Localized: Open this pack to choose one tech from Company1's selection.
+    m_Localized: Gain one Vivremotion's ability.
     m_Metadata:
       m_Items:
       - rid: 5530781212759556362
   - m_Id: 29
-    m_Localized: Tech Select Pack - Company2
+    m_Localized: Pyroheart Tech Pack
     m_Metadata:
       m_Items:
       - rid: 5530781212759556363
   - m_Id: 30
-    m_Localized: Open this pack to choose one tech from Company2's selection.
+    m_Localized: Gain one PyroHeart's ability.
     m_Metadata:
       m_Items:
       - rid: 5530781212759556364
   - m_Id: 31
-    m_Localized: Tech Select Pack - Company3
+    m_Localized: G.E.A.R. Technology Pack
     m_Metadata:
       m_Items:
       - rid: 5530781212759556365
   - m_Id: 32
-    m_Localized: Open this pack to choose one tech from Company3's selection.
+    m_Localized: Gain one G.E.A.R.'s ability.
     m_Metadata:
       m_Items:
       - rid: 5530781212759556366
   - m_Id: 33
-    m_Localized: Tech Select Pack - Company4
+    m_Localized: GridForge Tech Pack
     m_Metadata:
       m_Items:
       - rid: 5530781212759556367
   - m_Id: 34
-    m_Localized: Open this pack to choose one tech from Company4's selection.
+    m_Localized: Gain one GridForge's ability.
     m_Metadata:
       m_Items:
       - rid: 5530781212759556368
   - m_Id: 35
-    m_Localized: Tech Select Pack - Company5
+    m_Localized: LUXPharma Tech Pack
     m_Metadata:
       m_Items:
       - rid: 5530781212759556369
   - m_Id: 36
-    m_Localized: Open this pack to choose one tech from Company5's selection.
+    m_Localized: "Gain one LUXPharma\u2019s ability."
     m_Metadata:
       m_Items:
       - rid: 5530781212759556370
   - m_Id: 37
-    m_Localized: Tech Upgrade Pack
+    m_Localized: Upgrade Pack
     m_Metadata:
       m_Items:
       - rid: 5530781212759556371
   - m_Id: 38
-    m_Localized: Use this pack to upgrade a tech or unlock enhancement options.
+    m_Localized: Use to enhance the power of obtained techniques.
     m_Metadata:
       m_Items:
       - rid: 5530781212759556372
   - m_Id: 39
-    m_Localized: Mutant Pack
+    m_Localized: Mutant Essence Orb
     m_Metadata:
       m_Items:
       - rid: 5530781212759556373
   - m_Id: 40
-    m_Localized: Contains mutant-related rewards such as random abilities or mutation
-      materials.
+    m_Localized: "Take in something that will corrupt you\u2026"
     m_Metadata:
       m_Items:
       - rid: 5530781212759556374
@@ -192,16 +189,13 @@ MonoBehaviour:
       m_Items:
       - rid: 5530781212759556394
   - m_Id: 43
-    m_Localized: 'Reinforce: improves equipment or tech performance using materials
-      and credits.'
+    m_Localized: Applies reinforcement to your combat equipment.
     m_Metadata:
-      m_Items:
-      - rid: 5530781214052974768
+      m_Items: []
   - m_Id: 44
-    m_Localized: 'Record: view play history, achievements earned, and key statistics.'
+    m_Localized: Records your honor.
     m_Metadata:
-      m_Items:
-      - rid: 5530781214052974769
+      m_Items: []
   references:
     version: 2
     RefIds:
@@ -351,13 +345,3 @@ MonoBehaviour:
       data:
         m_CommentText: Short label for record/log screens (play history, achievements).
           Keep under ~20 chars.
-    - rid: 5530781214052974768
-      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
-      data:
-        m_CommentText: Briefly explain effect and required resources; avoid embedding
-          exact numbers. Keep within ~120 chars.
-    - rid: 5530781214052974769
-      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
-      data:
-        m_CommentText: Describe what users can see in the record screen; keep concise
-          and within ~120 chars.

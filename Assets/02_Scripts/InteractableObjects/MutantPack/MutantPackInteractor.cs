@@ -39,7 +39,7 @@ public class MutantPackInteractor : RewardInteractableObject
         GameManager.Instance.UIManager.onRewardSelect -= RaiseRewardGivenEvent;
     }
 
-    public override void ReturnInteractionViewKey(out string title, out string instruction)
+    public override void TryGetInteracrtionKey(out string title, out string instruction)
     {
         title = "_rewardTitle_MutantPack";
         instruction = "_rewardDescription_MutantPack";
