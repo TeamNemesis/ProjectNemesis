@@ -11,20 +11,24 @@ using UnityEngine;
 public class SoundManager : MonoBehaviour
 {
     [Header("BGM")]
-    [SerializeField] private AudioSource _bgmSource;      // BGM 전용 AudioSource
+    [SerializeField] AudioSource _bgmSource;      // BGM 전용 AudioSource
 
     [Header("SFX")]
-    [SerializeField] private AudioSourcePool _sfxSourcePool; // SFX 재생용 AudioSource 풀
-    [SerializeField] private AudioSource _fallbackSfxSource; // 풀 없을 때 사용할 폴백 AudioSource (공유)
+    [SerializeField] AudioSourcePool _sfxSourcePool; // SFX 재생용 AudioSource 풀
+    [SerializeField] AudioSource _fallbackSfxSource; // 풀 없을 때 사용할 폴백 AudioSource (공유)
 
     [Header("Volume Settings")]
-    [Range(0f, 1f)][SerializeField] private float _masterVolume = 1f;
-    [Range(0f, 1f)][SerializeField] private float _bgmVolume = 1f;
-    [Range(0f, 1f)][SerializeField] private float _sfxVolume = 1f;
+    [Range(0f, 1f)][SerializeField] float _masterVolume = 1f;
+    [Range(0f, 1f)][SerializeField] float _bgmVolume = 1f;
+    [Range(0f, 1f)][SerializeField] float _sfxVolume = 1f;
 
     [Header("Audio Clips")]
-    private Dictionary<string, AudioClip> _bgmClips = new Dictionary<string, AudioClip>();
-    private Dictionary<string, AudioClip> _sfxClips = new Dictionary<string, AudioClip>();
+    Dictionary<string, AudioClip> _bgmClips = new Dictionary<string, AudioClip>();
+    Dictionary<string, AudioClip> _sfxClips = new Dictionary<string, AudioClip>();
+
+    public float MasterVolume => _masterVolume;
+    public float BGMVolume => _bgmVolume;
+    public float SFXVolume => _sfxVolume;
 
     public void Initialize(ResourceManager resourceManager)
     {
@@ -77,6 +81,14 @@ public class SoundManager : MonoBehaviour
                 _sfxClips[clip.name] = clip;
             }
         }
+
+        // 초기 소리 크기 적용
+        _masterVolume = 1f;
+        _bgmVolume = 0.1f;
+        _sfxVolume = 1f;
+        SetMasterVolume(_masterVolume);
+        SetBGMVolume(_bgmVolume);
+        SetSFXVolume(_sfxVolume);
 
         ApplyBgmVolume();
         ApplySfxVolume();
