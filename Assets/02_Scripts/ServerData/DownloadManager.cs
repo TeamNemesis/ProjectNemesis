@@ -73,7 +73,7 @@ public class DownloadManager : MonoBehaviour
 
                 if (success)
                 {
-                    TryDeleteFile(Constants.FILE_PATH_PLAYERSTAT);
+                    //TryDeleteFile(Constants.FILE_PATH_PLAYERSTAT);
                 }
 
                 return;
@@ -83,7 +83,7 @@ public class DownloadManager : MonoBehaviour
 
             if (result)
             {
-                TryDeleteFile(Constants.FILE_PATH_PLAYERSTAT);
+                //TryDeleteFile(Constants.FILE_PATH_PLAYERSTAT);
             }
         }
         catch (Exception ex)
