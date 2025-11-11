@@ -52,6 +52,9 @@ public class GravityFlareRocket : PoolableObject,IInitializePoolable
         GameManager.Instance.PoolManager.GetFromPool(
             _explosionPrefab, position, Quaternion.identity, null, explosionData).GetComponent<GravityFlareRocketExplosion>().Initialize();
         GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
+
+        //효과음
+        GameManager.Instance.SoundManager.PlaySfxAt("GravityFlare", position);
     }
 
 }

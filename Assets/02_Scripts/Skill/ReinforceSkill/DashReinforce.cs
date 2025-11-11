@@ -1,6 +1,5 @@
 ﻿using System;
 using UnityEngine;
-using static UnityEditor.Experimental.GraphView.GraphView;
 
 /// <summary>
 /// 비브르 강화 대쉬 강화 (약육강식)
@@ -50,6 +49,7 @@ public class Skill_One_Dash : ActiveTech
         position.y = 0;
 
         GameManager.Instance.PoolManager.GetFromPool(_poisonDashPrefab, position, _poisonDashPrefab.transform.rotation, null, _poisonDashData).GetComponent<PoisonDash>().Initialize();
+        GameManager.Instance.SoundManager.PlaySfxAt("MightMakesRight", position);
     }
 
 
@@ -108,6 +108,8 @@ public class Skill_Two_Dash : ActiveTech
         Vector3 position = player.transform.position;
         position.y = 0;
         GameManager.Instance.PoolManager.GetFromPool(_dashReinforcePrefab, position, _dashReinforcePrefab.transform.rotation, null, _dashReinforceData).GetComponent<DashReinforcePrefab>().Initialize();
+        //효과음
+        GameManager.Instance.SoundManager.PlaySfxAt("SurprisePresent", position);
     }
 
     public Skill_Two_Dash(SkillData skillData) : base(skillData)
@@ -212,7 +214,7 @@ public class Skill_Four_Dash : ActiveTech
     }
     public override void ActiveTry(Player player)
     {
-        Vector3 spawnPos = _player.transform.position + _player.transform.forward * 1f+Vector3.up * 1f;
+        Vector3 spawnPos = _player.transform.position + _player.transform.forward * 1f+Vector3.up * 1.5f;
         player.playerModel.PlayerFrontInvincibility(_frontTime);
 
         //로드
@@ -223,6 +225,8 @@ public class Skill_Four_Dash : ActiveTech
 
         //생성
         GameManager.Instance.PoolManager.GetFromPool(_plasmaShieldPrefab, spawnPos, _player.transform.rotation, _player.transform);   //위치수정
+        //효과음
+        GameManager.Instance.SoundManager.PlaySfxAt("PlasmaShield", spawnPos);
     }
 
     public Skill_Four_Dash(SkillData skillData) : base(skillData)
@@ -289,6 +293,8 @@ public class Skill_Five_Dash : ActiveTech
 
                 bIsEffect = true;
             }
+            //효과음
+            GameManager.Instance.SoundManager.PlaySfxAt("AdrenalineRace", spawnPos);
 
             Debug.LogError("공격력 증가");
             GameManager.Instance.PlayerStatManager.AddPlayerAttackDamage(_attackReinForce);

@@ -12,12 +12,9 @@ public class VolumeChanger : MonoBehaviour
 
     private void Start()
     {
-        if (_masterVolumeScrollbar != null)
-        {
-            OnMasterVolumeChanged();
-            OnBGMVolumeChanged();
-            OnSFXVolumeChanged();
-        }
+        _masterVolumeScrollbar.value = GameManager.Instance.SoundManager.MasterVolume;
+        _bgmVolumeScrollbar.value = GameManager.Instance.SoundManager.BGMVolume;
+        _sfxVolumeScrollbar.value = GameManager.Instance.SoundManager.SFXVolume;
     }
 
     public void OnMasterVolumeChanged()

@@ -4,13 +4,9 @@ using UnityEngine;
 
 /// <summary>
 /// 게임의 모든 사운드를 관리하는 매니저
-/// BGM과 효과음(SFX)을 재생, 정지, 볼륨 조절 등을 담당
-/// 추가된 기능:
-/// - SFX 재생 시 AudioSource 핸들 반환(풀 사용 시) — 중간 정지, 시간 제한 재생, 페이드아웃 가능
-/// - PlayForSeconds (지정 시간만 재생)
-/// - StopSfx / FadeOutSfx 유틸 제공
-/// 주의:
-/// - AudioSourcePool이 없으면 폴백(_fallbackSfxSource)으로 PlayOneShot만 가능. 이 경우 개별 제어(시간 제한/페이드/정지)는 권장되지 않음.
+/// - AudioSourcePool의 변경된 시그니처에 맞춰 업데이트됨.
+/// - 각 Play 메서드는 풀을 사용하면 재생에 사용된 AudioSource를 반환합니다.
+///   루프 재생 시에는 반환된 AudioSource를 보관해 두었다가 StopSfx / FadeOutSfx로 정지하세요.
 /// </summary>
 public class SoundManager : MonoBehaviour
 {
@@ -19,21 +15,21 @@ public class SoundManager : MonoBehaviour
 
     [Header("SFX")]
     [SerializeField] AudioSourcePool _sfxSourcePool; // SFX 재생용 AudioSource 풀
-    [SerializeField] AudioSource _fallbackSfxSource; // 풀 없을 때 사용할 폴백 AudioSource (PlayOneShot 용)
+    [SerializeField] AudioSource _fallbackSfxSource; // 풀 없을 때 사용할 폴백 AudioSource (공유)
 
     [Header("Volume Settings")]
-    [Range(0f, 1f)][SerializeField] float _masterVolume = 1f; // 마스터 볼륨 (0.0 ~ 1.0)    
-    [Range(0f, 1f)][SerializeField] float _bgmVolume = 1f;   // BGM 볼륨 (0.0 ~ 1.0)
-    [Range(0f, 1f)][SerializeField] float _sfxVolume = 1f;   // 효과음 볼륨 (0.0 ~ 1.0)
+    [Range(0f, 1f)][SerializeField] float _masterVolume = 1f;
+    [Range(0f, 1f)][SerializeField] float _bgmVolume = 1f;
+    [Range(0f, 1f)][SerializeField] float _sfxVolume = 1f;
 
     [Header("Audio Clips")]
-    Dictionary<string, AudioClip> _bgmClips = new Dictionary<string, AudioClip>();  // BGM 클립 딕셔너리
-    Dictionary<string, AudioClip> _sfxClips = new Dictionary<string, AudioClip>();  // 효과음 클립 딕셔너리
+    Dictionary<string, AudioClip> _bgmClips = new Dictionary<string, AudioClip>();
+    Dictionary<string, AudioClip> _sfxClips = new Dictionary<string, AudioClip>();
 
-    /// <summary>
-    /// 리소스 매니저로부터 클립을 받아 초기화합니다.
-    /// 호출 전에 ResourceManager가 준비되어 있어야 합니다.
-    /// </summary>
+    public float MasterVolume => _masterVolume;
+    public float BGMVolume => _bgmVolume;
+    public float SFXVolume => _sfxVolume;
+
     public void Initialize(ResourceManager resourceManager)
     {
         if (resourceManager == null)
@@ -42,7 +38,6 @@ public class SoundManager : MonoBehaviour
             return;
         }
 
-        // BGM AudioSource가 없으면 자동 생성
         if (_bgmSource == null)
         {
             _bgmSource = gameObject.AddComponent<AudioSource>();
@@ -50,7 +45,6 @@ public class SoundManager : MonoBehaviour
             _bgmSource.playOnAwake = false;
         }
 
-        // 폴백 SFX AudioSource가 없으면 생성
         if (_fallbackSfxSource == null)
         {
             var go = new GameObject("FallbackSfxSource");
@@ -60,7 +54,6 @@ public class SoundManager : MonoBehaviour
             _fallbackSfxSource.spatialBlend = 0f; // 2D
         }
 
-        // SFX 풀이 없으면 생성
         if (_sfxSourcePool == null)
         {
             var go = new GameObject("SfxSourcePool");
@@ -68,7 +61,6 @@ public class SoundManager : MonoBehaviour
             _sfxSourcePool = go.AddComponent<AudioSourcePool>();
         }
 
-        // 딕셔너리 초기화
         _bgmClips.Clear();
         _sfxClips.Clear();
 
@@ -90,7 +82,14 @@ public class SoundManager : MonoBehaviour
             }
         }
 
-        // 볼륨 적용
+        // 초기 소리 크기 적용
+        _masterVolume = 1f;
+        _bgmVolume = 0.1f;
+        _sfxVolume = 1f;
+        SetMasterVolume(_masterVolume);
+        SetBGMVolume(_bgmVolume);
+        SetSFXVolume(_sfxVolume);
+
         ApplyBgmVolume();
         ApplySfxVolume();
     }
@@ -118,9 +117,9 @@ public class SoundManager : MonoBehaviour
 
     /// <summary>
     /// UI용 2D SFX 재생 (위치 없음)
-    /// 반환값: 풀을 사용하면 재생에 사용된 AudioSource(제어 가능)를 반환합니다. 폴백 사용 시 null 반환(개별 제어 불가 또는 공유).
+    /// 반환: 풀을 사용하면 사용된 AudioSource(제어 가능)를 반환합니다.
     /// </summary>
-    public AudioSource PlaySfx(string sfxName, float volume = 1f, float pitch = 1f)
+    public AudioSource PlaySfx(string sfxName, bool isLoop = false, float volume = 1f, float pitch = 1f)
     {
         if (!_sfxClips.TryGetValue(sfxName, out var clip))
         {
@@ -133,26 +132,38 @@ public class SoundManager : MonoBehaviour
 
         if (_sfxSourcePool != null)
         {
-            // spatialBlend 0 -> 2D
-            return _sfxSourcePool.PlayOneShotAt(clip, Vector3.zero, finalVolume, finalPitch, 0f);
+            // spatialBlend 0 => 2D
+            return _sfxSourcePool.PlayOneShotAt(clip, Vector3.zero, isLoop, finalVolume, finalPitch, 0f);
         }
-        else if (_fallbackSfxSource != null)
+
+        // 폴백: 공유 소스이므로 루프 재생은 다른 소리에 영향을 줄 수 있음
+        if (_fallbackSfxSource != null)
         {
-            // 폴백은 PlayOneShot로 재생 — 공유 오디오소스이므로 개별 제어가 어렵습니다.
+            _fallbackSfxSource.loop = isLoop;
             _fallbackSfxSource.pitch = finalPitch;
-            _fallbackSfxSource.PlayOneShot(clip, finalVolume);
-            Debug.LogWarning("PlaySfx: using fallback source. Returned AudioSource is not controllable per-instance.");
-            return null;
+            _fallbackSfxSource.volume = finalVolume;
+            if (isLoop)
+            {
+                _fallbackSfxSource.clip = clip;
+                _fallbackSfxSource.Play();
+                return _fallbackSfxSource;
+            }
+            else
+            {
+                _fallbackSfxSource.PlayOneShot(clip, finalVolume);
+                Debug.LogWarning("PlaySfx: using fallback source for non-loop playback; returned AudioSource is not per-instance controllable.");
+                return null;
+            }
         }
 
         return null;
     }
 
     /// <summary>
-    /// 월드 위치 기반 SFX 재생
-    /// 반환값: 풀을 사용하면 재생에 사용된 AudioSource(제어 가능)를 반환합니다. 폴백 사용 시 null 반환.
+    /// 위치 기반 SFX 재생
+    /// 반환: 풀을 사용하면 사용된 AudioSource(제어 가능)를 반환합니다.
     /// </summary>
-    public AudioSource PlaySfxAt(string sfxName, Vector3 pos, float volume = 1f, float pitch = 1f)
+    public AudioSource PlaySfxAt(string sfxName, Vector3 pos, bool isLoop = false, float volume = 1f, float pitch = 1f)
     {
         if (!_sfxClips.TryGetValue(sfxName, out var clip))
         {
@@ -165,9 +176,11 @@ public class SoundManager : MonoBehaviour
 
         if (_sfxSourcePool != null)
         {
-            return _sfxSourcePool.PlayOneShotAt(clip, pos, finalVolume, finalPitch, 1f);
+            var src = _sfxSourcePool.PlayOneShotAt(clip, pos, isLoop, finalVolume, finalPitch, 1f);
+            return src;
         }
-        else if (_fallbackSfxSource != null)
+
+        if (_fallbackSfxSource != null)
         {
             Debug.LogWarning("PlaySfxAt: _sfxSourcePool is null, playing fallback 2D sound.");
             _fallbackSfxSource.pitch = finalPitch;
@@ -179,10 +192,9 @@ public class SoundManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 클립을 재생하되 지정한 seconds 만큼만 재생하고 자동으로 정지/반환합니다.
-    /// 반환값: 풀 사용 시 제어 가능한 AudioSource 반환. 폴백 사용 시 null 반환.
+    /// 지정 시간(seconds)만 재생
     /// </summary>
-    public AudioSource PlaySfxForSeconds(string sfxName, float seconds, float volume = 1f, float pitch = 1f)
+    public AudioSource PlaySfxForSeconds(string sfxName, float seconds, bool isLoop = false, float volume = 1f, float pitch = 1f)
     {
         if (!_sfxClips.TryGetValue(sfxName, out var clip))
         {
@@ -195,21 +207,14 @@ public class SoundManager : MonoBehaviour
 
         if (_sfxSourcePool != null)
         {
-            // 2D
-            return _sfxSourcePool.PlayForSecondsAt(clip, Vector3.zero, seconds, finalVolume, finalPitch, 0f);
+            return _sfxSourcePool.PlayForSecondsAt(clip, Vector3.zero, seconds, isLoop, finalVolume, finalPitch, 0f);
         }
-        else
-        {
-            Debug.LogWarning("PlaySfxForSeconds: no AudioSourcePool available — cannot safely play-for-seconds with fallback.");
-            return null;
-        }
+
+        Debug.LogWarning("PlaySfxForSeconds: no AudioSourcePool available — cannot safely play-for-seconds with fallback.");
+        return null;
     }
 
-    /// <summary>
-    /// 위치 기반으로 seconds 만큼만 재생.
-    /// 반환값: 풀 사용 시 제어 가능한 AudioSource 반환. 폴백 사용 시 null 반환.
-    /// </summary>
-    public AudioSource PlaySfxForSecondsAt(string sfxName, Vector3 pos, float seconds, float volume = 1f, float pitch = 1f)
+    public AudioSource PlaySfxForSecondsAt(string sfxName, Vector3 pos, float seconds, bool isLoop = false, float volume = 1f, float pitch = 1f)
     {
         if (!_sfxClips.TryGetValue(sfxName, out var clip))
         {
@@ -222,18 +227,16 @@ public class SoundManager : MonoBehaviour
 
         if (_sfxSourcePool != null)
         {
-            return _sfxSourcePool.PlayForSecondsAt(clip, pos, seconds, finalVolume, finalPitch, 1f);
+            return _sfxSourcePool.PlayForSecondsAt(clip, pos, seconds, isLoop, finalVolume, finalPitch, 1f);
         }
-        else
-        {
-            Debug.LogWarning("PlaySfxForSecondsAt: no AudioSourcePool available — cannot safely play-for-seconds with fallback.");
-            return null;
-        }
+
+        Debug.LogWarning("PlaySfxForSecondsAt: no AudioSourcePool available — cannot safely play-for-seconds with fallback.");
+        return null;
     }
 
     /// <summary>
-    /// 특정 AudioSource(핸들)를 즉시 정지하고 반환합니다.
-    /// AudioSource가 null이거나 폴백으로 재생된 경우에는 적절히 처리합니다.
+    /// 특정 AudioSource(핸들)를 즉시 정지하고 풀로 반환합니다.
+    /// 반환된 AudioSource를 보관하고 있다가 호출하세요.
     /// </summary>
     public void StopSfx(AudioSource src)
     {
@@ -249,18 +252,19 @@ public class SoundManager : MonoBehaviour
             return;
         }
 
-        // 풀 자체가 없고 src가 폴백 소스라면 정지 가능하지만, 폴백은 공유이므로 다른 사운드도 중단될 수 있음
+        // 폴백일 경우 주의: 공유 소스이므로 다른 소리도 중단될 수 있음
         if (src == _fallbackSfxSource)
         {
             src.Stop();
+            src.loop = false;
             return;
         }
 
-        Debug.LogWarning("StopSfx: AudioSourcePool is null and the provided AudioSource is not the fallback source. Cannot safely stop.");
+        Debug.LogWarning("StopSfx: AudioSourcePool is null and provided AudioSource is not the fallback source. Cannot safely stop.");
     }
 
     /// <summary>
-    /// 지정한 AudioSource를 fade out 한 뒤 반환합니다.
+    /// 지정한 AudioSource를 페이드아웃 한 뒤 반환합니다.
     /// </summary>
     public void FadeOutSfx(AudioSource src, float fadeDuration)
     {
@@ -276,7 +280,6 @@ public class SoundManager : MonoBehaviour
             return;
         }
 
-        // fallback 소스에 대해서는 매니저가 직접 페이드 수행 (주의: 공유 소스)
         if (src == _fallbackSfxSource)
         {
             StartCoroutine(FadeOutFallback(src, fadeDuration));
@@ -286,7 +289,7 @@ public class SoundManager : MonoBehaviour
         Debug.LogWarning("FadeOutSfx: AudioSourcePool is null and the provided AudioSource is not the fallback source. Cannot safely fade.");
     }
 
-    IEnumerator FadeOutFallback(AudioSource src, float duration)
+    private IEnumerator FadeOutFallback(AudioSource src, float duration)
     {
         if (src == null) yield break;
         float startVolume = src.volume;
@@ -298,7 +301,8 @@ public class SoundManager : MonoBehaviour
             yield return null;
         }
         src.Stop();
-        src.volume = startVolume; // 복구 (다음 재생 시 정상 볼륨 적용)
+        src.loop = false;
+        src.volume = startVolume;
     }
 
     public void SetMasterVolume(float volume)
@@ -320,16 +324,16 @@ public class SoundManager : MonoBehaviour
         ApplySfxVolume();
     }
 
-    // 내부용: 실제 AudioSource에 적용
-    void ApplyBgmVolume()
+    private void ApplyBgmVolume()
     {
         if (_bgmSource != null)
             _bgmSource.volume = _masterVolume * _bgmVolume;
     }
 
-    void ApplySfxVolume()
+    private void ApplySfxVolume()
     {
-        // 풀로 재생할 때는 Play 호출 시 최종 볼륨을 전달하므로 여기선 폴백의 기본 볼륨만 설정
+        // 풀을 통해 재생되는 소리는 Play 호출 시 전달된 최종 볼륨을 따르므로
+        // 여기서는 폴백 소스의 기본 볼륨만 설정.
         if (_fallbackSfxSource != null)
             _fallbackSfxSource.volume = _masterVolume * _sfxVolume;
     }

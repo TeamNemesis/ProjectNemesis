@@ -109,7 +109,9 @@ public class PlayerGrenadeBullet : MonoBehaviour
         Collider[] hits = new Collider[10];
         int hitCount = Physics.OverlapSphereNonAlloc(position, explosionRadius, hits, enemyLayer);
 
-        GameManager.Instance.SoundManager.PlaySfxAt("Grenade", position);
+        //GameManager.Instance.SoundManager.PlaySfxAt("GrenadeSFX", position);
+        GameManager.Instance.SoundManager.PlaySfx("GrenadeSFX");
+        GameManager.Instance.PoolManager.GetFromPool("Effect/GrenadeExplosionEffect", position, Quaternion.identity);
         EventBus.GrenadeBomb(position);
         if (hitCount <= 0)
         {
@@ -131,7 +133,7 @@ public class PlayerGrenadeBullet : MonoBehaviour
         }
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
         StopAllCoroutines();
     }

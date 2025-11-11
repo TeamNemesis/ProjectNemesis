@@ -61,7 +61,11 @@ public class PlayerRifleNormalAttacker : PlayerNormalAttacker
             Debug.LogWarning("PlayerRifleNormalAttacker.FireNow: firePoint or bulletPrefab is null.");
         }
 
-        GameObject obj = GameManager.Instance.PoolManager.GetFromPool(_bulletPrefab, _firePoint.position, _firePoint.rotation);
+        GameObject obj = GameManager.Instance.PoolManager.GetFromPool("Prefabs/Bullet/Bullet", _firePoint.position, _firePoint.rotation);
+        // 총구 이펙트
+        GameObject bulletEffect = GameManager.Instance.PoolManager.GetFromPool("Effect/BulletEffect", _firePoint.position, _firePoint.rotation);
+        GameManager.Instance.SoundManager.PlaySfxAt("RifleShootSFX", _firePoint.position, false, 1, 1);
+
         var bullet = obj.GetComponent<Bullet>();
         if (bullet != null)
         {

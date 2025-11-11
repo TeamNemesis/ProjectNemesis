@@ -2,7 +2,7 @@
 using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
-using static UnityEditor.Experimental.GraphView.GraphView;
+
 
 
 /// <summary>
@@ -70,7 +70,10 @@ public class Skill_One_SPAttack : ActiveTech
         if (isHit) return;
 
         isHit = true;
-        GameManager.Instance.PoolManager.GetFromPool(_skillEffectPrefab, _player.transform.position, Quaternion.identity);  //생성
+        //이펙트
+        GameManager.Instance.PoolManager.GetFromPool(_skillEffectPrefab, _player.transform.position, Quaternion.identity);
+        //효과음 
+        GameManager.Instance.SoundManager.PlaySfxAt("Bloodlust", _player.transform.position);
         _player.playerModel.Heal(Constants.SKILL_ONE_SPATTACKHEAL);
     }
 
@@ -168,6 +171,8 @@ public class Skill_Three_SPAttack: ActiveTech
         }
         //생성
         GameManager.Instance.PoolManager.GetFromPool(_backlashPrefab, _player.transform.position, Quaternion.identity);
+        //효과음
+        GameManager.Instance.SoundManager.PlaySfxAt("Backlash", _player.transform.position);
 
         _playerReflect.StartReflectCoroutine(_reflectionTime);
 

@@ -39,7 +39,7 @@ public class Bullet : PoolableObject
     public void Initialize()
     {
         // 여기서 데이터 초기화 작업 수행 가능
-        _lifeTimer = GameManager.Instance.PlayerStatManager.playerBulletMoveSpeed;
+        _moveSpeed = GameManager.Instance.PlayerStatManager.playerBulletMoveSpeed;
         _lifeTime = GameManager.Instance.PlayerStatManager.playerBulletLifeTime;
     }
 

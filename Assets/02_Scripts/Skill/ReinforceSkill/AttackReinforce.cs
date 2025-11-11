@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 /// <summary>
 /// 비브르 모션 일반공격 강화
@@ -175,6 +177,9 @@ public class Skill_Four_Attack : ActiveTech
     private PoolableObject _skillEffectPrefab;
     private GameObject _skillEffect;
 
+    private Player _player;
+    private Coroutine _loopRoutine;
+
     /// <summary>
     /// 공격 시도시 실행할 액션
     /// </summary>
@@ -186,6 +191,9 @@ public class Skill_Four_Attack : ActiveTech
 
         // 공격 시도 시 이벤트에 추가
         base.Activate(skillManager, player);
+
+        _player = player;
+
         if (_skillEffectPrefab == null)
         {
             _skillEffectPrefab = Resources.Load<PoolableObject>("Prefabs/Effect/Skill/Zzap_Player");
@@ -241,8 +249,11 @@ public class Skill_Four_Attack : ActiveTech
             if (!bIsEffect)
             {
                 _skillEffect = GameManager.Instance.PoolManager.GetFromPool(_skillEffectPrefab, player.transform.position, Quaternion.identity, player.transform);
+                //지속되는 효과음(루프)
+                GameManager.Instance.SoundManager.PlaySfxAt("Zzap", player.transform.position, true);
 
                 bIsEffect = true;
+
             }
             stack = 10;
         }
@@ -255,6 +266,10 @@ public class Skill_Four_Attack : ActiveTech
             // 스턴 적용
             transform.GetComponent<DebuffHandler>().ApplyDebuff(DebuffHandler.DebuffData.CreateStun(1f));
             GameManager.Instance.PoolManager.ReleaseToPool(_skillEffect.gameObject);
+
+            //효과음 끄기
+
+
             _skillEffect = null;
             stack = 0;
             bIsEffect = false;
@@ -268,9 +283,20 @@ public class Skill_Four_Attack : ActiveTech
         if(_skillEffect!=null)
         {
             GameManager.Instance.PoolManager.ReleaseToPool(_skillEffect.gameObject);
+
+            //효과음 끄기
+
             _skillEffect = null;
         }
         bIsEffect = false;
+    }
+    IEnumerator LoopSoundCoroutine()
+    {
+        while (bIsEffect)
+        {
+            GameManager.Instance.SoundManager.PlaySfxAt("Zzap", _player.transform.position);
+            yield return new WaitForSeconds(0.3f);
+        }
     }
 }
 
