@@ -180,6 +180,8 @@ public class Skill_Four_Attack : ActiveTech
     private Player _player;
     private Coroutine _loopRoutine;
 
+    private AudioSource skillSFX;
+
     /// <summary>
     /// 공격 시도시 실행할 액션
     /// </summary>
@@ -250,7 +252,8 @@ public class Skill_Four_Attack : ActiveTech
             {
                 _skillEffect = GameManager.Instance.PoolManager.GetFromPool(_skillEffectPrefab, player.transform.position, Quaternion.identity, player.transform);
                 //지속되는 효과음(루프)
-                GameManager.Instance.SoundManager.PlaySfxAt("Zzap", player.transform.position, true);
+                skillSFX = GameManager.Instance.SoundManager.PlaySfxAt("Zzap", player.transform.position, true);
+                
 
                 bIsEffect = true;
 
@@ -268,7 +271,7 @@ public class Skill_Four_Attack : ActiveTech
             GameManager.Instance.PoolManager.ReleaseToPool(_skillEffect.gameObject);
 
             //효과음 끄기
-
+            GameManager.Instance.SoundManager.StopSfx(skillSFX);
 
             _skillEffect = null;
             stack = 0;
@@ -285,6 +288,7 @@ public class Skill_Four_Attack : ActiveTech
             GameManager.Instance.PoolManager.ReleaseToPool(_skillEffect.gameObject);
 
             //효과음 끄기
+            GameManager.Instance.SoundManager.StopSfx(skillSFX);
 
             _skillEffect = null;
         }

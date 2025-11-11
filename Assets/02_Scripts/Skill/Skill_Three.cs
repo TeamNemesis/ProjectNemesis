@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UIElements;
 
 /// <summary>
 /// 추후 GEAR 기술 목록
@@ -153,6 +154,7 @@ public class Skill_Three : SkillBase
         playerPosition.y = 0;
         Quaternion rotation = Quaternion.LookRotation(direction);
         GameManager.Instance.PoolManager.GetFromPool(_redshiftPrefab, playerPosition, rotation, null, redShiftData);
+        GameManager.Instance.SoundManager.PlaySfxAt("RedShift", playerPosition);
     }
     #endregion
     #region 중력 증폭
