@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 468a46d0ae32c3544b7d98094e6448a9, type: 3}
   m_Name: AddressableAssetSettings
   m_EditorClassIdentifier: 
-  m_DefaultGroup: 249e0fd31f67fa7498e7426413b679ed
+  m_DefaultGroup: 2a7f20fc8aa4ad24fb125b783a5c455e
   m_currentHash:
     serializedVersion: 2
-    Hash: b3b77c0eb15e3359dadab81f1e133542
+    Hash: 998cec7bc2e0f58221cfa6d2c89fb08d
   m_OptimizeCatalogSize: 0
   m_BuildRemoteCatalog: 0
   m_CatalogRequestsTimeout: 0
@@ -49,6 +49,7 @@ MonoBehaviour:
   mBuiltInBundleCustomNaming: 
   m_MonoScriptBundleNaming: 0
   m_CheckForContentUpdateRestrictionsOption: 0
+  m_BuildAndReleaseBinFileOption: 0
   m_MonoScriptBundleCustomNaming: 
   m_RemoteCatalogBuildPath:
     m_Id: 
@@ -60,12 +61,20 @@ MonoBehaviour:
   m_BuildAddressablesWithPlayerBuild: 0
   m_overridePlayerVersion: '[UnityEditor.PlayerSettings.bundleVersion]'
   m_GroupAssets:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 11400000, guid: 2f061cd6d52372c4e825b6903aaf7836, type: 2}
   - {fileID: 11400000, guid: 3daff5aaf7aa73241b4f9c9a06a7e632, type: 2}
-  - {fileID: 11400000, guid: d74bcd14d79173141b1c7bc175614e18, type: 2}
   - {fileID: 11400000, guid: 5a33fa3f06b1f4a43b5d804dd357d80a, type: 2}
+  - {fileID: 11400000, guid: 7e7b306a1e52b6242b3883c5a0bebf6f, type: 2}
+  - {fileID: 11400000, guid: 613b4b7d630865c48882111e391c197b, type: 2}
+  - {fileID: 11400000, guid: b3c524b714e5e204c8214e392334da21, type: 2}
   - {fileID: 11400000, guid: f172f60afa8447f449a693989659fbb2, type: 2}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 11400000, guid: 43e3cb1cd82eaa448b4c8cd593a2cfdf, type: 2}
+  - {fileID: 11400000, guid: d74bcd14d79173141b1c7bc175614e18, type: 2}
+  - {fileID: 11400000, guid: 59e2c558fad0ad742a76958ed21f8306, type: 2}
+  - {fileID: 11400000, guid: 2531c5ab9c3d9fe45bb7e1f0408ef58f, type: 2}
+  - {fileID: 11400000, guid: 046e409c81e4c174da1cd8c0aef99d19, type: 2}
   - {fileID: 11400000, guid: fc6716dba50b81d4ca5ebe3962bfedb3, type: 2}
   m_BuildSettings:
     m_LogResourceManagerExceptions: 1
@@ -119,7 +128,13 @@ MonoBehaviour:
     m_ClassName: 
   m_ActivePlayerDataBuilderIndex: 2
   m_DataBuilders:
-  - {fileID: 11400000, guid: 0c8670e8002d7854c96f043ec37d254e, type: 2}
-  - {fileID: 11400000, guid: f0fda90e353c7a540a9bd92e2f3f4192, type: 2}
-  - {fileID: 11400000, guid: 87baf329807ce99458a19c6ee726c6aa, type: 2}
+  - {fileID: 11400000, guid: 7add29c206701dc4785c50826c6ddf03, type: 2}
+  - {fileID: 11400000, guid: 353718a46494efa41befe8be4e31714a, type: 2}
+  - {fileID: 11400000, guid: 77cc12b181ae5fa49800a29b61bd4a7c, type: 2}
   m_ActiveProfileId: 5eb07cc49b9816743973011c8be6b4a4
+  m_CcdManagedData:
+    EnvironmentId: 
+    EnvironmentName: 
+    BucketId: 
+    Badge: 
+    State: 0

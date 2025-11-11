@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
 public class ColosseumRoom : Room
@@ -171,4 +170,3 @@ public class ColosseumRoom : Room
         EventBus.SetColosseumRoom(false);
     }
 }
-
