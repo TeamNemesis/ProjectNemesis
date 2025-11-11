@@ -126,7 +126,7 @@ public class Skill_Three_Grenade : ActiveTech
         position.y = 0;
         GameManager.Instance.PoolManager.GetFromPool(_grenadeVortexPrefab, position, Quaternion.identity, null, _grenadeVortexData).GetComponent<GrenadeVortex>().Initialize();
         //효과음
-        GameManager.Instance.SoundManager.PlaySfxAt("sfx_aura", position);
+        GameManager.Instance.SoundManager.PlaySfxAt("Vortex", position);
         
         
         

@@ -44,8 +44,10 @@ public class PlaySceneView : MonoBehaviour
     const string TABLE_COLLECTION_NAME_ROOMLOADINGTEXT = "RoomLoadingText";
     const string TABLE_COLLECTION_NAME_TUTORIALTEXT = "TutorialText";
 
-    LocalizedString _localizedTitle;
-    LocalizedString _localizedDesc;
+    LocalizedString _localInteractionTitle;
+    LocalizedString _localInteractionDescription;
+    LocalizedString _localRoomLoadingText;
+    LocalizedString _localTutorialText;
 
     Dictionary<int, string> _roomLoadingTextMap = new Dictionary<int, string>()
 {
@@ -115,25 +117,25 @@ public class PlaySceneView : MonoBehaviour
 
         if (!string.IsNullOrEmpty(titleKey))
         {
-            _localizedTitle = new LocalizedString { TableReference = TABLE_COLLECTION_NAME_INTERACTIONVIEWTEXT, TableEntryReference = titleKey };
-            _localizedTitle.StringChanged += OnTitleChanged;
-            _localizedTitle.RefreshString();
+            _localInteractionTitle = new LocalizedString { TableReference = TABLE_COLLECTION_NAME_INTERACTIONVIEWTEXT, TableEntryReference = titleKey };
+            _localInteractionTitle.StringChanged += OnTitleChanged;
+            _localInteractionTitle.RefreshString();
         }
 
         if (!string.IsNullOrEmpty(descriptionKey))
         {
-            _localizedDesc = new LocalizedString { TableReference = TABLE_COLLECTION_NAME_INTERACTIONVIEWTEXT, TableEntryReference = descriptionKey };
-            _localizedDesc.StringChanged += OnDescChanged;
-            _localizedDesc.RefreshString();
+            _localInteractionDescription = new LocalizedString { TableReference = TABLE_COLLECTION_NAME_INTERACTIONVIEWTEXT, TableEntryReference = descriptionKey };
+            _localInteractionDescription.StringChanged += OnDescChanged;
+            _localInteractionDescription.RefreshString();
         }
     }
 
     void UnbindInteractionLocalizedStrings()
     {
-        if (_localizedTitle != null) _localizedTitle.StringChanged -= OnTitleChanged;
-        if (_localizedDesc != null) _localizedDesc.StringChanged -= OnDescChanged;
-        _localizedTitle = null;
-        _localizedDesc = null;
+        if (_localInteractionTitle != null) _localInteractionTitle.StringChanged -= OnTitleChanged;
+        if (_localInteractionDescription != null) _localInteractionDescription.StringChanged -= OnDescChanged;
+        _localInteractionTitle = null;
+        _localInteractionDescription = null;
     }
 
     void OnTitleChanged(string localized)
