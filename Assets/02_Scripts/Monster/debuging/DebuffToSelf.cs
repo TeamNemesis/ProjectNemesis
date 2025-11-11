@@ -13,15 +13,10 @@ public class DebuffToSelf : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.T))
         {
-            DebuffHandler.DebuffData poison = DebuffHandler.DebuffData.CreatePoison();
-            if (poison != null)
+            DebuffHandler.DebuffData stun = DebuffHandler.DebuffData.CreateBinding();
+            if (stun != null)
             {
-                handler.ApplyDebuff(poison);
-            }
-            DebuffHandler.DebuffData overloard = DebuffHandler.DebuffData.CreateOverload();
-            if (overloard != null)
-            {
-                handler.ApplyDebuff(overloard);
+                handler.ApplyDebuff(stun);
             }
         }
     }

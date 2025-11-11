@@ -4,11 +4,8 @@ using UnityEngine;
 
 public class Elite1 : MonsterBase
 {
-
-
-    [Header("NameSet")]
-    [SerializeField] private string EnglishName = "Nebula's Guard Captain";
-    [SerializeField] private string KoreanName = "네뷸라사 경비대장";
+    private string EnglishName = "Nebula's Guard Captain";
+    private string KoreanName = "네뷸라사 경비대장";
 
     [Header("Local Stats")]
     [SerializeField] private float _box_Length = 3;
