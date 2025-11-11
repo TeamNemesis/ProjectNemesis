@@ -141,10 +141,10 @@ public class PlayerModel : CharacterModelBase
     {
         // 플레이어 json파일 데이터에서 최대체력 받아옴
         base.Initialize();
-        //SettingMaxHp((int)GameManager.Instance.PlayerStatManager.playerStatDataDic["playerHP"].GetEffectiveValue());
+        SettingMaxHp((int)GameManager.Instance.PlayerStatManager.playerStatDataDic["playerHP"].GetEffectiveValue());
         SetCurrentHp(maxHealth); // 초기화 시 현재 체력을 최대 체력으로 설정
 
-        //bCanRevive = (bool)GameManager.Instance.PlayerStatManager.playerStatDataDic["playerRevive"].GetEffectiveValue();
+        bCanRevive = (bool)GameManager.Instance.PlayerStatManager.playerStatDataDic["playerRevive"].GetEffectiveValue();
 
         // 필드값 초기화
         _bIsInvincibility = false;

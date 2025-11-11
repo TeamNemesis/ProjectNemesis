@@ -30,5 +30,5 @@ public interface IInteractable
    /// <returns></returns>
     bool TryInteract(Transform subject);
 
-    void ReturnInteractionViewKey(out string title, out string description);
+    void TryGetInteracrtionKey(out string title, out string description);
 }
