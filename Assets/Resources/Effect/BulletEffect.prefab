@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3639039921070164410}
   - component: {fileID: 1236080043177112363}
   - component: {fileID: 4505852612441475297}
-  - component: {fileID: -8300267616334012157}
+  - component: {fileID: -1621680277139603486}
   m_Layer: 0
   m_Name: BulletEffect
   m_TagString: Untagged
@@ -4838,7 +4838,7 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     vectorLabel1_3: W
---- !u!114 &-8300267616334012157
+--- !u!114 &-1621680277139603486
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4847,9 +4847,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 166955262183685474}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cc722e1497ebce346b87739747660c61, type: 3}
+  m_Script: {fileID: 11500000, guid: 698dc5c586a892b4c9dcaa3fb0b2fcac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _particleSystem: {fileID: 0}
 --- !u!1 &1501982921854461147
 GameObject:
   m_ObjectHideFlags: 0
