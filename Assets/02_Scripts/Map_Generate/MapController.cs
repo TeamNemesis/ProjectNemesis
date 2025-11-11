@@ -68,7 +68,7 @@ public class MapController : MonoBehaviour
 
         if (GameManager.Instance.PlayerStatManager.playerStatDataDic["playerRestore"].CurrentLevel!=0)
         {
-            OnRoomStart += () => _player.playerModel.OnHeal(GameManager.Instance.PlayerStatManager.playerStatDataDic["playerRestore"].GetEffectiveValue());
+            OnRoomStart += () => _player.playerModel.Heal((int)GameManager.Instance.PlayerStatManager.playerStatDataDic["playerRestore"].GetEffectiveValue());
         }
     }
 
