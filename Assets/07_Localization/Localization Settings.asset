@@ -23,7 +23,8 @@ MonoBehaviour:
   m_StringDatabase:
     rid: 116408207842738498
   m_Metadata:
-    m_Items: []
+    m_Items:
+    - rid: 9203186334013325316
   m_ProjectLocaleIdentifier:
     m_Code: ko
   m_PreloadBehavior: 1
@@ -44,7 +45,7 @@ MonoBehaviour:
       type: {class: SpecificLocaleSelector, ns: UnityEngine.Localization.Settings, asm: Unity.Localization}
       data:
         m_LocaleId:
-          m_Code: en
+          m_Code: ko
     - rid: 116408207842738496
       type: {class: LocalesProvider, ns: UnityEngine.Localization.Settings, asm: Unity.Localization}
       data: 
@@ -205,3 +206,15 @@ MonoBehaviour:
         - default
         - d
         - 
+    - rid: 9203186334013325316
+      type: {class: AppInfo, ns: UnityEngine.Localization.Platform.Android, asm: Unity.Localization}
+      data:
+        m_DisplayName:
+          m_TableReference:
+            m_TableCollectionName: GUID:89d7a238c26be59409a5d636443bffbf
+          m_TableEntryReference:
+            m_KeyId: 3519190238117888
+            m_Key: 
+          m_FallbackState: 0
+          m_WaitForCompletion: 0
+          m_LocalVariables: []

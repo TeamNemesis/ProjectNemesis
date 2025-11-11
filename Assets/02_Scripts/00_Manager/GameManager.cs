@@ -69,13 +69,14 @@ public class GameManager : MonoBehaviour
 
     void Initialize()
     {
-
-        if (_skillManger == null)
+        if (_skillManager == null)
         {
-            _skillManger = Resources.Load<SkillManager>("Prefabs/Skill/SkillManager");
-            _skillManger = Instantiate(_skillManger, transform);
-            _skillManger.name = "SkillManager";
+            _skillManager = Resources.Load<SkillManager>("Prefabs/Skill/SkillManager");
+            _skillManager = Instantiate(_skillManager, transform);
+            _skillManager.name = "SkillManager";
         }
+
+
 
         if (_uiManager == null)
         {
@@ -83,7 +84,7 @@ public class GameManager : MonoBehaviour
             _uiManager = Instantiate(_uiManager, transform);
             _uiManager.name = "UIManager";
         }
-        if(_serverManager == null)
+        if (_serverManager == null)
         {
             _serverManager = Resources.Load<ServerManager>("Prefabs/Skill/ServerManager");
             _serverManager = Instantiate(_serverManager, transform);
@@ -91,7 +92,7 @@ public class GameManager : MonoBehaviour
         }
         _instance._resourceManager.Initialize();
         _instance._dataManager.Initialize(_instance._resourceManager);
-        _skillManger.InitializeSkillManager();
+        _skillManager.InitializeSkillManager();
         StartCoroutine(_uiManager.InitializeManager());
         _currencyManager.Initialize();
         _serverManager.Initialize();
@@ -122,9 +123,15 @@ public class GameManager : MonoBehaviour
     /// 스킬 매니저
     /// </summary>
     [SerializeField]
-    private SkillManager _skillManger;
+    private SkillManager _skillManager;
+    public SkillManager skillManager
+    {
+        get
+        {
 
-    public SkillManager skillManager { get { return _skillManger; } }
+            return _skillManager;
+        }
+    }
 
     /// <summary>
     /// UIManager

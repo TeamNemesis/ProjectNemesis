@@ -22,6 +22,7 @@ public class PlaySceneView : MonoBehaviour
     [SerializeField] Slider _grenadeCooltimeSlider;
     [SerializeField] TextMeshProUGUI _grenadeCountText;
 
+
     [Header("----- 방 로딩 패널 -----")]
     [SerializeField] GameObject _roomLoadingPanel;
     [SerializeField] TextMeshProUGUI _roomLoadingText;

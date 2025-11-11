@@ -1,7 +1,8 @@
 ﻿using System;
-using System.Collections;
+
 using UnityEngine;
 using UnityEngine.UIElements;
+
 
 public class Skill_Collab : SkillBase
 {

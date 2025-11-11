@@ -13,6 +13,14 @@ MonoBehaviour:
   m_Name: ProfileDataSourceSettings
   m_EditorClassIdentifier: 
   profileGroupTypes:
+  - m_GroupTypePrefix: Automatic
+    m_Variables:
+    - m_Suffix: BuildPath
+      m_Value: CCDBuildData/ManagedEnvironment/ManagedBucket/ManagedBadge
+    - m_Suffix: EnvironmentName
+      m_Value: production
+    - m_Suffix: LoadPath
+      m_Value: https://6a948b02-6641-4bf7-9259-d25178f48d22.client-api.unity3dusercontent.com/client_api/v1/environments/{CcdManager.EnvironmentName}/buckets/{CcdManager.BucketId}/release_by_badge/{CcdManager.Badge}/entry_by_path/content/?path=
   - m_GroupTypePrefix: Built-In
     m_Variables:
     - m_Suffix: BuildPath

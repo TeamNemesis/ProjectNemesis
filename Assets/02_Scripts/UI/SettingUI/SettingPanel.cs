@@ -18,6 +18,7 @@ public class SettingPanel : MonoBehaviour
         else
         {
             playPanel.SetActive(true);
+            Time.timeScale = 0.0f;
             if (EventBus.IsColosseumRoom)
             {
                 Cursor.lockState = true ? CursorLockMode.None : CursorLockMode.Locked;
@@ -26,6 +27,10 @@ public class SettingPanel : MonoBehaviour
         }
     }
 
+    public void ResetTimeScale()
+    {
+        Time.timeScale = 1f;
+    }
 
     public void OnBtnClick_GameExit()
     {
@@ -34,7 +39,7 @@ public class SettingPanel : MonoBehaviour
 
     public void OnBtnClick_Re()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+       GameManager.Instance.SceneLoadManager.LoadPlayScene();
     }
 
 }

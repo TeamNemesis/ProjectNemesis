@@ -4,13 +4,13 @@ using UnityEngine.UI;
 
 public class MobileInputController : MonoBehaviour
 {
-#if UNITY_ANDROID
     [Header("조이스틱 및 버튼")]
     [SerializeField] private Joystick joystick;
     [SerializeField] private Button dashButton;
     [SerializeField] private Button normalAttackButton;
     [SerializeField] private Button specialAttackButton;
     [SerializeField] private Button grenadeButton;
+    [SerializeField] private GameObject mobilePanel;
 
     [Header("연결 대상")]
     [SerializeField] private Player player;
@@ -27,6 +27,7 @@ public class MobileInputController : MonoBehaviour
 
     public void Initialize(Player player, PlayerInputHandler input)
     {
+        mobilePanel.SetActive(true);
         this.player = player;
         inputHandler = input;
 
@@ -201,5 +202,4 @@ public class MobileInputController : MonoBehaviour
     {
         isInit = false;
     }
-#endif
 }

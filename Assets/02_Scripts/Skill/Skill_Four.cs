@@ -137,6 +137,7 @@ public class Skill_Four : SkillBase
     {
         Transform playerTransform = _skillManager.playScene.player.transform;
         Drone drone = GameManager.Instance.PoolManager.GetFromPool(dronePrefab,Vector3.zero , playerTransform.rotation,playerTransform).GetComponent<Drone>();
+        drone.InitializeDrone(_skillManager.playScene.player);
         droneList.Add(drone);
         float x = 0 - (float)(skillLevel - 1) / 2;
 
@@ -186,7 +187,6 @@ public class Skill_Four : SkillBase
         plusMoveSpeed = choosedSkill.skillBaseValue_2 + choosedSkill.skillLevelValue_2 * choosedSkill.skillLevel;
         plusMoveSpeedTime = choosedSkill.skillBaseValue_3 + choosedSkill.skillLevelValue_3 * choosedSkill.skillLevel;
         
-        //TODO 대쉬 끝 이벤트에 연결
         _skillManager.playScene.player.OnDashStarted += plusMoveSpeedAfterDash;
     }
 

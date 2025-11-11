@@ -83,7 +83,7 @@ public class Skill_Two : SkillBase
                     choosedSkill.skillBaseValue_2 + choosedSkill.skillLevelValue_2 * choosedSkill.skillLevel
                     );
 
-                //TODO 몬스터 스포너에 몬스터 생성시 이벤트에 연결
+                // 몬스터 스포너에 몬스터 생성시 이벤트에 연결
                 skillManager.playScene.MapController.MonsterController.MonsterSpawner.OnMonsterSpawned -= ConnectMakeExpolsion;
                 skillManager.playScene.MapController.MonsterController.MonsterSpawner.OnMonsterSpawned += ConnectMakeExpolsion;
                 break;

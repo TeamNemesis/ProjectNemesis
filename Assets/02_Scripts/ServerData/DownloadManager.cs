@@ -1,5 +1,7 @@
 ﻿using Firebase.Auth;
 using Firebase.Database;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -54,29 +56,60 @@ public class DownloadManager : MonoBehaviour
     {
         _serverManager.SetLoading(true);
 
-        if (_serverManager.currentUser == null)
+        try
         {
-            _serverManager.ShowPopup("로그인된 사용자가 없어 업로드할 수 없습니다.");
+            if (_serverManager.currentUser == null)
+            {
+                _serverManager.ShowPopup("로그인된 사용자가 없어 업로드할 수 없습니다.");
+                return;
+            }
 
-            _serverManager.SetLoading(false);
-            return;
+            if (!File.Exists(Constants.FILE_PATH_PLAYERSTAT))
+            {
+                _serverManager.ShowPopup("업로드할 JSON 파일이 존재하지 않습니다.");
+                await DownloadJsonToLocal(true);
+
+                bool success = await TryUploadPlayerStat();
+
+                if (success)
+                {
+                    //TryDeleteFile(Constants.FILE_PATH_PLAYERSTAT);
+                }
+
+                return;
+            }
+
+            bool result = await TryUploadPlayerStat();
+
+            if (result)
+            {
+                //TryDeleteFile(Constants.FILE_PATH_PLAYERSTAT);
+            }
         }
-
-        if (!File.Exists(Constants.FILE_PATH_PLAYERSTAT))
+        catch (Exception ex)
         {
-            _serverManager.ShowPopup("업로드할 JSON 파일이 존재하지 않습니다.");
-            await DownloadJsonToLocal(true); // ✅ 초기 데이터 다운로드
-                                             // 다운로드 후 다시 시도
-            bool success = await TryUploadPlayerStat();
-            _serverManager.SetLoading(false);
-            return;
-            
+            _serverManager.ShowPopup($"업로드 중 오류 발생: {ex.Message}");
         }
+        finally
+        {
+            _serverManager.SetLoading(false);
+        }
+    }
 
-
-        // 파일이 이미 존재하면 바로 업로드 시도
-        bool result = await TryUploadPlayerStat();
-        _serverManager.SetLoading(false);
+    private void TryDeleteFile(string path)
+    {
+        try
+        {
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+                Debug.Log($"파일 삭제 완료: {path}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.LogWarning($"파일 삭제 실패: {ex.Message}");
+        }
     }
 
 
@@ -123,6 +156,19 @@ public class DownloadManager : MonoBehaviour
                 {
                     jsonText = snapshot.Child("playerStatJson").Value.ToString();
                     Debug.Log("사용자 데이터를 서버에서 받아왔습니다.");
+
+                    var baseSnapshot = await _serverManager.dbRef.Child("gameBaseJson").GetValueAsync();
+                    if (baseSnapshot != null && baseSnapshot.Exists)
+                    {
+                        string baseJson = baseSnapshot.GetRawJsonValue();
+
+                        var localStats = JsonConvert.DeserializeObject<List<PlayerStatJsonData>>(jsonText);
+                        var baseStats = JsonConvert.DeserializeObject<List<PlayerStatJsonData>>(baseJson);
+
+                        var syncedStats = SyncWithGameBase(localStats, baseStats);
+                        jsonText = JsonConvert.SerializeObject(syncedStats, Formatting.Indented);
+                        Debug.Log("gameBaseJson 기준으로 로컬 JSON이 업데이트되었습니다.");
+                    }
                 }
                 else // 사용자 데이터가 Firebase에 없는 경우 (playerStatJson이 존재하지 않거나, snapshot 자체가 없는 경우)
                 {
@@ -191,15 +237,52 @@ public class DownloadManager : MonoBehaviour
             _serverManager.SetLoading(false);
         }
     }
-
-
-    public void UploadClearTime(float time)
+    private List<PlayerStatJsonData> SyncWithGameBase(List<PlayerStatJsonData> localStats, List<PlayerStatJsonData> baseStats)
     {
+        var updatedStats = new List<PlayerStatJsonData>();
+
+        foreach (var local in localStats)
+        {
+            var baseStat = baseStats.FirstOrDefault(b => b.column == local.column);
+
+            if (baseStat != null)
+            {
+                bool needsUpdate =
+                    local.type != baseStat.type ||
+                    local.description != baseStat.description ||
+                    local.defaultValue != baseStat.defaultValue ||
+                    local.upgradeValue != baseStat.upgradeValue ||
+                    local.maxLevel != baseStat.maxLevel;
+
+                if (needsUpdate)
+                {
+                    baseStat.currentLevel = local.currentLevel;
+                    updatedStats.Add(baseStat);
+                    Debug.Log($"업데이트됨: {local.column}");
+                }
+                else
+                {
+                    updatedStats.Add(local);
+                }
+            }
+            else
+            {
+                updatedStats.Add(local);
+            }
+        }
+
+        return updatedStats;
+    }
+
+
+    public async void UploadClearTime(float time)
+    {
+        await UploadClearTimeServer(time);
 
     }
 
 
-        public async Task UploadClearTimeServer(float clearTime)
+    public async Task UploadClearTimeServer(float clearTime)
     {
         var user = FirebaseAuth.DefaultInstance.CurrentUser;
         if (user == null) return;
