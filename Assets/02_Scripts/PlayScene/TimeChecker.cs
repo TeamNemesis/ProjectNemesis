@@ -32,6 +32,7 @@ public class TimeChecker : MonoBehaviour
 
     public void StopTimeCheck()
     {
+        GameManager.Instance.serverManager.downloadManager.UploadClearTime(_currentTime);
         if (_timeCheckRoutine != null)
             StopCoroutine(_timeCheckRoutine);
     }

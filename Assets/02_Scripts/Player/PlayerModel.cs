@@ -135,7 +135,7 @@ public class PlayerModel : CharacterModelBase
             return;
         }
         base.Die();
-
+        EventBus.SetCanTimeRun(false);
     }
     public override void Initialize()
     {

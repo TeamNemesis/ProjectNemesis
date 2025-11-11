@@ -274,7 +274,13 @@ public class DownloadManager : MonoBehaviour
         return updatedStats;
     }
 
-    public async Task UploadClearTime(float clearTime)
+    public void UploadClearTime(float time)
+    {
+
+    }
+
+
+        public async Task UploadClearTimeServer(float clearTime)
     {
         var user = FirebaseAuth.DefaultInstance.CurrentUser;
         if (user == null) return;
