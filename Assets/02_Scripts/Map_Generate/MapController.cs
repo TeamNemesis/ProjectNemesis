@@ -141,7 +141,6 @@ public class MapController : MonoBehaviour
         // 방 생성 후 효과 처리
         GameManager.Instance.SoundManager.PlayBGM(room.RoomInfo.RoomType.ToString());
 
-
         // 상태 갱신
         UpdateCurrentRoomState(room);
 
@@ -442,12 +441,6 @@ public class MapController : MonoBehaviour
     void StartReward()
     {
         _currentRoom.SpawnReward();
-    }
-
-    IEnumerator GoToNextRoomRoutine()
-    {
-        yield return new WaitForSeconds(1.0f);
-        // 다음 방으로 이동 처리
     }
 
 #if UNITY_EDITOR
