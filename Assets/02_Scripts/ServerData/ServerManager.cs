@@ -164,14 +164,7 @@ public class ServerManager : MonoBehaviour
             bool isLoggedIn = userSnapshot.Child("isLoggedIn").Value?.ToString() == "true";
             string lastDeviceId = userSnapshot.Child("lastLoginDeviceId").Value?.ToString();
 
-            // 다른 기기에서 로그인된 상태라면 차단
-            if (isLoggedIn && lastDeviceId != deviceId)
-            {
-                ShowPopup("다른 기기에서 이미 로그인되어 있습니다. 로그아웃 후 다시 시도해주세요.");
-                auth.SignOut();
-                SetLoading(false);
-                return;
-            }
+            
 
             // 이메일 인증 여부 확인
             if (!_currentUser.IsEmailVerified)
