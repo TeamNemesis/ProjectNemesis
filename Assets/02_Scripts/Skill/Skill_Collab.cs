@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Skill_Collab : SkillBase
 {
@@ -268,6 +269,9 @@ public class Skill_Collab : SkillBase
             skill.skillBaseValue_2 + skill.skillLevelValue_2 * skill.skillLevel,
             skill.skillBaseValue_1 + skill.skillLevelValue_1 * skill.skillLevel,
             skillManager.playScene.MapController);
+
+        //
+        GameManager.Instance.SoundManager.PlaySfxAt("MagneticStorm", skillManager.playScene.player.transform.position, true);
 
     }
     #endregion
