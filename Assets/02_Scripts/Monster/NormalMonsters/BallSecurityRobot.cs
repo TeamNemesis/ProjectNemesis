@@ -93,10 +93,12 @@ public class BallSecurityRobot : MonsterBase
             }
 
             // ÀÚÆø±îÁö µô·¹ÀÌ
+            GameManager.Instance.SoundManager.PlaySfxAt("Monster_Check", transform.position);
             yield return new WaitForSeconds(attackDelay);
 
             CheckTarget();
             GetEffectFromPool(explosionEffectPrefab, transform.position, Quaternion.identity);
+            GameManager.Instance.SoundManager.PlaySfxAt("Monster_Grenade", transform.position);
 
             baseState = MonsterState.Die;
         }

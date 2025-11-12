@@ -19,6 +19,7 @@ public class SettingPanel : MonoBehaviour
         {
             playPanel.SetActive(true);
             Time.timeScale = 0.0f;
+            EventBus.SetCanTimeRun(false);
             if (EventBus.IsColosseumRoom)
             {
                 Cursor.lockState = true ? CursorLockMode.None : CursorLockMode.Locked;
@@ -29,6 +30,7 @@ public class SettingPanel : MonoBehaviour
 
     public void ResetTimeScale()
     {
+        EventBus.SetCanTimeRun(true);
         Time.timeScale = 1f;
     }
 

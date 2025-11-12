@@ -316,7 +316,6 @@ public class Player : MonoBehaviour
         {
             if (_stateMachine.CurrentType != PlayerStateType.Move)
             {
-                Debug.Log("모드 전환");
                 _stateMachine.ChangeState(PlayerStateType.Move);
             }
             return;
