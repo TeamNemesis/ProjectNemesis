@@ -257,7 +257,8 @@ public class MonsterHealthUI : PoolableObject, IInitializePoolable, IReleasePool
             }
         }
 
-        transform.SetParent(monsterHealthUIRoot.transform, true);
+        transform.SetParent(monsterHealthUIRoot.transform, false);
+        rectTransform.anchoredPosition = Vector2.zero;
 
         if (mainCamera == null)
             mainCamera = Camera.main;
