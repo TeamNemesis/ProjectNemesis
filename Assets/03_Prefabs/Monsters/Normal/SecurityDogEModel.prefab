@@ -111,8 +111,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 1, y: 2, z: 1}
+  m_Center: {x: 0, y: 0.5, z: 0}
 --- !u!114 &6741232429851390812
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -152,9 +152,12 @@ MonoBehaviour:
   agent: {fileID: 0}
   _target: {fileID: 0}
   monsterAnimator: {fileID: 0}
+  originalSkinTransform: {x: 0, y: 0, z: 0}
   hasDieAnimation: 1
+  checkOnce: 0
   healthUI: {fileID: 0}
   healthUIPrefabPath: Prefabs/UI/MonsterHealthUI
+  damageTextPrefab: {fileID: 0}
   jumpPrepareTime: 1
   jumpForce: 30
   jumpCoolTime: 4

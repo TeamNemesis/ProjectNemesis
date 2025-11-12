@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 4160290871221694489}
   - component: {fileID: 7354624653338691103}
   - component: {fileID: 3984973008585570089}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Elite_Blade
-  m_TagString: Untagged
+  m_TagString: MonsterBullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -123,6 +123,10 @@ PrefabInstance:
     - target: {fileID: 9087332901195706352, guid: db592730a3b840f4f9157b1c3f9a58ce, type: 3}
       propertyPath: m_Name
       value: BladeMesh
+      objectReference: {fileID: 0}
+    - target: {fileID: 9087332901195706352, guid: db592730a3b840f4f9157b1c3f9a58ce, type: 3}
+      propertyPath: m_Layer
+      value: 12
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 1743601255180845341, guid: db592730a3b840f4f9157b1c3f9a58ce, type: 3}
