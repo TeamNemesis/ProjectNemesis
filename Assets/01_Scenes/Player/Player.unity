@@ -3212,7 +3212,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b5d7c088409d9a40b7b09aa707777f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TargetOffset: {x: 0, y: 0, z: 0}
+  TargetOffset: {x: 0, y: 1, z: 0}
   TrackerSettings:
     BindingMode: 4
     PositionDamping: {x: 0, y: 0, z: 0}
@@ -3220,7 +3220,7 @@ MonoBehaviour:
     RotationDamping: {x: 1, y: 1, z: 1}
     QuaternionDamping: 1
   OrbitStyle: 0
-  Radius: 3
+  Radius: 6
   Orbits:
     Top:
       Radius: 2
@@ -3314,8 +3314,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1128637368}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.000000023794996, y: 7.259644e-16, z: 1.1702991e-16, w: 1}
-  m_LocalPosition: {x: 0, y: 2, z: -4.954}
+  m_LocalRotation: {x: 0.082480535, y: -0.0000000010367266, z: 8.5802115e-11, w: 0.9965927}
+  m_LocalPosition: {x: 0, y: 5, z: -6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
