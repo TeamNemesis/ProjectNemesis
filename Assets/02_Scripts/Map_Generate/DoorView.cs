@@ -16,24 +16,28 @@ public class DoorView : MonoBehaviour
         if (roomInfo.TryGetTechSelect(out var tech))
         {
             // TechSelect 우선 처리
-            _rewardText.text = $"Tech: {tech.ToString()}";
+            //_rewardText.text = $"Tech: {tech.ToString()}";
+            _rewardImage.sprite = GameManager.Instance.DataManager.RoomImageMap[tech.ToString()];
         }
         else if (roomInfo.TryGetNormal(out var normal))
         {
             // Normal 처리
-            _rewardText.text = $"Normal: {normal.ToString()}";
+            //_rewardText.text = $"Normal: {normal.ToString()}";
+            _rewardImage.sprite = GameManager.Instance.DataManager.RoomImageMap[normal.ToString()];
         }
         else
         {
             // RoomType 처리
             var roomType = roomInfo.RoomType;
-            _rewardText.text = $"Room: {roomType.ToString()}";
+            //_rewardText.text = $"Room: {roomType.ToString()}";
+            _rewardImage.sprite = GameManager.Instance.DataManager.RoomImageMap[roomType.ToString()];
         }
 
     }
 
     public void ToggleReward(bool isOn)
     {
-        _rewardText.gameObject.SetActive(isOn);
+        //_rewardText.gameObject.SetActive(isOn);
+        _rewardImage.gameObject.SetActive(isOn);
     }
 }
