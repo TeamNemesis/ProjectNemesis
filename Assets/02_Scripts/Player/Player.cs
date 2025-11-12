@@ -477,6 +477,16 @@ public class Player : MonoBehaviour
 
         _normalAttacker.EndAttack();
     }
+
+    public void OnInvincibleStartEvent()
+    {
+        _playerModel.SetIsInvincibility(true);
+    }
+
+    public void OnInvincibleEndEvent()
+    {
+        _playerModel.SetIsInvincibility(false);
+    }
     #endregion
 
     #region 특수공격 처리

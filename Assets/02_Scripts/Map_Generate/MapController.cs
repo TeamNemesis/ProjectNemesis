@@ -418,7 +418,7 @@ public class MapController : MonoBehaviour
                 if (door == null) continue;
                 if (door.gameObject.scene.IsValid())
                 {
-                    Destroy(door.gameObject);
+                    GameManager.Instance.PoolManager.ReleaseToPool(door.gameObject);   
                 }
                 else
                 {
@@ -433,7 +433,7 @@ public class MapController : MonoBehaviour
         {
             if (_currentRoom.gameObject.scene.IsValid())
             {
-                Destroy(_currentRoom.gameObject);
+                GameManager.Instance.PoolManager.ReleaseToPool(_currentRoom.gameObject);
             }
             else
             {

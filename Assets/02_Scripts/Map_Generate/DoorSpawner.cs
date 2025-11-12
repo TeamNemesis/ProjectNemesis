@@ -30,9 +30,7 @@ public class DoorSpawner : MonoBehaviour
         }
 
         // Instantiate 할 때 부모를 지정하면 SetParent 관련 타이밍 문제를 피할 수 있음
-        GameObject go = parent != null
-            ? Instantiate(prefab, position.position, position.rotation, parent)
-            : Instantiate(prefab, position.position, position.rotation);
+        GameObject go = GameManager.Instance.PoolManager.GetFromPool("Prefabs/Map/Doors/Door", position.position, position.rotation, parent);
 
         if (go == null)
         {
@@ -44,7 +42,7 @@ public class DoorSpawner : MonoBehaviour
         if (door == null)
         {
             Debug.LogError("SpawnDoor: Door 컴포넌트가 없음. 생성한 객체를 파괴합니다.");
-            Destroy(go);
+            GameManager.Instance.PoolManager.ReleaseToPool(go);
             return null;
         }
 

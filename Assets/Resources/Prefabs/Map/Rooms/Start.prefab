@@ -876,8 +876,9 @@ GameObject:
   m_Component:
   - component: {fileID: 7387264202515823065}
   - component: {fileID: 6250941506966402304}
+  - component: {fileID: 3063331701517702809}
   m_Layer: 0
-  m_Name: StartRoom
+  m_Name: Start
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -927,6 +928,18 @@ MonoBehaviour:
   _doorSpawnPointsRight: []
   _weapons: []
   _cheatItems: []
+--- !u!114 &3063331701517702809
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8180616108338133129}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc722e1497ebce346b87739747660c61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8324677722666728364
 GameObject:
   m_ObjectHideFlags: 0
