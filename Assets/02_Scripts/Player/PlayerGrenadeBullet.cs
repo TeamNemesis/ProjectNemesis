@@ -1,29 +1,23 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-/// <summary>
-/// 플레이어가 발사한 유탄을 관리하는 클래스
-/// </summary>
 public class PlayerGrenadeBullet : MonoBehaviour
 {
-    [SerializeField] private float travelTime = 1.0f;     // 유탄이 도착하는 시간
+    [SerializeField] private float travelTime = 1.0f;
     [SerializeField] private float travelSpeed = 30.0f;
-    [SerializeField] private float explosionRadius = 3f;  // 폭발 반경
-    [SerializeField] private LayerMask enemyLayer;        // 적 탐지용
+    [SerializeField] private float explosionRadius = 3f;
+    [SerializeField] private LayerMask enemyLayer;
 
     [SerializeField] float _mutatntSpeedMultiplier = 1.5f;
-    //[SerializeField] float _mutantTravelTime = 3f;
 
-    // --- 새로 추가된 파라미터 (튜닝용) ---
     [Header("Parabola Height Tuning")]
-    [SerializeField, Tooltip("짧은 거리(가까움)일 때의 최대 포물선 높이")]
-    private float maxParabolaHeight = 15f;
-    [SerializeField, Tooltip("먼 거리(멀리)일 때의 최소 포물선 높이")]
-    private float minParabolaHeight = 10f;
-    [SerializeField, Tooltip("이 거리 이하이면 '가깝다'로 간주")]
-    private float closeDistance = 2f;
-    [SerializeField, Tooltip("이 거리 이상이면 '멀다'로 간주")]
-    private float farDistance = 10f;
+    [SerializeField] private float maxParabolaHeight = 15f;
+    [SerializeField] private float minParabolaHeight = 10f;
+    [SerializeField] private float closeDistance = 2f;
+    [SerializeField] private float farDistance = 10f;
+
+    [Header("Missile Visual")]
+    [SerializeField] private Transform missileVisual; // 미사일 모델 (자식 오브젝트)
 
     private bool isExplode;
 
@@ -44,13 +38,14 @@ public class PlayerGrenadeBullet : MonoBehaviour
         float elapsed = 0f;
 
         float distance = Vector3.Distance(new Vector3(start.x, 0f, start.z), new Vector3(target.x, 0f, target.z));
-
         float tDist = Mathf.InverseLerp(closeDistance, farDistance, distance);
         float smooth = Mathf.SmoothStep(0f, 1f, tDist);
         float parabolaHeight = Mathf.Lerp(maxParabolaHeight, minParabolaHeight, smooth);
 
         if (distance < 0.2f)
             parabolaHeight = Mathf.Min(parabolaHeight, maxParabolaHeight * 0.8f);
+
+        Vector3 previousPos = start;
 
         while (elapsed < travelTime)
         {
@@ -62,12 +57,23 @@ public class PlayerGrenadeBullet : MonoBehaviour
             flatPos.y += parabola;
 
             transform.position = flatPos;
+
+            // 회전 적용
+            Vector3 moveDir = (flatPos - previousPos).normalized;
+            if (moveDir != Vector3.zero)
+            {
+                missileVisual.forward = moveDir;
+            }
+
+            previousPos = flatPos;
             yield return null;
         }
 
-
+        // 도착 후 폭발 처리
+        Explode(transform.position, transform);
+        isExplode = true;
+        GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
     }
-
     IEnumerator DirectMoveRoutine(Transform firePoint, Vector3 target)
     {
         while (true)
