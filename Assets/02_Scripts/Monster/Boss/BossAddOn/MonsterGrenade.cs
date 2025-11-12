@@ -15,7 +15,6 @@ public class MonsterGrenade : PoolableObject
     [SerializeField] private float travelTime = 3.0f;     // À¯ÅºÀÌ µµÂøÇÏ´Â ½Ã°£
     [SerializeField] private float explosionRadius = 3f;  // Æø¹ß ¹Ý°æ
     [SerializeField] private float explosionDamage = 30f; // Æø¹ß µ¥¹ÌÁö
-    [SerializeField] private bool isEcploed = false;
 
     [SerializeField] private PoolableObject grenadeObject;
     [SerializeField] private PoolableObject explodeCircleObject;
@@ -110,6 +109,7 @@ public class MonsterGrenade : PoolableObject
             if (monster != null)
             {
                 monster.GetEffectFromPool(bigExplosionEffect, centerPos, Quaternion.identity);
+                GameManager.Instance.SoundManager.PlaySfxAt("Monster_Grenade", transform.position);
             }
         }
 
@@ -301,6 +301,7 @@ public class MonsterGrenade : PoolableObject
             if (monster != null)
             {
                 monster.GetEffectFromPool(smallExplosionEffect, position, Quaternion.identity);
+                GameManager.Instance.SoundManager.PlaySfxAt("Monster_Grenade", transform.position);
             }
         }
 
@@ -327,6 +328,7 @@ public class MonsterGrenade : PoolableObject
             if (monster != null)
             {
                 monster.GetEffectFromPool(smallExplosionEffect, position, Quaternion.identity);
+                GameManager.Instance.SoundManager.PlaySfxAt("Monster_Grenade", transform.position);
             }
         }
 
