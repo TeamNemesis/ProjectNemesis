@@ -220,6 +220,8 @@ public class Elite2 : MonsterBase
                 yield return new WaitForSeconds(attackDelay);
                 monsterAnimator.SetTrigger(Attack_Hash);
 
+                GameManager.Instance.SoundManager.PlaySfxAt("Monster_Laser", transform.position);
+
                 float laserLength = 40f; // 사거리
 
                 // 레이저 시작 위치를 플레이어 높이에 맞춤

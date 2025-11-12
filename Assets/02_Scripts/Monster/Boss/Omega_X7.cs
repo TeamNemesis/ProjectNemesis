@@ -207,6 +207,7 @@ public class Omega_X7 : MonsterBase
 
         PlayShotgunEffect();
         PerformShotgunHitscan(spawnPos, directionToPlayer);
+        GameManager.Instance.SoundManager.PlaySfxAt("GravityFlare", transform.position);
 
         shotgunttackCoolTime = 5f;
         _isShotgunAttacking = false;
