@@ -390,7 +390,6 @@ public class Player : MonoBehaviour
         if (weapon.WeaponType == WeaponType.Blade)
         {
             PlayerBladeNormalAttacker playerBladeNormalAttacker = _normalAttacker as PlayerBladeNormalAttacker;
-            playerBladeNormalAttacker?.Initialize(this);
         }
 
         _animator.SetAnimator(_currentWeaponSet.AnimController);
@@ -437,28 +436,26 @@ public class Player : MonoBehaviour
 
         if (_normalAttacker is PlayerBladeNormalAttacker blade)
         {
-            blade.Animation_OnComboWindowOpen();
+            
             OnNormalAttackStarted?.Invoke();
             return;
         }
-
-        _normalAttacker.EndAttack();
     }
 
     public void OnAttackEndEvent()
     {
-        if (_normalAttacker == null) return;
+        //if (_normalAttacker == null) return;
 
-        if (_normalAttacker is PlayerRifleNormalAttacker rifle)
-        {
-            rifle.OnAnimationAttackEnd();
-            return;
-        }
-        if (_normalAttacker is PlayerBladeNormalAttacker blade)
-        {
-            blade.Animation_OnComboWindowClose();
-            return;
-        }
+        //if (_normalAttacker is PlayerRifleNormalAttacker rifle)
+        //{
+        //    rifle.OnAnimationAttackEnd();
+        //    return;
+        //}
+        //if (_normalAttacker is PlayerBladeNormalAttacker blade)
+        //{
+        //    blade.Animation_OnComboWindowClose();
+        //    return;
+        //}
 
         _normalAttacker.EndAttack();
     }

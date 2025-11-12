@@ -50,7 +50,7 @@ public class PlayerRifleNormalAttacker : PlayerNormalAttacker
     IEnumerator EndAfterDelayCoroutine()
     {
         yield return new WaitForSeconds(fallbackEnd);
-        EndNow();
+        EndAttack();
     }
 
     // 애니메이션 이벤트에서 호출: 실제 발사 실행
@@ -73,18 +73,7 @@ public class PlayerRifleNormalAttacker : PlayerNormalAttacker
         }
     }
 
-    // 애니메이션 이벤트에서 호출: 애니메이션이 끝나면 호출
-    public void OnAnimationAttackEnd()
-    {
-        EndNow();
-    }
-
     public override void EndAttack()
-    {
-        EndNow();
-    }
-
-    void EndNow()
     {
         if (_endRoutine != null)
         {

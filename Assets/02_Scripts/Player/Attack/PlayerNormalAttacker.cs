@@ -15,7 +15,7 @@ public abstract class PlayerNormalAttacker : MonoBehaviour, IAttacker
     public virtual event Action OnAttackStarted;
     public virtual event Action OnAttackEnded;
 
-    // 공격 중인지 표시 (파생 클래스에서 보호 수준으로 변경 가능)
+    // 공격 중인지 플레이어 상태머신에서 확인용
     public bool IsAttacking => _isAttacking;
 
     void Awake()
@@ -48,7 +48,7 @@ public abstract class PlayerNormalAttacker : MonoBehaviour, IAttacker
     public abstract void Attack();
 
     /// <summary>
-    /// 공격을 강제 종료(예: 피격/스턴)할 때 호출
+    /// 공격을 종료할때 호출(애니메이션 이벤트)
     /// </summary>
     public virtual void EndAttack()
     {
@@ -59,14 +59,4 @@ public abstract class PlayerNormalAttacker : MonoBehaviour, IAttacker
 
     // 기본 조건: 현재 공격 중이 아니면 시작 가능
     protected virtual bool CanStartAttack() => !_isAttacking;
-
-    public void OnAnimationFire()
-    {
-        throw new NotImplementedException();
-    }
-
-    public void OnAnimationEnd()
-    {
-        throw new NotImplementedException();
-    }
 }
