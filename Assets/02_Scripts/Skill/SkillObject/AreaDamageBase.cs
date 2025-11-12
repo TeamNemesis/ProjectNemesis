@@ -17,7 +17,13 @@ public class AreaDamageBase : PoolableObject
     public void SetAreaExtent(float areaExtent)
     {
         _areaExtent = areaExtent * GameManager.Instance.PlayerStatManager.playerAreaExtent;
-        transform.localScale = Vector3.one * _areaExtent * 2f;
+        Vector3 desiredWorldScale = Vector3.one * _areaExtent * 2f;
+        Vector3 parentWorldScale = transform.parent != null ? transform.parent.lossyScale : Vector3.one;
+        transform.localScale = new Vector3(
+            desiredWorldScale.x / parentWorldScale.x,
+            desiredWorldScale.y / parentWorldScale.y,
+            desiredWorldScale.z / parentWorldScale.z
+        );
     }
 
     [SerializeField]
