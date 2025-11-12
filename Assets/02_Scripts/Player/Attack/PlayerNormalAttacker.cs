@@ -31,6 +31,7 @@ public abstract class PlayerNormalAttacker : MonoBehaviour, IAttacker
     public virtual bool RequestAttack()
     {
         if (!CanStartAttack()) return false;
+        Debug.Log("RequestAttack called", this);
         StartAttack();
         return true;
     }
