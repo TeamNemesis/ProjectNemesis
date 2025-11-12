@@ -430,7 +430,6 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
         {
             if (collision.gameObject.layer == LayerMask.NameToLayer(Constants.LAYER_MASK_WALL))
             {
-                Debug.Log("충돌");
                 TakeDamage(GameManager.Instance.PlayerStatManager.knockBackDamage * GameManager.Instance.PlayerStatManager.knockBackDamageMulti, null);
                 EndKnockBack();
             }
@@ -469,12 +468,10 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
         }
         if (_knockBackCoroutine != null)
         {
-            Debug.Log("넉백 중이므로 넉백 무시");
             return;
         }
         if (monsterSize == MonsterSize.BIG)
         {
-            Debug.Log("대형이므로 넉백 무시");
             return;
         }
         monsterCollider.isTrigger = false;
@@ -508,7 +505,6 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
             time += Time.deltaTime;
             if (time > maxTime)
             {
-                Debug.Log("속도가 너무 느려 강제 종료");
                 break;
             }
             yield return null;

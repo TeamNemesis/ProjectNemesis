@@ -55,6 +55,7 @@ public class AutoTurret : MonsterBase
                 bool isConfused = (targetTag == Constants.TAG_MONSTER);
                 turretBullet.Initialize(targetTag, attackDamage, bulletLifeTime, gameObject, isConfused);
             }
+            GameManager.Instance.SoundManager.PlaySfxAt("Monster_Grenade", transform.position);
             yield return new WaitForSeconds(attackDelay);
         }
 
@@ -65,6 +66,7 @@ public class AutoTurret : MonsterBase
     protected override void Die()
     {
         GetEffectFromPool(muzzleFlashPrefab, transform.position, transform.rotation);
+        GameManager.Instance.SoundManager.PlaySfxAt("Monster_Grenade", transform.position);
         base.Die();
     }
 

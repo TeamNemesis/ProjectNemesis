@@ -107,7 +107,6 @@ public class PlayerModel : CharacterModelBase
             int tempNum = UnityEngine.Random.Range(0, 100);
             if (tempNum < 100 * _avoidNum)
             {
-                Debug.LogError("회피");
                 return;
             }
         }
@@ -214,7 +213,6 @@ public class PlayerModel : CharacterModelBase
             return;
         }
 
-        Debug.LogError("무적 시작");
         // 기존 코루틴 중단
         if (_invincibilityCoroutine != null)
         {
@@ -238,7 +236,6 @@ public class PlayerModel : CharacterModelBase
 
         _bIsInvincibility = false;
         _invincibilityCoroutine = null;
-        Debug.LogError("무적 상태 종료");
     }
     #endregion
 
@@ -265,7 +262,6 @@ public class PlayerModel : CharacterModelBase
             return;
         }
 
-        Debug.LogError("전방 무적 시작");
         // 기존 코루틴 중단
         if (_FrontInvincibilityCoroutine != null)
         {
@@ -289,7 +285,6 @@ public class PlayerModel : CharacterModelBase
 
         _bIsFrontInvincibility = false;
         _FrontInvincibilityCoroutine = null;
-        Debug.LogError("전방 무적 상태 종료");
     }
 
 }

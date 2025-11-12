@@ -26,6 +26,7 @@ Material:
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - _SURFACE_TYPE_TRANSPARENT
+  - _USERAMP
   m_InvalidKeywords:
   - _DOUBLESIDED_ON
   m_LightmapFlags: 4
@@ -158,7 +159,7 @@ Material:
     - _TransparentZWrite: 0
     - _USEALPHAOVERRIDE: 0
     - _USEPIXELATION: 0
-    - _USERAMP: 0
+    - _USERAMP: 1
     - _USESOFTALPHA: 0
     - _USEUVOFFSET: 0
     - _UseAlphaDisolve: 0
@@ -187,13 +188,13 @@ Material:
     - _DoubleSidedConstants: {r: -1, g: -1, b: -1, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
     - _FlipbooksColumsRows: {r: 1, g: 1, b: 0, a: 0}
-    - _FresnelColor: {r: 1, g: 1, b: 1, a: 1}
+    - _FresnelColor: {r: 0, g: 2.7205372, b: 0.22634992, a: 1}
     - _LastColor: {r: 1, g: 0, b: 0, a: 0}
     - _MainAlphaChannel: {r: 0, g: 0, b: 0, a: 1}
     - _MainAlphaPanning: {r: 0.4, g: 0, b: 0, a: 0}
     - _MainTextureChannel: {r: 1, g: 1, b: 1, a: 0}
     - _MainTexturePanning: {r: 0.4, g: 0, b: 0, a: 0}
-    - _MidColor: {r: 1, g: 0.44479147, b: 0, a: 0}
+    - _MidColor: {r: 0.25, g: 0.11119787, b: 0, a: 0}
     - _Resolution: {r: 64, g: 64, b: 0, a: 0}
     - _UnlitColorMap_MipInfo: {r: 0, g: 0, b: 0, a: 0}
     - _WhiteColor: {r: 1, g: 0.8950032, b: 0, a: 0}

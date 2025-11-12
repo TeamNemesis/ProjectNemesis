@@ -119,7 +119,7 @@ public class Elite1 : MonsterBase
         Pattern1CoolTime = 7f;
         _isAttacking = true;
 
-        _meshRenderer = GetComponent<MeshRenderer>();
+        _meshRenderer = GetComponentInChildren<MeshRenderer>();
         _meshRenderer.enabled = false;
 
         // 생성 범위 크기 변경
@@ -203,6 +203,8 @@ public class Elite1 : MonsterBase
         // 생성
         Vector3 spawnPos = new Vector3(transform.position.x, 1f, transform.position.z) + transform.forward * 1f;
         GameObject blade = GameManager.Instance.PoolManager.GetFromPool(bladeWavePrefab, spawnPos, transform.rotation);
+        EliteBlade bladeset = blade.GetComponent<EliteBlade>();
+        bladeset.Initialize(targetTag, attackDamage, 5f, gameObject);
     }
     #endregion
 
@@ -223,6 +225,7 @@ public class Elite1 : MonsterBase
 
         // 짧은 대기(이거 없으니까 좀 어색함)
         yield return new WaitForSeconds(0.5f);
+        monsterAnimator.SetTrigger(Attack_Hash);
 
         // 공격 2회 반복
         for (int i = 0; i < attackCount; i++)
@@ -315,6 +318,8 @@ public class Elite1 : MonsterBase
         // 생성
         Vector3 spawnPos = new Vector3(transform.position.x, 1f, transform.position.z) + transform.forward * 1f;
         GameObject bullet = GameManager.Instance.PoolManager.GetFromPool(BulletPrefab, spawnPos, transform.rotation);
+        TurretBullet BulletSet = bullet.GetComponent<TurretBullet>();
+        BulletSet.Initialize(targetTag, attackDamage, 5f, gameObject);
     }
     #endregion
 
@@ -381,7 +386,6 @@ public class Elite1 : MonsterBase
     private void EnterPhase2()
     {
         isPhase2 = true;
-        GetComponent<Renderer>().material.color = Color.red;
         _box_Length = 4f;
         _box_Width = 4f;
     }

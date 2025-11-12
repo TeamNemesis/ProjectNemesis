@@ -149,13 +149,11 @@ public class Skill_Collab : SkillBase
             if (nearestMonster != null)
             {
                 nearestMonster.TakeDamage(_tyrantDamage);
-                //Debug.Log("폭군 데미지 들어감");
 
                 Vector3 spawnPos = nearestMonster.transform.position + nearestMonster.transform.forward * 0.5f;
 
                 if (_tyrantEffectPrefab != null)
                 {
-                    //Quaternion spawnRot = Quaternion.identity;
                     GameManager.Instance.PoolManager.GetFromPool(_tyrantEffectPrefab,spawnPos,_tyrantEffectPrefab.transform.rotation);
                 }
                 GameManager.Instance.SoundManager.PlaySfxAt("Tyrant", spawnPos);
@@ -163,7 +161,6 @@ public class Skill_Collab : SkillBase
             }
             else
             {
-                Debug.Log("몬스터 베이스 없음");
             }
         }
         else

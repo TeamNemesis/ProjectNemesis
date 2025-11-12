@@ -15,7 +15,7 @@ public class CreditInteractor : RewardInteractableObject
     protected override IEnumerator RewardCoroutine()
     {
         yield return new WaitForSeconds(0.01f);
-        GameManager.Instance.CurrencyManager.AddCredit(500);
+        GameManager.Instance.CurrencyManager.AddCredit(100);
         OnRewardGiven?.Invoke();
         GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
     }

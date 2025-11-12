@@ -284,7 +284,6 @@ public class Skill_Five_Dash : ActiveTech
     {
         Vector3 spawnPos = player.transform.position + Vector3.up * 1f;
 
-        Debug.LogError("대쉬 시작");
         if (!bIsAttackReinForce)
         {
             //생성!
@@ -297,7 +296,6 @@ public class Skill_Five_Dash : ActiveTech
             //효과음
             GameManager.Instance.SoundManager.PlaySfxAt("AdrenalineRace", spawnPos);
 
-            Debug.LogError("공격력 증가");
             GameManager.Instance.PlayerStatManager.AddPlayerAttackDamage(_attackReinForce);
 
             bIsAttackReinForce = true;

@@ -194,8 +194,6 @@ MonoBehaviour:
   healthUI: {fileID: 0}
   healthUIPrefabPath: Prefabs/UI/MonsterHealthUI
   damageTextPrefab: {fileID: 0}
-  EnglishName: Elite Type-II
-  KoreanName: "\uC5D8\uB9AC\uD2B8 2\uD615"
   laserAttackCount: 0
   _poisonFieldDuration: 999
   _poisonFieldRadius: 12
@@ -209,7 +207,7 @@ MonoBehaviour:
   eliteBulletPrefab: {fileID: 5248596736412313402, guid: d48011a799ce2aa49b2e2b81fc593843, type: 3}
   grenadeObjectPrefab: {fileID: 691228176029213295, guid: 26fb37ec9009493459860efbbdc988d2, type: 3}
   bulletAttackCoolTime: 5
-  poisonLaserAttackCoolTime: 5
+  poisonLaserAttackCoolTime: 7
   poisonFieldAttackCoolTime: 10
 --- !u!54 &9123246349965142061
 Rigidbody:

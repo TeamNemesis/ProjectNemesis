@@ -316,7 +316,6 @@ public class Player : MonoBehaviour
         {
             if (_stateMachine.CurrentType != PlayerStateType.Move)
             {
-                Debug.Log("모드 전환");
                 _stateMachine.ChangeState(PlayerStateType.Move);
             }
             return;
@@ -452,6 +451,14 @@ public class Player : MonoBehaviour
         }
     }
 
+    public void OnAttackHitEvent()
+    {
+        if (_normalAttacker is PlayerBladeNormalAttacker blade)
+        {
+            blade.DoMeleeHit();
+        }
+    }
+
     public void OnAttackEndEvent()
     {
         if (_normalAttacker == null) return;
@@ -469,6 +476,16 @@ public class Player : MonoBehaviour
         }
 
         _normalAttacker.EndAttack();
+    }
+
+    public void OnInvincibleStartEvent()
+    {
+        _playerModel.SetIsInvincibility(true);
+    }
+
+    public void OnInvincibleEndEvent()
+    {
+        _playerModel.SetIsInvincibility(false);
     }
     #endregion
 

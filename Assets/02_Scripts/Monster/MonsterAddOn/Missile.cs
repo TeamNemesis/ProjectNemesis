@@ -177,6 +177,7 @@ public class Missile : MonsterBase
         {
             DieAttack();
         }
+        GameManager.Instance.SoundManager.PlaySfxAt("Monster_Grenade", transform.position);
         base.Die();
     }
 }
