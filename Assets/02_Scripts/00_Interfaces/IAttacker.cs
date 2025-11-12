@@ -14,10 +14,6 @@ public interface IAttacker
     bool RequestAttack();
     void EndAttack();
 
-    // 애니메이션 이벤트 라우팅 진입점
-    void OnAnimationFire();
-    void OnAnimationEnd();
-
     event Action OnAttackStarted;
     event Action OnAttackEnded;
 }

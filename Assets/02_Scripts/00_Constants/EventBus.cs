@@ -153,7 +153,9 @@ public static class EventBus
         IsRewardSelecting = false;
         _canTimerun = true;
         IsColosseumRoom = false;
-    }
+        ClearMonsters();
+
+		}
 }
 
 

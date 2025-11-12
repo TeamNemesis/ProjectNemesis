@@ -202,4 +202,9 @@ public class MobileInputController : MonoBehaviour
     {
         isInit = false;
     }
+
+    public void OnSetting()
+    {
+        GameManager.Instance.UIManager.OpenSettingPanel();
+    }
 }

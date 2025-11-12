@@ -158,7 +158,20 @@ public class PlayerModel : CharacterModelBase
 
         GameManager.Instance.PlayerStatManager.OnplayerAvoidanceChange += OnPlayerAvoidanceChange;
         GameManager.Instance.PlayerStatManager.OnplayerHitPercentChange += OnPlayerHitReducePercentChange;
-    }
+
+
+		}
+
+    public void AutoHeal()
+    {
+				if (GameManager.Instance.PlayerStatManager.playerStatDataDic["playerRestore"].CurrentLevel != 0)
+				{
+            
+					Heal((int)GameManager.Instance.PlayerStatManager.playerStatDataDic["playerRestore"].GetEffectiveValue());
+				}
+		}
+
+
 
     private void OnPlayerHitReducePercentChange(float reducePercent)
     {

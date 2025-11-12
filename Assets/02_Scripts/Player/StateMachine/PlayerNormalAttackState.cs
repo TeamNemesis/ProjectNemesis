@@ -18,11 +18,11 @@ public class PlayerNormalAttackState : PlayerStateBase
             cameraForward.Normalize();
             _player.Mover.Rotate(cameraForward);
         }
+
         // 현재 장착한 attacker 가져오기
         _attacker = _player.NormalAttacker;
         if (_attacker == null)
         {
-            // 안전장치: attacker가 없으면 즉시 Idle 요청
             _player.SetToIdle();
             return;
         }
@@ -30,9 +30,10 @@ public class PlayerNormalAttackState : PlayerStateBase
         // 중복 구독 방지
         _attacker.OnAttackEnded -= HandleAttackEnded;
         _attacker.OnAttackEnded += HandleAttackEnded;
-        
-        // 실제 Attack 로직 호출 (이 함수는 발사는 하지 않고 fallback 타이머만 설정하도록 설계됨)
-        _attacker.RequestAttack();
+
+        // 주의: Enter에서 RequestAttack() 호출하지 않음.
+        // Input 루트가 이미 RequestAttack을 호출하고 상태 전환을 트리거했어야 함.
+        // Enter는 애니메이터 세팅/상태 진입 초기화만 수행.
     }
 
     public override void Update()
@@ -43,12 +44,14 @@ public class PlayerNormalAttackState : PlayerStateBase
 
     public override void Exit()
     {
-        _player.SetIsNormalAttacking(false);
-
         if (_attacker != null)
         {
             _attacker.OnAttackEnded -= HandleAttackEnded;
             _attacker = null;
+        }
+        if (_player.NormalAttacker.WeaponType == WeaponType.Rifle)
+        {
+            _player.Animator.Animator.ResetTrigger("OnNormalAttack");
         }
     }
 

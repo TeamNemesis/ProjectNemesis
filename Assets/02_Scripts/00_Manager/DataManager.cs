@@ -12,6 +12,7 @@ public class DataManager : MonoBehaviour
     Dictionary<WeaponType, PlayerWeaponSet> _weaponSetMap = new();
     Dictionary<RewardType, RewardDataSO> _rewardDataMap = new();
     Dictionary<TechSelectPackType, RewardDataSO_TechPack> _techPackDataMap = new();
+    Dictionary<string, Sprite> _roomImageMap = new();
 
     // 딕셔너리는 public Dictionary => private dictionary 형태로 노출하면 안됨.
     // 외부에서 Add/Remove 함수 등으로 딕셔너리를 변경할 수 있기 때문.
@@ -20,6 +21,7 @@ public class DataManager : MonoBehaviour
     public IReadOnlyDictionary<WeaponType, PlayerWeaponSet> WeaponSetMap => _weaponSetMap;
     public IReadOnlyDictionary<RewardType, RewardDataSO> RewardDataMap => _rewardDataMap;
     public IReadOnlyDictionary<TechSelectPackType, RewardDataSO_TechPack> TechPackDataMap => _techPackDataMap;
+    public IReadOnlyDictionary<string, Sprite> RoomImageMap => _roomImageMap;
 
     /// <summary>
     /// ResourceManager.Initialize() 이후 호출.
@@ -37,6 +39,7 @@ public class DataManager : MonoBehaviour
         BuildRoomDataMap(roomDatas);
         BuildWeaponSetMap(resources.PlayerWeaponSets);
         BuildRewardMap(resources.RewardDataSOs);
+        BuildRoomImageMap(resources.DoorViewSprites);
     }
 
     void BuildRoomDataMap(RoomDataSO[] roomDatas)
@@ -117,6 +120,22 @@ public class DataManager : MonoBehaviour
             _rewardDataMap[reward.RewardType] = reward;
         }
 
+    }
+
+    void BuildRoomImageMap(Sprite[] roomImages)
+    {
+        _roomImageMap.Clear();
+        if (roomImages == null) return;
+        foreach (var img in roomImages)
+        {
+            if (img == null) continue;
+            if (_roomImageMap.ContainsKey(img.name))
+            {
+                Debug.LogWarning($"DataManager: 이미 '{img.name}' 이름의 룸 이미지가 존재합니다.");
+                continue;
+            }
+            _roomImageMap[img.name] = img;
+        }
     }
 
     // 조회 API

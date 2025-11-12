@@ -66,10 +66,7 @@ public class MapController : MonoBehaviour
         _doorDecider.Initialize();
         _monsterController.Initialize();
 
-        if (GameManager.Instance.PlayerStatManager.playerStatDataDic["playerRestore"].CurrentLevel!=0)
-        {
-            OnRoomStart += () => _player.playerModel.Heal((int)GameManager.Instance.PlayerStatManager.playerStatDataDic["playerRestore"].GetEffectiveValue());
-        }
+      
     }
 
     /// <summary>
@@ -145,7 +142,6 @@ public class MapController : MonoBehaviour
 
         // 방 생성 후 효과 처리
         GameManager.Instance.SoundManager.PlayBGM(room.RoomInfo.RoomType.ToString());
-
 
         // 상태 갱신
         UpdateCurrentRoomState(room);
@@ -447,12 +443,6 @@ public class MapController : MonoBehaviour
     void StartReward()
     {
         _currentRoom.SpawnReward();
-    }
-
-    IEnumerator GoToNextRoomRoutine()
-    {
-        yield return new WaitForSeconds(1.0f);
-        // 다음 방으로 이동 처리
     }
 
 #if UNITY_EDITOR
