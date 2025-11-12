@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
@@ -13,9 +14,10 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject _listPanel;
 
     [SerializeField] private Image _skillImage;
-    [SerializeField] private Text _skillScriptText;
-    [SerializeField] private Text _skillValueScriptText;
-    [SerializeField] private Text _skillLevelText;
+    [SerializeField] private TextMeshProUGUI _skillScriptText;
+    [SerializeField] private TextMeshProUGUI _skillValueScriptText;
+    [SerializeField] private TextMeshProUGUI _skillLevelText;
+    [SerializeField] private TextMeshProUGUI _skillNameText;
     [SerializeField] private Transform _parentContent;
     [SerializeField] private UpgradePanel _upgradePanel;
     [SerializeField] private RecordPanel _recordPanel;
@@ -146,6 +148,7 @@ public class UIManager : MonoBehaviour
         _skillScriptText.text = $"{data.skillIdx}\n" + (locale == "ko" ? data.skillScript : data.skillScriptEn);
         _skillValueScriptText.text = locale == "ko" ? data.skillValueScript : data.skillValueScriptEn;
         _skillLevelText.text = $"{data.skillLevel} / {data.skillMaxLevel}";
+        _skillNameText.text = $"{(locale == "ko" ? data.skillName : data.skillNameEn)}";
     }
     /// <summary>
     /// 언어 변경 시 UI 갱신
@@ -165,6 +168,7 @@ public class UIManager : MonoBehaviour
         _skillScriptText.text = null;
         _skillValueScriptText.text = null;
         _skillLevelText.text = null;
+        _skillNameText.text = null;
 
         foreach (Transform child in _parentContent)
         {
@@ -237,7 +241,7 @@ public class UIManager : MonoBehaviour
         _skillScriptText.text = null;
         _skillValueScriptText.text = null;
         _skillLevelText.text = null;
-
+        _skillNameText.text = null;
 
         Transform[] children = new Transform[content.childCount];
         for (int i = 0; i < content.childCount; i++)

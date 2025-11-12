@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Localization;
 using UnityEngine.UI;
@@ -9,9 +10,9 @@ public class SkillBtn : PoolableObject, IPointerEnterHandler, IPointerExitHandle
 		public SkillData skillData => _skillData;
 
 		[SerializeField] private Image _skillImage;
-		[SerializeField] private Text _skillScirpt;
-		[SerializeField] private Text _skillIDX;
-		[SerializeField] private Text _skillLevel;
+		[SerializeField] private TextMeshProUGUI _skillScirpt;
+		[SerializeField] private TextMeshProUGUI _skillIDX;
+		[SerializeField] private TextMeshProUGUI _skillLevel;
 		
 		[SerializeField] 
 		private float _currentTime;
