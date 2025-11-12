@@ -23,6 +23,7 @@ public class PlayerRifleSpecialAttacker : PlayerSpecialAttacker
     [SerializeField] Transform _firePoint;
 
     GameObject _chargeEffect;
+    AudioSource _chargeSFX;
 
     Coroutine _chargeRoutine;
     float _chargeTimer;
@@ -53,6 +54,7 @@ public class PlayerRifleSpecialAttacker : PlayerSpecialAttacker
         // owner에서 코루틴을 시작하여 차지 업데이트
         _chargeRoutine = _player.StartCoroutine(ChargeRoutine());
         _chargeEffect = GameManager.Instance.PoolManager.GetFromPool("Effect/RifleChargeEffect", _firePoint.position, _firePoint.rotation,_firePoint);
+        _chargeSFX = GameManager.Instance.SoundManager.PlaySfxAt("RifleChargeSFX", _firePoint.position, false, 1, 0.8f);
     }
 
     public override void StopChargeAndFire()
@@ -77,6 +79,7 @@ public class PlayerRifleSpecialAttacker : PlayerSpecialAttacker
 
         base.StopChargeAndFire(); // triggers events & EndSpecial
         GameManager.Instance.PoolManager.ReleaseToPool(_chargeEffect);
+        GameManager.Instance.SoundManager.StopSfx(_chargeSFX);
     }
 
     public override void CancelCharge()
@@ -186,5 +189,7 @@ public class PlayerRifleSpecialAttacker : PlayerSpecialAttacker
             }
         }
         GameManager.Instance.PoolManager.ReleaseToPool(_chargeEffect);
+        GameManager.Instance.SoundManager.StopSfx(_chargeSFX);
+        GameManager.Instance.SoundManager.PlaySfxAt("RifleChargeFireSFX", origin, false, 1, 1f);
     }
 }

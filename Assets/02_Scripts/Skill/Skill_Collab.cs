@@ -187,8 +187,8 @@ public class Skill_Collab : SkillBase
         //로드
         if (_apexPredatorPrefab == null)
         {
-            _predatorPrefab = Resources.Load<WeakenArea>("Prefabs/Effect/Skill/ApexPredator_Player");
-        }
+						_apexPredatorPrefab = Resources.Load<SkillEffect>("Prefabs/Effect/Skill/ApexPredator_Player");
+				}
 
 
     }
@@ -219,13 +219,17 @@ public class Skill_Collab : SkillBase
     {
         Vector3 position = monster.transform.position;
         position.y = 0;
+				if (_predatorPrefab == null || _apexPredatorPrefab == null)
+				{
+						Debug.LogError("PoolableObject 또는 prefab이 null입니다.");
+				}
         GameManager.Instance.PoolManager.GetFromPool(_predatorPrefab, position, Quaternion.identity, null, _predatorData).GetComponent<WeakenArea>().Initialize();
-        
-    }
-    #endregion
 
-    #region GravityFlare
-    public void ActiveGravityFlare(SkillData skill)
+		}
+		#endregion
+
+		#region GravityFlare
+		public void ActiveGravityFlare(SkillData skill)
     {
         if(_explosionPrefab == null)
         {

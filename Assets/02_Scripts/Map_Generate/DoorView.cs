@@ -1,5 +1,6 @@
 ﻿using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// 문의 보여지는 부분을 담당하는 클래스
@@ -7,8 +8,9 @@ using UnityEngine;
 public class DoorView : MonoBehaviour
 {
     [SerializeField] TextMeshProUGUI _rewardText;
+    [SerializeField] Image _rewardImage;
 
-    public void SetReward(RoomInfo roomInfo)
+    public void SetRewardView(RoomInfo roomInfo)
     {
         // 방의 정보에 따라 보상 결정
         if (roomInfo.TryGetTechSelect(out var tech))

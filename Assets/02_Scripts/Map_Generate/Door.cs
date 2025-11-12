@@ -74,7 +74,7 @@ public class Door : MonoBehaviour
         //_interactableManager?.Register(_doorInteractor);
 
         // 뷰에 정보 넘겨주고 뷰 비활성화(초기 상태)
-        _doorView.SetReward(info);
+        _doorView.SetRewardView(info);
         _doorView.ToggleReward(false);
 
         //_isInitialized = true;
