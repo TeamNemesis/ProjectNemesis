@@ -94,8 +94,8 @@ public class GameManager : MonoBehaviour
         _instance._dataManager.Initialize(_instance._resourceManager);
         _skillManager.InitializeSkillManager();
         StartCoroutine(_uiManager.InitializeManager());
-        _currencyManager.Initialize();
         _serverManager.Initialize();
+        _currencyManager.Initialize();
         _poolManager.Initialize(_instance._resourceManager);
         _soundManager.Initialize(_resourceManager);
     }
