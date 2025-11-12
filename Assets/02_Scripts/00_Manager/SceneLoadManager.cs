@@ -39,6 +39,7 @@ public class SceneLoadManager : MonoBehaviour
         GameManager.Instance.PlayerStatManager.UploadToFirebase();
         GameManager.Instance.skillManager.Reset();
         EventBus.ResetEvent();
+        GameManager.Instance.CurrencyManager.SetCreditFromServer();
         SceneManager.LoadScene(Constants.SCENE_NAME_PLAY);
     }
 
