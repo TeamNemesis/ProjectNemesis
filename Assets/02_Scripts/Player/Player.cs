@@ -451,6 +451,14 @@ public class Player : MonoBehaviour
         }
     }
 
+    public void OnAttackHitEvent()
+    {
+        if (_normalAttacker is PlayerBladeNormalAttacker blade)
+        {
+            blade.DoMeleeHit();
+        }
+    }
+
     public void OnAttackEndEvent()
     {
         if (_normalAttacker == null) return;
