@@ -29,4 +29,16 @@ public class PlayerAnimationEventForwarder : MonoBehaviour
         _player.OnAttackEndEvent();
         //Debug.Log("OnAttackEndEvent forwarded to Player.");
     }
+
+    public void OnInvincibleStartEvent()
+    {
+        if (_player == null) return;
+        _player.OnInvincibleStartEvent();
+    }
+
+    public void OnInvincibleEndEvent()
+    {
+        if (_player == null) return;
+        _player.OnInvincibleEndEvent();
+    }
 }
