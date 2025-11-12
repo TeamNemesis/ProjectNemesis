@@ -140,8 +140,11 @@ public class MapController : MonoBehaviour
             return;
         }
 
-        // 방 생성 후 효과 처리
-        GameManager.Instance.SoundManager.PlayBGM(room.RoomInfo.RoomType.ToString());
+        // 방 생성 후 효과 처리(Start방은 없음)
+        if(room.RoomInfo.RoomType != RoomType.Start)
+        {
+            GameManager.Instance.SoundManager.PlayBGM(room.RoomInfo.RoomType.ToString());
+        }
 
         // 상태 갱신
         UpdateCurrentRoomState(room);
