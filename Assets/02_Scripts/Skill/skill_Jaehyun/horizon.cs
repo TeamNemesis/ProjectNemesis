@@ -62,7 +62,6 @@ public class horizon : PoolableObject,IInitializePoolable
                 if (target != null)
                 {
                     target.TakeDamage(damage, null);
-                    //Debug.Log("데미지 적용!");
                 }
             }
         }
