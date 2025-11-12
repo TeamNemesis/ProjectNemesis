@@ -17,6 +17,12 @@ public class PlayerAnimationEventForwarder : MonoBehaviour
         //Debug.Log("OnAttackFireEvent forwarded to Player.");
     }
 
+    public void OnAttackHitEvent()
+    {
+        _player.OnAttackHitEvent();
+        //Debug.Log("OnAttackHitEvent forwarded to Player.");
+    }
+
     public void OnAttackEndEvent()
     {
         if (_player == null) return;
