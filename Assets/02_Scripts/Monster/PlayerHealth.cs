@@ -24,7 +24,6 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     public void TakeDamage(float damage, Transform attacker = null)
     {
         currentHealth -= (int)damage; 
-        Debug.Log("Player Health: " + currentHealth);
         if (currentHealth <= 0)
         {
             Destroy(gameObject);

@@ -93,7 +93,6 @@ public class elecVortex : MonoBehaviour
             if (target != null)
             {
                 target.TakeDamage(damage, null);
-                Debug.Log("데미지 적용!");
             }
         }
     }

@@ -41,7 +41,6 @@ public class electricMan : MonoBehaviour
                     GameManager.Instance.PoolManager.GetFromPool(_eletricBeingPrefab,spawnPos,_player.transform.rotation,_player.transform);
                     //효과음
                     GameManager.Instance.SoundManager.PlaySfxAt("ElectricBeing", spawnPos);
-                    //Debug.Log("전기인간 데미지 적용!");
                 }
                 // 타이머 갱신(데미지 적용 시간)
                 lastDamageTime[monster] = Time.time;

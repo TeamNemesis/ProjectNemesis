@@ -110,6 +110,5 @@ public class Grenade_test : MonoBehaviour
             }
         }
 
-        Debug.Log("폭발 위치" + position);
     }
 }
