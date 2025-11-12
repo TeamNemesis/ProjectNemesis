@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 /// <summary>
@@ -62,7 +63,7 @@ public class RoomSpawner : MonoBehaviour
         GameObject roomObj = null;
         try
         {
-            roomObj = Instantiate(prefab, position, Quaternion.identity, parent);
+            roomObj = GameManager.Instance.PoolManager.GetFromPool($"Prefabs/Map/Rooms/" + roomInfo.RoomType.ToString(), position, Quaternion.identity, parent);
         }
         catch (Exception ex)
         {
@@ -75,7 +76,7 @@ public class RoomSpawner : MonoBehaviour
         if (room == null)
         {
             Debug.LogError($"RoomSpawner: Instantiated prefab '{prefab.name}' has no Room component. Destroying instance.");
-            Destroy(roomObj);
+            GameManager.Instance.PoolManager.ReleaseToPool(roomObj);
             return null;
         }
 
@@ -88,7 +89,7 @@ public class RoomSpawner : MonoBehaviour
         catch (Exception ex)
         {
             Debug.LogError($"RoomSpawner: Exception during InitializeFromRoomData: {ex}");
-            Destroy(roomObj);
+            GameManager.Instance.PoolManager.ReleaseToPool(roomObj);
             return null;
         }
 

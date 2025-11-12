@@ -2073,8 +2073,9 @@ GameObject:
   m_Component:
   - component: {fileID: 3292964910245856048}
   - component: {fileID: 4947942057351305763}
+  - component: {fileID: 2638547529245355896}
   m_Layer: 0
-  m_Name: Laboratory
+  m_Name: Lab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2131,6 +2132,18 @@ MonoBehaviour:
   - {fileID: 5388599727319912745}
   - {fileID: 6224622537590684683}
   - {fileID: 3332043851456456210}
+--- !u!114 &2638547529245355896
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2101363221020420442}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc722e1497ebce346b87739747660c61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2127181419953886707
 GameObject:
   m_ObjectHideFlags: 0
