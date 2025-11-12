@@ -32,6 +32,8 @@ public class PlaySceneView : MonoBehaviour
     [SerializeField] TextMeshProUGUI _interactionTitleText;
     [SerializeField] TextMeshProUGUI _interactionDescriptionText;
 
+
+
     [Header("----- 튜토리얼 패널 -----")]
     [SerializeField] GameObject _tutorialPanel;
     [SerializeField] List<TextMeshProUGUI> _tutorialTexts = new();    // 튜토리얼 텍스트 리스트

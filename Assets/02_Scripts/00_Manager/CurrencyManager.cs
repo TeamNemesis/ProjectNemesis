@@ -30,11 +30,18 @@ public class CurrencyManager : MonoBehaviour
     /// </summary>
     public event Action<int> OnChromeChanged;
 
-    public void Initialize()
+    public async void Initialize()
     {
         _currentCredit = _startingCredit;
+
+        _currentChrome = await GameManager.Instance.serverManager.downloadManager.GetChrome();
+
+
+
         OnCreditChanged?.Invoke(_currentCredit);
     }
+
+  
 
     /// <summary>
     /// 외부에서 현재 화폐 상태를 가져올 수 있도록 업데이트 이벤트를 강제로 발생시킵니다.

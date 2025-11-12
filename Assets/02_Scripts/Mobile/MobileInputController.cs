@@ -11,6 +11,7 @@ public class MobileInputController : MonoBehaviour
     [SerializeField] private Button specialAttackButton;
     [SerializeField] private Button grenadeButton;
     [SerializeField] private GameObject mobilePanel;
+    [SerializeField] private Button interActionBtn;
 
     [Header("연결 대상")]
     [SerializeField] private Player player;
@@ -45,7 +46,23 @@ public class MobileInputController : MonoBehaviour
 
         grenadeRect = grenadeButton.GetComponent<RectTransform>();
 
+        player.OnInteractableDetected+=SetBtnOn;
+        player.OnInteractableMissed+=SetBtnOff;
+        interActionBtn.onClick.AddListener(player.ExecuteInteraction);
+        SetBtnOff();
+
         isInit = true;
+    }
+
+    public void SetBtnOn(IInteractable i)
+    {
+        interActionBtn.gameObject.SetActive(true);
+    }
+
+    public void SetBtnOff()
+    {
+        interActionBtn.gameObject.SetActive(false);
+
     }
 
     private void Update()
