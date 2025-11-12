@@ -103,6 +103,7 @@ public class NebulaVanguard : MonsterBase
             {
                 monsterAnimator.SetTrigger(Attack_Hash);
             }
+            GameManager.Instance.SoundManager.PlaySfxAt("Monster_Slash", transform.position);
 
             // 몬스터 기준 중심 위치 설정
             Vector3 center = transform.position + transform.forward * (_box_Length / 2f);

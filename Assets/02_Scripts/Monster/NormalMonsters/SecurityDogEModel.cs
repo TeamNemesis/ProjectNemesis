@@ -169,6 +169,7 @@ public class SecurityDogEModel : MonsterBase
                                                RigidbodyConstraints.FreezeRotation;
             }
 
+            GameManager.Instance.SoundManager.PlaySfxAt("Monster_Bark", transform.position);
             yield return new WaitForSeconds(jumpPrepareTime);
 
             // 점프 방향 계산
