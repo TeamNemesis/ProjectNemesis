@@ -302,6 +302,8 @@ public class DownloadManager : MonoBehaviour
             .Child("clearTimes")
             .Push()
             .SetValueAsync(data);
+
+        await SetChrome();
     }
 
     public async Task<List<(string email, float bestTime, long savedAt)>> GetClearTimeRanking()
@@ -343,5 +345,48 @@ public class DownloadManager : MonoBehaviour
         }
 
         return rankingList.OrderBy(r => r.bestTime).ToList();
+    }
+
+    public async Task<int> GetChrome()
+    {
+        var user = FirebaseAuth.DefaultInstance.CurrentUser;
+        if (user == null) return 0;
+
+        string uid = user.UserId;
+
+        var snapshot = await FirebaseDatabase.DefaultInstance
+            .RootReference
+            .Child("users")
+            .Child(uid)
+            .Child("chrome")
+            .GetValueAsync();
+
+        if (snapshot.Exists && int.TryParse(snapshot.Value.ToString(), out int chrome))
+        {
+            return chrome;
+        }
+
+        return 0;
+    }
+
+    public async void SetChromeToServer()
+    {
+        if (GameManager.Instance.CurrencyManager.CurrentChrome <= 0) return;
+        await SetChrome();
+    }
+
+    public async Task SetChrome()
+    {
+        var user = FirebaseAuth.DefaultInstance.CurrentUser;
+        if (user == null) return;
+
+        string uid = user.UserId;
+
+        await FirebaseDatabase.DefaultInstance
+            .RootReference
+            .Child("users")
+            .Child(uid)
+            .Child("chrome")
+            .SetValueAsync(GameManager.Instance.CurrencyManager.CurrentChrome);
     }
 }
