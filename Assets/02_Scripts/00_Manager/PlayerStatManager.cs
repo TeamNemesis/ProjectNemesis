@@ -534,9 +534,6 @@ public class PlayerStatManager : MonoBehaviour
     {
         if (!File.Exists(Constants.FILE_PATH_PLAYERSTAT))
         {
-            Debug.LogError("❌ 오류: 파일 없음 " + Constants.FILE_PATH_PLAYERSTAT);
-
-
             int retryCount = 0;
             int maxRetries = 30;
             int delayMilliseconds = 500;
