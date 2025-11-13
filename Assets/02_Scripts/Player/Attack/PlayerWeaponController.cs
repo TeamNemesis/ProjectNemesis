@@ -50,11 +50,9 @@ public class PlayerWeaponController : MonoBehaviour
             // 같은 무기 타입이면 교체하지 않음
             if (newWeaponType == _currentWeapon.WeaponType)
             {
-                Debug.Log("이미 같은 무기를 장착 중");
                 return;
             }
 
-            Debug.Log("무기 교체");
             // 다른 무기 타입이면 기존 무기 제거 후
             Destroy(_currentWeapon.gameObject);
             // 새로운 무기 장착

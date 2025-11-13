@@ -11,7 +11,6 @@ public class HealPackInteractor_Shop : HealPackInteractor, IShopItem
         {
             return base.TryInteract(subject);
         }
-        Debug.Log("Heal Pack을 구매할 수 있는 크레딧이 부족합니다.");
         return false;
     }
 

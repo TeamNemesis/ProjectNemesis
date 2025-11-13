@@ -61,7 +61,6 @@ public class InteractionController : MonoBehaviour
                 if (interactable is WeaponInteractor w)
                 {
                     OnWeaponInteract?.Invoke(w.WeaponType);
-                    Debug.Log(w.WeaponType + " 무기와 상호작용 이벤트 발행됨");
                 }
                 break;
             case InteractableType.Door:
@@ -73,13 +72,11 @@ public class InteractionController : MonoBehaviour
                         return;
                     }
                     OnDoorInteract?.Invoke(d.RoomInfo);
-                    Debug.Log(d.RoomInfo.RoomType + " 방으로 가는 문과 상호작용 이벤트 발행됨");
                 }
                 break;
             case InteractableType.Reward:
                 if(interactable is RewardInteractableObject rewardObj)
                 {
-                    Debug.Log("보상 상호작용 오브젝트와 상호작용함");
                 }
                 break;
 
