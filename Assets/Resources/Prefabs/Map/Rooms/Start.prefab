@@ -325,6 +325,37 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.9953869, y: 2.4487975, z: 1.1210946}
   m_Center: {x: 0.00000035585458, y: 0.5504818, z: -0.08832003}
+--- !u!1 &3226123846671091369
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8258711361459108004}
+  m_Layer: 0
+  m_Name: RewardSpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8258711361459108004
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3226123846671091369}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -7, y: 0.8, z: 22}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7387264202515823065}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4099049807350132457
 GameObject:
   m_ObjectHideFlags: 0
@@ -906,6 +937,7 @@ Transform:
   - {fileID: 3131053746399385653}
   - {fileID: 3870276333676928536}
   - {fileID: 8664851958295278096}
+  - {fileID: 8258711361459108004}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6250941506966402304
@@ -920,14 +952,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96cb30745f93fc04ea9b128fc7d071d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rewardSpawnPoints: []
+  _rewardSpawnPoints:
+  - {fileID: 8258711361459108004}
   _monsterSpawnPoints: []
   _playerSpawnPoint: {fileID: 4874448332470138584}
   _doorSpawnPointsLeft:
   - {fileID: 3870276333676928536}
   _doorSpawnPointsRight: []
-  _weapons: []
-  _cheatItems: []
 --- !u!114 &3063331701517702809
 MonoBehaviour:
   m_ObjectHideFlags: 0
