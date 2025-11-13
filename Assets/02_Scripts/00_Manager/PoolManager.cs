@@ -289,7 +289,5 @@ public class PoolManager : MonoBehaviour
             Destroy(container);
         }
         poolContainers.Clear();
-
-        Debug.Log("모든 풀이 초기화되었습니다.");
     }
 }
