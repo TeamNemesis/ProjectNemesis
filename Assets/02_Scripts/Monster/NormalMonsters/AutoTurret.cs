@@ -10,7 +10,7 @@ public class AutoTurret : MonsterBase
 
     private void Update()
     {
-        if (isDead || _target == null) return;
+        if (isDead || _target == null || baseState == MonsterState.Die) return;
         if (isStunned) return;
         switch (baseState)
         {
