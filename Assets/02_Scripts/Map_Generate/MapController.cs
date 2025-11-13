@@ -62,11 +62,10 @@ public class MapController : MonoBehaviour
         _doorSpawner.DoorInteracted += OnDoorInteracted;
         _monsterController.OnAllMonsterDefeated += StartReward;
 
-        _roomSpawner.Initialize();
         _doorDecider.Initialize();
         _monsterController.Initialize();
 
-      
+        _roomSpawner.SpawnRoom(new RoomInfo(RoomType.Start, null, null));
     }
 
     /// <summary>
@@ -461,6 +460,7 @@ public class MapController : MonoBehaviour
             StopCoroutine(_goNextRoomRoutine);
             _goNextRoomRoutine = null;
         }
+
     }
 
 #if UNITY_EDITOR

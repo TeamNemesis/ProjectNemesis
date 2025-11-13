@@ -19,8 +19,8 @@ public class StartRoom : Room
             Quaternion.identity);
 
         RewardInteractableObject rewardInteractableObject = techPackPrefab.GetComponent<RewardInteractableObject>();
-        rewardInteractableObject.Initialize();
         rewardInteractableObject.OnRewardGiven += RewardSelectionFinished;
+        rewardInteractableObject.Initialize();
 
         return new IInteractable[] { techPackPrefab.GetComponent<IInteractable>() };
     }

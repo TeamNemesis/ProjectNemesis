@@ -14,13 +14,6 @@ public class RoomSpawner : MonoBehaviour
 
     Coroutine _roomSpawnedEventRoutine;
 
-    public void Initialize()
-    {
-        // 시작 시 StartRoom 생성 (예시)
-        var startInfo = new RoomInfo(RoomType.Start, null, null);
-        SpawnRoom(startInfo);
-    }
-
     /// <summary>
     /// RoomInfo를 받아 해당 Room을 생성한다. position/parent를 지정하지 않으면 (0,0,0)과 씬 루트에 생성된다.
     /// </summary>
