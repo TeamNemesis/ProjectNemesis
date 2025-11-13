@@ -20,6 +20,8 @@ public class PlayerStatManager : MonoBehaviour
             .ToList();
     }
 
+    private bool bIsInit = false;
+
     private List<PlayerStatJsonData> _playerjsonData = new List<PlayerStatJsonData>();
 
     #region 공격력 
@@ -502,9 +504,9 @@ public class PlayerStatManager : MonoBehaviour
     }
 
 
-    public void Initialize()
+    public async Task Initialize()
     {
-        InitPlayerStat();
+       await InitPlayerStat();
 
         foreach (var stat in _playerStatDataDic.Values)
         {
@@ -512,15 +514,23 @@ public class PlayerStatManager : MonoBehaviour
         }
         EventBus.OnMonsterHit += TakeDamage;
 
-        
+        bIsInit = true;
     }
 
-    public void InitPlayerStat()
+    public async Task WaitForInitAsync()
     {
-        ReadJsonFile();
+        while (!bIsInit)
+        {
+            await Task.Delay(100); // 100ms마다 확인
+        }
     }
 
-    public async void ReadJsonFile()
+    public async Task InitPlayerStat()
+    {
+       await ReadJsonFile();
+    }
+
+    public async Task ReadJsonFile()
     {
         if (!File.Exists(Constants.FILE_PATH_PLAYERSTAT))
         {
@@ -528,7 +538,7 @@ public class PlayerStatManager : MonoBehaviour
 
 
             int retryCount = 0;
-            int maxRetries = 10;
+            int maxRetries = 30;
             int delayMilliseconds = 500;
              GameManager.Instance.serverManager.downloadManager.DownloadPlayerStatToLocal();
 

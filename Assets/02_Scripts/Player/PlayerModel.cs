@@ -136,10 +136,13 @@ public class PlayerModel : CharacterModelBase
         base.Die();
         EventBus.SetCanTimeRun(false);
     }
-    public override void Initialize()
+    public override async void Initialize()
     {
         // 플레이어 json파일 데이터에서 최대체력 받아옴
         base.Initialize();
+
+        await GameManager.Instance.PlayerStatManager.WaitForInitAsync();
+
         SettingMaxHp((int)GameManager.Instance.PlayerStatManager.playerStatDataDic["playerHP"].GetEffectiveValue());
         SetCurrentHp(maxHealth); // 초기화 시 현재 체력을 최대 체력으로 설정
 
