@@ -197,7 +197,6 @@ public class DebuffHandler : MonoBehaviour
             {
                 if (existing.remainingTime > newDebuff.debuffDuration)
                 {
-                    Debug.Log("지속시간");
                     return;
                 }
                 existing.remainingTime = newDebuff.debuffDuration;

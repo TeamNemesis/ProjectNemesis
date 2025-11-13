@@ -331,7 +331,6 @@ public class ServerManager : MonoBehaviour
         if (popUpPanel != null)
             popUpPanel.SetActive(true);
 
-        Debug.Log(message);
 
         if (popUpConfirmBtn != null)
         {

@@ -560,7 +560,6 @@ public class PlayerStatManager : MonoBehaviour
             string jsonText = File.ReadAllText(Constants.FILE_PATH_PLAYERSTAT);
             _playerjsonData = JsonConvert.DeserializeObject<List<PlayerStatJsonData>>(jsonText);
             InitSkillDictionary();
-            Debug.Log("JSON 파일 불러오기 성공");
         }
         catch (System.Exception ex)
         {

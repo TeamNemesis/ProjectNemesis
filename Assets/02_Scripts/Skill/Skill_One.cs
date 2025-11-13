@@ -123,7 +123,7 @@ public class Skill_One : SkillBase
                 break;
 
             default:
-                Debug.Log("에러, 배정되지 않은 idx");
+                Debug.LogError("에러, 배정되지 않은 idx");
                 break;
         }
 

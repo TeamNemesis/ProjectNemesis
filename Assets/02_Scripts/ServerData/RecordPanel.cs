@@ -19,7 +19,6 @@ public class RecordPanel : MonoBehaviour
 		{
 				var list = await GameManager.Instance.serverManager.downloadManager.GetClearTimeRanking();
 
-				Debug.Log(list.Count);
 				for (int i = 0; i < Mathf.Min(list.Count, 10); i++)
 				{
 						var (email, bestTime, savedAt) = list[i];

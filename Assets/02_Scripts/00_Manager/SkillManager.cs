@@ -502,7 +502,6 @@ public class SkillManager : MonoBehaviour
             targetSkill.ChooseSkill();
             owner.ChooseSkill(targetSkill);
             owner.ActivateSkill(targetSkill);
-            Debug.Log($"✅ 스킬 {skillIdx} 활성화 완료: {targetSkill.skillName}");
         }
         else
         {

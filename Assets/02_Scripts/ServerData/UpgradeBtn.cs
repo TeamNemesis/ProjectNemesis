@@ -21,7 +21,6 @@ public class UpgradeBtn : MonoBehaviour
 
     public void UpdatePanelData()
     {
-        Debug.Log(_playerStatData.Column);
         _statNameText.text = GameManager.Instance.languageManager.GetLocalizedText(_playerStatData.Column);
 
         if (_playerStatData.CurrentLevel == _playerStatData.MaxLevel)
