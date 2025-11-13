@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
+using System.Threading.Tasks;
 
 public class PlayerStatManager : MonoBehaviour
 {
@@ -519,12 +520,29 @@ public class PlayerStatManager : MonoBehaviour
         ReadJsonFile();
     }
 
-    public void ReadJsonFile()
+    public async void ReadJsonFile()
     {
         if (!File.Exists(Constants.FILE_PATH_PLAYERSTAT))
         {
             Debug.LogError("❌ 오류: 파일 없음 " + Constants.FILE_PATH_PLAYERSTAT);
-            return;
+
+
+            int retryCount = 0;
+            int maxRetries = 10;
+            int delayMilliseconds = 500;
+             GameManager.Instance.serverManager.downloadManager.DownloadPlayerStatToLocal();
+
+            while (!File.Exists(Constants.FILE_PATH_PLAYERSTAT) && retryCount < maxRetries)
+            {
+                await Task.Delay(delayMilliseconds);
+                retryCount++;
+            }
+
+            if (!File.Exists(Constants.FILE_PATH_PLAYERSTAT))
+            {
+                Debug.LogError("downloadManager is still null after retries.");
+                return;
+            }
         }
 
         try
