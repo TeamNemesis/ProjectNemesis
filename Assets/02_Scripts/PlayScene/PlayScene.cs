@@ -76,7 +76,6 @@ public class PlayScene : MonoBehaviour
 						return;
 				}
 				_mapController.Initialize(_player);
-				_mapController.OnRoomStart += _player.playerModel.AutoHeal;
 				if (_playSceneView == null)
 				{
 						Debug.LogError("PlaySceneView가 할당되지 않았습니다!");
@@ -115,6 +114,7 @@ public class PlayScene : MonoBehaviour
 				}
 
 
+				_mapController.OnRoomStart += _player.playerModel.AutoHeal;
 		}
 
 		private void Update()

@@ -1157,9 +1157,10 @@ GameObject:
   - component: {fileID: 7771290977480036205}
   - component: {fileID: 1203402357829256920}
   - component: {fileID: 3342720146616157893}
-  m_Layer: 0
+  - component: {fileID: 3380263259150379349}
+  m_Layer: 8
   m_Name: Sci-Fi Barrel_Grey (1)
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1232,6 +1233,29 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!136 &3380263259150379349
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1709439548830629051}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.34291044
+  m_Height: 1.2353787
+  m_Direction: 1
+  m_Center: {x: 7.993606e-15, y: 0.6176894, z: -0.00000013411045}
 --- !u!1 &1946326279676929870
 GameObject:
   m_ObjectHideFlags: 0
@@ -2576,9 +2600,9 @@ GameObject:
   - component: {fileID: 5076510357630954784}
   - component: {fileID: 6615987201241238064}
   - component: {fileID: 2681892709594923166}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: ScifiBox (1)
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
@@ -3444,9 +3468,9 @@ GameObject:
   - component: {fileID: 3390294104716038935}
   - component: {fileID: 8600611958146483265}
   - component: {fileID: 4791323406951574515}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: ScifiBox (2)
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
@@ -4566,9 +4590,9 @@ GameObject:
   - component: {fileID: 1753732370465145427}
   - component: {fileID: 3785452486429072571}
   - component: {fileID: 4850913234474764929}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: ScifiBox
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
@@ -5631,9 +5655,10 @@ GameObject:
   - component: {fileID: 4136514712878230939}
   - component: {fileID: 6065611275243042650}
   - component: {fileID: 6469113830553334295}
-  m_Layer: 0
+  - component: {fileID: 5695979584765283480}
+  m_Layer: 8
   m_Name: Sci-Fi Barrel_Grey
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5706,6 +5731,29 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!136 &5695979584765283480
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6968231945678359570}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.34291044
+  m_Height: 1.2353787
+  m_Direction: 1
+  m_Center: {x: -7.993606e-15, y: 0.6176894, z: -0.00000013411045}
 --- !u!1 &7018131320210985297
 GameObject:
   m_ObjectHideFlags: 0

@@ -15,7 +15,7 @@ public class SquareDecalEffect : PoolableObject
     /// </summary>
     public void Play(float duration, Transform rotationTarget, Vector3 rotationOffset, float distance = 40f)
     {
-        if (countSquare == null) return;
+        if (countSquare == null ) return;
 
         targetScale = Vector3.one;
 

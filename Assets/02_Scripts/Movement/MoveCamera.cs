@@ -56,7 +56,7 @@ public class MoveCamera : MonoBehaviour
             MeshRenderer rend = hit.collider.GetComponent<MeshRenderer>();
             if (rend != null)
             {
-                //Debug.Log(hit.collider.gameObject.name);
+                
                 SetAlpha(rend, transparentAlpha);
                 lastRenderer = rend; // 이번 프레임의 투명화 대상 저장
             }

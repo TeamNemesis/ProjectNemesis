@@ -68,7 +68,7 @@ public abstract class SkillBase : MonoBehaviour
         TextAsset jsonFile = Resources.Load<TextAsset>(_skillDataPath);
         if (jsonFile == null)
         {
-            Debug.Log("오류 : 파일 없음 " + _skillDataPath);
+            Debug.LogError("오류 : 파일 없음 " + _skillDataPath);
             return;
         }
         else
@@ -112,7 +112,7 @@ public abstract class SkillBase : MonoBehaviour
         }
         else
         {
-            Debug.Log($"{skillData}가 없음");
+            Debug.LogError($"{skillData}가 없음");
         }
 
     }

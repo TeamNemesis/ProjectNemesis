@@ -385,6 +385,7 @@ isMobile = true;
 
     public void OnGoToMainClicked()
     {
+        GameManager.Instance.serverManager.downloadManager.SetChromeToServer();
         GameManager.Instance.SceneLoadManager.LoadIntroScene();
     }
 

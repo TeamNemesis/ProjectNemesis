@@ -116,7 +116,7 @@ public class Skill_Collab : SkillBase
                 break;
 
             default:
-                Debug.Log("배정되지 않은 idx");
+                Debug.LogError("배정되지 않은 idx");
                 break;
 
         }

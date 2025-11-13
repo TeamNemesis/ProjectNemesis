@@ -7,9 +7,9 @@ using UnityEngine.SceneManagement;
 public class SceneLoadManager : MonoBehaviour
 {
  
-    public void LoadIntroScene()
+    public async void LoadIntroScene()
     {
-        GameManager.Instance.PlayerStatManager.Initialize();
+        await GameManager.Instance.PlayerStatManager.Initialize();
         GameManager.Instance.PlayerStatManager.UploadToFirebase();
         GameManager.Instance.skillManager.Reset();
         EventBus.ResetEvent();
@@ -33,9 +33,9 @@ public class SceneLoadManager : MonoBehaviour
         GameManager.Instance.PoolManager.ReleaseToPool(Laboratory);
     }
 
-    public void LoadPlayScene()
+    public async void LoadPlayScene()
     {
-        GameManager.Instance.PlayerStatManager.Initialize();
+        await GameManager.Instance.PlayerStatManager.Initialize();
         GameManager.Instance.PlayerStatManager.UploadToFirebase();
         GameManager.Instance.skillManager.Reset();
         EventBus.ResetEvent();

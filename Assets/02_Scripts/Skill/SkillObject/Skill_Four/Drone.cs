@@ -10,6 +10,7 @@ public class Drone : PoolableObject
         Idle, // 몬스터 감지 못함
         Attack // 공격
     }
+    private PlayerModel _playerModel;
 
     /// <summary>
     /// 공격 적중시 이벤트 실행
@@ -96,6 +97,7 @@ public class Drone : PoolableObject
 
     public void InitializeDrone(Player player)
     {
+        _playerModel = player.playerModel;
         player.playerModel.OnDieEvent += ReleaseToPool;
 
         if (GameManager.Instance.skillManager.attackTech != null)
@@ -211,6 +213,10 @@ public class Drone : PoolableObject
 
     public void OnDisable()
     {
+        if(!_playerModel.isDead)
+        {
+            return;
+        }
         ReleaseObject();
         GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
     }
