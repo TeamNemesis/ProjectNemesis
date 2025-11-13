@@ -19,7 +19,8 @@ public class PlayScene : MonoBehaviour
 		[SerializeField] bool _isColosseumRoom = false;               // 콜로세움 방 여부
 
 		public MapController MapController => _mapController;
-		public Player player => _player;
+	public TimeChecker TimeChecker => _timeChecker;
+    public Player player => _player;
 
 		private void Awake()
 		{
@@ -81,7 +82,7 @@ public class PlayScene : MonoBehaviour
 						Debug.LogError("PlaySceneView가 할당되지 않았습니다!");
 						return;
 				}
-				_playSceneView.Initialize();
+		_playSceneView.Initialize(this);
 				if (_cameraMover == null)
 				{
 						Debug.LogError("카메라 무버가 할당되지 않았습니다!");
