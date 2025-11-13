@@ -41,6 +41,9 @@ public class SceneLoadManager : MonoBehaviour
         EventBus.ResetEvent();
         GameManager.Instance.CurrencyManager.SetCreditFromServer();
         SceneManager.LoadScene(Constants.SCENE_NAME_PLAY);
+
+        // 맵에 있는 모든 풀링 오브젝트들을 릴리즈
+        GameManager.Instance.PoolManager.ReleaseAllPools();
     }
 
     public void LoadLoginScene()

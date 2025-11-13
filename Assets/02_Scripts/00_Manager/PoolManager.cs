@@ -260,6 +260,21 @@ public class PoolManager : MonoBehaviour
         return (available, inUse, available + inUse);
     }
 
+    /// <summary>
+    /// 모든 풀 해제
+    /// </summary>
+    public void ReleaseAllPools()
+    {
+        foreach (var poolName in inUsePools.Keys)
+        {
+            var inUseList = inUsePools[poolName];
+            for (int i = inUseList.Count - 1; i >= 0; i--)
+            {
+                GameObject obj = inUseList[i];
+                ReleaseToPool(obj);
+            }
+        }
+    }
 
 
     /// <summary>

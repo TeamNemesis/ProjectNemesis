@@ -22,6 +22,12 @@ public class DoorInteractor : InteractableObject
     // 파생에서 event를 다시 선언하지 마세요; base.OnInteracted를 그대로 사용합니다.
     public override event Action<IInteractable> OnInteracted;
 
+    private void OnEnable()
+    {
+        if(_interactionCollider == null)
+            _interactionCollider = GetComponent<Collider>();
+    }
+
     /// <summary>
     /// 상호작용 시도. 성공하면 true 반환(상호작용 시작), 실패하면 false 반환.
     /// </summary>
@@ -89,12 +95,6 @@ public class DoorInteractor : InteractableObject
             // 이미 파괴된 경우 레퍼런스 초기화
             _interactionCollider = null;
         }
-    }
-
-    private void OnDestroy()
-    {
-        // OnDestroy에서 명시적으로 null 처리하면 후속 호출에서 안전
-        _interactionCollider = null;
     }
 
     public override void TryGetInteracrtionKey(out string title, out string description)

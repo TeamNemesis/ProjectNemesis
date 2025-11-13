@@ -399,7 +399,9 @@ public class Player : MonoBehaviour
         if (weapon.WeaponType == WeaponType.Blade)
         {
             PlayerBladeNormalAttacker playerBladeNormalAttacker = _normalAttacker as PlayerBladeNormalAttacker;
+            PlayerBladeSpecialAttacker playerBladeSpecialAttacker = _specialAttacker as PlayerBladeSpecialAttacker;
             playerBladeNormalAttacker?.Initialize(this);
+            playerBladeSpecialAttacker?.Initialize(this);
         }
 
         _animator.SetAnimator(_currentWeaponSet.AnimController);
