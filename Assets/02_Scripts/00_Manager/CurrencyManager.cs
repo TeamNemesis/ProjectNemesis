@@ -110,7 +110,6 @@ public class CurrencyManager : MonoBehaviour
     {
         if (_currentCredit < amount)
         {
-            Debug.Log("돈이 부족합니다.");
             return false;
         }
 

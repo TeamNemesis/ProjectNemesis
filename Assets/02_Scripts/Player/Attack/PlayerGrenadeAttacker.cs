@@ -76,7 +76,6 @@ public class PlayerGrenadeAttacker : MonoBehaviour
     {
         if (_currentCount <= 0)
         {
-            Debug.Log("유탄이 없습니다.");
             return false;
         }
 
