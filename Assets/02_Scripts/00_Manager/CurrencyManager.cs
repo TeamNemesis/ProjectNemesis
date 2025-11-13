@@ -1,6 +1,6 @@
 using System;
 using UnityEngine;
-
+using System.Threading.Tasks;
 /// <summary>
 /// 플레이어의 화폐(골드, 크롬 등)를 관리하는 매니저 클래스입니다.
 /// </summary>
@@ -29,17 +29,43 @@ public class CurrencyManager : MonoBehaviour
     /// 매개변수는 변경된 후 최종적으로 갖고있는 현재 크롬 양입니다.
     /// </summary>
     public event Action<int> OnChromeChanged;
+        
+		public void Initialize()
+		{
+				_currentCredit = _startingCredit;
 
-    public void Initialize()
+		}
+
+    public async void SetCreditFromServer()
     {
-        _currentCredit = _startingCredit;
-        OnCreditChanged?.Invoke(_currentCredit);
-    }
+				// downloadManager가 null일 경우 재시도
+				int retryCount = 0;
+				int maxRetries = 10;
+				int delayMilliseconds = 500;
 
-    /// <summary>
-    /// 외부에서 현재 화폐 상태를 가져올 수 있도록 업데이트 이벤트를 강제로 발생시킵니다.
-    /// </summary>
-    public void GetCurrentCurrency()
+				while (GameManager.Instance.serverManager.downloadManager == null && retryCount < maxRetries)
+				{
+						await Task.Delay(delayMilliseconds);
+						retryCount++;
+				}
+
+				if (GameManager.Instance.serverManager.downloadManager == null)
+				{
+						Debug.LogError("downloadManager is still null after retries.");
+						return;
+				}
+
+				_currentChrome = await GameManager.Instance.serverManager.downloadManager.GetChrome();
+
+				OnCreditChanged?.Invoke(_currentCredit);
+		}
+
+
+
+		/// <summary>
+		/// 외부에서 현재 화폐 상태를 가져올 수 있도록 업데이트 이벤트를 강제로 발생시킵니다.
+		/// </summary>
+		public void GetCurrentCurrency()
     {
         OnChromeChanged?.Invoke(_currentChrome);
         OnCreditChanged?.Invoke(_currentCredit);
