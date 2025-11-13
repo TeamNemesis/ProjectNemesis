@@ -456,6 +456,11 @@ public class MapController : MonoBehaviour
             StopCoroutine(_doorInteractionRoutine);
             _doorInteractionRoutine = null;
         }
+        if (_goNextRoomRoutine != null)
+        {
+            StopCoroutine(_goNextRoomRoutine);
+            _goNextRoomRoutine = null;
+        }
     }
 
 #if UNITY_EDITOR

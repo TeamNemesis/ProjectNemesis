@@ -107,7 +107,7 @@ public class PlayerBladeSpecialAttacker : PlayerSpecialAttacker
             return;
         }
 
-        Vector3 spawnPos = (spawnPoint != null) ? spawnPoint.position : transform.position;
+        Vector3 spawnPos = (spawnPoint != null) ? spawnPoint.position : transform.position + Vector3.up;
         Quaternion spawnRot = (spawnPoint != null) ? spawnPoint.rotation : transform.rotation;
 
         // 스케일/데미지 계산
@@ -119,7 +119,7 @@ public class PlayerBladeSpecialAttacker : PlayerSpecialAttacker
         var blade = bladeObj.GetComponent<BladeProjectile>();
         if (blade != null)
         {
-            //blade.Init(damage, bladeSpeed, bladeLifetime, scale, _player.gameObject);
+            blade.Initialize(damage, bladeSpeed, bladeLifetime, scale, _player.gameObject);
         }
         else
         {
