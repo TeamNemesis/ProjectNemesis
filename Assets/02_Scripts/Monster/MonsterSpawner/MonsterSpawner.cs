@@ -199,7 +199,6 @@ public class MonsterSpawner : MonoBehaviour
             waves.Add(currentWave);
         }
 
-        Debug.Log($"총 {waves.Count}개의 웨이브로 분할됨.");
         return waves;
     }
 
@@ -211,7 +210,6 @@ public class MonsterSpawner : MonoBehaviour
         // 모든 웨이브 완료시
         if (currentWaveIndex >= waitingWaves.Count)
         {
-            Debug.Log("모든 웨이브 완료");
             OnAllWavesCompleted?.Invoke();
             return;
         }
@@ -220,7 +218,6 @@ public class MonsterSpawner : MonoBehaviour
         currentWaveIndex++;
         isWaveActive = true;
 
-        Debug.Log($"웨이브 {currentWaveIndex} 시작 남은 웨이브: {waitingWaves.Count - currentWaveIndex}");
         SpawnWave(currentWave);
     }
 
@@ -231,7 +228,6 @@ public class MonsterSpawner : MonoBehaviour
     {
         if (spawnPositions == null || spawnPositions.Count == 0)
         {
-            Debug.LogError("스폰 위치 설정 요망");
             return;
         }
 
@@ -338,7 +334,6 @@ public class MonsterSpawner : MonoBehaviour
             if (currentWaveIndex >= waitingWaves.Count)
             {
                 // Elite 스폰이거나 마지막 웨이브인 경우 즉시 완료 처리
-                Debug.Log("모든 몬스터 처치 완료");
                 OnAllWavesCompleted?.Invoke();
             }
             else
@@ -362,7 +357,6 @@ public class MonsterSpawner : MonoBehaviour
     {
         if (currentWaveIndex >= waitingWaves.Count)
         {
-            Debug.Log("모든 웨이브 완료");
             OnAllWavesCompleted?.Invoke();
             return;
         }
@@ -376,7 +370,6 @@ public class MonsterSpawner : MonoBehaviour
     {
         if (activeMonsters == null || activeMonsters.Count == 0)
         {
-            Debug.Log("KillAllActiveMonsters: 제거할 몬스터 없음");
             return;
         }
 
@@ -389,16 +382,11 @@ public class MonsterSpawner : MonoBehaviour
                 {
                     monsterBase.TakeDamage(9999f); // 또는 monsterBase.TakeDamage(9999)
                 }
-                else
-                {
-                    Debug.LogWarning($"KillAllActiveMonsters: MonsterBase 없음 - {monsterObj.name}");
-                }
             }
         }
 
         activeMonsters.Clear();
         isWaveActive = false;
-        Debug.Log("KillAllActiveMonsters: 모든 몬스터 제거 완료");
     }
     public List<PoolableObject> GetMonsterPrefabs()
     {
@@ -409,7 +397,6 @@ public class MonsterSpawner : MonoBehaviour
     {
         if (prefab == null)
         {
-            Debug.LogWarning("SpawnSpecificMonster: prefab이 null입니다.");
             return;
         }
 
