@@ -163,6 +163,8 @@ public class NebulaChemicalDisease : MonsterBase
         float smooth = Mathf.SmoothStep(0f, 1f, tDist);
         float parabolaHeight = Mathf.Lerp(maxParabolaHeight, minParabolaHeight, smooth);
 
+        Vector3 prevPos = startPos;
+
         while (elapsed < duration)
         {
             elapsed += Time.deltaTime;
@@ -172,7 +174,18 @@ public class NebulaChemicalDisease : MonsterBase
             float parabola = 4f * parabolaHeight * (t - t * t);
             flatPos.y += parabola;
 
+            // 위치 갱신
             grenade.transform.position = flatPos;
+
+            // 진행 방향 계산 후 회전 적용
+            Vector3 direction = flatPos - prevPos;
+            if (direction.sqrMagnitude > 0.0001f)
+            {
+                grenade.transform.rotation = Quaternion.LookRotation(direction);
+            }
+
+            prevPos = flatPos;
+
             yield return null;
         }
 

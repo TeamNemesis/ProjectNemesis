@@ -35,7 +35,7 @@ Material:
   - _SPECULAR_SETUP
   - _SURFACE_TYPE_TRANSPARENT
   m_InvalidKeywords: []
-  m_LightmapFlags: 1
+  m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: 3000
@@ -112,7 +112,7 @@ Material:
     - _AlphaToMask: 0
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
-    - _BumpScale: 1
+    - _BumpScale: 4
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Cull: 2
@@ -128,7 +128,7 @@ Material:
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
-    - _Parallax: 0.02
+    - _Parallax: 0.08
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _Smoothness: 1
@@ -141,9 +141,9 @@ Material:
     - _WorkflowMode: 0
     - _ZWrite: 0
     m_Colors:
-    - _BaseColor: {r: 0.6981132, g: 0.38527945, b: 0.38527945, a: 1}
-    - _Color: {r: 0.6981132, g: 0.38527942, b: 0.38527942, a: 1}
-    - _EmissionColor: {r: 6.3541465, g: 6.3541465, b: 6.3541465, a: 1}
+    - _BaseColor: {r: 0.8584906, g: 0.56287825, b: 0.56287825, a: 1}
+    - _Color: {r: 0.8584906, g: 0.56287825, b: 0.56287825, a: 1}
+    - _EmissionColor: {r: 8.40325, g: 4.4790907, b: 4.4790907, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
