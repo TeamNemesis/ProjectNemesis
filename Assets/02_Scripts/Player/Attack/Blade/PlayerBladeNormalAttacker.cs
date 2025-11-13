@@ -44,35 +44,26 @@ public class PlayerBladeNormalAttacker : PlayerNormalAttacker
     /// </summary>
     public override bool RequestAttack()
     {
-        Debug.Log($"RequestAttack called. CanStartAttack={CanStartAttack()}, IsAttacking={IsAttacking}, acceptBuffer={_acceptInputBuffer}, comboIndex={_comboIndex}");
-
         if (CanStartAttack())
         {
-            Debug.Log("RequestAttack called", this);
             _comboIndex = 0;
             _queuedAttack = false;
             StartAttack();
-            Debug.Log("RequestAttack -> StartAttack (combo started step 1)");
             return true;
         }
 
         // 변경: 공격 중이면 input buffer 여부와 무관하게 큐잉 허용(최대 콤보 제한만 적용)
         if (IsAttacking)
         {
-            Debug.Log("RequestAttack called", this);
             if (_comboIndex < maxCombo - 1)
             {
                 _queuedAttack = true;
-                Debug.Log($"RequestAttack -> queued attack (will go to step {_comboIndex + 2})");
                 return true;
             }
             else
             {
-                Debug.Log("RequestAttack -> cannot queue: already at final combo step");
             }
         }
-
-        Debug.Log("RequestAttack -> rejected");
         return false;
     }
 
@@ -109,16 +100,12 @@ public class PlayerBladeNormalAttacker : PlayerNormalAttacker
 
             if (sameStatePlaying && stateInfo.normalizedTime < 0.9f)
             {
-#if UNITY_EDITOR
-                Debug.Log($"PlayerBlade: prevented re-trigger of Blade_{step} (normalized={stateInfo.normalizedTime:F2})");
-#endif
                 return;
             }
 
             // 파라미터 세팅 후 트리거 발생
             _player.Animator?.Animator.SetInteger("BladeStep", step);
             _player.Animator?.Animator.SetTrigger("OnBladeAttack");
-            Debug.Log($"Attack() -> triggered Animator Blade step {step}");
 
             // 기존 fallback 코루틴 취소 후, 현재 재생중인 클립 길이를 얻어 그 길이 + margin 으로 fallback 시작
             if (_fallbackRoutine != null)
@@ -140,13 +127,11 @@ public class PlayerBladeNormalAttacker : PlayerNormalAttacker
             clipLength = Mathf.Max(clipLength, fallbackDelay);
 
             _fallbackRoutine = _player.StartCoroutine(FallbackEndCoroutineWithDelay(clipLength));
-            Debug.Log($"Fallback scheduled in {clipLength:F2}s (based on clip length or fallbackDelay)");
         }
         else
         {
             // Animator 래퍼 사용 가능하면 래퍼 호출
             _player.Animator?.TriggerBladeAttackStep(step);
-            Debug.Log($"Attack() -> used PlayerAnimator helper for Blade step {step}");
 
             if (_fallbackRoutine != null)
             {
@@ -163,21 +148,17 @@ public class PlayerBladeNormalAttacker : PlayerNormalAttacker
     /// </summary>
     public void OnAnimationAttackEnd()
     {
-        Debug.Log($"OnAnimationAttackEnd called. queued={_queuedAttack}, comboIndex={_comboIndex}");
-
         // fallback 취소
         if (_fallbackRoutine != null && _player != null)
         {
             _player.StopCoroutine(_fallbackRoutine);
             _fallbackRoutine = null;
-            Debug.Log("OnAnimationAttackEnd: canceled fallback coroutine");
         }
 
         if (_queuedAttack && _comboIndex < maxCombo - 1)
         {
             _queuedAttack = false;
             _comboIndex++;
-            Debug.Log("콤보 이어가기: " + (_comboIndex + 1));
 
             StartAttack();
 
@@ -230,7 +211,6 @@ public class PlayerBladeNormalAttacker : PlayerNormalAttacker
         _comboIndex = 0;
         _queuedAttack = false;
         _comboResetRoutine = null;
-        Debug.Log("ComboResetCoroutine: combo reset to 0");
     }
 
     IEnumerator FallbackEndCoroutineWithDelay(float delay)
@@ -239,7 +219,6 @@ public class PlayerBladeNormalAttacker : PlayerNormalAttacker
         _fallbackRoutine = null;
         _queuedAttack = false;
         _comboIndex = 0;
-        Debug.Log("FallbackEndCoroutine: fallback triggered, combo reset and EndAttack");
         EndAttack();
     }
 
@@ -265,6 +244,5 @@ public class PlayerBladeNormalAttacker : PlayerNormalAttacker
         _acceptInputBuffer = false;
 
         base.EndAttack();
-        Debug.Log("EndAttack called");
     }
 }

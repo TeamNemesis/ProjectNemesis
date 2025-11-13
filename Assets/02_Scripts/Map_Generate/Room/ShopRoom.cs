@@ -103,7 +103,6 @@ public class ShopRoom : Room
                 continue;
             }
             RewardInteractableObject rewardInteractableObject = interact as RewardInteractableObject;
-            Debug.Log("상점방에서 보상 초기화 호출");
             rewardInteractableObject.Initialize();
 
             spawned.Add(interact);

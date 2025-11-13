@@ -10,7 +10,6 @@ public class MutantPackInteractor_Shop : MutantPackInteractor, IShopItem
         {
             return base.TryInteract(subject);
         }
-        Debug.Log("Mutant Pack을 구매할 수 있는 크레딧이 부족합니다.");
         return false;
     }
     public bool Purchase()
