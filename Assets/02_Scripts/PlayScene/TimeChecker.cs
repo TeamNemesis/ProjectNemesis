@@ -11,6 +11,8 @@ public class TimeChecker : MonoBehaviour
     [SerializeField] float _timeScale = 1f;
 
     Coroutine _timeCheckRoutine;
+    
+    public float CurrentTime => _currentTime;   
 
     public event Action<float> OnTimeUpdated;
 

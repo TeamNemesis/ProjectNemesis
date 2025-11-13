@@ -312,7 +312,6 @@ public static class Constants
     {
         if (targetList == null)
         {
-            Debug.LogWarning("리스트가 null입니다.");
             return null;
         }
 
@@ -320,7 +319,6 @@ public static class Constants
 
         if (targetList.Count == 0)
         {
-            Debug.LogWarning("리스트가 비어있습니다.");
             return null;
         }
 

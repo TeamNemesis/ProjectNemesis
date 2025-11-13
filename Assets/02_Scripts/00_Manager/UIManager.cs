@@ -288,6 +288,7 @@ public class UIManager : MonoBehaviour
             Cursor.visible = !isLock; // 커서 보이게/숨기기
         }
         Time.timeScale = 1.0f;
+        EventBus.SetCanTimeRun(isLock);
     }
     public void SetInputAtIntroSettingPanel()
     {

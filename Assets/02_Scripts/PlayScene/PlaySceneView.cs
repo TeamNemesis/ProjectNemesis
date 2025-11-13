@@ -42,7 +42,9 @@ public class PlaySceneView : MonoBehaviour
 
     [Header("----- 게임 승리 및 오버 패널 -----")]
     [SerializeField] GameObject _gameOverPanel;
+    
     [SerializeField] GameObject _gameClearPanel;
+    [SerializeField] TextMeshProUGUI _gameClearTimeText;
 
     [Header("----- 게임 타이머 -----")]
     [SerializeField] TextMeshProUGUI _gameTimerText;
@@ -78,12 +80,14 @@ public class PlaySceneView : MonoBehaviour
     };
 
     Coroutine _roomLoadingRoutine;
+    PlayScene _playScene;
 
     public event Action<DoorInteractor> OnRoomLoadingComplete;
 
-    public void Initialize()
+    public void Initialize(PlayScene playScene)
     {
         EventBus.OnBossDead += ShowGameClearPanel;
+        _playScene = playScene;
 
         GameManager.Instance.CurrencyManager.GetCurrentCurrency();
         HideInteractionUI();
@@ -338,6 +342,9 @@ isMobile = true;
 
     public void ShowGameClearPanel()
     {
+        TimeSpan timeSpan = TimeSpan.FromSeconds(_playScene.TimeChecker.CurrentTime);
+        // 현재 시간을 분 : 초 형식으로 변환하여 표시
+        _gameClearTimeText.text = string.Format("{0:D2}:{1:D2}", timeSpan.Minutes, timeSpan.Seconds);
         _gameClearPanel.SetActive(true);
     }
 
