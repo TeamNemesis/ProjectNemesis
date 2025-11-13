@@ -90,6 +90,7 @@ public class Bullet : PoolableObject
         {
             EventBus.MonsterHit(WeaponType.Rifle, ATTACKTYPE.NORMAL, other.transform,transform);
             GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
+            GameManager.Instance.PoolManager.GetFromPool("Effect/BulletHitEffect", other.transform.position + Vector3.up, Quaternion.identity);
         }
         else if(other.CompareTag(Constants.TAG_WALL))
         {

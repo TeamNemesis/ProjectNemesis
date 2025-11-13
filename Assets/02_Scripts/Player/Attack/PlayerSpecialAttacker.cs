@@ -12,9 +12,9 @@ public abstract class PlayerSpecialAttacker : MonoBehaviour
     public abstract WeaponType WeaponType { get; }
 
     // 생명주기/상태 이벤트
-    public event Action OnSpecialStarted;
-    public event Action<float> OnSpecialChargeUpdated; // ratio 0..1
-    public event Action OnSpecialFired;
+    public virtual event Action OnSpecialStarted;
+    public virtual event Action<float> OnSpecialChargeUpdated; // ratio 0..1
+    public virtual event Action OnSpecialFired;
     public virtual event Action OnSpecialEnded;
     public virtual event Action OnSpecialCancelled;
 
