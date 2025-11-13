@@ -1,129 +1,177 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 
+/// <summary>
+/// 검기(Blade) 특수공격 구현
+/// - 차지 시간에 따라 크기(스케일)와 대미지 비례.
+/// - StartCharge / StopChargeAndFire / CancelCharge 를 오버라이드하여 코루틴으로 차지 처리.
+/// </summary>
 public class PlayerBladeSpecialAttacker : PlayerSpecialAttacker
 {
+    [Header("Blade Settings")]
+    [SerializeField] GameObject bladePrefab;            // 발사할 검기 프리팹 (BladeProjectile 컴포넌트 포함 권장)
+    [SerializeField] Transform spawnPoint;              // 발사 위치(없으면 this.transform 사용)
+    [SerializeField] float maxChargeTime = 2.0f;        // 완전 차지까지 시간(초)
+    [SerializeField] float minScale = 0.6f;             // 최소 스케일
+    [SerializeField] float maxScale = 2.0f;             // 최대 스케일
+    [SerializeField] float baseDamage = 10f;            // 차지 0일 때 대미지
+    [SerializeField] float maxDamage = 35f;             // 완전 차지 시 대미지
+    [SerializeField] float bladeSpeed = 12f;            // 발사 속도
+    [SerializeField] float bladeLifetime = 3f;          // 검기 수명
+
+    Coroutine _chargeCoroutine;
+    float _currentChargeRatio = 0f; // 0..1
+
+    // 이벤트 오버라이드
+    public override event Action OnSpecialStarted;
+    public override event Action<float> OnSpecialChargeUpdated; // ratio 0..1
+    public override event Action OnSpecialFired;
+    public override event Action OnSpecialEnded;
+    public override event Action OnSpecialCancelled;
+
     public override WeaponType WeaponType => WeaponType.Blade;
 
-    [Header("Grapple Settings")]
-    [SerializeField] private float maxDistance = 20f;
-    [SerializeField] private float moveSpeed = 25f;
-    [SerializeField] private float stopDistance = 1.5f;
-    [SerializeField] private LayerMask grappleMask; // 벽, 기둥 등
+    public override void Initialize(Player player)
+    {
+        base.Initialize(player);
+    }
 
-    [SerializeField] private LineRenderer line; // 프리팹
-
-    private Vector3 targetPoint;
-    private Coroutine grappleRoutine;
-    private bool isMoving = false;
-    private bool hasHit = false;
+    public override bool RequestSpecial()
+    {
+        // 예: 쿨타임이나 다른 조건을 추가하고 싶으면 여기서 처리
+        return base.RequestSpecial();
+    }
 
     public override void StartCharge()
     {
-        base.StartCharge();
+        if (_player == null)
+        {
+            Debug.LogWarning("PlayerBladeSpecialAttacker: owner is null. Call Initialize first.");
+        }
+
+        if (IsCharging || IsActive) return;
+
+        IsCharging = true;
+        OnSpecialStarted?.Invoke();
+
+        // 시작하면 기존 코루틴 정리 후 새로 시작
+        if (_chargeCoroutine != null) StopCoroutine(_chargeCoroutine);
+        _chargeCoroutine = StartCoroutine(ChargeRoutine());
+    }
+
+    public override void StopChargeAndFire()
+    {
+        // 버튼 해제 시 수동 발사
+        if (!IsCharging) return;
+
+        // 정지하고 현재 ratio로 발사
+        IsCharging = false;
+        if (_chargeCoroutine != null)
+        {
+            StopCoroutine(_chargeCoroutine);
+            _chargeCoroutine = null;
+        }
+
+        Fire();
+
+        OnSpecialFired?.Invoke();
+        EndSpecial();
+    }
+
+    public override void CancelCharge()
+    {
+        // 강제 취소 (피격 등)
+        if (!IsCharging) return;
+
+        IsCharging = false;
+        if (_chargeCoroutine != null)
+        {
+            StopCoroutine(_chargeCoroutine);
+            _chargeCoroutine = null;
+        }
+
+        OnSpecialCancelled?.Invoke();
+        EndSpecial();
     }
 
     protected override void Fire()
     {
-        if (isMoving || hasHit) return; // 중복 방지
+        // 발사 시작
+        IsActive = true;
 
-        Vector3 origin = _player.transform.position + Vector3.up * 1f;
-        Vector3 dir = _player.transform.forward;
-        RaycastHit hit;
-
-        hasHit = true; // 한 번만 공격 허용
-
-
-        // 명중
-        if (Physics.Raycast(origin, dir, out hit, maxDistance, grappleMask))
+        if (bladePrefab == null)
         {
-            Debug.Log($"갈고리 명중: {hit.collider.name}");
-            targetPoint = hit.point;
-            ShowLine(origin, targetPoint);
-            var dmgTarget = hit.transform.GetComponent<IDamageable>();
-            if (dmgTarget != null)
-                dmgTarget.TakeDamage(50, null);     //데미지 적용
+            Debug.LogWarning("PlayerBladeSpecialAttacker: bladePrefab is not set.");
+            IsActive = false;
+            return;
+        }
 
-            grappleRoutine = _player.StartCoroutine(GrappleMove());
+        Vector3 spawnPos = (spawnPoint != null) ? spawnPoint.position : transform.position;
+        Quaternion spawnRot = (spawnPoint != null) ? spawnPoint.rotation : transform.rotation;
+
+        // 스케일/데미지 계산
+        float scale = Mathf.Lerp(minScale, maxScale, _currentChargeRatio);
+        float damage = Mathf.Lerp(baseDamage, maxDamage, _currentChargeRatio);
+
+        GameObject bladeObj = Instantiate(bladePrefab, spawnPos, spawnRot);
+        // BladeProjectile 스크립트가 있다면 초기화
+        var blade = bladeObj.GetComponent<BladeProjectile>();
+        if (blade != null)
+        {
+            //blade.Init(damage, bladeSpeed, bladeLifetime, scale, _player.gameObject);
         }
         else
         {
-            Debug.Log("갈고리 명중 실패");
-            ShowLine(origin, origin + dir * maxDistance);
-            _player.StartCoroutine(InstantFadeOut());
-            EndSpecial();
+            // 없으면 기본적으로 스케일 적용하고 forward 방향으로 이동시키는 간단한 처리
+            bladeObj.transform.localScale = Vector3.one * scale;
+            var rb = bladeObj.GetComponent<Rigidbody>();
+            if (rb != null)
+            {
+                rb.linearVelocity = bladeObj.transform.forward * bladeSpeed;
+            }
+            Destroy(bladeObj, bladeLifetime);
         }
     }
 
-    IEnumerator GrappleMove()
+    IEnumerator ChargeRoutine()
     {
-        isMoving = true;
-        _player.SetCanMove(false);
-        _player.SetIsSpecialAttacking(true);
+        float elapsed = 0f;
+        _currentChargeRatio = 0f;
+        RaiseChargeUpdated(_currentChargeRatio);
 
-        Vector3 start = _player.transform.position;
-
-        while (true)
+        while (IsCharging)
         {
-            Vector3 pos = _player.transform.position;
-            Vector3 toTarget = targetPoint - pos;
-            float dist = toTarget.magnitude;
+            elapsed += Time.deltaTime;
+            _currentChargeRatio = Mathf.Clamp01(elapsed / maxChargeTime);
+            RaiseChargeUpdated(_currentChargeRatio);
 
-            if (dist < stopDistance)
-                break;
-
-            // 이동 (지면 높이 유지)
-            Vector3 next = pos + toTarget.normalized * moveSpeed * Time.deltaTime;
-            next.y = GetGroundY(next); // 떠오름 방지
-
-            _player.transform.position = next;
-
-            // 라인 갱신
-            if (line != null)
+            // 자동 발사: 최대 차지에 도달하면 자동으로 발사
+            if (elapsed >= maxChargeTime)
             {
-                line.SetPosition(0, _player.transform.position + Vector3.up * 1f);
-                line.SetPosition(1, targetPoint);
+                IsCharging = false;
+                _chargeCoroutine = null;
+
+                Fire();
+                OnSpecialFired?.Invoke();
+                EndSpecial();
+                yield break;
             }
 
             yield return null;
         }
-
-        Debug.Log(" 도착 완료");
-
-        _player.StartCoroutine(InstantFadeOut());
-        isMoving = false;
-
-        _player.SetCanMove(true);
-        _player.SetIsSpecialAttacking(false);
-
-        EndSpecial();
     }
 
-    private float GetGroundY(Vector3 position)
+    protected override void EndSpecial()
     {
-        //  도착지점에서 지면 높이 탐지 (떠오름 방지)
-        if (Physics.Raycast(position + Vector3.up * 2f, Vector3.down, out RaycastHit groundHit, 10f, LayerMask.GetMask("Ground")))
+        base.EndSpecial();
+        // 정리
+        _currentChargeRatio = 0f;
+        RaiseChargeUpdated(_currentChargeRatio);
+        if (_chargeCoroutine != null)
         {
-            return groundHit.point.y;
+            StopCoroutine(_chargeCoroutine);
+            _chargeCoroutine = null;
         }
-        return position.y; // 없으면 그대로
-    }
-
-    private void ShowLine(Vector3 start, Vector3 end)
-    {
-        if (line == null) return;
-        line.enabled = true;
-        line.positionCount = 2;
-        line.SetPosition(0, start);
-        line.SetPosition(1, end);
-        line.startColor = line.endColor = Color.red;
-    }
-
-    private IEnumerator InstantFadeOut()
-    {
-        yield return new WaitForSeconds(0.1f);
-        if (line != null)
-            line.enabled = false;
-        hasHit = false; // 다음 공격 가능하게 초기화
     }
 }
