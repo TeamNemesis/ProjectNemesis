@@ -46,7 +46,7 @@ public class SquareDecalEffect : PoolableObject
             {
                 Vector3 offset = rotationTarget.forward * distanceFromTarget;
                 Vector3 newPos = rotationTarget.position + offset;
-                newPos.y = 0.1f;
+                newPos.y = 1.5f;
                 transform.position = newPos;
 
                 transform.rotation = Quaternion.Euler(rotationOffset.x, rotationTarget.eulerAngles.y + rotationOffset.y,rotationOffset.z);
