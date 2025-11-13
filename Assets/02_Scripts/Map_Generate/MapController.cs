@@ -140,8 +140,11 @@ public class MapController : MonoBehaviour
             return;
         }
 
-        // 방 생성 후 효과 처리
-        GameManager.Instance.SoundManager.PlayBGM(room.RoomInfo.RoomType.ToString());
+        // 방 생성 후 효과 처리(Start방은 없음)
+        if(room.RoomInfo.RoomType != RoomType.Start)
+        {
+            GameManager.Instance.SoundManager.PlayBGM(room.RoomInfo.RoomType.ToString());
+        }
 
         // 상태 갱신
         UpdateCurrentRoomState(room);
@@ -415,7 +418,7 @@ public class MapController : MonoBehaviour
                 if (door == null) continue;
                 if (door.gameObject.scene.IsValid())
                 {
-                    Destroy(door.gameObject);
+                    GameManager.Instance.PoolManager.ReleaseToPool(door.gameObject);   
                 }
                 else
                 {
@@ -430,7 +433,7 @@ public class MapController : MonoBehaviour
         {
             if (_currentRoom.gameObject.scene.IsValid())
             {
-                Destroy(_currentRoom.gameObject);
+                GameManager.Instance.PoolManager.ReleaseToPool(_currentRoom.gameObject);
             }
             else
             {
@@ -443,6 +446,16 @@ public class MapController : MonoBehaviour
     void StartReward()
     {
         _currentRoom.SpawnReward();
+    }
+
+    private void OnDisable()
+    {
+        // 코루틴 정리
+        if (_doorInteractionRoutine != null)
+        {
+            StopCoroutine(_doorInteractionRoutine);
+            _doorInteractionRoutine = null;
+        }
     }
 
 #if UNITY_EDITOR

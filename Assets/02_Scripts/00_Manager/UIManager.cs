@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
-using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -13,9 +14,10 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject _listPanel;
 
     [SerializeField] private Image _skillImage;
-    [SerializeField] private Text _skillScriptText;
-    [SerializeField] private Text _skillValueScriptText;
-    [SerializeField] private Text _skillLevelText;
+    [SerializeField] private TextMeshProUGUI _skillScriptText;
+    [SerializeField] private TextMeshProUGUI _skillValueScriptText;
+    [SerializeField] private TextMeshProUGUI _skillLevelText;
+    [SerializeField] private TextMeshProUGUI _skillNameText;
     [SerializeField] private Transform _parentContent;
     [SerializeField] private UpgradePanel _upgradePanel;
     [SerializeField] private RecordPanel _recordPanel;
@@ -46,27 +48,44 @@ public class UIManager : MonoBehaviour
     {
         int savedIndex = PlayerPrefs.HasKey(Constants.RESOLUTION_PREF_KEY) ? PlayerPrefs.GetInt(Constants.RESOLUTION_PREF_KEY) : 0;
 
+
+        // 퀄리티 설정 (유효한 인덱스만)
+        if (savedIndex >= 0 && savedIndex <= 3)
+        {
+            QualitySettings.SetQualityLevel(savedIndex);
+        }
+        else
+        {
+            Debug.LogError("해당 품질 인덱스 없음");
+            return;
+        }
+
+        // 카메라 자동 탐색
+        Camera cam = Camera.main;
+        if (cam == null)
+        {
+            Debug.LogWarning("MainCamera 태그가 지정된 카메라를 찾을 수 없습니다.");
+            return;
+        }
+
+        var cameraData = cam.GetUniversalAdditionalCameraData();
+
         switch (savedIndex)
         {
-            case 0: // default 가장 높음
+            case 0: // 최고
+            case 1: // 높음
+                cameraData.renderPostProcessing = true;
+                cameraData.antialiasing = AntialiasingMode.FastApproximateAntialiasing;
+                break;
 
-                QualitySettings.SetQualityLevel(0);
-
-                break;
-            case 1: // High
-                QualitySettings.SetQualityLevel(1);
-                break;
-            case 2: // Middle
-                QualitySettings.SetQualityLevel(2);
-                break;
-            case 3: // Low
-                QualitySettings.SetQualityLevel(3);
-                break;
-            default:
-                Debug.LogWarning("저장된 해상도 인덱스가 유효하지 않습니다.");
+            case 2: // 중간
+            case 3: // 낮음
+                cameraData.renderPostProcessing = false;
+                cameraData.antialiasing = AntialiasingMode.None;
                 break;
         }
     }
+
 
     private void ApplySavedLanguage()
     {
@@ -86,7 +105,7 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    
+
 
     public IEnumerator InitializeManager()
     {
@@ -146,6 +165,7 @@ public class UIManager : MonoBehaviour
         _skillScriptText.text = $"{data.skillIdx}\n" + (locale == "ko" ? data.skillScript : data.skillScriptEn);
         _skillValueScriptText.text = locale == "ko" ? data.skillValueScript : data.skillValueScriptEn;
         _skillLevelText.text = $"{data.skillLevel} / {data.skillMaxLevel}";
+        _skillNameText.text = $"{(locale == "ko" ? data.skillName : data.skillNameEn)}";
     }
     /// <summary>
     /// 언어 변경 시 UI 갱신
@@ -165,6 +185,7 @@ public class UIManager : MonoBehaviour
         _skillScriptText.text = null;
         _skillValueScriptText.text = null;
         _skillLevelText.text = null;
+        _skillNameText.text = null;
 
         foreach (Transform child in _parentContent)
         {
@@ -237,7 +258,7 @@ public class UIManager : MonoBehaviour
         _skillScriptText.text = null;
         _skillValueScriptText.text = null;
         _skillLevelText.text = null;
-
+        _skillNameText.text = null;
 
         Transform[] children = new Transform[content.childCount];
         for (int i = 0; i < content.childCount; i++)
@@ -281,10 +302,10 @@ public class UIManager : MonoBehaviour
         _upgradePanel.gameObject.SetActive(true);
     }
 
-		public void OpenRecord()
-		{
-				_recordPanel.gameObject.SetActive(true);
-		}
+    public void OpenRecord()
+    {
+        _recordPanel.gameObject.SetActive(true);
+    }
 
     public void OpenSettingPanel()
     {

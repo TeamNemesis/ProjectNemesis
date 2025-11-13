@@ -76,7 +76,7 @@ public class Player : MonoBehaviour
 
     // 변경: IsDashing/IsNormalAttacking는 해당 컴포넌트(실제 소유자)를 우선 참조하도록 함.
     public bool IsDashing => _dasher != null ? _dasher.IsDashing : _isDashing;
-    public bool IsNormalAttacking => _normalAttacker != null ? _normalAttacker.IsAttacking : _isNormalAttacking;
+    public bool IsNormalAttacking { get => _normalAttacker.IsAttacking; set => _isNormalAttacking = _normalAttacker.IsAttacking; }
     public bool IsSpecialAttacking => _isSpecialAttacking;
 
     #region 이벤트
@@ -259,15 +259,12 @@ public class Player : MonoBehaviour
 
     #region 상태 플래그 Setters (상태 Enter/Exit에서 호출)
     public void SetCanMove(bool canMove) => _canMove = canMove;
-    public void SetIsDashing(bool isDashing) => _isDashing = isDashing; // 유지하되 Dasher가 권한자
-    public void SetIsNormalAttacking(bool isNormalAttacking) => _isNormalAttacking = isNormalAttacking;
     public void SetIsSpecialAttacking(bool isSpecialAttacking) => _isSpecialAttacking = isSpecialAttacking;
     #endregion
 
     #region 상태 전환 평가 및 처리
     void EvaluateTransitions()
     {
-       
         // 1) 일반 공격 입력 처리
         if (_normalAttackPressed && TryConsumeNormalAttack())
         {
@@ -276,17 +273,28 @@ public class Player : MonoBehaviour
                 bool accepted = false;
                 try
                 {
-                    accepted = _stateMachine.ChangeState(PlayerStateType.NormalAttack);
+                    // 1) 먼저 RequestAttack 호출해서 시작 또는 큐잉 가능한지 확인
+                    accepted = _normalAttacker.RequestAttack();
+
+                    // 2) Request가 받아졌다면 상태 전환은 현재 상태를 보고 결정
+                    if (accepted)
+                    {
+                        if (_stateMachine.CurrentType != PlayerStateType.NormalAttack)
+                        {
+                            bool changed = _stateMachine.ChangeState(PlayerStateType.NormalAttack);
+                        }
+                        else
+                        {
+                            // 이미 NormalAttack 상태라면 ChangeState 하지 않음.
+                            Debug.Log("이미 NormalAttack 상태: ChangeState 생략 (큐잉은 RequestAttack이 처리)");
+                        }
+                    }
                 }
                 catch (Exception ex)
                 {
                     Debug.LogWarning($"RequestAttack exception: {ex}");
-                    accepted = false;
                 }
 
-                if (!accepted)
-                {
-                }
                 return;
             }
         }
@@ -306,7 +314,6 @@ public class Player : MonoBehaviour
         {
             if (_stateMachine.CurrentType != PlayerStateType.Move)
             {
-                Debug.Log("모드 전환");
                 _stateMachine.ChangeState(PlayerStateType.Move);
             }
             return;
@@ -390,6 +397,9 @@ public class Player : MonoBehaviour
         if (weapon.WeaponType == WeaponType.Blade)
         {
             PlayerBladeNormalAttacker playerBladeNormalAttacker = _normalAttacker as PlayerBladeNormalAttacker;
+            PlayerBladeSpecialAttacker playerBladeSpecialAttacker = _specialAttacker as PlayerBladeSpecialAttacker;
+            playerBladeNormalAttacker?.Initialize(this);
+            playerBladeSpecialAttacker?.Initialize(this);
         }
 
         _animator.SetAnimator(_currentWeaponSet.AnimController);
@@ -436,28 +446,45 @@ public class Player : MonoBehaviour
 
         if (_normalAttacker is PlayerBladeNormalAttacker blade)
         {
-            
             OnNormalAttackStarted?.Invoke();
             return;
         }
     }
 
+    public void OnAttackHitEvent()
+    {
+        if (_normalAttacker is PlayerBladeNormalAttacker blade)
+        {
+            blade.DoMeleeHit();
+        }
+    }
+
     public void OnAttackEndEvent()
     {
-        //if (_normalAttacker == null) return;
+        if (_normalAttacker == null) return;
 
         //if (_normalAttacker is PlayerRifleNormalAttacker rifle)
         //{
         //    rifle.OnAnimationAttackEnd();
         //    return;
         //}
-        //if (_normalAttacker is PlayerBladeNormalAttacker blade)
-        //{
-        //    blade.Animation_OnComboWindowClose();
-        //    return;
-        //}
+        if (_normalAttacker is PlayerBladeNormalAttacker blade)
+        {
+            blade.OnAnimationAttackEnd();
+            return;
+        }
 
         _normalAttacker.EndAttack();
+    }
+
+    public void OnInvincibleStartEvent()
+    {
+        _playerModel.SetIsInvincibility(true);
+    }
+
+    public void OnInvincibleEndEvent()
+    {
+        _playerModel.SetIsInvincibility(false);
     }
     #endregion
 

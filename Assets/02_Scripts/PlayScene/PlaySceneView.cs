@@ -21,6 +21,7 @@ public class PlaySceneView : MonoBehaviour
     [SerializeField] TextMeshProUGUI _chromeText;
     [SerializeField] Slider _grenadeCooltimeSlider;
     [SerializeField] TextMeshProUGUI _grenadeCountText;
+    [SerializeField] RectTransform _playerStat;
 
 
     [Header("----- 방 로딩 패널 -----")]
@@ -31,6 +32,8 @@ public class PlaySceneView : MonoBehaviour
     [SerializeField] GameObject _interactionPanel;
     [SerializeField] TextMeshProUGUI _interactionTitleText;
     [SerializeField] TextMeshProUGUI _interactionDescriptionText;
+
+
 
     [Header("----- 튜토리얼 패널 -----")]
     [SerializeField] GameObject _tutorialPanel;
@@ -90,6 +93,29 @@ public class PlaySceneView : MonoBehaviour
 
         // 튜토리얼 패널 띄우기
         ShowTutorialPanel();
+
+        // 플레이어 스탯 위치 조정
+        SettingPlayerStatPosition();
+    }
+
+    public void SettingPlayerStatPosition()
+    {
+       bool isMobile = Application.isMobilePlatform;
+#if UNITY_ANDROID
+isMobile = true;
+#endif
+        if(isMobile)
+        {
+            _playerStat.anchorMax = new Vector2(0.5f, 0);
+            _playerStat.anchorMin = new Vector2(0.5f, 0);
+            _playerStat.pivot = new Vector2(0.5f, 0.5f);
+        }
+        else
+        {
+            _playerStat.anchorMax = Vector2.zero;
+            _playerStat.anchorMin = Vector2.zero;
+            _playerStat.pivot = Vector2.zero;
+        }
     }
 
     public void UpdateHPBar(int currentHp, int maxHp)
@@ -359,6 +385,7 @@ public class PlaySceneView : MonoBehaviour
 
     public void OnGoToMainClicked()
     {
+        GameManager.Instance.serverManager.downloadManager.SetChromeToServer();
         GameManager.Instance.SceneLoadManager.LoadIntroScene();
     }
 

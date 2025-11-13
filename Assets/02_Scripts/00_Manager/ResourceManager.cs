@@ -21,19 +21,21 @@ public class ResourceManager : MonoBehaviour
     public RewardDataSO_TechPack[] RewardDataSO_TechPacks { get; private set; }
     public AudioClip[] Bgm { get; private set; }
     public AudioClip[] Sfx { get; private set; }
+    public Sprite[] DoorViewSprites { get; private set; }
 
     // 호출: 게임 시작 시 한 번만
     public void Initialize()
     {
         DoorPrefab = _doorPrefab != null
             ? _doorPrefab
-            : Resources.Load<GameObject>(Constants.RESOURCES_PATH_DOOR_PREFAB); // 경로 규칙 예시
+            : Resources.Load<GameObject>(Constants.RESOURCES_PATH_DOOR_PREFAB);
 
         PlayerWeaponSets = Resources.LoadAll<PlayerWeaponSet>(Constants.RESOURCES_PATH_PLAYER_WEAPONSET);
         RoomDataSOs = Resources.LoadAll<RoomDataSO>(Constants.RESOURCES_PATH_ROOMDATASO);
         RewardDataSOs = Resources.LoadAll<RewardDataSO>(Constants.RESOURCES_PATH_REWARD_DATA_SO);
         Bgm = Resources.LoadAll<AudioClip>(Constants.RESOURCES_PATH_BGM);
         Sfx = Resources.LoadAll<AudioClip>(Constants.RESOURCES_PATH_SFX);
+        DoorViewSprites = Resources.LoadAll<Sprite>("RoomImage");
 
         // (선택) 간단한 검증 로그
         if (DoorPrefab == null)

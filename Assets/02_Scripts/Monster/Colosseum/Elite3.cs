@@ -95,6 +95,7 @@ public class Elite3 : MonsterBase
                     if (elitetBullet != null)
                     {
                         elitetBullet.Initialize(targetTag, attackDamage, bulletLifeTime, gameObject);
+                        GameManager.Instance.SoundManager.PlaySfxAt("Monster_Machinegun", transform.position);
                     }
                 }
 

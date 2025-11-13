@@ -107,7 +107,7 @@ public class Skill_Four : SkillBase
 
 
             default:
-                Debug.Log("에러, 배정되지 않은 idx");
+                Debug.LogError("에러, 배정되지 않은 idx");
                 break;
 
         }

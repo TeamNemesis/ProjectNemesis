@@ -103,6 +103,7 @@ public class NebulaPhantom : MonsterBase
             decalobj.GetComponent<SquareDecalEffect>().Play(attackDelay, transform, new Vector3(90, 0, 0));
             yield return new WaitForSeconds(attackDelay);
             monsterAnimator.SetTrigger(Attack_Hash);
+            GameManager.Instance.SoundManager.PlaySfxAt("Monster_Laser", transform.position);
 
             float laserLength = 40f; // »ç°Å¸®
 

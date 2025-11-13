@@ -68,17 +68,6 @@ public class Bullet : PoolableObject
                     return;
                 }
             }
-
-            // nearest가 null이거나 방향이 0이면 fallback
-            if (initialDir != Vector3.zero)
-            {
-                _moveDir = initialDir;
-                return;
-            }
-
-            // 모든 것이 실패하면 기본 전진(오브젝트 forward) 사용
-            _moveDir = transform.forward;
-            return;
         }
 
         // 돌연변이 미적용 시 일반 동작
@@ -101,6 +90,7 @@ public class Bullet : PoolableObject
         {
             EventBus.MonsterHit(WeaponType.Rifle, ATTACKTYPE.NORMAL, other.transform,transform);
             GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
+            GameManager.Instance.PoolManager.GetFromPool("Effect/BulletHitEffect", other.transform.position + Vector3.up, Quaternion.identity);
         }
         else if(other.CompareTag(Constants.TAG_WALL))
         {

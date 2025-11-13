@@ -119,7 +119,6 @@ public class SkillData
         _skillLevel++;
         if (_skillMaxLevel == _skillLevel)
         {
-            Debug.Log("스킬 최대 레벨 달성");
             GameManager.Instance.skillManager.upgradeSkillList.Remove(this);
         }
         return _skillLevel == 1;

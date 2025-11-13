@@ -131,6 +131,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _guidePoint: {fileID: 4745409100284285908}
+  _title: _Blade_Title
+  _instruction: _Blade_Instruction
   _weaponType: 1
 --- !u!65 &4575383510156355385
 BoxCollider:
@@ -151,7 +153,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.42668682, y: 1.736715, z: 0.09593992}
+  m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0.6607854, z: 0.000000013038516}
 --- !u!1 &3031787924688101460
 GameObject:

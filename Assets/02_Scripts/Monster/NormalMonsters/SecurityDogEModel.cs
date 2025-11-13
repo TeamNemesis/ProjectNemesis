@@ -66,7 +66,6 @@ public class SecurityDogEModel : MonsterBase
 
         if (distance > detectionRange || !CanSeePlayer())
         {
-            Debug.Log("플레이어가 사정거리 밖으로 벗어났습니다.");
             agent.ResetPath();
 
             // 애니메이션: 이동 중지
@@ -169,6 +168,7 @@ public class SecurityDogEModel : MonsterBase
                                                RigidbodyConstraints.FreezeRotation;
             }
 
+            GameManager.Instance.SoundManager.PlaySfxAt("Monster_Bark", transform.position);
             yield return new WaitForSeconds(jumpPrepareTime);
 
             // 점프 방향 계산

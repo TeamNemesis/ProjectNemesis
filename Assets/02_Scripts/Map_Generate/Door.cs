@@ -102,6 +102,7 @@ public class Door : MonoBehaviour
             _doorInteractor.OnInteracted -= OnDoorInteracted;
         _doorOpenCoroutine = null;
 
+        ResetForReuse();
         // 매니저에서 해제
         //if (_interactableManager != null)
         //    _interactableManager.Unregister(_doorInteractor);

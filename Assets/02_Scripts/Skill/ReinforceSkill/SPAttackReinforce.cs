@@ -143,7 +143,6 @@ public class Skill_Three_SPAttack: ActiveTech
         
         if (_playerReflect == null)
         {
-            Debug.LogWarning("Reflect component not found on player.");
             _playerReflect = player.AddComponent<reflect>();
             
         }
