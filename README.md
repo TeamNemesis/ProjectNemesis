@@ -41,6 +41,7 @@ Assets/
 - endsun1234: 상호작용 시스템
 - minji: 캐릭터 움직임
 - hyunwoo: 스킬 업그레이드 시스템
+- djqfhemdyd159 : 몬스터
 
 ## 🤝 기여 방법
 - PR, 이슈, 브랜치 규칙 등 (필요시 작성)
