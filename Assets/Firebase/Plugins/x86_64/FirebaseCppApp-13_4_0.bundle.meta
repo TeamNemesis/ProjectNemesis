@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: fd455496318e27d44af4a5ea1fa0a79b
+guid: 11901816fc7c713458bdd66da231baca
 labels:
 - gvh
 PluginImporter:
@@ -13,27 +13,14 @@ PluginImporter:
   isExplicitlyReferenced: 0
   validateReferences: 1
   platformData:
-    Android:
-      enabled: 0
-      settings:
-        AndroidLibraryDependee: UnityLibrary
-        AndroidSharedLibraryType: Executable
-        CPU: ARMv7
     Any:
       enabled: 1
-      settings:
-        Exclude Android: 1
-        Exclude Editor: 0
-        Exclude Linux64: 0
-        Exclude OSXUniversal: 0
-        Exclude Win: 0
-        Exclude Win64: 0
+      settings: {}
     Editor:
-      enabled: 1
+      enabled: 0
       settings:
         CPU: x86_64
         DefaultValueInitialized: true
-        OS: AnyOS
     Linux64:
       enabled: 1
       settings:
@@ -43,7 +30,7 @@ PluginImporter:
       settings:
         CPU: x86_64
     Win:
-      enabled: 1
+      enabled: 0
       settings:
         CPU: None
     Win64:
