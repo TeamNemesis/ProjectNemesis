@@ -21,6 +21,7 @@ public class PlaySceneView : MonoBehaviour
     [SerializeField] TextMeshProUGUI _chromeText;
     [SerializeField] Slider _grenadeCooltimeSlider;
     [SerializeField] TextMeshProUGUI _grenadeCountText;
+    [SerializeField] RectTransform _playerStat;
 
 
     [Header("----- 방 로딩 패널 -----")]
@@ -41,7 +42,9 @@ public class PlaySceneView : MonoBehaviour
 
     [Header("----- 게임 승리 및 오버 패널 -----")]
     [SerializeField] GameObject _gameOverPanel;
+    
     [SerializeField] GameObject _gameClearPanel;
+    [SerializeField] TextMeshProUGUI _gameClearTimeText;
 
     [Header("----- 게임 타이머 -----")]
     [SerializeField] TextMeshProUGUI _gameTimerText;
@@ -77,12 +80,14 @@ public class PlaySceneView : MonoBehaviour
     };
 
     Coroutine _roomLoadingRoutine;
+    PlayScene _playScene;
 
     public event Action<DoorInteractor> OnRoomLoadingComplete;
 
-    public void Initialize()
+    public void Initialize(PlayScene playScene)
     {
         EventBus.OnBossDead += ShowGameClearPanel;
+        _playScene = playScene;
 
         GameManager.Instance.CurrencyManager.GetCurrentCurrency();
         HideInteractionUI();
@@ -92,6 +97,29 @@ public class PlaySceneView : MonoBehaviour
 
         // 튜토리얼 패널 띄우기
         ShowTutorialPanel();
+
+        // 플레이어 스탯 위치 조정
+        SettingPlayerStatPosition();
+    }
+
+    public void SettingPlayerStatPosition()
+    {
+       bool isMobile = Application.isMobilePlatform;
+#if UNITY_ANDROID
+isMobile = true;
+#endif
+        if(isMobile)
+        {
+            _playerStat.anchorMax = new Vector2(0.5f, 0);
+            _playerStat.anchorMin = new Vector2(0.5f, 0);
+            _playerStat.pivot = new Vector2(0.5f, 0.5f);
+        }
+        else
+        {
+            _playerStat.anchorMax = Vector2.zero;
+            _playerStat.anchorMin = Vector2.zero;
+            _playerStat.pivot = Vector2.zero;
+        }
     }
 
     public void UpdateHPBar(int currentHp, int maxHp)
@@ -314,6 +342,9 @@ public class PlaySceneView : MonoBehaviour
 
     public void ShowGameClearPanel()
     {
+        TimeSpan timeSpan = TimeSpan.FromSeconds(_playScene.TimeChecker.CurrentTime);
+        // 현재 시간을 분 : 초 형식으로 변환하여 표시
+        _gameClearTimeText.text = string.Format("{0:D2}:{1:D2}", timeSpan.Minutes, timeSpan.Seconds);
         _gameClearPanel.SetActive(true);
     }
 
@@ -361,6 +392,7 @@ public class PlaySceneView : MonoBehaviour
 
     public void OnGoToMainClicked()
     {
+        GameManager.Instance.serverManager.downloadManager.SetChromeToServer();
         GameManager.Instance.SceneLoadManager.LoadIntroScene();
     }
 

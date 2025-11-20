@@ -37,7 +37,6 @@ public class RandomSpawnPoints : MonoBehaviour
         for (int i = 0; i < count; i++)
         {
             selectedSpawnPoints[i] = spawnPoints[index[i]];
-            Debug.Log(selectedSpawnPoints[i]);
         }
 
         return selectedSpawnPoints;

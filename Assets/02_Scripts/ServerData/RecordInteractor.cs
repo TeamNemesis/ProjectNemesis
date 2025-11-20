@@ -19,6 +19,7 @@ public class RecordInteractor : InteractableObject
     public override bool TryInteract(Transform subject)
     {
         GameManager.Instance.UIManager.OpenRecord();
+        OnInteracted?.Invoke(this);
         return true;
     }
 }

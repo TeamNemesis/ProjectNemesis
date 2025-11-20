@@ -26,6 +26,8 @@ public class GrenadePoison : AreaDotBase,IInitializePoolable
 		private Dictionary<int, Coroutine> poisonStackCoroutine = new Dictionary<int, Coroutine>();
 
 		private float _time;
+
+	Coroutine _poisonRoutine;
 		
 
 		public override void ActiveSkill(Transform target)

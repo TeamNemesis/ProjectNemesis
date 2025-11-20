@@ -19,6 +19,7 @@ public class ReinforceInteractor : InteractableObject
     public override bool TryInteract(Transform subject)
     {
         GameManager.Instance.UIManager.OnUpgradePanel();
+        OnInteracted?.Invoke(this);
         return true;
     }
 }

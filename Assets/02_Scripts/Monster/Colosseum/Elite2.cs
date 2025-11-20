@@ -228,8 +228,7 @@ public class Elite2 : MonsterBase
                 Vector3 startPos = transform.position + transform.forward * 0.5f;
                 startPos.y = _target.position.y + 0.5f;
 
-                // 디버그용 레이저 표시
-                Debug.DrawRay(startPos, transform.forward * laserLength, Color.green, 0.3f);
+               
 
                 // 벽에 막히는 Raycast
                 if (Physics.Raycast(startPos, transform.forward, out RaycastHit hit, laserLength, ~0, QueryTriggerInteraction.Collide))

@@ -7,9 +7,9 @@ using UnityEngine.SceneManagement;
 public class SceneLoadManager : MonoBehaviour
 {
  
-    public void LoadIntroScene()
+    public async void LoadIntroScene()
     {
-        GameManager.Instance.PlayerStatManager.Initialize();
+        await GameManager.Instance.PlayerStatManager.Initialize();
         GameManager.Instance.PlayerStatManager.UploadToFirebase();
         GameManager.Instance.skillManager.Reset();
         EventBus.ResetEvent();
@@ -33,14 +33,20 @@ public class SceneLoadManager : MonoBehaviour
         GameManager.Instance.PoolManager.ReleaseToPool(Laboratory);
     }
 
-    public void LoadPlayScene()
+    public async void LoadPlayScene()
     {
-        GameManager.Instance.PlayerStatManager.Initialize();
+        await GameManager.Instance.PlayerStatManager.Initialize();
         GameManager.Instance.PlayerStatManager.UploadToFirebase();
         GameManager.Instance.skillManager.Reset();
         EventBus.ResetEvent();
         GameManager.Instance.CurrencyManager.SetCreditFromServer();
         SceneManager.LoadScene(Constants.SCENE_NAME_PLAY);
+
+        // 맵에 있는 모든 풀링 오브젝트들을 릴리즈
+        GameManager.Instance.PoolManager.ClearAllPools();
+
+        // 재화 초기화
+        GameManager.Instance.CurrencyManager.Initialize();
     }
 
     public void LoadLoginScene()

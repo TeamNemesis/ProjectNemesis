@@ -42,7 +42,6 @@ public class DownloadManager : MonoBehaviour
         try
         {
             await _serverManager.dbRef.Child("playerStats").Child(_serverManager.currentUser.UserId).UpdateChildrenAsync(data);
-            Debug.Log("JSON 파일을 성공적으로 업로드했습니다.");
             return true;
         }
         catch (System.Exception ex)
@@ -73,7 +72,7 @@ public class DownloadManager : MonoBehaviour
 
                 if (success)
                 {
-                    //TryDeleteFile(Constants.FILE_PATH_PLAYERSTAT);
+                    TryDeleteFile(Constants.FILE_PATH_PLAYERSTAT);
                 }
 
                 return;
@@ -83,7 +82,7 @@ public class DownloadManager : MonoBehaviour
 
             if (result)
             {
-                //TryDeleteFile(Constants.FILE_PATH_PLAYERSTAT);
+                TryDeleteFile(Constants.FILE_PATH_PLAYERSTAT);
             }
         }
         catch (Exception ex)
@@ -103,7 +102,6 @@ public class DownloadManager : MonoBehaviour
             if (File.Exists(path))
             {
                 File.Delete(path);
-                Debug.Log($"파일 삭제 완료: {path}");
             }
         }
         catch (Exception ex)
@@ -133,7 +131,6 @@ public class DownloadManager : MonoBehaviour
                 if (snapshot != null && snapshot.Exists)
                 {
                     jsonText = snapshot.GetRawJsonValue();
-                    Debug.Log("초기 게임 데이터를 서버에서 받아왔습니다.");
                 }
                 else
                 {
@@ -155,7 +152,6 @@ public class DownloadManager : MonoBehaviour
                 if (snapshot != null && snapshot.Exists && snapshot.HasChild("playerStatJson"))
                 {
                     jsonText = snapshot.Child("playerStatJson").Value.ToString();
-                    Debug.Log("사용자 데이터를 서버에서 받아왔습니다.");
 
                     var baseSnapshot = await _serverManager.dbRef.Child("gameBaseJson").GetValueAsync();
                     if (baseSnapshot != null && baseSnapshot.Exists)
@@ -167,7 +163,6 @@ public class DownloadManager : MonoBehaviour
 
                         var syncedStats = SyncWithGameBase(localStats, baseStats);
                         jsonText = JsonConvert.SerializeObject(syncedStats, Formatting.Indented);
-                        Debug.Log("gameBaseJson 기준으로 로컬 JSON이 업데이트되었습니다.");
                     }
                 }
                 else // 사용자 데이터가 Firebase에 없는 경우 (playerStatJson이 존재하지 않거나, snapshot 자체가 없는 경우)
@@ -185,7 +180,6 @@ public class DownloadManager : MonoBehaviour
                             bool uploadSuccess = await TryUploadPlayerStat(); // TryUploadPlayerStat이 로컬 파일을 읽어 업로드합니다.
                             if (uploadSuccess)
                             {
-                                Debug.Log("사용자 데이터가 초기 게임 데이터로 Firebase에 성공적으로 초기화되었습니다.");
                                 // 업로드 성공 후 jsonText 변수도 이 초기화된 값으로 업데이트하여 이후 로컬 파일 쓰기가 올바르게 되도록 함
                                 jsonText = File.ReadAllText(Constants.FILE_PATH_PLAYERSTAT);
                             }
@@ -221,7 +215,6 @@ public class DownloadManager : MonoBehaviour
                 string folderPath = Path.GetDirectoryName(Constants.FILE_PATH_PLAYERSTAT);
                 if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
                 File.WriteAllText(Constants.FILE_PATH_PLAYERSTAT, jsonText);
-                Debug.Log("JSON 데이터를 성공적으로 저장했습니다.");
             }
             else
             {
@@ -258,7 +251,6 @@ public class DownloadManager : MonoBehaviour
                 {
                     baseStat.currentLevel = local.currentLevel;
                     updatedStats.Add(baseStat);
-                    Debug.Log($"업데이트됨: {local.column}");
                 }
                 else
                 {

@@ -31,9 +31,11 @@ public class CameraMover : MonoBehaviour
     class OccluderInfo
     {
         public Color originalColor;
+        public Color originalEmission;
         public float currentAlpha;
         public float targetAlpha;
     }
+
 
     Dictionary<Renderer, OccluderInfo> _occluderInfos = new Dictionary<Renderer, OccluderInfo>();
     HashSet<Renderer> _currentOccluders = new HashSet<Renderer>();
@@ -129,6 +131,7 @@ public class CameraMover : MonoBehaviour
         }
 
         // 알파 Lerp & 적용
+        // 알파 Lerp & 적용
         foreach (var kv in _occluderInfos)
         {
             Renderer rend = kv.Key;
@@ -146,8 +149,16 @@ public class CameraMover : MonoBehaviour
             Color newColor = info.originalColor;
             newColor.a = info.currentAlpha;
             _mpb.SetColor(colorProp, newColor);
+
+            if (shared.HasProperty("_EmissionColor"))
+            {
+                Color newEmission = info.originalEmission * info.currentAlpha;
+                _mpb.SetColor("_EmissionColor", newEmission);
+            }
+
             rend.SetPropertyBlock(_mpb);
         }
+
     }
 
     Renderer GetRelevantRenderer(Collider col)
@@ -169,24 +180,27 @@ public class CameraMover : MonoBehaviour
 
     void EnsureOccluderInfo(Renderer rend)
     {
-        if (rend == null) return;
-        if (_occluderInfos.ContainsKey(rend)) return;
+        if (rend == null || _occluderInfos.ContainsKey(rend)) return;
 
-        Color orig = Color.white;
+        Color origColor = Color.white;
+        Color origEmission = Color.black;
         var shared = rend.sharedMaterial;
         if (shared != null)
         {
             string colorProp = GetColorPropertyName(shared);
-            if (colorProp != null) orig = shared.GetColor(colorProp);
+            if (colorProp != null) origColor = shared.GetColor(colorProp);
+            if (shared.HasProperty("_EmissionColor")) origEmission = shared.GetColor("_EmissionColor");
         }
 
         _occluderInfos[rend] = new OccluderInfo
         {
-            originalColor = orig,
-            currentAlpha = orig.a,
-            targetAlpha = orig.a
+            originalColor = origColor,
+            originalEmission = origEmission,
+            currentAlpha = origColor.a,
+            targetAlpha = origColor.a
         };
     }
+
 
     void SetRendererTargetAlpha(Renderer rend, float alpha)
     {
@@ -219,11 +233,16 @@ public class CameraMover : MonoBehaviour
             {
                 rend.GetPropertyBlock(_mpb);
                 _mpb.SetColor(colorProp, info.originalColor);
+
+                if (shared.HasProperty("_EmissionColor"))
+                    _mpb.SetColor("_EmissionColor", info.originalEmission);
+
                 rend.SetPropertyBlock(_mpb);
             }
         }
         _occluderInfos.Clear();
     }
+
 
     void OnDrawGizmosSelected()
     {

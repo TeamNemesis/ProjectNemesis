@@ -275,7 +275,6 @@ public class Player : MonoBehaviour
                 {
                     // 1) 먼저 RequestAttack 호출해서 시작 또는 큐잉 가능한지 확인
                     accepted = _normalAttacker.RequestAttack();
-                    Debug.Log($"RequestAttack returned: {accepted}");
 
                     // 2) Request가 받아졌다면 상태 전환은 현재 상태를 보고 결정
                     if (accepted)
@@ -283,12 +282,10 @@ public class Player : MonoBehaviour
                         if (_stateMachine.CurrentType != PlayerStateType.NormalAttack)
                         {
                             bool changed = _stateMachine.ChangeState(PlayerStateType.NormalAttack);
-                            Debug.Log("일반 공격 상태로 전환 시도: " + changed);
                         }
                         else
                         {
                             // 이미 NormalAttack 상태라면 ChangeState 하지 않음.
-                            Debug.Log("이미 NormalAttack 상태: ChangeState 생략 (큐잉은 RequestAttack이 처리)");
                         }
                     }
                 }
@@ -399,7 +396,9 @@ public class Player : MonoBehaviour
         if (weapon.WeaponType == WeaponType.Blade)
         {
             PlayerBladeNormalAttacker playerBladeNormalAttacker = _normalAttacker as PlayerBladeNormalAttacker;
+            PlayerBladeSpecialAttacker playerBladeSpecialAttacker = _specialAttacker as PlayerBladeSpecialAttacker;
             playerBladeNormalAttacker?.Initialize(this);
+            playerBladeSpecialAttacker?.Initialize(this);
         }
 
         _animator.SetAnimator(_currentWeaponSet.AnimController);
@@ -471,7 +470,6 @@ public class Player : MonoBehaviour
         if (_normalAttacker is PlayerBladeNormalAttacker blade)
         {
             blade.OnAnimationAttackEnd();
-            Debug.Log("블레이드 공격 종료 이벤트 처리");
             return;
         }
 

@@ -36,8 +36,6 @@ public class WeaponInteractor : InteractableObject
 
         _isInteracting = true;
 
-        Debug.Log("무기와 상호작용 함: " + name);
-
         // 상호작용 매니저에 등록 (기존 로직 유지)
         GameManager.Instance.InteractableManager.Register(this);
 

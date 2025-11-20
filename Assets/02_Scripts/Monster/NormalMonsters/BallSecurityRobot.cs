@@ -100,7 +100,7 @@ public class BallSecurityRobot : MonsterBase
             GetEffectFromPool(explosionEffectPrefab, transform.position, Quaternion.identity);
             GameManager.Instance.SoundManager.PlaySfxAt("Monster_Grenade", transform.position);
 
-            baseState = MonsterState.Die;
+            Die();
         }
     }
 
@@ -116,5 +116,12 @@ public class BallSecurityRobot : MonsterBase
                 collider.GetComponent<IDamageable>().TakeDamage(attackDamage, transform);
             }
         }
+    }
+
+    protected override void Die()
+    {
+        GetEffectFromPool(explosionEffectPrefab, transform.position, Quaternion.identity);
+        GameManager.Instance.SoundManager.PlaySfxAt("Monster_Grenade", transform.position);
+        base.Die();
     }
 }

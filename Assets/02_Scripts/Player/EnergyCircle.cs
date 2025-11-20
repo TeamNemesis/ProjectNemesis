@@ -71,7 +71,7 @@ public class EnergyCircle : MonoBehaviour
     {
         if (other.CompareTag(Constants.TAG_MONSTER))
         {
-            GameManager.Instance.PlayerStatManager.TakeDamage(WeaponType.Rifle, ATTACKTYPE.SPECIALATTACK, other.transform);
+            EventBus.MonsterHit(WeaponType.Rifle, ATTACKTYPE.SPECIALATTACK, other.transform, transform);
             GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
         }
         if(other.CompareTag(Constants.TAG_WALL))

@@ -66,7 +66,6 @@ public class SecurityDogEModel : MonsterBase
 
         if (distance > detectionRange || !CanSeePlayer())
         {
-            Debug.Log("플레이어가 사정거리 밖으로 벗어났습니다.");
             agent.ResetPath();
 
             // 애니메이션: 이동 중지
