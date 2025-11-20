@@ -117,4 +117,11 @@ public class BallSecurityRobot : MonsterBase
             }
         }
     }
+
+    protected override void Die()
+    {
+        GetEffectFromPool(explosionEffectPrefab, transform.position, Quaternion.identity);
+        GameManager.Instance.SoundManager.PlaySfxAt("Monster_Grenade", transform.position);
+        base.Die();
+    }
 }

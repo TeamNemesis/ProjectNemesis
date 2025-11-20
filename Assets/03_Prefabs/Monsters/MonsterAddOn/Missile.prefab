@@ -107,7 +107,7 @@ SphereCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -164,9 +164,12 @@ MonoBehaviour:
   agent: {fileID: 0}
   _target: {fileID: 0}
   monsterAnimator: {fileID: 0}
+  originalSkinTransform: {x: 0, y: 0, z: 0}
   hasDieAnimation: 0
+  checkOnce: 0
   healthUI: {fileID: 0}
   healthUIPrefabPath: Prefabs/UI/MonsterHealthUI
+  damageTextPrefab: {fileID: 0}
   _explosionRadius: 2
   circlePrefab: {fileID: 4171473842588414540, guid: e1cdcf7ba7eac0445a237bf39c1ee586, type: 3}
   bulletPrefab: {fileID: 433645739003782474, guid: 32e7cbcd5d4ee5c498508d5492575fdb, type: 3}
@@ -229,18 +232,6 @@ PrefabInstance:
     m_TransformParent: {fileID: 4151938576623582838}
     m_Modifications:
     - target: {fileID: 8192978360410247128, guid: 40bc204e529132449a4a4259da34f572, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 8192978360410247128, guid: 40bc204e529132449a4a4259da34f572, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 8192978360410247128, guid: 40bc204e529132449a4a4259da34f572, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 0.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8192978360410247128, guid: 40bc204e529132449a4a4259da34f572, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -283,10 +274,6 @@ PrefabInstance:
     - target: {fileID: 8861006837978715490, guid: 40bc204e529132449a4a4259da34f572, type: 3}
       propertyPath: m_Name
       value: Missile
-      objectReference: {fileID: 0}
-    - target: {fileID: 8861006837978715490, guid: 40bc204e529132449a4a4259da34f572, type: 3}
-      propertyPath: m_Layer
-      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

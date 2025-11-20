@@ -247,7 +247,6 @@ public class DonutWaveAttack : PoolableObject
         {
             health.TakeDamage(damage, null);
         }
-        Debug.Log($"Hit: {target.name} for {damage} damage");
     }
 
     void DrawCircleGizmo(Vector3 center, float radius, int segments)

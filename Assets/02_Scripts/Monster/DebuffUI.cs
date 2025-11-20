@@ -18,6 +18,10 @@ public class DebuffIconUI : MonoBehaviour
     [SerializeField] private float iconSpacing = 5f;
     [SerializeField] private int maxVisibleIcons = 5; // 최대 표시 개수
 
+    [Header("Stack Text Settings")]
+    [SerializeField] private TMPro.TMP_FontAsset stackTextFont; // 스택 텍스트 폰트
+    [SerializeField] private TMPro.FontStyles stackTextFontStyle = TMPro.FontStyles.Bold; // 스택 텍스트 폰트 스타일
+
     [Header("Debuff Sprites")]
     [SerializeField] private Sprite slowIcon;
     [SerializeField] private Sprite poisonIcon;
@@ -151,6 +155,11 @@ public class DebuffIconUI : MonoBehaviour
         text.alignment = TMPro.TextAlignmentOptions.BottomRight;
         text.fontStyle = TMPro.FontStyles.Bold;
 
+        if (stackTextFont != null)
+        {
+            text.font = stackTextFont;
+        }
+
         // 텍스트 위치 (아이콘 우측 하단)
         RectTransform textRect = textObj.GetComponent<RectTransform>();
         textRect.anchorMin = Vector2.zero;
@@ -181,5 +190,6 @@ public class DebuffIconUI : MonoBehaviour
     {
         ClearAllIcons();
         targetDebuffHandler = null;
+        DebuffHandler.OnDebuff -= OnDebuffChanged;
     }
 }
