@@ -1,5 +1,4 @@
-﻿using JetBrains.Annotations;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,8 +9,8 @@ public class Elite3 : MonsterBase
     private string KoreanName = "거대로봇 실험체";
 
     [Header("Missile")]
-    [SerializeField]private int missileAttackCounter = 0;
-    [SerializeField]private int maxMissileAttackCount = 5;
+    [SerializeField] private int missileAttackCounter = 0;
+    [SerializeField] private int maxMissileAttackCount = 5;
 
     [Header("Bullet")]
     [SerializeField] float bulletLifeTime = 8f;
@@ -21,7 +20,7 @@ public class Elite3 : MonsterBase
     [SerializeField] private PoolableObject eliteBulletPrefab;
     [SerializeField] private PoolableObject waveAttackPrefab;
 
-    private List<GameObject> spawnedWaveAttacks = new List<GameObject>();
+    private List<GameObject> spawnedObjects = new List<GameObject>();
 
     [Header("CoolTimes")]
     [SerializeField] private float bulletAttackCoolTime = 5f;
@@ -120,11 +119,12 @@ public class Elite3 : MonsterBase
     {
         _isAttacking = true;
         missileAttackCoolTime = 5f;
-        while (missileAttackCounter < maxMissileAttackCount) 
+        while (missileAttackCounter < maxMissileAttackCount)
         {
             Vector3 spawnPos = transform.position + new Vector3(0, 0, -transform.localScale.z);
             spawnPos.y = 0;
             GameObject missileObj = GameManager.Instance.PoolManager.GetFromPool(missilePrefab, spawnPos, Quaternion.identity);
+            spawnedObjects.Add(missileObj);
 
             if (missileObj != null)
             {
@@ -177,7 +177,7 @@ public class Elite3 : MonsterBase
         {
             baseState = MonsterState.Attack;
         }
-}
+    }
     #endregion
 
     public override void TakeDamage(float damage, Transform attacker)
@@ -193,7 +193,7 @@ public class Elite3 : MonsterBase
             Vector3 pos = transform.position;
             pos.y = 0.1f;
             GameObject wave = GameManager.Instance.PoolManager.GetFromPool(waveAttackPrefab, pos, Quaternion.identity);
-            spawnedWaveAttacks.Add(wave);
+            spawnedObjects.Add(wave);
         }
 
         lastHealthCheckThreshold = healthRatio;
@@ -217,14 +217,19 @@ public class Elite3 : MonsterBase
         base.Die();
 
         //소환된 waveAttackPrefab 반환 처리
-        foreach (GameObject wave in spawnedWaveAttacks)
+        foreach (GameObject obj in spawnedObjects)
         {
-            if (wave != null)
+            if (obj != null)
             {
-                GameManager.Instance.PoolManager.ReleaseToPool(wave);
+                Missile missile = obj.GetComponent<Missile>();
+                missile?.SetDie();
+                if (obj != null)
+                {
+                    GameManager.Instance.PoolManager.ReleaseToPool(obj);
+                }
             }
         }
-
-        spawnedWaveAttacks.Clear();
+        spawnedObjects.Clear();
     }
 }
+
