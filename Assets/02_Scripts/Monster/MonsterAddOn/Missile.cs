@@ -169,6 +169,15 @@ public class Missile : MonsterBase
         }
     }
 
+    /// <summary>
+    /// 외부에서 호출하여 몬스터를 즉시 죽이는 메서드
+    /// </summary>
+    public void SetDie()
+    {
+        baseState = MonsterState.Die;
+        Die();
+    }
+
 
 
     protected override void Die()

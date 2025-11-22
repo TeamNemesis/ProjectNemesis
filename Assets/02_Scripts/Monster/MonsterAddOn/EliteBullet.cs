@@ -63,7 +63,7 @@ public class EliteBullet : PoolableObject
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject == owner)
+        if (other.gameObject == owner || other.CompareTag(Constants.TAG_MONSTER))
         {
             return;
         }

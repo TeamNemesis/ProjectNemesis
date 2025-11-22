@@ -190,6 +190,7 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
 
         // === 디버프 초기화 ===
         debuffHandler.InitializeMonster(agent);
+        debuffHandler.ClearAllDebuffs();
 
         // === 물리 초기화 (넉백 관련) ===
         monsterRigidbody = GetComponentInChildren<Rigidbody>();
@@ -229,7 +230,22 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
 
             if (healthUI != null)
             {
+                
                 healthUI.SetMonster(this);
+            }
+            else if (healthUI != null)
+            {
+                //디버프 아이콘만 초기화
+                if (healthUI.GetComponent<MonsterHealthUI>() != null)
+                {
+                    // DebuffIconUI 강제 새로고침
+                    var debuffIconUI = healthUI.GetComponentInChildren<DebuffIconUI>();
+                    if (debuffIconUI != null)
+                    {
+                        debuffIconUI.Cleanup();
+                        debuffIconUI.SetDebuffHandler(debuffHandler);
+                    }
+                }
             }
         }
 
