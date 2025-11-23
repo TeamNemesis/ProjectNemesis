@@ -156,6 +156,8 @@ public static class EventBus
         ClearMonsters();
 
 		}
+
+    public static bool bIsRoomReady = false;
 }
 
 
