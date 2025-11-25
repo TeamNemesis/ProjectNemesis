@@ -13,9 +13,8 @@ public class UpgradeBtn : MonoBehaviour
     public void SetPlayerStatData(PlayerStatData statData, UpgradePanel panel)
     {
         _playerStatData = statData;
-
-        upgradeBtn.onClick.RemoveAllListeners();
-        upgradeBtn.onClick.AddListener(() => panel.OnClick_UpgradeBtn(this));
+        CyberpunkButtonAnimator btnAnim = new CyberpunkButtonAnimator(upgradeBtn);
+        btnAnim.Bind(() => panel.OnClick_UpgradeBtn(this));
         UpdatePanelData();
     }
 
