@@ -53,8 +53,14 @@ public class ServerManager : MonoBehaviour
 
         if (isMobile)
         {
-            googleLoginBtn.onClick.AddListener(OnClickGoogleLogin);
-            linkEmailBtn.onClick.AddListener(() =>
+						// 버튼에 애니메이터 붙이기
+						CyberpunkButtonAnimator googleAnim = new CyberpunkButtonAnimator(googleLoginBtn);
+
+						// async 로직 바인딩
+						googleAnim.Bind(OnClickGoogleLogin);
+
+            CyberpunkButtonAnimator linkEmailAnim = new CyberpunkButtonAnimator(linkEmailBtn);
+						linkEmailAnim.Bind(() =>
             {
                 _ = LinkEmailToGoogleAccount();
             });
@@ -335,10 +341,13 @@ public class ServerManager : MonoBehaviour
         if (popUpConfirmBtn != null)
         {
             popUpConfirmBtn.gameObject.SetActive(true);
-            popUpConfirmBtn.onClick.RemoveAllListeners();
-            // 팝업 확인 버튼 클릭 시 동작을 비동기(async)로 변경하고 다운로드 로직 추가
-            popUpConfirmBtn.onClick.AddListener(async () =>
-            {
+
+						// 버튼에 애니메이터 붙이기
+						CyberpunkButtonAnimator animator = new CyberpunkButtonAnimator(popUpConfirmBtn);
+
+						// async 로직 바인딩
+						animator.BindAsync(async () =>
+						{
                 if (popUpPanel != null)
                     popUpPanel.SetActive(false);
 
@@ -396,9 +405,12 @@ public class ServerManager : MonoBehaviour
             if (message.Contains("자동 로그인"))
             {
                 logoutBtn.gameObject.SetActive(true);
-                logoutBtn.onClick.RemoveAllListeners();
-                logoutBtn.onClick.AddListener(async () =>
-                {
+
+								CyberpunkButtonAnimator logoutBtnAnimator = new CyberpunkButtonAnimator(logoutBtn);
+
+								// async 로직 바인딩
+								logoutBtnAnimator.BindAsync(async () =>
+								{
                     try
                     {
                         if (_currentUser != null)
