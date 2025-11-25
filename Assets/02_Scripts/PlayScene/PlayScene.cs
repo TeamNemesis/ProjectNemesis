@@ -58,10 +58,10 @@ public class PlayScene : MonoBehaviour
         _player.OnInteractionStarted += _playSceneView.CheckInteractTutorialComplete;
 
 
-    }
-    private void Start()
-    {
-        GameManager.Instance.PlayerStatManager.Initialize();
+		}
+		private async void Start()
+		{
+		 await GameManager.Instance.PlayerStatManager.Initialize();
 
         if (_player == null)
         {

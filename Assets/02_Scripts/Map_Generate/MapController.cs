@@ -176,7 +176,7 @@ public class MapController : MonoBehaviour
         {
             _monsterController.SpawnMonster(roomCost, spawnPoints);
         }
-
+        EventBus.bIsRoomReady = true;
         OnRoomStart?.Invoke();
     }
 

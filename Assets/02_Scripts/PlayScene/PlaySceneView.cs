@@ -216,6 +216,7 @@ isMobile = true;
     #region 룸 로딩 시 로딩 텍스트(LocalizedString) 바인딩
     public void ShowRoomLoadingPanel(DoorInteractor doorInteractor)
     {
+        EventBus.bIsRoomReady = false;
         _roomLoadingRoutine = StartCoroutine(RoomLoadingRoutine(doorInteractor));
     }
 
@@ -238,10 +239,10 @@ isMobile = true;
         };
 
         _roomLoadingPanel.SetActive(true);
-        yield return new WaitForSeconds(2.0f);
+        yield return new WaitForSeconds(0.5f);
 
         OnRoomLoadingComplete?.Invoke(doorInteractor);
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitUntil(() => EventBus.bIsRoomReady);
         _roomLoadingPanel.SetActive(false);
 
         EventBus.SetCanTimeRun(true);
