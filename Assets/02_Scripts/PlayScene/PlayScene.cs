@@ -59,9 +59,9 @@ public class PlayScene : MonoBehaviour
 
 
 		}
-		private void Start()
+		private async void Start()
 		{
-		 GameManager.Instance.PlayerStatManager.Initialize();
+		 await GameManager.Instance.PlayerStatManager.Initialize();
 
 				if (_player == null)
 				{
