@@ -9,6 +9,11 @@ public class IntroScene : MonoBehaviour
 
     private void Start()
     {
+        GameManager.Instance.SoundManager.PlayBGM("Intro");
+    }
 
+    private void OnDisable()
+    {
+        GameManager.Instance.SoundManager.StopBGM();
     }
 }

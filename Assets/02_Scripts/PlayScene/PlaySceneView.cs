@@ -22,6 +22,8 @@ public class PlaySceneView : MonoBehaviour
     [SerializeField] Slider _grenadeCooltimeSlider;
     [SerializeField] TextMeshProUGUI _grenadeCountText;
     [SerializeField] RectTransform _playerStat;
+    [SerializeField] GameObject _interactionGuideView;
+    [SerializeField] TextMeshProUGUI _currentRoomCountText;
 
 
     [Header("----- 방 로딩 패널 -----")]
@@ -150,11 +152,15 @@ isMobile = true;
 
         BindInteractionLocalizedStrings(titleKey, instructionKey);
         _interactionPanel?.SetActive(true);
+
+        _interactionGuideView.transform.position = interactable.GuidePoint; // UI 위치 설정
+        _interactionGuideView.SetActive(true); // UI 활성화
     }
 
     public void HideInteractionUI()
     {
         _interactionPanel?.SetActive(false);
+        _interactionGuideView.SetActive(false);
         UnbindInteractionLocalizedStrings();
     }
 
@@ -395,6 +401,11 @@ isMobile = true;
     {
         GameManager.Instance.serverManager.downloadManager.SetChromeToServer();
         GameManager.Instance.SceneLoadManager.LoadIntroScene();
+    }
+
+    public void UpdateCurrentRoomCountText(int roomCount)
+    {
+        _currentRoomCountText.text = $"Room {roomCount}";
     }
 
     private void OnDisable()
