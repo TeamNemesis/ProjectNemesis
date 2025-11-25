@@ -10,6 +10,7 @@ public class SceneLoadManager : MonoBehaviour
     public async void LoadIntroScene()
     {
         await GameManager.Instance.PlayerStatManager.Initialize();
+        await GameManager.Instance.PlayerStatManager.WaitForInitAsync();
         GameManager.Instance.PlayerStatManager.UploadToFirebase();
         GameManager.Instance.skillManager.Reset();
         EventBus.ResetEvent();
@@ -36,8 +37,10 @@ public class SceneLoadManager : MonoBehaviour
     public async void LoadPlayScene()
     {
         await GameManager.Instance.PlayerStatManager.Initialize();
+				await GameManager.Instance.PlayerStatManager.WaitForInitAsync();
         GameManager.Instance.PlayerStatManager.UploadToFirebase();
-        GameManager.Instance.skillManager.Reset();
+
+				GameManager.Instance.skillManager.Reset();
         EventBus.ResetEvent();
         GameManager.Instance.CurrencyManager.SetCreditFromServer();
         SceneManager.LoadScene(Constants.SCENE_NAME_PLAY);

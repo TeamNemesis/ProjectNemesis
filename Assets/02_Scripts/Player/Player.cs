@@ -121,8 +121,7 @@ public class Player : MonoBehaviour
     /// </summary>
     public void Initialize()
     {
-        _statManager = GameManager.Instance.PlayerStatManager;
-
+        
         // 구독: 무기 변경
         if (_weaponController != null)
             _weaponController.OnWeaponChanged += OnWeaponChanged;
