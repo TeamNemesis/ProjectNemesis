@@ -50,6 +50,9 @@ public class SceneLoadManager : MonoBehaviour
 
         // 재화 초기화
         GameManager.Instance.CurrencyManager.Initialize();
+
+        // TakeDamage 이벤트 연결
+        EventBus.OnMonsterHit += GameManager.Instance.PlayerStatManager.TakeDamage;
     }
 
     public void LoadLoginScene()

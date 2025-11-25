@@ -449,6 +449,7 @@ public class PlayerStatManager : MonoBehaviour
 
     public void TakeDamage(WeaponType weaponType,ATTACKTYPE attackType,Transform monster, Transform attackerTransform = null)
     {
+     
         float damage = 0f;
         switch (attackType)
         {
@@ -513,12 +514,17 @@ public class PlayerStatManager : MonoBehaviour
         {
             InitializeStatByReflection(stat);
         }
-        EventBus.OnMonsterHit += TakeDamage;
 
         bIsInit = true;
     }
 
-    public async Task WaitForInitAsync()
+    public void TakeDamageToEventBus()
+    {
+				EventBus.OnMonsterHit += TakeDamage;
+
+		}
+
+		public async Task WaitForInitAsync()
     {
         while (!bIsInit)
         { 
