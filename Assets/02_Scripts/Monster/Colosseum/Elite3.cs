@@ -198,6 +198,27 @@ public class Elite3 : MonsterBase
 
         lastHealthCheckThreshold = healthRatio;
     }
+
+		public override void ShowDamage(float damageAmount, Vector3 position, int damage)
+		{
+				if (damageTextPrefab == null)
+				{
+						damageTextPrefab = Resources.Load<PoolableObject>("Prefabs/Skill/DamageCanvas");
+				}
+				bool bIsBillBoard = false;
+
+				if (EventBus.IsColosseumRoom)
+				{
+
+						// 카메라 기준 왼쪽 방향
+						Transform cam = Camera.main.transform;
+						position += -cam.right * 8f;
+
+						bIsBillBoard = true;
+				}
+
+				GameManager.Instance.PoolManager.GetFromPool(damageTextPrefab, position, Quaternion.identity).GetComponentInChildren<DamageText>().SetDmg(damage, bIsBillBoard);
+		}
     private void DisableAgent()
     {
         if (agent != null && agent.isOnNavMesh) // ← NavMesh 확인
