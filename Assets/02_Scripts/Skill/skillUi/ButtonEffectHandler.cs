@@ -17,6 +17,7 @@ public class CyberpunkButtonEffect : MonoBehaviour
 
 		void Start()
 		{
+				DOTween.Init();
 				if (button == null)
 				{
 						button = GetComponent<Button>();
@@ -38,6 +39,8 @@ public class CyberpunkButtonEffect : MonoBehaviour
 
 		void PlayEffect()
 		{
+
+				Debug.Log("클릭");
 				// 이전 시퀀스가 살아있으면 먼저 Kill
 				currentSequence?.Kill();
 
