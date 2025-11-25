@@ -10,7 +10,7 @@ public class CyberpunkButtonEffect : MonoBehaviour
 		private Image buttonImage;
 		private Color originalColor;
 
-		void Start()
+		void OnEnable()
 		{
 				button = GetComponent<Button>();
 				buttonImage = GetComponent<Image>();
