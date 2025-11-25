@@ -51,6 +51,11 @@ public class MapController : MonoBehaviour
     /// </summary>
     public event Action<DoorInteractor> OnDoorInteractionFinished;
 
+    /// <summary>
+    /// 현재 방 번호가 변경될 때 발행하는 이벤트
+    /// </summary>
+    public event Action<int> OnCurrentRoomCountChanged;
+
     public void Initialize(Player player)
     {
         _player = player;
@@ -184,6 +189,7 @@ public class MapController : MonoBehaviour
     {
         _currentRoom = room;
         _currentRoomCount++;
+        OnCurrentRoomCountChanged?.Invoke(_currentRoomCount);
         GameManager.Instance.CurrencyManager.ResetRoomCredit();
 
         if (room.RoomInfo?.RoomType == RoomType.Lab)

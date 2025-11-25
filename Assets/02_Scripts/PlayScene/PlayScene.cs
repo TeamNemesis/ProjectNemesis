@@ -45,6 +45,7 @@ public class PlayScene : MonoBehaviour
         _player.OnGrenadeCooltimeChanged += _playSceneView.UpdateGrenadeCoolTime;
         _player.OnGrenadeCountChanged += _playSceneView.UpdateGrenadeCount;
         _mapController.OnDoorInteractionFinished += _playSceneView.ShowRoomLoadingPanel;
+        _mapController.OnCurrentRoomCountChanged += _playSceneView.UpdateCurrentRoomCountText;
         _playSceneView.OnRoomLoadingComplete += _mapController.SpawnRoom;
         _timeChecker.OnTimeUpdated += _playSceneView.UpdateTimer;
         _mapController.OnStartRoomExited += _timeChecker.StartTimeCheck;

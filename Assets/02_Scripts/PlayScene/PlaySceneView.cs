@@ -23,6 +23,7 @@ public class PlaySceneView : MonoBehaviour
     [SerializeField] TextMeshProUGUI _grenadeCountText;
     [SerializeField] RectTransform _playerStat;
     [SerializeField] GameObject _interactionGuideView;
+    [SerializeField] TextMeshProUGUI _currentRoomCountText;
 
 
     [Header("----- 방 로딩 패널 -----")]
@@ -400,6 +401,11 @@ isMobile = true;
     {
         GameManager.Instance.serverManager.downloadManager.SetChromeToServer();
         GameManager.Instance.SceneLoadManager.LoadIntroScene();
+    }
+
+    public void UpdateCurrentRoomCountText(int roomCount)
+    {
+        _currentRoomCountText.text = $"Room {roomCount}";
     }
 
     private void OnDisable()
