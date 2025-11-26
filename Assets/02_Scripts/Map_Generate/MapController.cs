@@ -333,7 +333,11 @@ public class MapController : MonoBehaviour
             _currentRoom.OnRewardSelectionFinished += door.OnRewardSelectionCompleted;
         }
 
-        if (_currentRoom?.RoomInfo?.RoomType == RoomType.Start || _currentRoom?.RoomInfo?.RoomType == RoomType.Shop)
+        //if (_currentRoom?.RoomInfo?.RoomType == RoomType.Start || _currentRoom?.RoomInfo?.RoomType == RoomType.Shop)
+        //{
+        //    door.OnRewardSelectionCompleted();
+        //}
+        if (_currentRoom?.RoomInfo?.RoomType == RoomType.Shop)
         {
             door.OnRewardSelectionCompleted();
         }

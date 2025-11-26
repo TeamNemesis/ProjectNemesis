@@ -6,7 +6,6 @@ public class StartRoom : Room
     public override void Initialize(RoomInfo roomInfo)
     {
         base.Initialize(roomInfo);
-        //CheatReward();
     }
 
     public override IInteractable[] SpawnReward()

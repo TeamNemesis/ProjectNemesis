@@ -164,8 +164,9 @@ public class ColosseumRoom : Room
     }
 
     // 방(또는 오브젝트)이 비활성화될 때 구독 정리 및 콜로세움 플래그 해제
-    private void OnDisable()
+    protected override void OnDisable()
     {
+        base.OnDisable();
         UnsubscribeAllRewardables();
         EventBus.SetColosseumRoom(false);
     }

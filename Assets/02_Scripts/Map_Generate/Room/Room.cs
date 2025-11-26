@@ -176,7 +176,7 @@ public abstract class Room : MonoBehaviour
         EventBus.Evolution();
     }
 
-    private void OnDisable()
+    protected virtual void OnDisable()
     {
         GameManager.Instance.SoundManager.StopBGM();
     }
