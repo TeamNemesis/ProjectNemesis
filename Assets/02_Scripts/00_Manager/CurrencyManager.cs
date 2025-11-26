@@ -71,22 +71,50 @@ public class CurrencyManager : MonoBehaviour
         OnCreditChanged?.Invoke(_currentCredit);
     }
 
+    ///// <summary>
+    ///// 몬스터 처치로 인한 골드 획득
+    ///// </summary>
+    ///// <param name="cost"></param>
+    //public void AddCreditByMonsterDeath(int cost)
+    //{
+    //    if (_roomCredit >= _creditLimitPerRoom)
+    //    {
+    //        return;
+    //    }
+    //    if (_roomCredit + cost > _creditLimitPerRoom)
+    //    {
+    //        cost = _creditLimitPerRoom - _roomCredit;
+    //    }
+    //    _currentCredit += cost;
+    //    _roomCredit += cost;
+
+    //    OnCreditChanged?.Invoke(_currentCredit);
+    //}
+
     /// <summary>
-    /// 몬스터 처치로 인한 골드 획득
+    /// 몬스터 처치로 인해 획득하는 크레딧을 방당 제한(_creditLimitPerRoom) 내에서 추가합니다.
+    /// 반환값은 실제로 추가된 크레딧 양입니다(0이면 제한으로 더이상 획득 불가).
     /// </summary>
-    /// <param name="cost"></param>
-    public void AddCreditByMonsterDeath(int cost)
+    public int AddCreditByMonsterDeath(int amount)
     {
-        if (_roomCredit >= _creditLimitPerRoom)
-        {
-            return;
-        }
-        if (_roomCredit + cost > _creditLimitPerRoom)
-        {
-            cost = _creditLimitPerRoom - _roomCredit;
-        }
-        _currentCredit += cost;
-        OnCreditChanged?.Invoke(_currentCredit);
+        if (amount <= 0)
+            return 0;
+
+        if (_creditLimitPerRoom <= 0)
+            return 0;
+
+        int remaining = Math.Max(0, _creditLimitPerRoom - _roomCredit);
+        int toAdd = Math.Min(amount, remaining);
+
+        if (toAdd <= 0)
+            return 0;
+
+        // 내부의 공통 AddCredit을 재사용해서 이벤트 호출/로직 일관성 유지
+        AddCredit(toAdd);
+
+        _roomCredit += toAdd;
+
+        return toAdd;
     }
 
     public void ResetRoomCredit()

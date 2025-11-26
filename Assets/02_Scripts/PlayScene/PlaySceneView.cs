@@ -22,6 +22,8 @@ public class PlaySceneView : MonoBehaviour
     [SerializeField] Slider _grenadeCooltimeSlider;
     [SerializeField] TextMeshProUGUI _grenadeCountText;
     [SerializeField] RectTransform _playerStat;
+    [SerializeField] GameObject _interactionGuideView;
+    [SerializeField] TextMeshProUGUI _currentRoomCountText;
 
 
     [Header("----- 방 로딩 패널 -----")]
@@ -150,11 +152,15 @@ isMobile = true;
 
         BindInteractionLocalizedStrings(titleKey, instructionKey);
         _interactionPanel?.SetActive(true);
+
+        _interactionGuideView.transform.position = interactable.GuidePoint; // UI 위치 설정
+        _interactionGuideView.SetActive(true); // UI 활성화
     }
 
     public void HideInteractionUI()
     {
         _interactionPanel?.SetActive(false);
+        _interactionGuideView.SetActive(false);
         UnbindInteractionLocalizedStrings();
     }
 
@@ -211,6 +217,7 @@ isMobile = true;
     #region 룸 로딩 시 로딩 텍스트(LocalizedString) 바인딩
     public void ShowRoomLoadingPanel(DoorInteractor doorInteractor)
     {
+        EventBus.bIsRoomReady = false;
         _roomLoadingRoutine = StartCoroutine(RoomLoadingRoutine(doorInteractor));
     }
 
@@ -233,10 +240,10 @@ isMobile = true;
         };
 
         _roomLoadingPanel.SetActive(true);
-        yield return new WaitForSeconds(2.0f);
+        yield return new WaitForSeconds(0.5f);
 
         OnRoomLoadingComplete?.Invoke(doorInteractor);
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitUntil(() => EventBus.bIsRoomReady);
         _roomLoadingPanel.SetActive(false);
 
         EventBus.SetCanTimeRun(true);
@@ -394,6 +401,11 @@ isMobile = true;
     {
         GameManager.Instance.serverManager.downloadManager.SetChromeToServer();
         GameManager.Instance.SceneLoadManager.LoadIntroScene();
+    }
+
+    public void UpdateCurrentRoomCountText(int roomCount)
+    {
+        _currentRoomCountText.text = $"Room {roomCount}";
     }
 
     private void OnDisable()

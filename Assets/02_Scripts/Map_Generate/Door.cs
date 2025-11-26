@@ -90,6 +90,7 @@ public class Door : MonoBehaviour
     IEnumerator DoorOpenAnimationRoutine(IInteractable interactable)
     {
         _doorAnim.SetTrigger(Constants.ANIPARAM_ONDOOROPEN);
+        GameManager.Instance.SoundManager.PlaySfxForSeconds("DoorOpen", 1.2f);
         yield return new WaitForSeconds(1.5f);
         DoorInteracted?.Invoke(interactable);
     }

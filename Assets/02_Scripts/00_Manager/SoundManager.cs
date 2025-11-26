@@ -109,6 +109,15 @@ public class SoundManager : MonoBehaviour
         }
     }
 
+    public void StopBGM()
+    {
+        if (_bgmSource == null)
+        {
+            return;
+        }
+        _bgmSource.Stop();
+    }
+
     /// <summary>
     /// UI용 2D SFX 재생 (위치 없음)
     /// 반환: 풀을 사용하면 사용된 AudioSource(제어 가능)를 반환합니다.

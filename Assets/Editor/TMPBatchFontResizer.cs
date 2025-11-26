@@ -89,7 +89,7 @@ public class TMPBatchFontResizer : EditorWindow
         {
             string path = AssetDatabase.GUIDToAssetPath(guids[i]);
             var scene = EditorSceneManager.OpenScene(path, OpenSceneMode.Single);
-            bool sceneDirty = false;
+            
             if (ProcessScene(scene, out int skipped, out int modified))
             {
                 totalModified += modified;

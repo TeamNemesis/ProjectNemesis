@@ -346,6 +346,8 @@ public class DebuffHandler : MonoBehaviour
         activeDebuffs.Remove(debuff.debuffName);
     }
 
+    #region 디버프 코루틴들
+
     /// <summary>
     /// 스턴 코루틴
     /// </summary>
@@ -500,6 +502,7 @@ public class DebuffHandler : MonoBehaviour
             }
         }
     }
+    #endregion
 
     /// <summary>
     /// 가지고있는 디버프를 확인하는 함수 (디버프 데이터로 확인)
@@ -614,6 +617,58 @@ public class DebuffHandler : MonoBehaviour
             }
             activeDebuffs.Remove(debuffName);
         }
+    }
+
+    /// <summary>
+    /// 모든 디버프 초기화
+    /// </summary>
+    public void ClearAllDebuffs()
+    {
+        // 모든 활성 디버프를 리스트로 복사 (순회 중 삭제를 위해)
+        List<string> debuffNames = new List<string>(activeDebuffs.Keys);
+
+        // 각 디버프를 개별적으로 제거
+        foreach (string debuffName in debuffNames)
+        {
+            RemoveDebuff(debuffName);
+        }
+
+        // 딕셔너리 완전 초기화 (혹시 모를 누락 방지)
+        activeDebuffs.Clear();
+
+        // 점진되는 고통 코루틴 중지
+        if (_increasePain != null)
+        {
+            StopCoroutine(_increasePain);
+            _increasePain = null;
+        }
+
+        // NavMeshAgent 속도 복원
+        if (agent != null && agent.isOnNavMesh)
+        {
+            agent.speed = originalSpeed;
+            agent.isStopped = false;
+        }
+
+        // 몬스터 상태 초기화
+        if (monster != null)
+        {
+            monster.isStunned = false;
+            monster.isBindned = false;
+            monster.isWeaken = false;
+            monster.SetAttackDamage(originalDamage);
+            monster.targetTag = Constants.TAG_PLAYER;
+        }
+
+        // 플레이어 상태 초기화
+        if (player != null)
+        {
+            player.isStunned = false;
+            player.isBindned = false;
+        }
+
+        // UI 갱신 이벤트 발생
+        OnDebuff?.Invoke(this);
     }
 
 

@@ -5426,10 +5426,10 @@ MonoBehaviour:
   comboResetDelay: 1
   fallbackDelay: 0.5
   attackRange: 1.5
-  attackRadius: 0.5
+  attackRadius: 2
   hitLayerMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 1024
 --- !u!1 &2527673186981617727
 GameObject:
   m_ObjectHideFlags: 0
@@ -13552,13 +13552,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f88eea1a57520f4b8ee9f12a938d446, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxDistance: 20
-  moveSpeed: 25
-  stopDistance: 1.5
-  grappleMask:
-    serializedVersion: 2
-    m_Bits: 0
-  line: {fileID: 0}
+  bladePrefab: {fileID: 5367062968416488594, guid: 6739a02dc69c89f42abee9f3212a3430, type: 3}
+  spawnPoint: {fileID: 0}
+  maxChargeTime: 2
+  minScale: 0.6
+  maxScale: 2
+  baseDamage: 10
+  maxDamage: 35
+  bladeSpeed: 12
+  bladeLifetime: 3
 --- !u!1 &7144462926331018159
 GameObject:
   m_ObjectHideFlags: 0
@@ -17186,7 +17188,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _detectPoint: {fileID: 7780520282912648580}
-  _radius: 2
+  _radius: 3
   _targetLayerMask:
     serializedVersion: 2
     m_Bits: 64
