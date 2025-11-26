@@ -43,10 +43,8 @@ public class CyberpunkButtonEffect : MonoBehaviour
 				currentSequence?.Kill();
 
 				currentSequence = DOTween.Sequence();
-
 				currentSequence.Append(button.transform.DOScale(1.2f, 0.1f));
 				currentSequence.Append(button.transform.DOScale(1f, 0.1f));
-
 				currentSequence.Join(button.transform.DOShakeScale(
 						0.25f,
 						strength: new Vector3(0.2f, 0.2f, 0),
@@ -54,6 +52,7 @@ public class CyberpunkButtonEffect : MonoBehaviour
 						randomness: 90,
 						fadeOut: true
 				));
+				currentSequence.Append(button.transform.DOScale(1f, 0.05f));
 
 				currentSequence.OnComplete(() =>
 				{
