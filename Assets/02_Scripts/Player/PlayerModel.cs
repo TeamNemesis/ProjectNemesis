@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Threading.Tasks;
 using UnityEngine;
 
 /// <summary>
@@ -136,12 +137,12 @@ public class PlayerModel : CharacterModelBase
         base.Die();
         EventBus.SetCanTimeRun(false);
     }
-    public override async void Initialize()
+    public override void Initialize()
     {
         // 플레이어 json파일 데이터에서 최대체력 받아옴
         base.Initialize();
 
-        await GameManager.Instance.PlayerStatManager.WaitForInitAsync();
+        
 
         SettingMaxHp((int)GameManager.Instance.PlayerStatManager.playerStatDataDic["playerHP"].GetEffectiveValue());
         SetCurrentHp(maxHealth); // 초기화 시 현재 체력을 최대 체력으로 설정
@@ -160,9 +161,9 @@ public class PlayerModel : CharacterModelBase
 
         GameManager.Instance.PlayerStatManager.OnplayerAvoidanceChange += OnPlayerAvoidanceChange;
         GameManager.Instance.PlayerStatManager.OnplayerHitPercentChange += OnPlayerHitReducePercentChange;
-
-
 		}
+
+    
 
     public void AutoHeal()
     {

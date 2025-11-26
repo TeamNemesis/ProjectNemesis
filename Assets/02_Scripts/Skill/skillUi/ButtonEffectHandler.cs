@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 
@@ -6,50 +6,65 @@ using DG.Tweening;
 public class CyberpunkButtonEffect : MonoBehaviour
 {
 		private Button button;
-		private UnityEngine.Events.UnityEvent originalOnClick;
+		private UnityEngine.Events.UnityEvent inspectorEvents;
 		private Image buttonImage;
 		private Color originalColor;
 
+		private Sequence currentSequence; // ì‹¤í–‰ ì¤‘ì¸ ì‹œí€€ìŠ¤ë¥¼ ì €ì¥
+
+
+
+
 		void Start()
 		{
-				button = GetComponent<Button>();
-				buttonImage = GetComponent<Image>();
-				if (buttonImage != null) originalColor = buttonImage.color;
+				DOTween.Init();
+				if (button == null)
+				{
+						button = GetComponent<Button>();
+				}
+				if (buttonImage == null)
+				{
+						buttonImage = GetComponent<Image>();
+				}
+				else
+				{
+						originalColor = buttonImage.color;
+				}
 
-				// ±âÁ¸ OnClick ÀÌº¥Æ® ÀúÀå
-				originalOnClick = button.onClick;
+				inspectorEvents = button.onClick;
 
-				// ¹öÆ°ÀÇ ±âº» onClickÀº Á¦°ÅÇÏ°í, ·¡ÆÛ¸¸ µî·Ï
 				button.onClick = new Button.ButtonClickedEvent();
 				button.onClick.AddListener(PlayEffect);
 		}
 
 		void PlayEffect()
 		{
-				// DOTween Sequence·Î ³×¿Â ÆŞ½º + ±Û¸®Ä¡ Èçµé¸² Á¶ÇÕ
-				Sequence seq = DOTween.Sequence();
+				// ì´ì „ ì‹œí€€ìŠ¤ê°€ ì‚´ì•„ìˆìœ¼ë©´ ë¨¼ì € Kill
+				currentSequence?.Kill();
 
-				// ³×¿Â ÆŞ½º (»ö»ó ¹øÂ½ÀÓ)
-				if (buttonImage != null)
-				{
-						seq.Append(buttonImage.DOColor(Color.cyan, 0.1f));
-						seq.Append(buttonImage.DOColor(originalColor, 0.1f));
-				}
+				currentSequence = DOTween.Sequence();
 
-				// ±Û¸®Ä¡ Èçµé¸² (ºü¸¥ ÁÂ¿ì Èçµé¸²)
-				seq.Join(button.transform.DOShakePosition(
-						0.25f,                          // Áö¼Ó ½Ã°£
-						strength: new Vector3(10, 0, 0), // Èçµé¸² °­µµ (ÁÂ¿ì)
-						vibrato: 30,                     // Áøµ¿ È½¼ö
-						randomness: 90,                  // ·£´ı¼º
-						snapping: false,                 // ½º³À ¿©ºÎ
-						fadeOut: true                    // Á¡Á¡ ÁÙ¾îµê
+				currentSequence.Append(button.transform.DOScale(1.2f, 0.1f));
+				currentSequence.Append(button.transform.DOScale(1f, 0.1f));
+
+				currentSequence.Join(button.transform.DOShakeScale(
+						0.25f,
+						strength: new Vector3(0.2f, 0.2f, 0),
+						vibrato: 30,
+						randomness: 90,
+						fadeOut: true
 				));
 
-				// ¾Ö´Ï¸ŞÀÌ¼Ç ³¡³­ µÚ ¿ø·¡ ÀÌº¥Æ® ½ÇÇà
-				seq.OnComplete(() =>
+				currentSequence.OnComplete(() =>
 				{
-						originalOnClick?.Invoke();
+						inspectorEvents?.Invoke();
 				});
+		}
+
+		private void OnDisable()
+		{
+				// ë²„íŠ¼ ë¹„í™œì„±í™” ì‹œ ì• ë‹ˆë©”ì´ì…˜ ì¢…ë£Œ
+				currentSequence?.Kill();
+				currentSequence = null;
 		}
 }

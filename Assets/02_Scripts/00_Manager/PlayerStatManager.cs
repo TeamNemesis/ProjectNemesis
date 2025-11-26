@@ -449,6 +449,7 @@ public class PlayerStatManager : MonoBehaviour
 
     public void TakeDamage(WeaponType weaponType,ATTACKTYPE attackType,Transform monster, Transform attackerTransform = null)
     {
+     
         float damage = 0f;
         switch (attackType)
         {
@@ -506,21 +507,27 @@ public class PlayerStatManager : MonoBehaviour
 
     public async Task Initialize()
     {
+        bIsInit = false;
        await InitPlayerStat();
 
         foreach (var stat in _playerStatDataDic.Values)
         {
             InitializeStatByReflection(stat);
         }
-        EventBus.OnMonsterHit += TakeDamage;
 
         bIsInit = true;
     }
 
-    public async Task WaitForInitAsync()
+    public void TakeDamageToEventBus()
+    {
+				EventBus.OnMonsterHit += TakeDamage;
+
+		}
+
+		public async Task WaitForInitAsync()
     {
         while (!bIsInit)
-        {
+        { 
             await Task.Delay(100); // 100ms마다 확인
         }
     }
@@ -567,6 +574,7 @@ public class PlayerStatManager : MonoBehaviour
     public void InitSkillDictionary()
     {
         _playerStatDataDic.Clear();
+        
         foreach (var data in _playerjsonData)
         {
             _playerStatDataDic.Add(data.column, new PlayerStatData(data));

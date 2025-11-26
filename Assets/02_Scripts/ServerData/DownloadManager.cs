@@ -33,6 +33,12 @@ public class DownloadManager : MonoBehaviour
 
         string jsonText = File.ReadAllText(Constants.FILE_PATH_PLAYERSTAT);
 
+        if(jsonText =="[]")
+        {
+            _serverManager.ShowPopup("업로드할 데이터가 없습니다.");
+            return false; 
+        }
+
         var data = new Dictionary<string, object>
     {
         { "playerStatJson", jsonText },

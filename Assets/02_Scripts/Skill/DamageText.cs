@@ -17,13 +17,13 @@ public class DamageText : PoolableObject
 				originalColor = text.color;
 		}
 
-		public void SetDmg(int damage)
+		public void SetDmg(int damage,bool bIsBillBoard)
 		{
 				text.text = damage.ToString();
-				StartCoroutine(FloatAndFade());
+				StartCoroutine(FloatAndFade(bIsBillBoard));
 		}
 
-		private System.Collections.IEnumerator FloatAndFade()
+		private System.Collections.IEnumerator FloatAndFade(bool bIsBillBoard)
 		{
 				Vector3 startPos = transform.position;
 				Vector3 endPos = startPos + Vector3.up * 1f;
@@ -35,6 +35,12 @@ public class DamageText : PoolableObject
 
 						// 위치 이동
 						transform.position = Vector3.Lerp(startPos, endPos, t);
+
+						// 맵 조건 체크 후 Billboard 적용
+						if (bIsBillBoard)
+						{
+								LookAtPlayerOrCamera();
+						}
 
 						// 알파 페이드
 						if (timer > duration - fadeDuration)
@@ -48,7 +54,17 @@ public class DamageText : PoolableObject
 						yield return null;
 				}
 
-				// 풀로 반환
-				GameManager.Instance.PoolManager.ReleaseToPool(this.gameObject);
+				GameManager.Instance.PoolManager.ReleaseToPool(gameObject);
+		}
+
+
+		/// <summary>
+		/// 플레이어나 카메라를 바라보게 회전
+		/// </summary>
+		private void LookAtPlayerOrCamera()
+		{
+				Transform cam = Camera.main.transform;
+				transform.LookAt(transform.position + cam.rotation * Vector3.forward,
+												 cam.rotation * Vector3.up);
 		}
 }

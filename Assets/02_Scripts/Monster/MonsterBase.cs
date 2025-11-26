@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using Unity.AppUI.UI;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -359,15 +360,27 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
     /// <summary>
     /// 데미지 이펙트
     /// </summary>
-		[SerializeField] private PoolableObject damageTextPrefab;
+		[SerializeField] protected PoolableObject damageTextPrefab;
 
-		public void ShowDamage(float damageAmount, Vector3 position,int damage)
+		public virtual void ShowDamage(float damageAmount, Vector3 position,int damage)
 		{
         if(damageTextPrefab == null)
         {
             damageTextPrefab = Resources.Load<PoolableObject>("Prefabs/Skill/DamageCanvas");
         }
-        GameManager.Instance.PoolManager.GetFromPool(damageTextPrefab, position, Quaternion.identity).GetComponentInChildren<DamageText>().SetDmg(damage);
+        bool bIsBillBoard = false;
+
+        if(EventBus.IsColosseumRoom)
+        {
+
+						// 카메라 기준 왼쪽 방향
+						Transform cam = Camera.main.transform;
+						position += -cam.right * 3f;
+
+						bIsBillBoard = true;
+        }
+
+        GameManager.Instance.PoolManager.GetFromPool(damageTextPrefab, position, Quaternion.identity).GetComponentInChildren<DamageText>().SetDmg(damage,bIsBillBoard);
 		}
 
 		#endregion
@@ -460,7 +473,7 @@ public class MonsterBase : CharacterModelBase, IInitializePoolable
         // 남은 체력이 0보다 크면 데미지를 보여줌
 				if (currentHealth > 0)
 				{
-				ShowDamage(damage,transform.position + Vector3.up,(int)damage);
+				ShowDamage(damage,transform.position + Vector3.up*2f,(int)damage);
 				}
 
 
