@@ -48,6 +48,9 @@ public class SceneLoadManager : MonoBehaviour
         // 맵에 있는 모든 풀링 오브젝트들을 릴리즈
         GameManager.Instance.PoolManager.ClearAllPools();
 
+        //UI초기화
+        GameManager.Instance.UIManager.ResetUIManager();
+
         // 재화 초기화
         GameManager.Instance.CurrencyManager.Initialize();
 

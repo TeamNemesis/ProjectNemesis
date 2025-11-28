@@ -312,4 +312,12 @@ public class UIManager : MonoBehaviour
     {
         _settingPanel.OnOpenSetting();
     }
+
+    public void ResetUIManager()
+    {
+        _upgradePanel.gameObject.SetActive(false);
+        _recordPanel.gameObject.SetActive(false);
+        _listPanel.gameObject.SetActive(false);
+        _skillBtnPanel.gameObject.SetActive(false);
+		}
 }
