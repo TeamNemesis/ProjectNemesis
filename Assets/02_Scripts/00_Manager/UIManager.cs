@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DG.Tweening;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -7,6 +8,7 @@ using UnityEngine.Localization.Settings;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+
 
 public class UIManager : MonoBehaviour
 {
@@ -198,20 +200,35 @@ public class UIManager : MonoBehaviour
             }
         }
     }
-    #endregion
+		#endregion
 
-    public void SetActiveSkillBtnPanel(bool isActive)
-    {
-        SetInput(!isActive);
+		public void SetActiveSkillBtnPanel(bool isActive)
+		{
+				SetInput(!isActive);
 
-        _skillBtnPanel.SetActive(isActive);
-        EventBus.SetCanGetInput(!isActive);
-        if (!isActive)
-            onRewardSelect?.Invoke();
-    }
+				if (isActive)
+				{
+						// 처음엔 작게 시작
+						_skillBtnPanel.transform.localScale = Vector3.one * 0.5f;
+						_skillBtnPanel.SetActive(true);
 
-    #region skill choose
-    public SkillBtn MakeSkillBtn()
+						// DOTween 애니메이션: 0.5 → 1
+						_skillBtnPanel.transform
+								.DOScale(1f, 0.3f) // 0.3초 동안
+								.SetEase(Ease.OutBack); // 튀어나오는 듯한 탄성 효과
+				}
+				else
+				{
+						// 닫을 때는 그냥 비활성화
+						_skillBtnPanel.SetActive(false);
+						onRewardSelect?.Invoke();
+				}
+
+				EventBus.SetCanGetInput(!isActive);
+		}
+
+		#region skill choose
+		public SkillBtn MakeSkillBtn()
     {
         SkillBtn skillBtn = GameManager.Instance.PoolManager
                 .GetFromPool(_skillChooseBtnPrefab, Vector3.zero, _skillChooseBtnPrefab.transform.rotation, _parentPanel.transform)
