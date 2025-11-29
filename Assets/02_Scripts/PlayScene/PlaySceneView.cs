@@ -114,7 +114,7 @@ isMobile = true;
         {
             _playerStat.anchorMax = new Vector2(0.5f, 0);
             _playerStat.anchorMin = new Vector2(0.5f, 0);
-            _playerStat.pivot = new Vector2(0.5f, 0.5f);
+            _playerStat.pivot = new Vector2(0.5f, 0);
         }
         else
         {

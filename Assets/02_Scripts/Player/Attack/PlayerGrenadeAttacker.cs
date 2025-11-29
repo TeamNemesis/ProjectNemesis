@@ -132,7 +132,11 @@ public class PlayerGrenadeAttacker : MonoBehaviour
 
     private GameObject _targetIndicator;
     private bool _isAiming = false;
-
+    public bool isAiming { get { return _isAiming; } }
+    public void SetAiming(bool isAiming)
+    {
+        _isAiming = isAiming;
+    }
     public void StartAiming()
     {
         if (_currentCount <= 0) return;
@@ -167,7 +171,7 @@ public class PlayerGrenadeAttacker : MonoBehaviour
     public void ConfirmAiming()
     {
         if (!_isAiming) return;
-
+        
         CancelAiming();
         RequestAttack();
     }
