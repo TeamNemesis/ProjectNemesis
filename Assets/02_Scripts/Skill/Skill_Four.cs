@@ -12,6 +12,8 @@ public class Skill_Four : SkillBase
     private SkillEffect _enhancedBoostPrefab;
     private Player _player;
 
+    private SkillEffect _getPrefab; //이펙트
+
     #region 드론
     [SerializeField]
     private Drone dronePrefab;
@@ -41,6 +43,12 @@ public class Skill_Four : SkillBase
     public override void ActivateSkill(SkillData choosedSkill)
     {
         _player = _skillManager.playScene.player;
+
+        if (_getPrefab == null)             //여기서 로드
+        {
+            _getPrefab = Resources.Load<SkillEffect>("Prefabs/Effect/Skill/GetSkill_4");
+        }
+        PlayAcquireEffect();
 
         switch (choosedSkill.skillIdx)
         {
@@ -212,4 +220,19 @@ public class Skill_Four : SkillBase
         skillManager.playerStatManager.AddPlayerMoveSpeedMulti(-plusMoveSpeed);
     }
     #endregion
+
+    private void PlayAcquireEffect()
+    {
+        var player = _skillManager.playScene.player;
+        var pos = _skillManager.playScene.player.transform.position;
+
+        GameManager.Instance.PoolManager.GetFromPool(
+            _getPrefab,
+            pos,
+            Quaternion.identity,
+            player.transform
+        );
+
+        GameManager.Instance.SoundManager.PlaySfxAt("GetSkill", pos);
+    }
 }

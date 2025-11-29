@@ -16,6 +16,8 @@ public class Skill_Three : SkillBase
     private horizon _horizonPrefab;
     private GameObject _playerHorizon;
 
+    private SkillEffect _getPrefab; //이펙트
+
     public override void InitializeSkill(SkillManager skillManager)
     {
         base.InitializeSkill(skillManager);
@@ -27,6 +29,11 @@ public class Skill_Three : SkillBase
 
     public override void ActivateSkill(SkillData choosedSkill)
     {
+        if (_getPrefab == null)             //여기서 로드
+        {
+            _getPrefab = Resources.Load<SkillEffect>("Prefabs/Effect/Skill/GetSkill_3");
+        }
+        PlayAcquireEffect();
 
 
         switch (choosedSkill.skillIdx)
@@ -197,6 +204,21 @@ public class Skill_Three : SkillBase
 
     }
     #endregion
+
+    private void PlayAcquireEffect()
+    {
+        var player = _skillManager.playScene.player;
+        var pos = _skillManager.playScene.player.transform.position;
+
+        GameManager.Instance.PoolManager.GetFromPool(
+            _getPrefab,
+            pos,
+            Quaternion.identity,
+            player.transform
+        );
+
+        GameManager.Instance.SoundManager.PlaySfxAt("GetSkill", pos);
+    }
 }
 
 
