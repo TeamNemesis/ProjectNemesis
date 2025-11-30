@@ -1,11 +1,19 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
+
+
 /// <summary>
 /// 씬을 관리하는 매니저 클래스
 /// </summary>
 public class SceneLoadManager : MonoBehaviour
 {
+		private LOADSTATE _currentState = LOADSTATE.Start;
+		public LOADSTATE currentState { get { return _currentState; } }
+		public void SetCurrentState(LOADSTATE state)
+		{
+				_currentState = state;
+		}
 
 		public async void LoadIntroScene()
 		{
@@ -14,6 +22,7 @@ public class SceneLoadManager : MonoBehaviour
 				GameManager.Instance.PlayerStatManager.UploadToFirebase();
 				GameManager.Instance.skillManager.Reset();
 				EventBus.ResetEvent();
+
 				SceneManager.LoadScene(Constants.SCENE_NAME_INTRO);
 				GameManager.Instance.PoolManager.ClearAllPools();
 
@@ -36,7 +45,7 @@ public class SceneLoadManager : MonoBehaviour
 
 		public async void LoadPlayScene()
 		{
-				await SceneManager.LoadSceneAsync("LoadingScene", LoadSceneMode.Additive);
+				await SceneManager.LoadSceneAsync(Constants.SCENE_NAME_LOADING, LoadSceneMode.Additive);
 				Scene currentScene = SceneManager.GetActiveScene();
 
 				// 씬 이름 비교
@@ -44,15 +53,15 @@ public class SceneLoadManager : MonoBehaviour
 				{
 						await SceneManager.UnloadSceneAsync(currentScene.name);
 				}
-
 				await GameManager.Instance.PlayerStatManager.Initialize();
 				await GameManager.Instance.PlayerStatManager.WaitForInitAsync();
 				GameManager.Instance.PlayerStatManager.UploadToFirebase();
 
 				GameManager.Instance.skillManager.Reset();
 				EventBus.ResetEvent();
-				GameManager.Instance.CurrencyManager.SetCreditFromServer();
 
+				GameManager.Instance.CurrencyManager.SetCreditFromServer();
+				_currentState = LOADSTATE.Server;
 
 				Scene targetScene = SceneManager.GetSceneByName(Constants.SCENE_NAME_INTRO);
 				if (targetScene.IsValid() && targetScene.isLoaded)
@@ -76,6 +85,7 @@ public class SceneLoadManager : MonoBehaviour
 						GameManager.Instance.UIManager.ResetUIManager();
 						GameManager.Instance.CurrencyManager.Initialize();
 						EventBus.OnMonsterHit += GameManager.Instance.PlayerStatManager.TakeDamage;
+						_currentState = LOADSTATE.PlayScene;
 
 						//await SceneManager.LoadSceneAsync(Constants.SCENE_NAME_PLAY,LoadSceneMode.Single);
 
@@ -100,11 +110,11 @@ public class SceneLoadManager : MonoBehaviour
 
 		public async void UnloadScene()
 		{
-				Scene targetScene = SceneManager.GetSceneByName("LoadingScene");
+				Scene targetScene = SceneManager.GetSceneByName(Constants.SCENE_NAME_LOADING);
 
 				if (targetScene.IsValid() && targetScene.isLoaded)
 				{
-						await SceneManager.UnloadSceneAsync("LoadingScene");
+						await SceneManager.UnloadSceneAsync(Constants.SCENE_NAME_LOADING);
 				}
 
 		}

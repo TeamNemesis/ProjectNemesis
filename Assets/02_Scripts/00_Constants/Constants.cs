@@ -232,9 +232,10 @@ public static class Constants
     #region Scene Names
     public const string SCENE_NAME_LOGIN = "LoginScene";
     public const string SCENE_NAME_INTRO = "IntroScene";
+    public const string SCENE_NAME_LOADING = "LoadingScene";
 
 
-    public const string SCENE_NAME_PLAY = "Player";
+		public const string SCENE_NAME_PLAY = "Player";
 
 		#endregion
 
@@ -415,4 +416,18 @@ public enum ATTACKTYPE
     SPECIALATTACK,
     DASH,
     COUNT
+}
+
+/// <summary>
+/// 로딩 상태
+/// </summary>
+public enum LOADSTATE
+{
+		Start = 0,
+		Server = 1,
+		PlayScene = 2,
+		PlaySceneView = 3,
+		Room = 4,
+		Finish = 5
+
 }

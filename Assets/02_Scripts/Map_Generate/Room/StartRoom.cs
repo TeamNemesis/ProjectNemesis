@@ -6,6 +6,7 @@ public class StartRoom : Room
     public override void Initialize(RoomInfo roomInfo)
     {
         base.Initialize(roomInfo);
+        GameManager.Instance.SceneLoadManager.SetCurrentState(LOADSTATE.Room);
     }
 
     public override IInteractable[] SpawnReward()

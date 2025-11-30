@@ -58,7 +58,7 @@ public class PlayScene : MonoBehaviour
         _player.OnGrenadeAttackStarted += _playSceneView.CheckGrenadeAttackTutorialComplete;
         _player.OnInteractionStarted += _playSceneView.CheckInteractTutorialComplete;
 
-
+        GameManager.Instance.SceneLoadManager.SetCurrentState(LOADSTATE.PlaySceneView);
 		}
 		private void Start()
 		{

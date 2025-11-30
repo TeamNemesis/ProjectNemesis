@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 /// <summary>
@@ -406,9 +407,9 @@ public class PlaySceneView : MonoBehaviour
 		{
 				_currentRoomCountText.text = $"Room {roomCount}";
 
-
 				if (roomCount == 1)
 				{
+				GameManager.Instance.SceneLoadManager.SetCurrentState(LOADSTATE.Finish);
 
 						await System.Threading.Tasks.Task.Delay(500);
 
