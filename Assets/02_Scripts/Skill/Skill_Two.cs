@@ -14,8 +14,16 @@ public class Skill_Two : SkillBase
     private ExplosionDeathData _explosionDeathData;
 
 
+    private SkillEffect _getPrefab; //이펙트
+
     public override void ActivateSkill(SkillData choosedSkill)
     {
+        if (_getPrefab == null)             //여기서 로드
+        {
+            _getPrefab = Resources.Load<SkillEffect>("Prefabs/Effect/Skill/GetSkill_2");
+        }
+        PlayAcquireEffect();
+
 
         switch (choosedSkill.skillIdx)
         {
@@ -175,6 +183,21 @@ public class Skill_Two : SkillBase
         }
     }
     #endregion
+
+    private void PlayAcquireEffect()
+    {
+        var player = _skillManager.playScene.player;
+        var pos = _skillManager.playScene.player.transform.position;
+
+        GameManager.Instance.PoolManager.GetFromPool(
+            _getPrefab,
+            pos,
+            Quaternion.identity,
+            player.transform
+        );
+
+        GameManager.Instance.SoundManager.PlaySfxAt("GetSkill", pos);
+    }
 }
 
 

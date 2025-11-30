@@ -17,9 +17,18 @@ public class Skill_Five : SkillBase
     private Player _player;
     // 정제
     private float _addTotalDamage;
+
+    private SkillEffect _getPrefab; //이펙트
     public override void ActivateSkill(SkillData choosedSkill)
     {
         _player = _skillManager.playScene.player;
+
+        if (_getPrefab == null)             //여기서 로드
+        {
+            _getPrefab = Resources.Load<SkillEffect>("Prefabs/Effect/Skill/GetSkill_5");
+        }
+        PlayAcquireEffect();
+
         switch (choosedSkill.skillIdx)
         {
             // 약화 약물
@@ -188,4 +197,19 @@ public class Skill_Five : SkillBase
         skillManager.playerStatManager.AddTotalMultiDamage(_addTotalDamage);
     }
     #endregion
+
+    private void PlayAcquireEffect()
+    {
+        var player = _skillManager.playScene.player;
+        var pos = _skillManager.playScene.player.transform.position;
+
+        GameManager.Instance.PoolManager.GetFromPool(
+            _getPrefab,
+            pos,
+            Quaternion.identity,
+            player.transform
+        );
+
+        GameManager.Instance.SoundManager.PlaySfxAt("GetSkill", pos);
+    }
 }
