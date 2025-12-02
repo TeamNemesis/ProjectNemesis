@@ -15,9 +15,12 @@ public class PlayerInputHandler : MonoBehaviour
     [SerializeField] Camera mainCam;               // 메인 카메라 참조
     [SerializeField] LayerMask _groundLayer;        // Ground 레이어 마스크
 
+    // 특수공격 입력 딜레이(초)
+    [Header("Input Tuning")]
+    [SerializeField] float _specialAttackInputDelay = 1.0f;
 
     public event Action<Vector3> OnMoveInput;        // 이동 입력 이벤트
-    
+
     public event Action OnDashInput;                 // 대시 입력 이벤트
     public event Action OnInteractInput;             // 상호작용 입력 이벤트
 
@@ -33,6 +36,9 @@ public class PlayerInputHandler : MonoBehaviour
     // 디바운스용 타임스탬프(중복 호출 방지)
     float _lastNormalAttackStartTime = -1f;
     const float NormalAttackStartDebounce = 0.05f;
+
+    // 특수공격 입력 마지막 시간 기록
+    float _lastSpecialAttackInputTime = -Mathf.Infinity;
 
     private void Awake()
     {
@@ -111,17 +117,17 @@ public class PlayerInputHandler : MonoBehaviour
         OnMoveInput?.Invoke(_moveDir);
 
 #if !UNITY_ANDROID
-    OnMoveInput?.Invoke(_moveDir);
+        OnMoveInput?.Invoke(_moveDir);
 #endif
-		}
+    }
 
-		/// <summary>
-		/// 이동 입력을 받아오는 함수
-		/// </summary>
-		/// <param name="value"></param>
-		public void OnMove(InputAction.CallbackContext value)
-    { 
-        if(EventBus.IsRewardSelecting)
+    /// <summary>
+    /// 이동 입력을 받아오는 함수
+    /// </summary>
+    /// <param name="value"></param>
+    public void OnMove(InputAction.CallbackContext value)
+    {
+        if (EventBus.IsRewardSelecting)
             return;
         if (value.performed)
         {
@@ -136,27 +142,6 @@ public class PlayerInputHandler : MonoBehaviour
         }
     }
 
-    //void OnNormalAttackStarted(InputAction.CallbackContext ctx)
-    //{
-    //    if (EventBus.IsRewardSelecting)
-    //        return;
-
-    //    // 누르기 시작: 코루틴 시작
-    //    if (_holdAttackRoutine == null)
-    //        _holdAttackRoutine = StartCoroutine(HoldAttackRoutine());
-    //}
-
-    //void OnNormalAttackCanceled(InputAction.CallbackContext ctx)
-    //{
-    //    if (EventBus.IsRewardSelecting)
-    //        return;
-    //    // 누름 끝: 코루틴 중지
-    //    if (_holdAttackRoutine != null)
-    //    {
-    //        StopCoroutine(_holdAttackRoutine);
-    //        _holdAttackRoutine = null;
-    //    }
-    //}
     void OnNormalAttackPerformed(InputAction.CallbackContext ctx)
     {
         if (EventBus.IsRewardSelecting) return;
@@ -226,7 +211,7 @@ public class PlayerInputHandler : MonoBehaviour
     public void OnGrenadeAttack(InputAction.CallbackContext value)
     {
         if (EventBus.IsRewardSelecting)
-            return; 
+            return;
         if (value.started)
         {
             if (EventBus.IsColosseumRoom)
@@ -245,7 +230,7 @@ public class PlayerInputHandler : MonoBehaviour
         }
         else if (value.canceled)
         {
-            
+
             OnGrenadeAttackInputEnded?.Invoke();
         }
     }
@@ -258,7 +243,7 @@ public class PlayerInputHandler : MonoBehaviour
         if (EventBus.IsRewardSelecting)
             return null;
         Ray ray = mainCam.ScreenPointToRay(Mouse.current.position.ReadValue());
-        if (Physics.Raycast(ray, out RaycastHit hit, 200f, _groundLayer ))
+        if (Physics.Raycast(ray, out RaycastHit hit, 200f, _groundLayer))
         {
             return hit.point;
         }
@@ -276,14 +261,34 @@ public class PlayerInputHandler : MonoBehaviour
     {
         if (EventBus.IsRewardSelecting)
             return;
+
         if (value.started)
         {
-            OnSpecialAttackInput?.Invoke();
+            TryInvokeSpecialInput();
         }
-        if(value.canceled)
+        if (value.canceled)
         {
             OnSpecialAttackInputCanceled?.Invoke();
         }
+    }
+
+    // 공통 시도 함수: 특수공격 입력 딜레이 적용 (InputHandler 내부에서 제어)
+    bool TryInvokeSpecialInput()
+    {
+        // 이미 보상 선택 중이면 무시
+        if (EventBus.IsRewardSelecting) return false;
+
+        // 딜레이 체크
+        if (Time.time - _lastSpecialAttackInputTime < _specialAttackInputDelay)
+        {
+            // 필요하다면 사운드/피드백 호출 위치
+            // Debug.Log("Special attack input ignored: on cooldown.");
+            return false;
+        }
+
+        _lastSpecialAttackInputTime = Time.time;
+        OnSpecialAttackInput?.Invoke();
+        return true;
     }
 
     #region mobile
@@ -292,58 +297,59 @@ public class PlayerInputHandler : MonoBehaviour
     /// 모바일 입력용: 이동 입력 이벤트 호출
     /// </summary>
     public void TriggerMoveInput(Vector3 moveDir)
-		{
-				_moveDir = moveDir;
-				OnMoveInput?.Invoke(moveDir);
-		}
+    {
+        _moveDir = moveDir;
+        OnMoveInput?.Invoke(moveDir);
+    }
 
-		/// <summary>
-		/// 모바일 입력용: 대시 입력 이벤트 호출
-		/// </summary>
-		public void TriggerDashInput()
-		{
-				OnDashInput?.Invoke();
-		}
+    /// <summary>
+    /// 모바일 입력용: 대시 입력 이벤트 호출
+    /// </summary>
+    public void TriggerDashInput()
+    {
+        OnDashInput?.Invoke();
+    }
 
-		/// <summary>
-		/// 모바일 입력용: 일반 공격 입력 이벤트 호출
-		/// </summary>
-		public void TriggerNormalAttackInput()
-		{
-				OnNormalAttackInput?.Invoke();
-		}
+    /// <summary>
+    /// 모바일 입력용: 일반 공격 입력 이벤트 호출
+    /// </summary>
+    public void TriggerNormalAttackInput()
+    {
+        OnNormalAttackInput?.Invoke();
+    }
 
-		/// <summary>
-		/// 모바일 입력용: 특수 공격 시작 이벤트 호출
-		/// </summary>
-		public void TriggerSpecialAttackInput()
-		{
-				OnSpecialAttackInput?.Invoke();
-		}
+    /// <summary>
+    /// 모바일 입력용: 특수 공격 시작 이벤트 호출
+    /// </summary>
+    public void TriggerSpecialAttackInput()
+    {
+        // 모바일에서도 동일한 딜레이 규칙 적용
+        TryInvokeSpecialInput();
+    }
 
-		/// <summary>
-		/// 모바일 입력용: 특수 공격 취소 이벤트 호출
-		/// </summary>
-		public void TriggerSpecialAttackCanceled()
-		{
-				OnSpecialAttackInputCanceled?.Invoke();
-		}
+    /// <summary>
+    /// 모바일 입력용: 특수 공격 취소 이벤트 호출
+    /// </summary>
+    public void TriggerSpecialAttackCanceled()
+    {
+        OnSpecialAttackInputCanceled?.Invoke();
+    }
 
-		/// <summary>
-		/// 모바일 입력용: 유탄 공격 시작 이벤트 호출
-		/// </summary>
-		public void TriggerGrenadeAttackInput(Vector3 target)
-		{
-				OnGrenadeAttackInput?.Invoke(target);
-		}
+    /// <summary>
+    /// 모바일 입력용: 유탄 공격 시작 이벤트 호출
+    /// </summary>
+    public void TriggerGrenadeAttackInput(Vector3 target)
+    {
+        OnGrenadeAttackInput?.Invoke(target);
+    }
 
-		/// <summary>
-		/// 모바일 입력용: 유탄 공격 종료 이벤트 호출
-		/// </summary>
-		public void TriggerGrenadeAttackEnded()
-		{
-				OnGrenadeAttackInputEnded?.Invoke();
-		}
+    /// <summary>
+    /// 모바일 입력용: 유탄 공격 종료 이벤트 호출
+    /// </summary>
+    public void TriggerGrenadeAttackEnded()
+    {
+        OnGrenadeAttackInputEnded?.Invoke();
+    }
 
 
     #endregion
