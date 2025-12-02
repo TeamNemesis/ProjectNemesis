@@ -113,6 +113,7 @@ public class SkillChoose : MonoBehaviour
         }
 
         _tempSkillList.Clear();
+        GameManager.Instance.UIManager.StartSkillBtnPanelAnim();
     }
 
   
@@ -171,7 +172,8 @@ public class SkillChoose : MonoBehaviour
         }
 
         _tempSkillList.Clear();
-    }
+				GameManager.Instance.UIManager.StartSkillBtnPanelAnim();
+		}
     /// <summary>
     /// 돌연변이용 버튼 세팅
     /// </summary>
@@ -275,8 +277,8 @@ public class SkillChoose : MonoBehaviour
         }
 
         _tempSkillList.Clear();
-
-    }
+				GameManager.Instance.UIManager.StartSkillBtnPanelAnim();
+		}
 
     #endregion
 

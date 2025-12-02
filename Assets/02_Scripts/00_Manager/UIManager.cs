@@ -208,23 +208,29 @@ public class UIManager : MonoBehaviour
 
 				if (isActive)
 				{
-						// 처음엔 작게 시작
-						_skillBtnPanel.transform.localScale = Vector3.one * 0.5f;
-						_skillBtnPanel.SetActive(true);
-
-						// DOTween 애니메이션: 0.5 → 1
-						_skillBtnPanel.transform
-								.DOScale(1f, 0.3f) // 0.3초 동안
-								.SetEase(Ease.OutBack); // 튀어나오는 듯한 탄성 효과
+				_skillBtnPanel.SetActive(true);
+					
 				}
 				else
 				{
 						// 닫을 때는 그냥 비활성화
+						_skillBtnPanel.transform.localScale = Vector3.one;
 						_skillBtnPanel.SetActive(false);
 						onRewardSelect?.Invoke();
 				}
 
 				EventBus.SetCanGetInput(!isActive);
+		}
+
+    public void StartSkillBtnPanelAnim()
+    {
+				// 처음엔 작게 시작
+				_skillBtnPanel.transform.localScale = Vector3.one * 0.5f;
+
+				// DOTween 애니메이션: 0.5 → 1
+				_skillBtnPanel.transform
+						.DOScale(1f, 0.3f) // 0.3초 동안
+						.SetEase(Ease.OutBack); // 튀어나오는 듯한 탄성 효과
 		}
 
 		#region skill choose
