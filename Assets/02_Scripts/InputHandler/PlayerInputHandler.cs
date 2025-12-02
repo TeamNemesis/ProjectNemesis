@@ -30,35 +30,12 @@ public class PlayerInputHandler : MonoBehaviour
     Vector3 _moveDir;  // 이동 입력을 저장할 변수
     Coroutine _holdAttackRoutine; // 일반공격 입력 코루틴 참조
 
-    //private void Awake()
-    //{
-    //    mainCam = Camera.main;
-    //    // 현재 액션 맵 가져오기
-    //    var actionMap = _playerInput.actions.FindActionMap("Player");
-    //    var normal = actionMap["NormalAttack"];
-    //    var special = actionMap["SpecialAttack"];
-
-    //    // 각 액션에 대한 콜백 함수 등록
-    //    actionMap["Move"].performed += OnMove;
-    //    actionMap["Move"].canceled += OnMove;
-    //    actionMap["Dash"].started += OnDash;
-    //    actionMap["Interact"].started += OnInteract;
-    //    normal.started += OnNormalAttackStarted;
-    //    normal.canceled += OnNormalAttackCanceled;
-    //    actionMap["GrenadeAttack"].started += OnGrenadeAttack;
-    //    actionMap["GrenadeAttack"].canceled += OnGrenadeAttack;
-    //    special.started += OnSpecialAttack;
-    //    special.canceled += OnSpecialAttack;
-    //    if (EventBus.IsRewardSelecting)
-    //    {
-    //        Debug.Log("보상 선택 중 입력 비활성화");
-    //    }
-    //}
+    // 디바운스용 타임스탬프(중복 호출 방지)
+    float _lastNormalAttackStartTime = -1f;
+    const float NormalAttackStartDebounce = 0.05f;
 
     private void Awake()
     {
-
-        // 임시
         mainCam = Camera.main;
 
         if (_playerInput == null)
@@ -74,26 +51,25 @@ public class PlayerInputHandler : MonoBehaviour
             return;
         }
 
-        // 안전하게 액션 참조
         var normal = actionMap.FindAction("NormalAttack");
         if (normal == null)
         {
             Debug.LogError("NormalAttack action not found in 'Player' map!");
         }
-        else
-        {
-        }
 
-        // 기존 등록 (원래대로)
+        // Move, Dash, Interact (unchanged)
         actionMap["Move"].performed += OnMove;
         actionMap["Move"].canceled += OnMove;
         actionMap["Dash"].started += OnDash;
         actionMap["Interact"].started += OnInteract;
+
+        // 변경: NormalAttack은 started가 아니라 performed로 바인딩
         if (normal != null)
         {
-            normal.started += OnNormalAttackStarted;
+            normal.performed += OnNormalAttackPerformed;
             normal.canceled += OnNormalAttackCanceled;
         }
+
         actionMap["GrenadeAttack"].started += OnGrenadeAttack;
         actionMap["GrenadeAttack"].canceled += OnGrenadeAttack;
         actionMap["SpecialAttack"].started += OnSpecialAttack;
@@ -102,15 +78,21 @@ public class PlayerInputHandler : MonoBehaviour
 
     private void OnDestroy()
     {
-        // 콜백 함수 해제
         var actionMap = _playerInput.actions.FindActionMap("Player");
-        var normal = actionMap["NormalAttack"];
+        if (actionMap == null) return;
+
         actionMap["Move"].performed -= OnMove;
         actionMap["Move"].canceled -= OnMove;
         actionMap["Dash"].started -= OnDash;
         actionMap["Interact"].started -= OnInteract;
-        normal.started -= OnNormalAttackStarted;
-        normal.canceled -= OnNormalAttackCanceled;
+
+        var normal = actionMap.FindAction("NormalAttack");
+        if (normal != null)
+        {
+            normal.performed -= OnNormalAttackPerformed;
+            normal.canceled -= OnNormalAttackCanceled;
+        }
+
         actionMap["GrenadeAttack"].started -= OnGrenadeAttack;
         actionMap["GrenadeAttack"].canceled -= OnGrenadeAttack;
         actionMap["SpecialAttack"].started -= OnSpecialAttack;
@@ -175,9 +157,14 @@ public class PlayerInputHandler : MonoBehaviour
     //        _holdAttackRoutine = null;
     //    }
     //}
-    void OnNormalAttackStarted(InputAction.CallbackContext ctx)
+    void OnNormalAttackPerformed(InputAction.CallbackContext ctx)
     {
         if (EventBus.IsRewardSelecting) return;
+
+        // 간단 디바운스: 너무 빠른 연속 호출 차단
+        if (Time.time - _lastNormalAttackStartTime < NormalAttackStartDebounce)
+            return;
+        _lastNormalAttackStartTime = Time.time;
 
         if (_holdAttackRoutine == null)
             _holdAttackRoutine = StartCoroutine(HoldAttackRoutine());
@@ -195,7 +182,6 @@ public class PlayerInputHandler : MonoBehaviour
 
     IEnumerator HoldAttackRoutine()
     {
-        // 즉시 한 번 공격 실행하고, interval마다 반복
         OnNormalAttackInput?.Invoke();
 
         while (true)
