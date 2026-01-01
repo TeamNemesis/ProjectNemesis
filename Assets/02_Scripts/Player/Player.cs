@@ -54,6 +54,7 @@ public class Player : MonoBehaviour
     [SerializeField] bool _isSpecialAttacking;             // 플레이어 특수공격 중 여부
 
     // 읽기 전용 프로퍼티로 외부 접근 제공
+    public CharacterController CharacterController => _characterController;
     public PlayerMover Mover => _mover;
     public PlayerWeaponController WeaponController => _weaponController;
     public PlayerNormalAttacker NormalAttacker => _normalAttacker;
@@ -365,7 +366,7 @@ public class Player : MonoBehaviour
     }
     #endregion
 
-    #region 일반공격 애니메이션 이벤트 라우팅
+    #region 무기 변경 처리
     void OnWeaponChanged(Weapon weapon)
     {
         // 이전 attacker 언구독 -> 새 attacker 할당 -> 새 attacker 구독
@@ -402,34 +403,6 @@ public class Player : MonoBehaviour
 
         _animator.SetAnimator(_currentWeaponSet.AnimController);
     }
-
-    //void SubscribeNormalAttacker(PlayerNormalAttacker attacker)
-    //{
-    //    if (attacker == null) return;
-
-    //    attacker.OnAttackStarted += OnAttackerStarted;
-    //    attacker.OnAttackEnded += OnAttackerEnded;
-    //}
-
-    //void UnsubscribeNormalAttacker(PlayerNormalAttacker attacker)
-    //{
-    //    if (attacker == null) return;
-    //    attacker.OnAttackStarted -= OnAttackerStarted;
-    //    attacker.OnAttackEnded -= OnAttackerEnded;
-    //}
-
-    //void OnAttackerStarted()
-    //{
-    //    _stateMachine.ChangeState(PlayerStateType.NormalAttack);
-    //    _isNormalAttacking = true;
-    //    OnNormalAttackStarted?.Invoke();
-    //}
-
-    //void OnAttackerEnded()
-    //{
-    //    _isNormalAttacking = false;
-    //    _stateMachine.ChangeState(PlayerStateType.Idle);
-    //}
 
     public void OnAttackFireEvent()
     {

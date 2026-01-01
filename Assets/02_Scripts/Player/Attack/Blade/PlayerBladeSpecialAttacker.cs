@@ -3,25 +3,25 @@ using System.Collections;
 using UnityEngine;
 
 /// <summary>
-/// 검기(Blade) 특수공격 구현
-/// - 차지 시간에 따라 크기(스케일)와 대미지 비례.
-/// - StartCharge / StopChargeAndFire / CancelCharge 를 오버라이드하여 코루틴으로 차지 처리.
+/// 검기 관련 로직을 제거하고 "가장 가까운 적에게 순간이동" 기능만 남긴 구현.
+/// - 차지 시간과 무관하게 몬스터 전방 2f 위치로 순간이동
+/// - 순간이동 시 높이(y)는 0으로 고정
+/// - NavMeshAgent 관련 로직 제거하고 CharacterController 사용
+/// - 가장 가까운 적이 없으면 아무 동작도 하지 않음
 /// </summary>
 public class PlayerBladeSpecialAttacker : PlayerSpecialAttacker
 {
-    [Header("Blade Settings")]
-    [SerializeField] GameObject bladePrefab;            // 발사할 검기 프리팹 (BladeProjectile 컴포넌트 포함 권장)
-    [SerializeField] Transform spawnPoint;              // 발사 위치(없으면 this.transform 사용)
+    [Header("Charge Settings")]
     [SerializeField] float maxChargeTime = 2.0f;        // 완전 차지까지 시간(초)
-    [SerializeField] float minScale = 0.6f;             // 최소 스케일
-    [SerializeField] float maxScale = 2.0f;             // 최대 스케일
-    [SerializeField] float baseDamage = 10f;            // 차지 0일 때 대미지
-    [SerializeField] float maxDamage = 35f;             // 완전 차지 시 대미지
-    [SerializeField] float bladeSpeed = 12f;            // 발사 속도
-    [SerializeField] float bladeLifetime = 3f;          // 검기 수명
+
+    [Header("Teleport Tuning")]
+    [SerializeField] float teleportForwardDistance = 2.0f; // 몬스터 전방으로부터의 거리 (고정)
+    [SerializeField] float teleportHeight = 0f;            // 순간이동 시 높이 (고정 0)
 
     Coroutine _chargeCoroutine;
-    float _currentChargeRatio = 0f; // 0..1
+    float _currentChargeRatio = 0f; // 남겨두긴 했지만 현재 teleport에는 사용되지 않음
+
+    bool _didTeleportThisUse = false;
 
     // 이벤트 오버라이드
     public override event Action OnSpecialStarted;
@@ -39,7 +39,6 @@ public class PlayerBladeSpecialAttacker : PlayerSpecialAttacker
 
     public override bool RequestSpecial()
     {
-        // 예: 쿨타임이나 다른 조건을 추가하고 싶으면 여기서 처리
         return base.RequestSpecial();
     }
 
@@ -53,19 +52,17 @@ public class PlayerBladeSpecialAttacker : PlayerSpecialAttacker
         if (IsCharging || IsActive) return;
 
         IsCharging = true;
+        _didTeleportThisUse = false;
         OnSpecialStarted?.Invoke();
 
-        // 시작하면 기존 코루틴 정리 후 새로 시작
         if (_chargeCoroutine != null) StopCoroutine(_chargeCoroutine);
         _chargeCoroutine = StartCoroutine(ChargeRoutine());
     }
 
     public override void StopChargeAndFire()
     {
-        // 버튼 해제 시 수동 발사
         if (!IsCharging) return;
 
-        // 정지하고 현재 ratio로 발사
         IsCharging = false;
         if (_chargeCoroutine != null)
         {
@@ -75,13 +72,14 @@ public class PlayerBladeSpecialAttacker : PlayerSpecialAttacker
 
         Fire();
 
+        // (사용자가 전에는 항상 호출하도록 변경해둔 상태를 유지)
         OnSpecialFired?.Invoke();
+
         EndSpecial();
     }
 
     public override void CancelCharge()
     {
-        // 강제 취소 (피격 등)
         if (!IsCharging) return;
 
         IsCharging = false;
@@ -97,41 +95,45 @@ public class PlayerBladeSpecialAttacker : PlayerSpecialAttacker
 
     protected override void Fire()
     {
-        // 발사 시작
-        IsActive = true;
-
-        if (bladePrefab == null)
+        if (_player == null)
         {
-            Debug.LogWarning("PlayerBladeSpecialAttacker: bladePrefab is not set.");
-            IsActive = false;
+            Debug.LogWarning("PlayerBladeSpecialAttacker: player is null. Call Initialize first.");
             return;
         }
 
-        Vector3 spawnPos = (spawnPoint != null) ? spawnPoint.position : transform.position + Vector3.up;
-        Quaternion spawnRot = (spawnPoint != null) ? spawnPoint.rotation : transform.rotation;
+        Transform nearest = EventBus.GetNearestMonsterFromMe(_player.transform);
 
-        // 스케일/데미지 계산
-        float scale = Mathf.Lerp(minScale, maxScale, _currentChargeRatio);
-        float damage = Mathf.Lerp(baseDamage, maxDamage, _currentChargeRatio);
-
-        GameObject bladeObj = Instantiate(bladePrefab, spawnPos, spawnRot);
-        // BladeProjectile 스크립트가 있다면 초기화
-        var blade = bladeObj.GetComponent<BladeProjectile>();
-        if (blade != null)
+        if (nearest == null)
         {
-            blade.Initialize(damage, bladeSpeed, bladeLifetime, scale, _player.gameObject);
+            _didTeleportThisUse = false;
+            return;
+        }
+
+        // 차지 시간과 무관하게 몬스터 전방 2f, 높이 0으로 고정
+        Vector3 teleportPos = nearest.position + nearest.forward * teleportForwardDistance;
+        teleportPos.y = teleportHeight;
+
+        // CharacterController 사용(존재하면 enable 토글 후 설정)
+        CharacterController cc = _player.GetComponent<CharacterController>();
+        if (cc != null)
+        {
+            cc.enabled = false;
+            _player.transform.position = teleportPos;
+            cc.enabled = true;
         }
         else
         {
-            // 없으면 기본적으로 스케일 적용하고 forward 방향으로 이동시키는 간단한 처리
-            bladeObj.transform.localScale = Vector3.one * scale;
-            var rb = bladeObj.GetComponent<Rigidbody>();
-            if (rb != null)
-            {
-                rb.linearVelocity = bladeObj.transform.forward * bladeSpeed;
-            }
-            Destroy(bladeObj, bladeLifetime);
+            // CharacterController가 없으면 transform 직접 세팅
+            _player.transform.position = teleportPos;
         }
+
+        // 몬스터를 바라보게 회전 (y 고정)
+        Vector3 lookDir = (nearest.position - _player.transform.position);
+        lookDir.y = 0f;
+        if (lookDir.sqrMagnitude > 0.001f)
+            _player.transform.rotation = Quaternion.LookRotation(lookDir);
+
+        _didTeleportThisUse = true;
     }
 
     IEnumerator ChargeRoutine()
@@ -146,14 +148,18 @@ public class PlayerBladeSpecialAttacker : PlayerSpecialAttacker
             _currentChargeRatio = Mathf.Clamp01(elapsed / maxChargeTime);
             RaiseChargeUpdated(_currentChargeRatio);
 
-            // 자동 발사: 최대 차지에 도달하면 자동으로 발사
             if (elapsed >= maxChargeTime)
             {
                 IsCharging = false;
                 _chargeCoroutine = null;
 
                 Fire();
-                OnSpecialFired?.Invoke();
+
+                if (_didTeleportThisUse)
+                {
+                    OnSpecialFired?.Invoke();
+                }
+
                 EndSpecial();
                 yield break;
             }
@@ -165,13 +171,16 @@ public class PlayerBladeSpecialAttacker : PlayerSpecialAttacker
     protected override void EndSpecial()
     {
         base.EndSpecial();
-        // 정리
+
         _currentChargeRatio = 0f;
+        _didTeleportThisUse = false;
         RaiseChargeUpdated(_currentChargeRatio);
         if (_chargeCoroutine != null)
         {
             StopCoroutine(_chargeCoroutine);
             _chargeCoroutine = null;
         }
+
+        OnSpecialEnded?.Invoke();
     }
 }
