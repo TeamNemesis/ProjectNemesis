@@ -249,21 +249,20 @@ flowchart TB
         Keys["_tutorial_*_PC / _Mobile"]
     end
 
-    OnNA["OnNormalAttackStarted"] --> CheckNA["CheckNormalAttackTutorialComplete"]
-    CheckNA --> OnGrenade["OnGrenadeAttackStarted"]
-    OnGrenade --> CheckGrenade["CheckGrenadeAttackTutorialComplete"]
-    CheckGrenade --> OnSA["OnSpecialAttackStarted"]
-    OnSA --> CheckSA["CheckSpecialAttackTutorialComplete"]
-    CheckSA --> OnDash["OnDashStarted"]
-    OnDash --> CheckDash["CheckDashTutorialComplete"]
-    CheckDash --> OnInteract["OnInteractionStarted"]
-    OnInteract --> CheckInteract["CheckInteractTutorialComplete"]
+    subgraph EventCheck["Player 이벤트 → 완료 체크"]
+        OnNA["OnNormalAttackStarted"] --> CheckNA["CheckNormalAttackTutorialComplete"]
+        OnGrenade["OnGrenadeAttackStarted"] --> CheckGrenade["CheckGrenadeAttackTutorialComplete"]
+        OnSA["OnSpecialAttackStarted"] --> CheckSA["CheckSpecialAttackTutorialComplete"]
+        OnDash["OnDashStarted"] --> CheckDash["CheckDashTutorialComplete"]
+        OnInteract["OnInteractionStarted"] --> CheckInteract["CheckInteractTutorialComplete"]
+    end
 
     OnStartExit["OnStartRoomExited"] --> HidePanel
 
     ShowPanel --> BindTutorial
     BindTutorial --> TutorialTable
     BindTutorial --> Keys
+    PlaySceneView --> EventCheck
 ```
 
 **주요 컴포넌트**
