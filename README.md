@@ -33,11 +33,27 @@
 
 ### 1.3 게임 이미지
 
-*(스크린샷은 `Docs/images/` 폴더에 추가 후 테이블을 채울 수 있습니다.)*
+<table>
+<tr>
+<td><strong>인트로</strong><br><img src="Docs/images/intro.png" width="400" alt="인트로"></td>
+<td><strong>전투 (쿼터뷰)</strong><br><img src="Docs/images/combat-quarter.png" width="400" alt="전투 쿼터뷰"></td>
+</tr>
+<tr>
+<td><strong>전투 (콜로세움 3인칭)</strong><br><img src="Docs/images/combat-colosseum.png" width="400" alt="전투 콜로세움"></td>
+<td><strong>상호작용 UI</strong><br><img src="Docs/images/interaction-ui.png" width="400" alt="상호작용 UI"></td>
+</tr>
+<tr>
+<td><strong>튜토리얼 (시작)</strong><br><img src="Docs/images/tutorial-before.png" width="400" alt="튜토리얼 시작"></td>
+<td><strong>튜토리얼 (완료 체크)</strong><br><img src="Docs/images/tutorial-after.png" width="400" alt="튜토리얼 완료"></td>
+</tr>
+<tr>
+<td colspan="2"><strong>문 진입 연출</strong><br><img src="Docs/images/door-interaction.png" width="400" alt="문 진입 연출"></td>
+</tr>
+</table>
 
 ### 1.4 영상
 
-*(영상 링크가 있으면 여기에 추가)*
+[🎬 영상 보기](https://www.youtube.com/watch?v=AbBBSkmhfGs)
 
 ---
 
