@@ -202,7 +202,7 @@ flowchart TB
         CursorShow["Cursor.visible = true"]
     end
 
-    subgraph Colosseum["엘리트 방 (Colosseum)"]
+    subgraph Colosseum["엘리트 방 (3인칭뷰)"]
         Cinemachine["CinemachineBrain 활성"]
         Perspective["Camera.main.orthographic = false"]
         CursorLock["Cursor.lockState = Locked"]
