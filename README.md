@@ -250,10 +250,14 @@ flowchart TB
     end
 
     OnNA["OnNormalAttackStarted"] --> CheckNA["CheckNormalAttackTutorialComplete"]
-    OnGrenade["OnGrenadeAttackStarted"] --> CheckGrenade["CheckGrenadeAttackTutorialComplete"]
-    OnSA["OnSpecialAttackStarted"] --> CheckSA["CheckSpecialAttackTutorialComplete"]
-    OnDash["OnDashStarted"] --> CheckDash["CheckDashTutorialComplete"]
-    OnInteract["OnInteractionStarted"] --> CheckInteract["CheckInteractTutorialComplete"]
+    CheckNA --> OnGrenade["OnGrenadeAttackStarted"]
+    OnGrenade --> CheckGrenade["CheckGrenadeAttackTutorialComplete"]
+    CheckGrenade --> OnSA["OnSpecialAttackStarted"]
+    OnSA --> CheckSA["CheckSpecialAttackTutorialComplete"]
+    CheckSA --> OnDash["OnDashStarted"]
+    OnDash --> CheckDash["CheckDashTutorialComplete"]
+    CheckDash --> OnInteract["OnInteractionStarted"]
+    OnInteract --> CheckInteract["CheckInteractTutorialComplete"]
 
     OnStartExit["OnStartRoomExited"] --> HidePanel
 
