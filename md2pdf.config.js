@@ -9,6 +9,8 @@ const renderer = {
 };
 
 module.exports = {
+  dest: "Nemesis_포트폴리오.pdf",
+  document_title: "Project Nemesis - 포트폴리오",
   marked_extensions: [{ renderer }],
   script: [
     { url: "https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js" },
