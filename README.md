@@ -517,7 +517,7 @@ _mapController.OnStartRoomExited += _playSceneView.HideTutorialPanel;
 
 ### 4.2 참고
 
-- **Repository**: https://github.com/TeamNemesis/ProjectNemesis/tree/Player
+- **Repository**: https://github.com/TeamNemesis/ProjectNemesis/tree/feature/player
 
 ---
 
