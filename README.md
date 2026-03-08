@@ -95,6 +95,42 @@ flowchart TB
     States --> Attack["PlayerNormalAttacker / SpecialAttacker"]
 ```
 
+**EvaluateTransitions: 입력 우선순위 처리 (NormalAttack > Dash > Move > Idle)**
+
+```csharp
+void EvaluateTransitions()
+{
+    // 1) 일반 공격 (최우선)
+    if (_normalAttackPressed && TryConsumeNormalAttack())
+    {
+        if (!IsDashing && !_isSpecialAttacking)
+        {
+            if (_normalAttacker.RequestAttack())
+                _stateMachine.ChangeState(PlayerStateType.NormalAttack);
+            return;
+        }
+    }
+    // 2) 대시
+    if (_dashPressed && TryConsumeDash())
+    {
+        if (!IsNormalAttacking && !_isSpecialAttacking && !IsDashing)
+        {
+            _stateMachine.ChangeState(PlayerStateType.Dash);
+            return;
+        }
+    }
+    // 3) 이동
+    if (_moveInput.sqrMagnitude > 0.01f && !IsNormalAttacking && !_isSpecialAttacking && !IsDashing)
+    {
+        _stateMachine.ChangeState(PlayerStateType.Move);
+        return;
+    }
+    // 4) Idle
+    if (!IsNormalAttacking && !IsDashing && !_isSpecialAttacking)
+        _stateMachine.ChangeState(PlayerStateType.Idle);
+}
+```
+
 **주요 컴포넌트**
 
 | 컴포넌트 | 역할 |
@@ -142,6 +178,58 @@ flowchart TB
     DoorSpawner --> RoomSpawner
 ```
 
+**DoorDecider.GetNextDoorCount: 정책의 단일 진실 원천**
+
+```csharp
+public int GetNextDoorCount(int currentRoomIndex)
+{
+    // 특수 규칙: 시작 방, 보스 직전, 보스 방
+    if (currentRoomIndex == 1) return 1;
+    if (currentRoomIndex == 13) return 1;
+    if (currentRoomIndex == 14) return 0;
+
+    // 그 외: Inspector 설정 확률에 따라 1~3 반환
+    float totalChance = _oneDoorChance + _twoDoorChance + _threeDoorChance;
+    if (totalChance <= 0f) return UnityEngine.Random.Range(1, 4);
+
+    float rand = UnityEngine.Random.Range(0f, totalChance);
+    if (rand < _oneDoorChance) return 1;
+    if (rand < _oneDoorChance + _twoDoorChance) return 2;
+    return 3;
+}
+```
+
+**Player.DoorInteractionRoutine: 입력 잠금 → 문 앞 이동 → Lerp 진입 연출**
+
+```csharp
+public IEnumerator DoorInteractionRoutine()
+{
+    EventBus.SetCanGetInput(false);  // 입력 잠금
+
+    // 플레이어를 문 앞으로 이동
+    Vector3 targetPos = doorInteractor.transform.position + doorInteractor.transform.forward * 5f;
+    targetPos.y = transform.position.y;
+    gameObject.SetActive(false);
+    transform.position = targetPos;
+    gameObject.SetActive(true);
+
+    // Lerp로 문 통과 연출
+    float moveDuration = 1.0f;
+    Vector3 startPos = transform.position;
+    Vector3 endPos = doorInteractor.transform.position;
+    float elapsed = 0f;
+    while (elapsed < moveDuration)
+    {
+        elapsed += Time.deltaTime;
+        float t = Mathf.Clamp01(elapsed / moveDuration);
+        transform.position = Vector3.Lerp(startPos, endPos, t);
+        _animator.OnMove(1f);
+        yield return null;
+    }
+    EventBus.SetCanGetInput(true);  // 입력 잠금 해제
+}
+```
+
 **주요 컴포넌트**
 
 | 컴포넌트 | 역할 |
@@ -163,6 +251,19 @@ flowchart TB
 | **문제** | 문, 무기, 힐팩, 상점 등 다양한 오브젝트마다 상호작용 로직이 달라 일관된 처리와 확장이 어려움 |
 | **해결** | `IInteractable` 인터페이스(GuidePoint, TryInteract, InteractableType)로 통일. `InteractableDetector`가 OverlapSphere로 감지 후 가장 가까운 대상만 선택. `InteractionController`가 OnInteracted 시 타입별로 OnWeaponInteract, OnDoorInteract 등 라우팅 |
 | **결과** | 새 Interactor 추가 시 `InteractableObject` 상속 후 TryInteract 구현만 하면 됨. 플레이어·MapController 등 구독자들은 타입별 이벤트만 구독 |
+
+**IInteractable 인터페이스: 상호작용 대상 통일**
+
+```csharp
+public interface IInteractable
+{
+    Vector3 GuidePoint { get; }
+    InteractableType InteractableType { get; }
+    event Action<IInteractable> OnInteracted;
+    bool TryInteract(Transform subject);
+    void TryGetInteracrtionKey(out string title, out string description);
+}
+```
 
 ```mermaid
 flowchart TB
@@ -188,6 +289,55 @@ flowchart TB
     InteractableObject --> InteractorTypes
     Detector --> InteractorTypes
     InteractorTypes -->|"OnInteracted"| Controller
+```
+
+**InteractableDetector.Detect: 가장 가까운 대상만 선택, 변경 시에만 이벤트 발행**
+
+```csharp
+// OverlapSphereNonAlloc로 감지 후 가장 가까운 IInteractable만 선택
+int hitCount = Physics.OverlapSphereNonAlloc(_detectPoint.position, _radius, _hits, _targetLayerMask);
+IInteractable nearestInteractable = null;
+float minDistance = float.MaxValue;
+
+for (int i = 0; i < hitCount; i++)
+{
+    IInteractable interactable = _hits[i].GetComponent<IInteractable>();
+    if (interactable != null)
+    {
+        float distance = Vector3.Distance(_detectPoint.position, _hits[i].transform.position);
+        if (distance < minDistance)
+        {
+            minDistance = distance;
+            nearestInteractable = interactable;
+        }
+    }
+}
+// 변경 시에만 OnDetected 이벤트 발행
+if (nearestInteractable != null && nearestInteractable != _detectedInteractable)
+{
+    _detectedInteractable = nearestInteractable;
+    OnDetected?.Invoke(_detectedInteractable);
+}
+```
+
+**InteractionController.PublishInteractableEventByType: 타입별 라우팅**
+
+```csharp
+void PublishInteractableEventByType(IInteractable interactable)
+{
+    switch (interactable.InteractableType)
+    {
+        case InteractableType.Weapon:
+            if (interactable is WeaponInteractor w)
+                OnWeaponInteract?.Invoke(w.WeaponType);
+            break;
+        case InteractableType.Door:
+            if (interactable is DoorInteractor d && d.RoomInfo != null)
+                OnDoorInteract?.Invoke(d.RoomInfo);
+            break;
+        // HealPack, TechUpgrade, Chrome 등 기타 타입 처리
+    }
+}
 ```
 
 **주요 컴포넌트**
@@ -230,6 +380,29 @@ flowchart TB
     EventBus --> IsColosseum
     IsColosseum -->|"false"| Normal
     IsColosseum -->|"true"| Colosseum
+```
+
+**PlayScene.OnMoveInput: Colosseum 시 카메라 기준 world-space 방향 변환**
+
+```csharp
+void OnMoveInput(Vector3 moveDir)
+{
+    Vector3 moveInput = new Vector3(moveDir.x, 0f, moveDir.z);
+    if (!_isColosseumRoom)
+    {
+        _player.SetMoveInput(moveInput);
+        return;
+    }
+    // Colosseum: 카메라 forward/right 기준으로 world-space 방향 변환
+    Camera cam = Camera.main;
+    Vector3 camForward = cam.transform.forward;
+    Vector3 camRight = cam.transform.right;
+    camForward.y = 0f; camRight.y = 0f;
+    camForward.Normalize(); camRight.Normalize();
+
+    Vector3 worldDirection = camForward * moveInput.z + camRight * moveInput.x;
+    _player.SetMoveInput(worldDirection);
+}
 ```
 
 **주요 컴포넌트**
@@ -279,6 +452,18 @@ flowchart TB
     BindTutorial --> TutorialTable
     BindTutorial --> Keys
     PlaySceneView --> EventCheck
+```
+
+**PlayScene: Player 액션 이벤트 → 튜토리얼 완료 체크 연결**
+
+```csharp
+// Player 액션 이벤트를 PlaySceneView 완료 체크에 연결
+_player.OnNormalAttackStarted += _playSceneView.CheckNormalAttackTutorialComplete;
+_player.OnSpecialAttackStarted += _playSceneView.CheckSpecialAttackTutorialComplete;
+_player.OnDashStarted += _playSceneView.CheckDashTutorialComplete;
+_player.OnGrenadeAttackStarted += _playSceneView.CheckGrenadeAttackTutorialComplete;
+_player.OnInteractionStarted += _playSceneView.CheckInteractTutorialComplete;
+_mapController.OnStartRoomExited += _playSceneView.HideTutorialPanel;
 ```
 
 **주요 컴포넌트**
