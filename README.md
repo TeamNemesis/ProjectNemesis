@@ -517,8 +517,7 @@ _mapController.OnStartRoomExited += _playSceneView.HideTutorialPanel;
 
 ### 4.2 참고
 
-- **프로젝트 노션**: [링크](https://economic-kettle-c2e.notion.site/26fc01e9d6ba80b498dde6d3fc2cc36e)
-- **Repository**: https://github.com/TeamNemesis/ProjectNemesis
+- **Repository**: https://github.com/TeamNemesis/ProjectNemesis/tree/Player
 
 ---
 
