@@ -1,227 +1,276 @@
-# Project Nemesis 🎮
+# Project Nemesis
 
-> Unity 기반의 3D 액션 로그라이크 슈팅 게임
+> **Unity 6 기반의 사이버펑크 3D 액션 로그라이크 게임**  
+> **PC / Mobile 크로스 플랫폼**, **JSON 기반 스킬 시스템**, **Firebase 기반 서버 연동**
 
-TeamNemesis의 ProjectNemesis 작업용 Repository입니다.
-
-**프로젝트 노션 링크**: https://economic-kettle-c2e.notion.site/26fc01e9d6ba80b498dde6d3fc2cc36e?source=copy_link
-
----
-
-## 📌 프로젝트 소개
-
-**Project Nemesis**는 Unity 엔진으로 제작된 3D 액션 로그라이크 슈팅 게임입니다. 플레이어는 다양한 무기와 스킬을 활용하여 몬스터들을 처치하고, 보스를 물리치며 스테이지를 클리어하는 것이 목표입니다.
-
-### 주요 특징
-- 🎯 **다양한 전투 시스템**: 일반 공격, 특수 공격, 대시, 유탄 발사 등 다채로운 액션
-- 🔫 **무기 시스템**: 여러 종류의 무기를 획득하고 전환할 수 있는 시스템
-- ⚡ **스킬 업그레이드**: 게임 진행 중 다양한 스킬을 획득하고 강화
-- 🏪 **상호작용 시스템**: 상점, 아이템, 문, 보상 등 다양한 오브젝트와 상호작용
-- 👾 **몬스터 AI**: 다양한 크기와 행동 패턴을 가진 몬스터 및 보스
-- 🗺️ **맵 생성 시스템**: 동적 맵 생성 및 방 구조
-- 🎵 **사운드 시스템**: 몰입감 있는 게임플레이를 위한 사운드 관리
+[프로젝트 문서](https://closed-match-26e.notion.site/28890ea26a698094a386fbdd64752556?source=copy_link) · [시연 영상](https://youtu.be/AbBBSkmhfGs) · [Repository](https://github.com/TeamNemesis/ProjectNemesis)
 
 ---
 
-## 🎮 게임 플레이 및 기능
+## 프로젝트 개요
 
-### 플레이어 시스템
-- **이동 & 대시**: 자유로운 3D 공간에서의 이동과 회피를 위한 대시
-- **전투 메커니즘**:
-  - 일반 공격 (Normal Attack)
-  - 특수 공격 (Special Attack)
-  - 유탄 공격 (Grenade Attack)
-- **상태 머신**: 플레이어의 상태를 효율적으로 관리하는 State Machine 패턴 적용
-- **애니메이션 시스템**: 부드러운 액션을 위한 애니메이션 블렌딩
+| 항목 | 내용 |
+| --- | --- |
+| 프로젝트명 | Project Nemesis |
+| 장르 | 사이버펑크 로그라이크 핵 앤 슬래시 / 슈팅 |
+| 플랫폼 | PC / Mobile |
+| 개발 기간 | 2025.10.10 ~ 2025.12.02 |
+| 개발 인원 | 4인 팀 프로젝트 |
+| 엔진 | Unity 6000.0.59f2 |
+| 언어 | C# |
+| 주요 스택 | URP, Input System, Newtonsoft Json, Firebase |
 
-### 스킬 시스템
-- 다양한 스킬 획득 및 강화
-- JSON 기반 스킬 데이터 관리
-- 스킬 조합 및 시너지 효과
-- 실시간 스킬 UI 업데이트
+Project Nemesis는 **매 플레이마다 다른 방 구조와 성장 루트를 제공하는 로그라이크 액션 게임**입니다.  
+플레이어는 전투를 통해 재화를 획득하고, 무기와 기술을 강화하며, 각 방의 선택에 따라 다른 빌드를 만들어 최종 보스를 공략합니다.
 
-### 몬스터 시스템
-- **몬스터 크기**: SMALL, MIDDLE, BIG
-- **AI 상태**: Idle, Move, Attack, Die
-- **몬스터 스포너**: 동적 몬스터 생성 시스템
-- **보스 시스템**: 강력한 보스 몬스터와의 전투
-
-### 상호작용 시스템
-- **상점**: 아이템 구매 및 업그레이드
-- **보상 상자**: 랜덤 보상 획득
-- **무기**: 새로운 무기 획득
-- **기술 업그레이드**: 플레이어 능력 향상
-- **힐 팩**: 체력 회복
-- **문**: 다음 방으로 이동
+핵심 목표는 **"반복 플레이를 유도하는 성장 구조"**와 **"확장 가능한 데이터 기반 시스템 설계"**였습니다.
 
 ---
 
-## 🗂️ 프로젝트 구조
+## 게임 플레이 루프
 
-```
-ProjectNemesis/
-├── Assets/
-│   ├── 01_Scenes/              # 씬 파일
-│   │   ├── Play.unity          # 메인 게임 플레이 씬
-│   │   ├── Intro/              # 인트로 씬
-│   │   ├── Player/             # 플레이어 테스트 씬
-│   │   ├── Monsters/           # 몬스터 테스트 씬
-│   │   └── Skill/              # 스킬 테스트 씬
-│   ├── 02_Scripts/             # C# 스크립트
-│   │   ├── 00_Manager/         # 게임 매니저들
-│   │   │   ├── GameManager.cs
-│   │   │   ├── SkillManager.cs
-│   │   │   ├── PoolManager.cs
-│   │   │   └── ...
-│   │   ├── Player/             # 플레이어 관련
-│   │   │   ├── Player.cs
-│   │   │   ├── PlayerModel.cs
-│   │   │   ├── PlayerView.cs
-│   │   │   ├── Move/           # 이동 시스템
-│   │   │   ├── Attack/         # 공격 시스템
-│   │   │   └── StateMachine/   # 상태 머신
-│   │   ├── Monster/            # 몬스터 관련
-│   │   │   ├── MonsterBase.cs
-│   │   │   ├── MonsterSpawner/
-│   │   │   ├── Boss/
-│   │   │   └── NormalMonsters/
-│   │   ├── Skill/              # 스킬 시스템
-│   │   ├── InteractableObjects/ # 상호작용 오브젝트
-│   │   ├── Interaction/        # 상호작용 컨트롤러
-│   │   └── UI/                 # 사용자 인터페이스
-│   ├── 03_Prefabs/             # 프리팹
-│   ├── 04_Animations/          # 애니메이션
-│   ├── 05_Materials/           # 머티리얼
-│   └── 99_StoreAssets/         # 외부 에셋
-├── ProjectSettings/            # Unity 프로젝트 설정
-└── Packages/                   # Unity 패키지
+```text
+시작 방
+  ↓
+일반 방 진입
+  ↓
+전투 및 보상 획득
+  ↓
+다음 방 선택 (1~3개)
+  ├─ Normal Room
+  ├─ Shop Room
+  ├─ Lab Room
+  └─ Colosseum Room
+  ↓
+스킬 / 재화 / 장비 강화
+  ↓
+보스 방 진입
+  ↓
+클리어 기록 저장 및 업그레이드 반영
 ```
 
----
-
-## 🚀 시작하기
-
-### 필요 사항
-- **Unity 버전**: `6000.0.59f2` (Unity 6)
-- **운영 체제**: Windows, macOS, Linux
-- **최소 사양**:
-  - RAM: 8GB 이상
-  - GPU: DirectX 11 지원
-  - 저장 공간: 5GB 이상
-
-### 설치 및 실행
-
-1. **저장소 클론**
-   ```bash
-   git clone https://github.com/TeamNemesis/ProjectNemesis.git
-   cd ProjectNemesis
-   ```
-
-2. **Unity Hub 설치**
-   - Unity Hub 다운로드: https://unity.com/download
-   - Unity 6000.0.59f2 버전 설치
-
-3. **프로젝트 열기**
-   - Unity Hub에서 프로젝트 추가
-   - `/ProjectNemesis` 폴더 선택
-
-4. **게임 실행**
-   - `Assets/01_Scenes/Intro/IntroScene.unity` 씬을 열어 인트로부터 시작
-   - 또는 `Assets/01_Scenes/Play.unity` 씬을 열어 바로 게임 플레이
-   - Unity 에디터에서 재생 버튼 클릭
+- **Normal Room**: 전투와 기본 보상 획득
+- **Shop Room**: 재화로 무기/회복/업그레이드 구매
+- **Lab Room**: 특수 이벤트와 하이리스크-하이리턴 선택
+- **Colosseum Room**: 엘리트 전투와 고보상 콘텐츠
+- **Boss Room**: 회차 종료를 담당하는 최종 전투
 
 ---
 
-## 💡 사용 기술 및 패키지
+## 핵심 기능
 
-### Unity 패키지
-- **Unity Input System**: 새로운 입력 시스템
-- **TextMesh Pro**: 고품질 텍스트 렌더링
-- **Unity Addressables**: 효율적인 에셋 관리
-- **NavMesh**: AI 길찾기
-- **Firebase**: 백엔드 서비스 (선택적)
+### 1) 전투 시스템
+- **일반 공격 / 특수 공격 / 유탄 / 대시** 기반의 실시간 액션 전투
+- 플레이어 상태를 **State Machine**으로 관리하여 입력 충돌과 상태 전환을 명확하게 제어
+- 공격 타입과 무기 타입에 따라 서로 다른 데미지 계산 로직 적용
+- 일반 몬스터, 엘리트 몬스터, 보스까지 난이도 계층화
 
-### 외부 에셋
-- **캐릭터 모델**: Robot & Pilot, Stella Girl, Free Test Character
-- **무기 에셋**: Modern Warfare 팩
-- **이펙트**: FX Kandol Pack, Kyeoms FX, Rolling Balls Sci-fi Pack
-- **UI 에셋**: Japanese Cyberpunk GUI
-- **맵 에셋**: Sci-Fi Warehouse Kit, Cosmic Retro Station Props
-- **사운드**: Casual Game Sounds, Sci-Fi Small Sound Pack
-- **애니메이션**: RPG Animations Pack, Melee Animation Pack
+### 2) 절차적 방 생성
+- 문 선택 시 다음 방을 **동적으로 생성하는 구조**
+- **1~3개 문**을 확률 기반으로 생성하여 플레이마다 다른 동선 제공
+- 일반방 / 상점 / 연구실 / 콜로세움의 **가중치 기반 방 타입 선택**
+- 특정 구간에서 **상점 보장**, **보스 직전 단일 진입** 등 룰 기반 제약 설계
 
-### 디자인 패턴
-- **Singleton Pattern**: 매니저 클래스들
-- **State Machine Pattern**: 플레이어 및 몬스터 상태 관리
-- **Object Pool Pattern**: 오브젝트 재사용을 통한 성능 최적화
-- **MVC Pattern**: 플레이어 구조 (Model-View-Controller)
-- **Observer Pattern**: 이벤트 시스템
+### 3) 로그라이크 스킬 시스템
+- **JSON 데이터 기반**으로 기술을 정의하고 관리
+- 기술을 기업 단위로 모듈화하여 **추가/수정이 쉬운 구조**로 설계
+- 보유한 기술 개수에 따라 기업 기술팩의 **선정 가중치가 동적으로 변경**
+- 아직 습득하지 않은 기술 중 최대 3개를 선택지로 제공
+- 일반 기술 / 강화 기술 / 콜라보 기술 / 돌연변이 기술로 확장 가능
 
----
-
-## 👥 팀원 및 역할
-
-### Team Nemesis 구성원
-
-- **endsun1234**: 상호작용 시스템 개발
-  - 상호작용 오브젝트 시스템 구현
-  - 상점, 아이템, 보상 시스템
-  
-- **minji**: 캐릭터 움직임 시스템
-  - 플레이어 이동 및 대시 메커니즘
-  - 캐릭터 컨트롤러 최적화
-  
-- **hyunwoo**: 스킬 업그레이드 시스템
-  - 스킬 매니저 및 데이터 관리
-  - 스킬 강화 및 선택 UI
-
-- **기타 기여자들**:
-  - 몬스터 AI 시스템
-  - 무기 및 전투 시스템
-  - 맵 생성 시스템
-  - UI/UX 디자인
-  - 사운드 및 이펙트
+### 4) 서버 및 성장 시스템
+- **Firebase 연동**으로 플레이어 데이터 저장 및 불러오기
+- 로그인, 자동 로그인, 기록 저장, 업그레이드 저장 지원
+- 클리어 타임을 저장하고 **랭킹 보드**에서 기록 및 순위 확인 가능
+- 재화를 사용한 스탯 업그레이드로 **다회차 플레이 동기** 제공
 
 ---
 
-## 🎯 개발 가이드
+## 담당 구현
 
-### 코드 스타일
-- C# 네이밍 컨벤션 준수
-- 주석을 통한 코드 문서화
-- 메서드 및 클래스에 XML 문서 주석 사용
+### Skill System
+- 기업 아이템 기반 **기술팩 선택 시스템** 구현
+- **보유 기술 수에 따른 기술팩 가중치 조정 로직** 구현
+- **콜라보 스킬 출현 조건 검사** 구현
+- 기술 선택 UI와 데이터 구조를 연결해 **확장 가능한 로그라이크 스킬 구조** 설계
 
-### 브랜치 전략
-- `main`: 안정적인 릴리즈 버전
-- `feature/*`: 새로운 기능 개발
-- `fix/*`: 버그 수정
-- `develop`: 개발 통합 브랜치
+### Player Stat System
+- 게임 시작 시 서버에 저장된 **플레이어 스탯 JSON 로드 및 초기화**
+- `GetEffectiveValue()`를 활용해 **레벨이 반영된 실제 수치**를 게임 내 스탯 필드에 반영
+- 공격 발생 시 `PlayerStatManager`에서 **공격 유형별 1차 데미지 계산** 수행
+- 계산된 데미지를 캐릭터 모델로 전달해 최종 보정 가능하도록 설계
 
-### 커밋 컨벤션
-- `feat:` 새로운 기능
-- `fix:` 버그 수정
-- `docs:` 문서 수정
-- `refactor:` 코드 리팩토링
-- `test:` 테스트 코드
-
----
-
-## 📄 추가 문서
-
-- [평가 및 분석 문서](./EVALUATION.md)
-- [발표 자료](./PRESENTATION.md)
-- [프로젝트 노션](https://economic-kettle-c2e.notion.site/26fc01e9d6ba80b498dde6d3fc2cc36e?source=copy_link)
+### Server System
+- **Firebase 기반 로그인/기록 저장/강화 저장 시스템** 구현
+- 클리어 타임 저장 및 기록판 출력 기능 구현
+- 업그레이드 패널 종료 시 서버 반영 로직 연결
+- 중복 접속 방지와 자동 로그인 흐름 지원
 
 ---
 
-## 📝 라이선스
+## 기술적으로 신경 쓴 부분
 
-이 프로젝트는 교육 목적으로 제작되었습니다.
+### JSON + 모듈화 기반 스킬 설계
+스킬 데이터를 코드에 하드코딩하지 않고 JSON으로 분리해,  
+**밸런싱과 데이터 확장 비용을 낮추는 구조**를 만들었습니다.
+
+특히 기업 단위로 스킬을 구분하여,
+- 신규 스킬 추가
+- 강화 스킬 확장
+- 콜라보 스킬 조건 연결
+- 드랍/선택 규칙 조정
+
+을 비교적 작은 수정 범위 안에서 처리할 수 있도록 설계했습니다.
+
+### 무한 루프 가능성 대응
+기술 선택 버튼 생성 과정에서 **중복 기술 제외 로직**을 반복적으로 수행할 때,  
+남은 기술 수가 적은 상황에서는 계속 실패 판정이 발생해 **무한 루프에 빠질 가능성**이 있었습니다.
+
+이를 해결하기 위해:
+- 임시 인덱스 변수 사용
+- 루프 횟수 제한 적용
+- 선택 가능한 기술 수가 적을 때의 예외 흐름 분리
+
+를 통해 안정적으로 선택지를 생성하도록 보완했습니다.
+
+### EventBus 기반 의존성 분리
+방 이동 시 체력 회복 같은 스킬 조건을 처리할 때,  
+`Player`, `RoomManager` 등 특정 클래스에 직접 접근하면 결합도가 높아지는 문제가 있었습니다.
+
+이를 해결하기 위해 **EventBus 기반 이벤트 통신 구조**를 도입해:
+- 클래스 간 직접 참조를 줄이고
+- 새로운 상호작용과 조건부 발동 로직을 쉽게 추가하며
+- 협업 시 다른 팀원의 클래스 수정 없이 기능을 확장할 수 있도록 했습니다.
 
 ---
 
-## 🤝 문의 및 기여
+## 시스템 설계 포인트
 
-프로젝트에 대한 문의사항이나 기여를 원하시면 이슈를 등록해주세요.
+### Skill System
+- **기술 타입**
+  - 일반 기술
+  - 강화 기술
+  - 콜라보 기술
+  - 돌연변이 기술
+- **콜라보 규칙**
+  - 연관된 두 기업의 기술을 각각 3개 이상 획득하면 콜라보 기술 등장
+- **기술 선택 방식**
+  - 기술팩 상호작용 시 아직 습득하지 않은 기술 중 최대 3개 제공
 
-**Repository**: https://github.com/TeamNemesis/ProjectNemesis
+### Player Stat System
+- 서버 JSON → 플레이어 스탯 초기화 → 실시간 전투 반영 흐름
+- 무기 타입과 공격 타입에 따라 다른 계산식 적용
+- 이후 몬스터 디버프/상태이상과 결합 가능한 구조로 분리
+
+### Server System
+- 로그인 / 자동 로그인
+- 클리어 타임 저장 및 랭킹 표시
+- 재화 기반 스탯 업그레이드 저장
+- 세션 기반 중복 접속 방지
+
+---
+
+## 협업 방식
+
+- **Jira**를 활용해 역할 분담과 일정 관리 진행
+- 현재 작업 / 예정 작업을 추적하며 주간 단위로 진행 상황 공유
+- **정기 회의**를 통해 기능 단위 진행 상황과 병합 이슈 점검
+- **GitHub 브랜치 전략**을 통해 기능 단위로 분리 개발
+  - `main`: 기준 브랜치
+  - `merge`: 통합 테스트용 브랜치
+  - 객체/시스템 단위 feature 브랜치 운영
+
+협업 과정에서 단순 기능 구현뿐 아니라,  
+**충돌 가능성이 높은 시스템을 분리하고 병합 리스크를 줄이는 흐름**에 집중했습니다.
+
+---
+
+## 기술 스택
+
+### Engine / Language
+- Unity 6000.0.59f2
+- C#
+
+### Rendering / Core Packages
+- URP 17.0.4
+- Cinemachine 3.1.4
+- Input System 1.14.2
+- AI Navigation 2.0.9
+- Localization 1.5.8
+- TextMesh Pro
+- Addressables
+- Newtonsoft Json 3.2.2
+
+### Backend
+- Firebase Authentication
+- Firebase Realtime Database
+
+### Collaboration
+- GitHub
+- Jira
+- Notion
+
+---
+
+## 프로젝트 구조
+
+```text
+Assets/
+├── 01_Scenes/
+├── 02_Scripts/
+│   ├── 00_Constants/
+│   ├── 00_Interfaces/
+│   ├── 00_Manager/
+│   ├── Player/
+│   ├── Monster/
+│   ├── Skill/
+│   ├── UI/
+│   ├── InteractableObjects/
+│   ├── ServerData/
+│   ├── Mobile/
+│   └── Map_Generate/
+├── 03_Prefabs/
+├── 04_Animations/
+├── 05_Materials/
+└── 99_StoreAssets/
+```
+
+---
+
+## 실행 방법
+
+### 1. 저장소 클론
+```bash
+git clone https://github.com/TeamNemesis/ProjectNemesis.git
+cd ProjectNemesis
+```
+
+### 2. Unity 버전 확인
+- **Unity 6000.0.59f2** 환경에서 실행
+- Unity Hub에서 해당 버전을 설치한 뒤 프로젝트를 열어 주세요.
+
+### 3. 진입 씬 실행
+- `Assets/01_Scenes/Intro/IntroScene.unity`
+- 또는 `Assets/01_Scenes/Play.unity`
+
+---
+
+## 회고
+
+이번 프로젝트에서는 단순히 기능을 구현하는 것에 그치지 않고,
+
+- **데이터 기반으로 확장 가능한 스킬 시스템을 설계**하고,
+- **서버와 연동되는 플레이어 성장 구조를 구현**하며,
+- **이벤트 기반 구조로 결합도를 낮추는 방향**을 고민했습니다.
+
+특히 팀 프로젝트 환경에서 기능 완성도뿐 아니라  
+**협업 가능한 구조와 유지보수 가능한 설계가 얼마나 중요한지 체감한 프로젝트**였습니다.
+
+---
+
+## 참고 링크
+
+- [Notion 문서](https://closed-match-26e.notion.site/28890ea26a698094a386fbdd64752556?source=copy_link)
+- [시연 영상](https://youtu.be/AbBBSkmhfGs)
+- [GitHub Repository](https://github.com/TeamNemesis/ProjectNemesis)
+
