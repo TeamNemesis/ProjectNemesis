@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Project Nemesis - 프로젝트 요약</title>
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet"/>
+<style>
+        @import url("https://www.genspark.ai/image_placeholder.png");
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: 'Inter', 'Noto Sans KR', sans-serif;
+            background: #0d1117;
+            color: #c9d1d9;
+        }
+        
+        .slide-container {
+            position: relative;
+            width: 1280px;
+            height: 800px;
+            overflow: hidden;
+            background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+            padding: 40px 60px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 45px;
+        }
+        
+        .title-section {
+            flex: 1;
+        }
+        
+        .main-title {
+            font-size: 42px;
+            font-weight: 700;
+            color: #f0f6fc;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .project-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+        
+        .subtitle {
+            font-size: 18px;
+            color: #8b949e;
+            margin-left: 63px;
+        }
+        
+        .dev-info {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            background: rgba(22, 27, 34, 0.8);
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 12px 20px;
+        }
+        
+        .dev-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #c9d1d9;
+        }
+        
+        .dev-item i {
+            color: #58a6ff;
+        }
+        
+        .main-content {
+            position: absolute;
+            top: 150px;
+            left: 60px;
+            right: 60px;
+            bottom: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .intro-section {
+            background: rgba(22, 27, 34, 0.6);
+            border: 1px solid #30363d;
+            border-radius: 16px;
+            padding: 18px 24px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .intro-text {
+            flex: 1;
+        }
+        
+        .intro-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #f0f6fc;
+            margin-bottom: 6px;
+        }
+        
+        .intro-desc {
+            font-size: 13px;
+            color: #8b949e;
+            line-height: 1.5;
+        }
+        
+        .intro-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 28px;
+        }
+        
+        .cards-container {
+            display: flex;
+            gap: 20px;
+            flex: 1;
+        }
+        
+        .card {
+            flex: 1;
+            background: rgba(22, 27, 34, 0.6);
+            border: 1px solid #30363d;
+            border-radius: 16px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+        
+        .card-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #f0f6fc;
+        }
+        
+        .card-icon {
+            width: 32px;
+            height: 32px;
+            background: rgba(88, 166, 255, 0.1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #58a6ff;
+            font-size: 14px;
+        }
+        
+        .card-content {
+            font-size: 12px;
+            color: #8b949e;
+            line-height: 1.4;
+        }
+        
+        .feature-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        
+        .feature-tag {
+            background: rgba(88, 166, 255, 0.1);
+            border: 1px solid rgba(88, 166, 255, 0.2);
+            border-radius: 6px;
+            padding: 4px 10px;
+            font-size: 11px;
+            color: #58a6ff;
+        }
+        
+        .tech-stack {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .tech-item {
+            background: rgba(88, 166, 255, 0.1);
+            border: 1px solid rgba(88, 166, 255, 0.2);
+            border-radius: 12px;
+            font-size: 10px;
+            color: #58a6ff;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 8px;
+        }
+        
+        .footer {
+            position: absolute;
+            bottom: 20px;
+            left: 60px;
+            right: 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: #8b949e;
+        }
+        
+        .footer-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #2ea043;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        .status-text {
+            font-size: 12px;
+            color: #2ea043;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .footer-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 12px;
+            color: #8b949e;
+        }
+        
+        .footer-right span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .footer-right i {
+            color: #58a6ff;
+        }
+    </style>
+</head>
+<body>
+<div class="slide-container">
+<div class="header">
+<div class="title-section">
+<div class="main-title">
+<div class="project-icon">
+<i class="fas fa-gamepad"></i>
+</div>
+<span>Project Nemesis</span>
+</div>
+<div class="subtitle">Unity 3D 로그라이크 액션 게임 | 개발 기간: 2025.10 ~ 2025.11</div>
+</div>
+<div class="dev-info">
+<div class="dev-item">
+<i class="fas fa-code"></i>
+<span>Unity 6</span>
+</div>
+<div class="dev-item">
+<i class="fas fa-cube"></i>
+<span>C#</span>
+</div>
+<div class="dev-item">
+<i class="fas fa-mobile-alt"></i>
+<span>PC/Mobile</span>
+</div>
+</div>
+</div>
+
+<div class="main-content">
+<div class="intro-section">
+<div class="intro-text">
+<div class="intro-title">
+<i class="fas fa-rocket"></i> Unity Team Project
+                    </div>
+<div class="intro-desc">
+                        Project Nemesis는 Unity 엔진으로 제작된 3D 액션 로그라이크 슈팅 게임입니다. 
+                        플레이어는 State Machine 기반의 유연한 캐릭터 컨트롤, DoorDecider 알고리즘으로 생성되는 절차적 던전, 
+                        IInteractable 인터페이스 기반 상호작용 시스템을 통해 매번 새로운 경험을 합니다. 
+                        특히 엘리트 전투 시점 전환, PC/Mobile 튜토리얼, 다국어 지원으로 완성도를 높였습니다. 
+                        본 문서는 팀 프로젝트에서 담당한 플레이어 시스템, 맵 생성, 상호작용, 튜토리얼, 엘리트 시점 전환에 대한 내용을 담고있습니다.
+                    </div>
+<div class="tech-stack" style="margin-top: 10px;">
+<div class="tech-item"><i class="fas fa-unity"></i> Unity 6</div>
+<div class="tech-item"><i class="fas fa-code"></i> C# 10+</div>
+<div class="tech-item"><i class="fas fa-gamepad"></i> Input System 1.14.2</div>
+<div class="tech-item"><i class="fas fa-film"></i> Cinemachine 3.1.4</div>
+<div class="tech-item"><i class="fas fa-globe"></i> Localization</div>
+<div class="tech-item"><i class="fas fa-layer-group"></i> URP 17.0.4</div>
+</div>
+</div>
+<div class="intro-icon">
+<i class="fas fa-cube"></i>
+</div>
+</div>
+
+<div class="cards-container">
+<!-- Card 1: Player System -->
+<div class="card">
+<div class="card-header">
+<div class="card-icon">
+<i class="fas fa-user"></i>
+</div>
+<div>
+<div class="card-title">Player System</div>
+<div style="font-size: 12px; color: #8b949e;">State Machine 기반</div>
+</div>
+</div>
+<div class="card-content">
+<div style="margin-bottom: 8px;">
+<strong>6가지 상태:</strong> Idle/Move/Dash/Normal/Special/Grenade
+                        </div>
+<div class="feature-list">
+<div class="feature-tag">Idle</div>
+<div class="feature-tag">Move</div>
+<div class="feature-tag">Dash</div>
+<div class="feature-tag">Attack</div>
+</div>
+</div>
+</div>
+
+<!-- Card 2: Procedural Map -->
+<div class="card">
+<div class="card-header">
+<div class="card-icon">
+<i class="fas fa-map"></i>
+</div>
+<div>
+<div class="card-title">Map Generation</div>
+<div style="font-size: 12px; color: #8b949e;">DoorDecider 알고리즘</div>
+</div>
+</div>
+<div class="card-content">
+<div style="margin-bottom: 8px;">
+<strong>랜덤 맵 생성:</strong> 1~3개 문, 상점/보스 방
+                        </div>
+<div class="feature-list">
+<div class="feature-tag">DoorDecider</div>
+<div class="feature-tag">RoomSpawner</div>
+<div class="feature-tag">MapController</div>
+</div>
+</div>
+</div>
+
+<!-- Card 3: Interaction System -->
+<div class="card">
+<div class="card-header">
+<div class="card-icon">
+<i class="fas fa-hand-pointer"></i>
+</div>
+<div>
+<div class="card-title">Interaction</div>
+<div style="font-size: 12px; color: #8b949e;">IInteractable 인터페이스</div>
+</div>
+</div>
+<div class="card-content">
+<div style="margin-bottom: 8px;">
+<strong>상호작용:</strong> Door, Weapon, HealPack, Credit, TechPack 등
+                        </div>
+<div class="feature-list">
+<div class="feature-tag">Door</div>
+<div class="feature-tag">Weapon</div>
+<div class="feature-tag">HealPack</div>
+<div class="feature-tag">Credit</div>
+<div class="feature-tag">TechPack</div>
+<div class="feature-tag">기타</div>
+</div>
+</div>
+</div>
+
+<!-- Card 4: Camera System -->
+<div class="card">
+<div class="card-header">
+<div class="card-icon">
+<i class="fas fa-camera"></i>
+</div>
+<div>
+<div class="card-title">Camera</div>
+<div style="font-size: 12px; color: #8b949e;">모드 전환</div>
+</div>
+</div>
+<div class="card-content">
+<div style="margin-bottom: 8px;">
+<strong>카메라:</strong> Ortho ↔ Perspective
+                        </div>
+<div class="feature-list">
+<div class="feature-tag">Orthographic</div>
+<div class="feature-tag">Perspective</div>
+</div>
+</div>
+</div>
+
+<!-- Card 5: Tutorial System -->
+<div class="card">
+<div class="card-header">
+<div class="card-icon">
+<i class="fas fa-graduation-cap"></i>
+</div>
+<div>
+<div class="card-title">Tutorial</div>
+<div style="font-size: 12px; color: #8b949e;">PC/Mobile 대응</div>
+</div>
+</div>
+<div class="card-content">
+<div style="margin-bottom: 8px;">
+<strong>튜토리얼:</strong> 5개 액션 가이드
+                        </div>
+<div class="feature-list">
+<div class="feature-tag">PC</div>
+<div class="feature-tag">Mobile</div>
+<div class="feature-tag">5개</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="footer">
+<div class="footer-left">
+<div class="status-indicator">
+<div class="status-dot"></div>
+<div class="status-text">개발 완료</div>
+</div>
+<span>•</span>
+<span>Unity 3D 로그라이크 액션 게임</span>
+</div>
+<div class="footer-right">
+<span><i class="fas fa-calendar"></i> 2026.03.31</span>
+<span><i class="fas fa-code-branch"></i> feature/player</span>
+</div>
+</div>
+</div>
+</body>
+</html>
