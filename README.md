@@ -53,8 +53,8 @@
 
 ### 1.4 영상
 
-[🎬 영상 보기](https://www.youtube.com/watch?v=AbBBSkmhfGs)
-[구글 드라이브 링크](https://drive.google.com/drive/folders/1fS4T3jXmT__ADABu6FcIB4fsSMqOuxEL?usp=drive_link)
+[🎬 영상 보기](https://www.youtube.com/watch?v=AbBBSkmhfGs) |
+[구글 드라이브 링크(포트폴리오 파일이 있습니다!)](https://drive.google.com/drive/folders/1fS4T3jXmT__ADABu6FcIB4fsSMqOuxEL?usp=drive_link)
 
 ---
 
